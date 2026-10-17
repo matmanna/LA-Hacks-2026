@@ -7,10 +7,12 @@
   },
   "scripts": {
     "build": "tsc -b",
-    "check-types": "tsc -b"
+    "check-types": "tsc -b",
+    "test": "vitest run"
   },
   "dependencies": {
     "@betterbill/auth": "workspace:*",
+    "@betterbill/core": "workspace:*",
     "@betterbill/db": "workspace:*",
     "@orpc/client": "catalog:",
     "@orpc/openapi": "catalog:",
@@ -20,6 +22,7 @@
   },
   "devDependencies": {
     "@betterbill/config": "workspace:*",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "5.0.5"
   }
 }

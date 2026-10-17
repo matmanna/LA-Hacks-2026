@@ -56,7 +56,10 @@ function MessageScrollerContent({
   return (
     <MessageScrollerPrimitive.Content
       data-slot="message-scroller-content"
-      className={cn("cn-message-scroller-content flex h-max min-h-full flex-col gap-6", className)}
+      className={cn(
+        "cn-message-scroller-content flex h-max min-h-full flex-col gap-6",
+        className,
+      )}
       {...props}
     />
   );
@@ -117,12 +120,12 @@ function MessageScrollerButton({
 }
 
 export {
-  MessageScrollerProvider,
   MessageScroller,
-  MessageScrollerViewport,
+  MessageScrollerButton,
   MessageScrollerContent,
   MessageScrollerItem,
-  MessageScrollerButton,
+  MessageScrollerProvider,
+  MessageScrollerViewport,
   useMessageScroller,
   useMessageScrollerScrollable,
   useMessageScrollerVisibility,
