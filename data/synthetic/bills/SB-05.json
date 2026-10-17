@@ -1,0 +1,156 @@
+{
+	"fixtureVersion": 1,
+	"id": "SB-05",
+	"title": "Insured labs with a duplicate CBC the EOB does not support",
+	"synthetic": true,
+	"scenario": "duplicate+eob_mismatch",
+	"bill": {
+		"id": "bill_sb05",
+		"hospital": {
+			"name": "Sample Medical Center (synthetic)",
+			"city": "Los Angeles",
+			"state": "CA"
+		},
+		"statementDate": "2026-06-02",
+		"accountRefMasked": "2290",
+		"kind": "itemized",
+		"sourceKind": "pdf",
+		"lines": [
+			{
+				"id": "sb05-l01",
+				"serviceDate": "2026-05-19",
+				"description": "CBC W/ AUTO DIFF",
+				"code": "85025",
+				"codeType": "CPT",
+				"units": 1,
+				"chargeCents": 8400,
+				"source": {
+					"page": 1,
+					"bbox": null
+				},
+				"confidence": 1,
+				"userEdited": false
+			},
+			{
+				"id": "sb05-l02",
+				"serviceDate": "2026-05-19",
+				"description": "CBC W/ AUTO DIFF",
+				"code": "85025",
+				"codeType": "CPT",
+				"units": 1,
+				"chargeCents": 8400,
+				"source": {
+					"page": 1,
+					"bbox": null
+				},
+				"confidence": 1,
+				"userEdited": false
+			},
+			{
+				"id": "sb05-l03",
+				"serviceDate": "2026-05-19",
+				"description": "COMPREHENSIVE METABOLIC PANEL",
+				"code": "80053",
+				"codeType": "CPT",
+				"units": 1,
+				"chargeCents": 21200,
+				"source": {
+					"page": 1,
+					"bbox": null
+				},
+				"confidence": 1,
+				"userEdited": false
+			},
+			{
+				"id": "sb05-l04",
+				"serviceDate": "2026-05-19",
+				"description": "VENIPUNCTURE",
+				"code": "36415",
+				"codeType": "CPT",
+				"units": 1,
+				"chargeCents": 3800,
+				"source": {
+					"page": 1,
+					"bbox": null
+				},
+				"confidence": 1,
+				"userEdited": false
+			},
+			{
+				"id": "sb05-l05",
+				"serviceDate": "2026-05-19",
+				"description": "GLUCOSE BLOOD TEST",
+				"code": "82962",
+				"codeType": "CPT",
+				"units": 1,
+				"chargeCents": 2400,
+				"source": {
+					"page": 1,
+					"bbox": null
+				},
+				"confidence": 1,
+				"userEdited": false
+			}
+		],
+		"totals": {
+			"chargesCents": 44200,
+			"adjustmentsCents": 19600,
+			"paidCents": 5000,
+			"dueCents": 19600
+		}
+	},
+	"eob": {
+		"payer": "Synthetic Health Plan",
+		"claimRefMasked": "7731",
+		"patientResponsibilityCents": 4000,
+		"lines": [
+			{
+				"code": "85025",
+				"allowedCents": 3000,
+				"patientCents": 1200
+			},
+			{
+				"code": "80053",
+				"allowedCents": 6000,
+				"patientCents": 2000
+			},
+			{
+				"code": "36415",
+				"allowedCents": 1000,
+				"patientCents": 500
+			},
+			{
+				"code": "82962",
+				"allowedCents": 800,
+				"patientCents": 300
+			}
+		]
+	},
+	"expected": {
+		"clean": false,
+		"flags": [
+			{
+				"lever": "duplicate",
+				"tier": "confirmed",
+				"lineIds": ["sb05-l01", "sb05-l02"],
+				"amountCents": 8400
+			},
+			{
+				"lever": "eob_mismatch",
+				"tier": "confirmed",
+				"lineIds": ["sb05-l01"],
+				"amountCents": 7200
+			}
+		],
+		"notes": "EOB processed one CBC: patient share 1200, but the bill leaves both CBC lines fully due (8400 each). Adjustments and payments match the EOB for the other three lines. Bill due 19600 minus EOB 4000 = 15600 = 8400 (duplicate) + 7200 (8400 - 1200 on sb05-l01)."
+	},
+	"context": {
+		"hospitalKey": "sample-synthetic",
+		"patient": {
+			"householdSize": 2,
+			"annualIncomeCents": 6800000,
+			"state": "CA",
+			"insured": true
+		}
+	}
+}

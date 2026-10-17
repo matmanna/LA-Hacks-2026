@@ -1,0 +1,65 @@
+{
+	"fixtureVersion": 1,
+	"id": "SB-07",
+	"title": "Summary statement with no itemization",
+	"synthetic": true,
+	"scenario": "missing_itemization",
+	"bill": {
+		"id": "bill_sb07",
+		"hospital": {
+			"name": "Sample Medical Center (synthetic)",
+			"city": "Los Angeles",
+			"state": "CA"
+		},
+		"statementDate": "2026-04-30",
+		"accountRefMasked": "8804",
+		"kind": "summary",
+		"sourceKind": "pdf",
+		"lines": [
+			{
+				"id": "sb07-l01",
+				"serviceDate": "2026-04-11",
+				"description": "HOSPITAL SERVICES",
+				"code": null,
+				"codeType": null,
+				"units": 1,
+				"chargeCents": 487500,
+				"source": {
+					"page": 1,
+					"bbox": null
+				},
+				"confidence": 1,
+				"userEdited": false
+			}
+		],
+		"totals": {
+			"chargesCents": 487500,
+			"adjustmentsCents": 0,
+			"paidCents": 0,
+			"dueCents": 487500
+		}
+	},
+	"eob": null,
+	"expected": {
+		"clean": false,
+		"flags": [
+			{
+				"lever": "missing_itemization",
+				"tier": "rule",
+				"lineIds": ["sb07-l01"],
+				"amountCents": 0,
+				"optional": true
+			}
+		],
+		"notes": "Optional: report separately if the engine does not implement missing_itemization."
+	},
+	"context": {
+		"hospitalKey": "sample-synthetic",
+		"patient": {
+			"householdSize": 2,
+			"annualIncomeCents": 6800000,
+			"state": "CA",
+			"insured": false
+		}
+	}
+}

@@ -1,0 +1,147 @@
+{
+	"fixtureVersion": 1,
+	"id": "SB-03",
+	"title": "Self-pay infusion day with units above daily limits",
+	"synthetic": true,
+	"scenario": "units",
+	"bill": {
+		"id": "bill_sb03",
+		"hospital": {
+			"name": "Sample Medical Center (synthetic)",
+			"city": "Los Angeles",
+			"state": "CA"
+		},
+		"statementDate": "2026-08-05",
+		"accountRefMasked": "6142",
+		"kind": "itemized",
+		"sourceKind": "pdf",
+		"lines": [
+			{
+				"id": "sb03-l01",
+				"serviceDate": "2026-07-22",
+				"description": "IV HYDRATION INITIAL HOUR",
+				"code": "96360",
+				"codeType": "CPT",
+				"units": 1,
+				"chargeCents": 62000,
+				"source": {
+					"page": 1,
+					"bbox": null
+				},
+				"confidence": 1,
+				"userEdited": false
+			},
+			{
+				"id": "sb03-l02",
+				"serviceDate": "2026-07-22",
+				"description": "IV HYDRATION EACH ADDL HOUR",
+				"code": "96361",
+				"codeType": "CPT",
+				"units": 2,
+				"chargeCents": 42000,
+				"source": {
+					"page": 1,
+					"bbox": null
+				},
+				"confidence": 1,
+				"userEdited": false
+			},
+			{
+				"id": "sb03-l03",
+				"serviceDate": "2026-07-22",
+				"description": "IV PUSH SINGLE DRUG",
+				"code": "96374",
+				"codeType": "CPT",
+				"units": 2,
+				"chargeCents": 97200,
+				"source": {
+					"page": 1,
+					"bbox": null
+				},
+				"confidence": 1,
+				"userEdited": false
+			},
+			{
+				"id": "sb03-l04",
+				"serviceDate": "2026-07-22",
+				"description": "KETOROLAC INJ 15 MG",
+				"code": "J1885",
+				"codeType": "HCPCS",
+				"units": 12,
+				"chargeCents": 115200,
+				"source": {
+					"page": 1,
+					"bbox": null
+				},
+				"confidence": 1,
+				"userEdited": false
+			},
+			{
+				"id": "sb03-l05",
+				"serviceDate": "2026-07-22",
+				"description": "NORMAL SALINE 1000 CC",
+				"code": "J7030",
+				"codeType": "HCPCS",
+				"units": 2,
+				"chargeCents": 37200,
+				"source": {
+					"page": 1,
+					"bbox": null
+				},
+				"confidence": 1,
+				"userEdited": false
+			},
+			{
+				"id": "sb03-l06",
+				"serviceDate": "2026-07-22",
+				"description": "ONDANSETRON INJ 1 MG",
+				"code": "J2405",
+				"codeType": "HCPCS",
+				"units": 4,
+				"chargeCents": 10000,
+				"source": {
+					"page": 1,
+					"bbox": null
+				},
+				"confidence": 1,
+				"userEdited": false
+			}
+		],
+		"totals": {
+			"chargesCents": 363600,
+			"adjustmentsCents": 0,
+			"paidCents": 0,
+			"dueCents": 363600
+		}
+	},
+	"eob": null,
+	"expected": {
+		"clean": false,
+		"flags": [
+			{
+				"lever": "units",
+				"tier": "rule",
+				"lineIds": ["sb03-l03"],
+				"amountCents": 48600,
+				"ruleRef": "mue:96374"
+			},
+			{
+				"lever": "units",
+				"tier": "rule",
+				"lineIds": ["sb03-l04"],
+				"amountCents": 38400,
+				"ruleRef": "mue:J1885"
+			}
+		],
+		"notes": "96374 excess = (2 - 1) x 48600. J1885 excess = (12 - 8) x 9600. 96361 x2 (MUE 24), J7030 x2 (MUE 20), J2405 x4 (MUE 64) are within limits."
+	},
+	"context": {
+		"hospitalKey": "sample-synthetic",
+		"patient": {
+			"householdSize": 2,
+			"annualIncomeCents": 6800000,
+			"state": "CA",
+			"insured": false
+		}
+	}
+}
