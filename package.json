@@ -45,14 +45,17 @@
     "env:generate": "varlock codegen --path ./apps/web/ && varlock codegen --path ./packages/db/",
     "postinstall": "varlock codegen --path ./apps/web/ && varlock codegen --path ./packages/db/",
     "auth:generate": "cd apps/web && bun run auth:generate",
-    "check": "biome check --write ."
+    "check": "biome check --write .",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@betterbill/config": "workspace:*",
     "@biomejs/biome": "^2.5.15",
+    "@playwright/test": "^1.64.1",
     "@types/node": "^26.4.1",
     "tsx": "^4.23.13",
     "turbo": "^2.11.7",
