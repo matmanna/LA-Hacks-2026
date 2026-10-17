@@ -1,0 +1,22 @@
+{
+  "name": "@betterbill/core",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "check-types": "tsc -b",
+    "test": "vitest run --coverage"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@betterbill/config": "workspace:*",
+    "@vitest/coverage-v8": "5.0.5",
+    "typescript": "catalog:",
+    "vitest": "5.0.5"
+  }
+}
