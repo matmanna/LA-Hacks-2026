@@ -5,7 +5,7 @@ import { expectNoA11yViolations } from "./a11y";
 test("approval sheet shows the exact text and does not focus Approve", async ({
   page,
 }, testInfo) => {
-  await page.goto("/design");
+  await page.goto("/design", { waitUntil: "networkidle" });
   await page.getByRole("button", { name: "Open approval sheet" }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog.getByText("Review before we send")).toBeVisible();
@@ -30,7 +30,7 @@ test("approval sheet shows the exact text and does not focus Approve", async ({
 });
 
 test("account prompt copy", async ({ page }) => {
-  await page.goto("/design");
+  await page.goto("/design", { waitUntil: "networkidle" });
   await page.getByRole("button", { name: "Open account prompt" }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog.getByText("Save your case to continue")).toBeVisible();
