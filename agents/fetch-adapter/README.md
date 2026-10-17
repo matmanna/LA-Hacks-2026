@@ -14,20 +14,16 @@ API and renders replies as chat messages or Interactive Cards.
 - **Not done, needs a human:** creating the Agentverse/ASI:One accounts,
   setting a real `AGENT_SEED`, and running the three live checks below.
   None of that can happen from here.
-- **Known placeholder:** `api_client.ROUTES["case.create"]` guesses
-  `/api/rpc/case/create` based on how oRPC is actually mounted in
-  `apps/web/src/routes/api/rpc/$.ts` (its own RPC-over-HTTP protocol, not
-  the REST/OpenAPI endpoint the ticket assumed). `packages/api`'s router
-  only has `healthCheck` and `privateData` as of this commit, so this is
-  untestable against a real server yet either way. Fix only
-  `api_client.py` once B's `case.create` exists and the 17:00 handoff
-  confirms the real path.
+- Calls go to B's adapter API, `POST /api/v1/<router>/<procedure>`
+  (`apps/web/src/routes/api/v1/$.ts`), with `BB_ADAPTER_KEY` in the
+  `x-bb-adapter-key` header. The key must match `BB_ADAPTER_KEY` in
+  `apps/web/.env`, or the API returns 401.
 
 ## Run
 
 ```
 uv sync
-cp .env.example .env   # fill in AGENT_SEED (and BETTERBILL_API_BASE / BB_ADAPTER_KEY once B's API is up)
+cp .env.example .env   # fill in AGENT_SEED, BETTERBILL_API_BASE, BB_ADAPTER_KEY
 uv run python -m betterbill_agent.agent
 ```
 
@@ -43,7 +39,6 @@ uv run pytest
 1. Agent runs locally with `mailbox=True`, logs an `agent1q...` address,
    shows connected in the Agentverse inspector.
 2. "Chat with Agent" from the Agentverse profile opens ASI:One; send
-   `ping`, `card`, and `case` and confirm the replies above. `case` is
-   expected to fail gracefully until B's `case.create` is live.
+   `ping`, `card`, and `case`; `case` should reply with a new case id.
 3. Submission steps in the Fetch hackpack read and understood (A-12,
    later).
