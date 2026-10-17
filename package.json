@@ -46,7 +46,11 @@
     "postinstall": "varlock codegen --path ./apps/web/ && varlock codegen --path ./packages/db/",
     "auth:generate": "cd apps/web && bun run auth:generate",
     "check": "biome check --write .",
+<<<<<<< HEAD
     "copy:check": "bun scripts/copy/check-wording.ts"
+=======
+    "fixtures:validate": "bun scripts/fixtures/validate.ts"
+>>>>>>> origin/main
   },
   "dependencies": {
     "zod": "catalog:"
