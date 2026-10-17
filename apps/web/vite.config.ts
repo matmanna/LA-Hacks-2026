@@ -5,7 +5,7 @@ import viteReact from "@vitejs/plugin-react";
 import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   server: {
     port: 3001,
   },
@@ -19,8 +19,8 @@ export default defineConfig({
     nitro(),
     viteReact(),
   ],
-  // These deployments run the standalone build artifact.
-  ssr: {
-    noExternal: true,
-  },
-});
+  // These deployments run the standalone build artifact. Build only: in dev,
+  // inlining everything makes Vite's SSR runner evaluate React's CommonJS
+  // entry and every route fails with "module is not defined".
+  ssr: command === "build" ? { noExternal: true } : undefined,
+}));
