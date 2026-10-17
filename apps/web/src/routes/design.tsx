@@ -1,5 +1,9 @@
 import { Badge } from "@betterbill/ui/components/badge";
 import { BalanceCard } from "@betterbill/ui/components/bb/balance-card";
+import {
+  ComparePending,
+  ComparePriceBar,
+} from "@betterbill/ui/components/bb/compare-price-bar";
 import { FlagRow } from "@betterbill/ui/components/bb/flag-row";
 import { Money } from "@betterbill/ui/components/bb/money";
 import { SavingsBar } from "@betterbill/ui/components/bb/savings-bar";
@@ -194,6 +198,23 @@ function DesignPage() {
             />
           ))}
         </div>
+      </Section>
+
+      <Section title="Compare price bar">
+        <div className="grid max-w-3xl gap-6 md:grid-cols-2">
+          <ComparePriceBar
+            billedCents={690000}
+            publishedCents={400000}
+            sourceName="Sample hospital"
+            sourceUrl="https://example.com/price-file"
+            capturedAt="2026-10-17T23:00:00.000Z"
+          />
+          <ComparePending />
+        </div>
+        <p className="text-muted-foreground text-xs leading-4">
+          Sample values. Synthetic data. The captured price comes from the
+          hospital price file with its date.
+        </p>
       </Section>
 
       <Section title="Savings bar">
