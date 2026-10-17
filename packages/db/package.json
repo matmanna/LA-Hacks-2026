@@ -13,9 +13,11 @@
     "db:migrate:deploy": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:migrate": "drizzle-kit migrate",
-    "db:seed": "bun src/seed.ts"
+    "db:seed": "bun src/seed.ts",
+    "test:integration": "vitest run"
   },
   "dependencies": {
+    "@betterbill/core": "workspace:*",
     "drizzle-orm": "catalog:",
     "pg": "^8.23.0",
     "zod": "catalog:"
@@ -25,6 +27,7 @@
     "@types/pg": "^8.23.1",
     "drizzle-kit": "1.0.0-rc.4",
     "typescript": "catalog:",
-    "varlock": "catalog:"
+    "varlock": "catalog:",
+    "vitest": "5.0.5"
   }
 }
