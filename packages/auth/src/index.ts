@@ -10,9 +10,28 @@ import { createPolarClient } from "./lib/payments";
 export type AuthConfig = {
   BETTER_AUTH_URL: string;
   BETTER_AUTH_SECRET: string;
-  POLAR_ACCESS_TOKEN: string;
-  POLAR_SUCCESS_URL: string;
+  POLAR_ACCESS_TOKEN?: string;
+  POLAR_SUCCESS_URL?: string;
 };
+
+// Polar is optional: the plugin is only enabled when both values are set.
+function polarPlugins(env: AuthConfig) {
+  if (!env.POLAR_ACCESS_TOKEN || !env.POLAR_SUCCESS_URL) return [];
+  return [
+    polar({
+      client: createPolarClient({ POLAR_ACCESS_TOKEN: env.POLAR_ACCESS_TOKEN }),
+      createCustomerOnSignUp: true,
+      use: [
+        checkout({
+          products: [{ productId: "your-product-id", slug: "pro" }],
+          successUrl: env.POLAR_SUCCESS_URL,
+          authenticatedUsersOnly: true,
+        }),
+        portal(),
+      ],
+    }),
+  ];
+}
 
 export function createAuth(env: AuthConfig, database: Database) {
   return betterAuth({
@@ -24,21 +43,7 @@ export function createAuth(env: AuthConfig, database: Database) {
     emailAndPassword: { enabled: true },
     secret: env.BETTER_AUTH_SECRET,
     baseURL: env.BETTER_AUTH_URL,
-    plugins: [
-      polar({
-        client: createPolarClient(env),
-        createCustomerOnSignUp: true,
-        use: [
-          checkout({
-            products: [{ productId: "your-product-id", slug: "pro" }],
-            successUrl: env.POLAR_SUCCESS_URL,
-            authenticatedUsersOnly: true,
-          }),
-          portal(),
-        ],
-      }),
-      tanstackStartCookies(),
-    ],
+    plugins: [...polarPlugins(env), tanstackStartCookies()],
   });
 }
 
