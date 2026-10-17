@@ -7,7 +7,14 @@ import {
 import { FlagRow } from "@betterbill/ui/components/bb/flag-row";
 import { Money } from "@betterbill/ui/components/bb/money";
 import { SavingsBar } from "@betterbill/ui/components/bb/savings-bar";
+import {
+  AuditingState,
+  EmptyState,
+  ErrorState,
+  LoadingState,
+} from "@betterbill/ui/components/bb/states";
 import { TierBadge } from "@betterbill/ui/components/bb/tier-badge";
+import { UploadPanel } from "@betterbill/ui/components/bb/upload-panel";
 import { Button } from "@betterbill/ui/components/button";
 import {
   Card,
@@ -215,6 +222,34 @@ function DesignPage() {
           Sample values. Synthetic data. The captured price comes from the
           hospital price file with its date.
         </p>
+      </Section>
+
+      <Section title="Upload panel">
+        <div className="max-w-md">
+          <UploadPanel
+            onPhotos={() => {}}
+            onText={() => {}}
+            onSample={() => {}}
+          />
+        </div>
+      </Section>
+
+      <Section title="States">
+        <div className="grid gap-4 md:grid-cols-2">
+          <LoadingState />
+          <AuditingState />
+          <EmptyState
+            title="Nothing looks wrong"
+            body="We checked 23 lines and found nothing to flag. You can still ask for an itemized bill."
+            action={{ label: "Ask for an itemized bill", onClick: () => {} }}
+          />
+          <ErrorState
+            title="We couldn't read this photo"
+            body="Try a flatter, brighter photo, or paste the text instead."
+            action={{ label: "Retake photo", onClick: () => {} }}
+            secondary={{ label: "Paste the text", onClick: () => {} }}
+          />
+        </div>
       </Section>
 
       <Section title="Savings bar">
