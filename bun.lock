@@ -118,6 +118,7 @@
     "packages/db": {
       "name": "@betterbill/db",
       "dependencies": {
+        "@betterbill/core": "workspace:*",
         "drizzle-orm": "catalog:",
         "pg": "^8.23.0",
         "zod": "catalog:",
@@ -128,6 +129,7 @@
         "drizzle-kit": "1.0.0-rc.4",
         "typescript": "catalog:",
         "varlock": "catalog:",
+        "vitest": "5.0.5",
       },
     },
     "packages/ui": {
