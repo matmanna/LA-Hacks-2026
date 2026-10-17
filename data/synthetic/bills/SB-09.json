@@ -1,0 +1,132 @@
+{
+  "fixtureVersion": 1,
+  "id": "SB-09",
+  "title": "Clean control: legitimate repeats across two days",
+  "synthetic": true,
+  "scenario": "clean",
+  "bill": {
+    "id": "bill_sb09",
+    "hospital": {
+      "name": "Sample Medical Center (synthetic)",
+      "city": "Los Angeles",
+      "state": "CA"
+    },
+    "statementDate": "2026-09-30",
+    "accountRefMasked": "4467",
+    "kind": "itemized",
+    "sourceKind": "pdf",
+    "lines": [
+      {
+        "id": "sb09-l01",
+        "serviceDate": "2026-09-14",
+        "description": "ED VISIT LEVEL 4",
+        "code": "99284",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 295000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb09-l02",
+        "serviceDate": "2026-09-14",
+        "description": "CBC W/ AUTO DIFF",
+        "code": "85025",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 8400,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb09-l03",
+        "serviceDate": "2026-09-14",
+        "description": "VENIPUNCTURE",
+        "code": "36415",
+        "codeType": "CPT",
+        "units": 2,
+        "chargeCents": 7600,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb09-l04",
+        "serviceDate": "2026-09-15",
+        "description": "CBC W/ AUTO DIFF",
+        "code": "85025",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 8400,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb09-l05",
+        "serviceDate": "2026-09-15",
+        "description": "COMPREHENSIVE METABOLIC PANEL",
+        "code": "80053",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 21200,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb09-l06",
+        "serviceDate": "2026-09-15",
+        "description": "VENIPUNCTURE",
+        "code": "36415",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 3800,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 344400,
+      "adjustmentsCents": 0,
+      "paidCents": 0,
+      "dueCents": 344400
+    }
+  },
+  "eob": null,
+  "expected": {
+    "clean": true,
+    "flags": [],
+    "notes": "Traps: 85025 on two different dates is not a duplicate. 36415 x2 on 2026-09-14 equals the MUE (2), so not a units issue. 36415 also appears on 2026-09-15 (1 unit, different date)."
+  },
+  "context": {
+    "hospitalKey": "sample-synthetic",
+    "patient": {
+      "householdSize": 2,
+      "annualIncomeCents": 6800000,
+      "state": "CA",
+      "insured": false
+    }
+  }
+}
