@@ -31,7 +31,7 @@ export function TierBadge({ tier, size = "md", className }: TierBadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-medium text-xs",
+        "inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 font-medium text-xs",
         size === "sm" && "py-0.5",
         tone,
         className,

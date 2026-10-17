@@ -1,5 +1,8 @@
 import { Badge } from "@betterbill/ui/components/badge";
+import { BalanceCard } from "@betterbill/ui/components/bb/balance-card";
+import { FlagRow } from "@betterbill/ui/components/bb/flag-row";
 import { Money } from "@betterbill/ui/components/bb/money";
+import { SavingsBar } from "@betterbill/ui/components/bb/savings-bar";
 import { TierBadge } from "@betterbill/ui/components/bb/tier-badge";
 import { Button } from "@betterbill/ui/components/button";
 import {
@@ -20,6 +23,8 @@ import {
 import { Textarea } from "@betterbill/ui/components/textarea";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+
+import { sampleCase } from "@/fixtures/sample-case";
 
 export const Route = createFileRoute("/design")({
   head: () => ({
@@ -151,6 +156,53 @@ function DesignPage() {
           <TierBadge tier="published" />
           <TierBadge tier="estimate" />
         </div>
+      </Section>
+
+      <Section title="Balance card">
+        <div className="grid gap-4 md:grid-cols-3">
+          <BalanceCard
+            hospitalName={sampleCase.hospital.name}
+            {...sampleCase.summary}
+          />
+          <BalanceCard
+            hospitalName={sampleCase.hospital.name}
+            billedCents={sampleCase.summary.billedCents}
+            fairBalanceCents={sampleCase.summary.billedCents}
+            lessThanBilledCents={0}
+            isEstimate={false}
+          />
+          <BalanceCard
+            hospitalName={sampleCase.hospital.name}
+            {...sampleCase.summary}
+            loading
+          />
+        </div>
+        <p className="text-muted-foreground text-xs leading-4">
+          Sample bill. Synthetic data. Placeholder values until audit output
+          replaces them.
+        </p>
+      </Section>
+
+      <Section title="Flag rows">
+        <div className="max-w-xl rounded-2xl border bg-card p-2 shadow-card">
+          {sampleCase.flags.map((flag) => (
+            <FlagRow
+              key={flag.id}
+              flag={flag}
+              amountPrefix={flag.tier === "published" ? "up_to" : "none"}
+              onOpen={() => {}}
+            />
+          ))}
+        </div>
+      </Section>
+
+      <Section title="Savings bar">
+        <SavingsBar
+          {...sampleCase.savings}
+          actionLabel="Send the letter"
+          onAction={() => {}}
+          className="relative inset-auto lg:block"
+        />
       </Section>
 
       <Section title="Buttons">
