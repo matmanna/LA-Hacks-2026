@@ -1,0 +1,3 @@
+{
+  "extends": "@betterbill/config/tsconfig.base.json"
+}

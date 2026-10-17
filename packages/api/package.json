@@ -1,0 +1,25 @@
+{
+  "name": "@betterbill/api",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "check-types": "tsc -b"
+  },
+  "dependencies": {
+    "@betterbill/auth": "workspace:*",
+    "@betterbill/db": "workspace:*",
+    "@orpc/client": "catalog:",
+    "@orpc/openapi": "catalog:",
+    "@orpc/server": "catalog:",
+    "@orpc/zod": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@betterbill/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
