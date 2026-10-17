@@ -177,11 +177,11 @@
         "lever": "published_price",
         "tier": "published",
         "lineIds": ["sb01-l02"],
-        "amountCents": null,
+        "amountCents": 175685,
         "requiresCapture": "cedars-sinai:72148:outpatient"
       }
     ],
-    "notes": "Units excess = (4 - 2) units x 3800 cents. Published-price amount is filled after the capture."
+    "notes": "Units excess = (4 - 2) units x 3800 cents. Published-price amount = 690000 - 514315 (Cedars-Sinai outpatient discounted cash for 72148, data/hospitals/cedars-sinai/capture.json, captured 2026-10-17)."
   },
   "context": {
     "hospitalKey": "cedars-sinai",

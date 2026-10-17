@@ -35,7 +35,8 @@
     },
     "test": {
       "dependsOn": ["^build"],
-      "outputs": ["coverage/**"]
+      "outputs": ["coverage/**"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/data/**"]
     },
     "test:integration": {
       "cache": false
@@ -58,6 +59,7 @@
     "SENTRY_AUTH_TOKEN",
     "SENTRY_DSN",
     "STEPFUN_API_KEY",
+    "STEPFUN_BASE_URL",
     "VERCEL",
     "VERCEL_ENV",
     "VERCEL_PROJECT_PRODUCTION_URL",
