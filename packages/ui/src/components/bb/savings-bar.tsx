@@ -39,11 +39,13 @@ export function SavingsBar({
           <p className="font-semibold text-mint-ink text-sm leading-5">
             <Money cents={confirmedCents} cents_display="hide" /> confirmed
           </p>
-          <p className="text-muted-foreground text-xs leading-4">
-            + <Money cents={potentialLowCents} cents_display="hide" /> to{" "}
-            <Money cents={potentialHighCents} cents_display="hide" /> possible
-            (estimate)
-          </p>
+          {potentialHighCents > 0 ? (
+            <p className="text-muted-foreground text-xs leading-4">
+              + <Money cents={potentialLowCents} cents_display="hide" /> to{" "}
+              <Money cents={potentialHighCents} cents_display="hide" /> possible
+              (estimate)
+            </p>
+          ) : null}
         </div>
         <Button
           className="h-12 rounded-xl px-5"
