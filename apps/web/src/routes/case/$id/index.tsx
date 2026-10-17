@@ -5,6 +5,7 @@ import {
   AccordionTrigger,
 } from "@betterbill/ui/components/accordion";
 import { BalanceCard } from "@betterbill/ui/components/bb/balance-card";
+import { EvidenceSheet } from "@betterbill/ui/components/bb/evidence-sheet";
 import { FlagRow } from "@betterbill/ui/components/bb/flag-row";
 import { SavingsBar } from "@betterbill/ui/components/bb/savings-bar";
 import type { Tier } from "@betterbill/ui/components/bb/tier-badge";
@@ -34,12 +35,38 @@ export const Route = createFileRoute("/case/$id/")({
 const TIER_ORDER: Tier[] = ["confirmed", "published", "rule", "estimate"];
 const VISIBLE_FLAGS = 3;
 
+function whatToSay(
+  lever: string,
+  line?: {
+    description: string;
+    code: string | null;
+    serviceDate: string | null;
+  },
+) {
+  const what = line
+    ? `"${line.description}"${line.code ? ` (${line.code})` : ""}`
+    : "a charge on my bill";
+  switch (lever) {
+    case "duplicate":
+      return `Hello, my bill lists ${what} twice${line?.serviceDate ? ` on ${line.serviceDate}` : ""}. Can you confirm I received it twice?`;
+    case "units":
+      return `Hello, I'd like to understand the number of units billed for ${what}. Can you check that it matches the care I received?`;
+    case "eob_mismatch":
+      return `Hello, my insurer's explanation of benefits shows a different amount owed than my bill for ${what}. Can you review it?`;
+    case "published_price":
+      return `Hello, the charge for ${what} looks higher than the hospital's own published price. Can you review it?`;
+    default:
+      return `Hello, I'd like to understand the charge for ${what}. Can you walk me through it?`;
+  }
+}
+
 function CasePage() {
   const { id } = Route.useParams();
   const { data, isLoading, isError, refetch } = useQuery(
     orpc.case.get.queryOptions({ input: { caseId: id } }),
   );
   const [showAll, setShowAll] = useState(false);
+  const [openFlagId, setOpenFlagId] = useState<string | null>(null);
 
   if (isLoading) return <CaseSkeleton />;
 
@@ -81,6 +108,8 @@ function CasePage() {
     .filter(Boolean)
     .join(", ");
   const comingSoon = () => toast("Coming soon");
+  const openFlag = flags.find((f) => f.id === openFlagId) ?? null;
+  const openLine = bill.lines.find((l) => l.id === openFlag?.lineIds[0]);
 
   return (
     <>
@@ -127,7 +156,7 @@ function CasePage() {
                       ? "up_to"
                       : "none"
                   }
-                  onOpen={comingSoon}
+                  onOpen={setOpenFlagId}
                 />
               ))}
               {flags.length > VISIBLE_FLAGS && !showAll ? (
@@ -184,6 +213,15 @@ function CasePage() {
           BetterBill is informational, not legal or medical advice.
         </p>
       </main>
+      <EvidenceSheet
+        open={openFlag !== null}
+        onOpenChange={(next) => {
+          if (!next) setOpenFlagId(null);
+        }}
+        flag={openFlag}
+        line={openLine}
+        whatToSay={whatToSay(openFlag?.lever ?? "", openLine)}
+      />
       <SavingsBar
         confirmedCents={audit.savings.confirmedCents}
         potentialLowCents={audit.savings.potentialLowCents}
