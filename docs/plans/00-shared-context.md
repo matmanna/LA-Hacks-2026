@@ -7,7 +7,7 @@ Related files (absolute paths):
 - Design doc (earlier name "Redline"; same product): `docs/plans/bill-audit-design-doc.md`
 - PRD: `docs/plans/bill-audit-prd.md`
 - Earlier Exit Grade and dark-pattern work (not used here): `escape-hatch-spec.md (not in the repo; not needed)`
-- UI reference screenshots (Goodbill, for flow and density only, do not copy): `<goodbill-refs>/2.png` (mobile balance card), `<goodbill-refs>/3.png` (bill activity timeline), `<goodbill-refs>/4.png` (desktop "Your bill" table). `<goodbill-refs>` is a folder of three screenshots shared privately with D. **Never commit them** (the repo is public and they are Goodbill's).
+- UI reference screenshots (Goodbill, for flow and density only, do not copy): `<goodbill-refs>/2.png` (mobile balance card), `<goodbill-refs>/3.png` (bill activity timeline), `<goodbill-refs>/4.png` (desktop "Your bill" table). `<goodbill-refs>` is `docs/design/goodbill-refs/` in the repo. They are Goodbill's screenshots, committed temporarily at the team's request; **remove the folder before submission**. Never copy them into app code or assets.
 
 ---
 
