@@ -1,162 +1,162 @@
 {
-	"table": "CMS NCCI MUE, Facility Outpatient Hospital Services",
-	"sourcePage": "https://www.cms.gov/medicare/coding-billing/national-correct-coding-initiative-ncci-edits/medicare-ncci-medically-unlikely-edits",
-	"sourceFile": "https://www.cms.gov/files/zip/medicare-ncci-2026-q4-facility-outpatient-hospital-services-mue-table.zip",
-	"fileName": "MCR_MUE_OutpatientHospitalServices_Eff_10-01-2026.csv",
-	"effectiveDate": "2026-10-01",
-	"sha256": "a45ee8194cf06a2d733850f4b694d1feca08b1b55a0121b8e86574436440b4a6",
-	"retrievedAt": "2026-10-17T22:42:23Z",
-	"license": "CPT codes copyright American Medical Association. Codes and unit values only; no descriptors stored.",
-	"entries": [
-		{
-			"code": "36415",
-			"maxUnitsPerDay": 2,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "CMS Policy"
-		},
-		{
-			"code": "70450",
-			"maxUnitsPerDay": 3,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Nature of Service/Procedure"
-		},
-		{
-			"code": "71046",
-			"maxUnitsPerDay": 3,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Data"
-		},
-		{
-			"code": "72100",
-			"maxUnitsPerDay": 2,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Data"
-		},
-		{
-			"code": "72148",
-			"maxUnitsPerDay": 1,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Anatomic Consideration"
-		},
-		{
-			"code": "74177",
-			"maxUnitsPerDay": 2,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Data"
-		},
-		{
-			"code": "80053",
-			"maxUnitsPerDay": 1,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "CMS Policy"
-		},
-		{
-			"code": "81003",
-			"maxUnitsPerDay": 2,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Data"
-		},
-		{
-			"code": "82962",
-			"maxUnitsPerDay": 5,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Nature of Service/Procedure"
-		},
-		{
-			"code": "85025",
-			"maxUnitsPerDay": 4,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Data"
-		},
-		{
-			"code": "93005",
-			"maxUnitsPerDay": 5,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Data"
-		},
-		{
-			"code": "96360",
-			"maxUnitsPerDay": 2,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Data"
-		},
-		{
-			"code": "96361",
-			"maxUnitsPerDay": 24,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Data"
-		},
-		{
-			"code": "96374",
-			"maxUnitsPerDay": 1,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Code Descriptor / CPT Instruction"
-		},
-		{
-			"code": "99283",
-			"maxUnitsPerDay": 2,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Data"
-		},
-		{
-			"code": "99284",
-			"maxUnitsPerDay": 2,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Data"
-		},
-		{
-			"code": "99285",
-			"maxUnitsPerDay": 2,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Data"
-		},
-		{
-			"code": "A9579",
-			"maxUnitsPerDay": 100,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Prescribing Information"
-		},
-		{
-			"code": "J0690",
-			"maxUnitsPerDay": 16,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Society Comment"
-		},
-		{
-			"code": "J1100",
-			"maxUnitsPerDay": 120,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Data"
-		},
-		{
-			"code": "J1885",
-			"maxUnitsPerDay": 8,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Prescribing Information"
-		},
-		{
-			"code": "J2270",
-			"maxUnitsPerDay": 15,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Data"
-		},
-		{
-			"code": "J2405",
-			"maxUnitsPerDay": 64,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Prescribing Information"
-		},
-		{
-			"code": "J7030",
-			"maxUnitsPerDay": 20,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Data"
-		},
-		{
-			"code": "J7120",
-			"maxUnitsPerDay": 20,
-			"mai": "3 Date of Service Edit: Clinical",
-			"rationale": "Clinical: Data"
-		}
-	]
+  "table": "CMS NCCI MUE, Facility Outpatient Hospital Services",
+  "sourcePage": "https://www.cms.gov/medicare/coding-billing/national-correct-coding-initiative-ncci-edits/medicare-ncci-medically-unlikely-edits",
+  "sourceFile": "https://www.cms.gov/files/zip/medicare-ncci-2026-q4-facility-outpatient-hospital-services-mue-table.zip",
+  "fileName": "MCR_MUE_OutpatientHospitalServices_Eff_10-01-2026.csv",
+  "effectiveDate": "2026-10-01",
+  "sha256": "a45ee8194cf06a2d733850f4b694d1feca08b1b55a0121b8e86574436440b4a6",
+  "retrievedAt": "2026-10-17T22:42:23Z",
+  "license": "CPT codes copyright American Medical Association. Codes and unit values only; no descriptors stored.",
+  "entries": [
+    {
+      "code": "36415",
+      "maxUnitsPerDay": 2,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "CMS Policy"
+    },
+    {
+      "code": "70450",
+      "maxUnitsPerDay": 3,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Nature of Service/Procedure"
+    },
+    {
+      "code": "71046",
+      "maxUnitsPerDay": 3,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Data"
+    },
+    {
+      "code": "72100",
+      "maxUnitsPerDay": 2,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Data"
+    },
+    {
+      "code": "72148",
+      "maxUnitsPerDay": 1,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Anatomic Consideration"
+    },
+    {
+      "code": "74177",
+      "maxUnitsPerDay": 2,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Data"
+    },
+    {
+      "code": "80053",
+      "maxUnitsPerDay": 1,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "CMS Policy"
+    },
+    {
+      "code": "81003",
+      "maxUnitsPerDay": 2,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Data"
+    },
+    {
+      "code": "82962",
+      "maxUnitsPerDay": 5,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Nature of Service/Procedure"
+    },
+    {
+      "code": "85025",
+      "maxUnitsPerDay": 4,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Data"
+    },
+    {
+      "code": "93005",
+      "maxUnitsPerDay": 5,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Data"
+    },
+    {
+      "code": "96360",
+      "maxUnitsPerDay": 2,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Data"
+    },
+    {
+      "code": "96361",
+      "maxUnitsPerDay": 24,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Data"
+    },
+    {
+      "code": "96374",
+      "maxUnitsPerDay": 1,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Code Descriptor / CPT Instruction"
+    },
+    {
+      "code": "99283",
+      "maxUnitsPerDay": 2,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Data"
+    },
+    {
+      "code": "99284",
+      "maxUnitsPerDay": 2,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Data"
+    },
+    {
+      "code": "99285",
+      "maxUnitsPerDay": 2,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Data"
+    },
+    {
+      "code": "A9579",
+      "maxUnitsPerDay": 100,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Prescribing Information"
+    },
+    {
+      "code": "J0690",
+      "maxUnitsPerDay": 16,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Society Comment"
+    },
+    {
+      "code": "J1100",
+      "maxUnitsPerDay": 120,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Data"
+    },
+    {
+      "code": "J1885",
+      "maxUnitsPerDay": 8,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Prescribing Information"
+    },
+    {
+      "code": "J2270",
+      "maxUnitsPerDay": 15,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Data"
+    },
+    {
+      "code": "J2405",
+      "maxUnitsPerDay": 64,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Prescribing Information"
+    },
+    {
+      "code": "J7030",
+      "maxUnitsPerDay": 20,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Data"
+    },
+    {
+      "code": "J7120",
+      "maxUnitsPerDay": 20,
+      "mai": "3 Date of Service Edit: Clinical",
+      "rationale": "Clinical: Data"
+    }
+  ]
 }
