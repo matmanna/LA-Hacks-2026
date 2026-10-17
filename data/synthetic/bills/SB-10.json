@@ -1,0 +1,136 @@
+{
+  "fixtureVersion": 1,
+  "id": "SB-10",
+  "title": "Clean control: near duplicates",
+  "synthetic": true,
+  "scenario": "clean",
+  "bill": {
+    "id": "bill_sb10",
+    "hospital": {
+      "name": "Sample Medical Center (synthetic)",
+      "city": "Los Angeles",
+      "state": "CA"
+    },
+    "statementDate": "2026-03-02",
+    "accountRefMasked": "7023",
+    "kind": "itemized",
+    "sourceKind": "pdf",
+    "lines": [
+      {
+        "id": "sb10-l01",
+        "serviceDate": "2026-02-11",
+        "description": "ED VISIT LEVEL 4",
+        "code": "99284",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 295000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb10-l02",
+        "serviceDate": "2026-02-11",
+        "description": "CBC W/ AUTO DIFF",
+        "code": "85025",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 8400,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb10-l03",
+        "serviceDate": "2026-02-11",
+        "description": "CBC W/ AUTO DIFF REPEAT -91",
+        "code": "85025",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 4200,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb10-l04",
+        "serviceDate": "2026-02-11",
+        "description": "LUMBAR SPINE IMAGING",
+        "code": "72100",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 64000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb10-l05",
+        "serviceDate": "2026-02-11",
+        "description": "LUMBAR SPINE IMAGING",
+        "code": "72148",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 690000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb10-l06",
+        "serviceDate": "2026-02-11",
+        "description": "VENIPUNCTURE",
+        "code": "36415",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 3800,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 1065400,
+      "adjustmentsCents": 700000,
+      "paidCents": 285400,
+      "dueCents": 80000
+    }
+  },
+  "eob": {
+    "payer": "Synthetic Health Plan",
+    "claimRefMasked": "7731",
+    "patientResponsibilityCents": 80000
+  },
+  "expected": {
+    "clean": true,
+    "flags": [],
+    "notes": "Traps: 85025 twice on the same date but different amounts, the second marked repeat with modifier -91 (a repeat test, not a duplicate). 72100 and 72148 share a printed description but are different codes. EOB patient responsibility equals bill due. Sample Medical Center has no captured price file, so no published_price flag."
+  },
+  "context": {
+    "hospitalKey": "sample-synthetic",
+    "patient": {
+      "householdSize": 2,
+      "annualIncomeCents": 6800000,
+      "state": "CA",
+      "insured": true
+    }
+  }
+}

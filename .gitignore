@@ -60,3 +60,7 @@ temp
 # playwright
 test-results/
 playwright-report/
+
+# Python
+__pycache__/
+*.pyc

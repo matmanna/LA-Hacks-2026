@@ -1,0 +1,155 @@
+{
+  "fixtureVersion": 1,
+  "id": "SB-04",
+  "title": "Insured imaging where the bill asks for more than the EOB",
+  "synthetic": true,
+  "scenario": "eob_mismatch",
+  "bill": {
+    "id": "bill_sb04",
+    "hospital": {
+      "name": "Sample Medical Center (synthetic)",
+      "city": "Los Angeles",
+      "state": "CA"
+    },
+    "statementDate": "2026-07-01",
+    "accountRefMasked": "9058",
+    "kind": "itemized",
+    "sourceKind": "pdf",
+    "lines": [
+      {
+        "id": "sb04-l01",
+        "serviceDate": "2026-06-10",
+        "description": "CT ABD/PELVIS W/ CONTRAST",
+        "code": "74177",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 485000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb04-l02",
+        "serviceDate": "2026-06-10",
+        "description": "CT HEAD W/O CONTRAST",
+        "code": "70450",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 312000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb04-l03",
+        "serviceDate": "2026-06-10",
+        "description": "XR CHEST 2 VIEWS",
+        "code": "71046",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 52000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb04-l04",
+        "serviceDate": "2026-06-10",
+        "description": "VENIPUNCTURE",
+        "code": "36415",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 3800,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb04-l05",
+        "serviceDate": "2026-06-10",
+        "description": "COMPREHENSIVE METABOLIC PANEL",
+        "code": "80053",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 21200,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 874000,
+      "adjustmentsCents": 450000,
+      "paidCents": 112000,
+      "dueCents": 312000
+    }
+  },
+  "eob": {
+    "payer": "Synthetic Health Plan",
+    "claimRefMasked": "7731",
+    "patientResponsibilityCents": 115000,
+    "lines": [
+      {
+        "code": "74177",
+        "allowedCents": 125000,
+        "patientCents": 63000
+      },
+      {
+        "code": "70450",
+        "allowedCents": 82000,
+        "patientCents": 41000
+      },
+      {
+        "code": "71046",
+        "allowedCents": 15000,
+        "patientCents": 7500
+      },
+      {
+        "code": "36415",
+        "allowedCents": 1000,
+        "patientCents": 500
+      },
+      {
+        "code": "80053",
+        "allowedCents": 4000,
+        "patientCents": 3000
+      }
+    ]
+  },
+  "expected": {
+    "clean": false,
+    "flags": [
+      {
+        "lever": "eob_mismatch",
+        "tier": "confirmed",
+        "lineIds": ["sb04-l01", "sb04-l02", "sb04-l03", "sb04-l04", "sb04-l05"],
+        "amountCents": 197000
+      }
+    ],
+    "notes": "Bill due 312000 minus EOB patient responsibility 115000 = 197000. EOB allowed totals 227000; plan paid 112000. The bill applied only 450000 of the 647000 contractual adjustment."
+  },
+  "context": {
+    "hospitalKey": "sample-synthetic",
+    "patient": {
+      "householdSize": 2,
+      "annualIncomeCents": 6800000,
+      "state": "CA",
+      "insured": true
+    }
+  }
+}
