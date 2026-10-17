@@ -1,4 +1,6 @@
 import { Badge } from "@betterbill/ui/components/badge";
+import { AccountPrompt } from "@betterbill/ui/components/bb/account-prompt";
+import { ApprovalSheet } from "@betterbill/ui/components/bb/approval-sheet";
 import { BalanceCard } from "@betterbill/ui/components/bb/balance-card";
 import {
   ComparePending,
@@ -33,7 +35,7 @@ import {
 } from "@betterbill/ui/components/sheet";
 import { Textarea } from "@betterbill/ui/components/textarea";
 import { createFileRoute } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 
 import { sampleCase } from "@/fixtures/sample-case";
 
@@ -111,7 +113,17 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
+const SAMPLE_LETTER = `To the billing office,
+
+I'm writing about my statement. The line "CBC with differential" (85025) appears twice on the same date. Can you confirm I received the test twice?
+
+I'd also like to understand the MRI charge compared with your published price list. Please send an itemized bill and your reply in writing.
+
+Thank you.`;
+
 function DesignPage() {
+  const [approvalOpen, setApprovalOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   return (
     <main className="mx-auto max-w-6xl space-y-12 px-5 py-10 md:px-8">
       <h1 className="font-semibold text-[28px] leading-[34px] tracking-[-0.01em] lg:text-[36px] lg:leading-[42px]">
@@ -250,6 +262,36 @@ function DesignPage() {
             secondary={{ label: "Paste the text", onClick: () => {} }}
           />
         </div>
+      </Section>
+
+      <Section title="Approval and account">
+        <div className="flex flex-wrap gap-3">
+          <Button variant="secondary" onClick={() => setApprovalOpen(true)}>
+            Open approval sheet
+          </Button>
+          <Button variant="secondary" onClick={() => setAccountOpen(true)}>
+            Open account prompt
+          </Button>
+        </div>
+        <p className="text-muted-foreground text-xs leading-4">
+          Sample letter text. Synthetic data.
+        </p>
+        <ApprovalSheet
+          open={approvalOpen}
+          onOpenChange={setApprovalOpen}
+          kind="letter"
+          recipient="Billing office, Sample General Hospital"
+          channelDetail="Test inbox, not a real hospital"
+          text={SAMPLE_LETTER}
+          dataShared={["Your name", "Account ending 0000", "2 disputed lines"]}
+          onApprove={() => setApprovalOpen(false)}
+        />
+        <AccountPrompt
+          open={accountOpen}
+          onOpenChange={setAccountOpen}
+          onCreate={() => setAccountOpen(false)}
+          onSignIn={() => setAccountOpen(false)}
+        />
       </Section>
 
       <Section title="Savings bar">
