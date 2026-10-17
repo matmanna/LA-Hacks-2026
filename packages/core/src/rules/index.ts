@@ -7,6 +7,7 @@ import { detectPublishedPrice } from "./publishedPrice";
 import type { AuditInput, AuditOutput } from "./types";
 import { detectUnitAnomalies } from "./units";
 
+export { PriceCapture, pricesFromCapture } from "./capture";
 export { detectDuplicates } from "./duplicate";
 export { detectEobMismatch } from "./eobMismatch";
 export { detectMissingItemization } from "./missingItemization";
