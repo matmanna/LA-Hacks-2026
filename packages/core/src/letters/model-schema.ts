@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Tier } from "../schemas.js";
+import type { Tier } from "../schemas";
 
 export const LetterModelOutputSchema = z.object({
   subject: z.string().max(90),

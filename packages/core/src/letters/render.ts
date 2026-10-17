@@ -1,20 +1,12 @@
-import type { Bill, Flag } from "../schemas.js";
-import type { LetterKind, LetterModelOutput } from "./model-schema.js";
+import type { Bill, Flag, Tier } from "../schemas";
+import type { LetterKind, LetterModelOutput } from "./model-schema";
 
-const TIER_LABEL: Record<string, string> = {
+const TIER_LABEL: Record<Tier, string> = {
   confirmed: "Confirmed from your bill",
   rule: "Billing rule",
   published: "Hospital's published price",
   estimate: "Estimate",
 };
-
-function formatCents(cents: number): string {
-  const sign = cents < 0 ? "-" : "";
-  const abs = Math.abs(cents);
-  const dollars = Math.floor(abs / 100).toLocaleString("en-US");
-  const remainder = (abs % 100).toString().padStart(2, "0");
-  return `${sign}$${dollars}.${remainder}`;
-}
 
 export function renderLetter(input: {
   kind: LetterKind;
@@ -37,7 +29,7 @@ export function renderLetter(input: {
   }
   lines.push("Evidence");
   for (const flag of flags) {
-    const tierLabel = TIER_LABEL[flag.tier] ?? flag.tier;
+    const tierLabel = TIER_LABEL[flag.tier];
     let bullet = `- ${flag.title}: ${tierLabel}. ${flag.evidence.detail}`;
     if (flag.evidence.sourceUrl) {
       bullet += ` Source: ${flag.evidence.sourceUrl}, captured ${flag.evidence.capturedAt ?? "date unknown"}`;
@@ -46,11 +38,9 @@ export function renderLetter(input: {
   }
   lines.push("", out.closingRequest, "");
   lines.push("Thank you,", patientName, "");
-  lines.push("Prepared with BetterBill. BetterBill is informational, not legal or medical advice.");
+  lines.push(
+    "Prepared with BetterBill. BetterBill is informational, not legal or medical advice.",
+  );
 
-  // formatCents is exported for callers that render amounts outside this template.
-  void formatCents;
   return lines.join("\n");
 }
-
-export { formatCents };
