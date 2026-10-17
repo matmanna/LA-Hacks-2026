@@ -13,8 +13,6 @@ import { evlogErrorHandler } from "evlog/nitro/v3";
 
 import type { orpc } from "@/utils/orpc";
 
-import Header from "../components/header";
-
 import appCss from "../index.css?url";
 export interface RouterAppContext {
   orpc: typeof orpc;
@@ -33,10 +31,14 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
       },
       {
         name: "viewport",
-        content: "width=device-width, initial-scale=1",
+        content: "width=device-width, initial-scale=1, viewport-fit=cover",
       },
       {
-        title: "My App",
+        name: "theme-color",
+        content: "#FFFFFF",
+      },
+      {
+        title: "BetterBill",
       },
     ],
     links: [
@@ -52,18 +54,22 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 
 function RootDocument() {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
       <body>
-        <div className="grid h-svh grid-rows-[auto_1fr]">
-          <Header />
-          <Outlet />
-        </div>
+        <Outlet />
         <Toaster richColors />
-        <TanStackRouterDevtools position="bottom-left" />
-        <ReactQueryDevtools position="bottom" buttonPosition="bottom-right" />
+        {import.meta.env.DEV ? (
+          <>
+            <TanStackRouterDevtools position="bottom-left" />
+            <ReactQueryDevtools
+              position="bottom"
+              buttonPosition="bottom-right"
+            />
+          </>
+        ) : null}
         <Scripts />
       </body>
     </html>

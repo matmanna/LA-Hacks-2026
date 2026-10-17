@@ -1,0 +1,165 @@
+{
+  "fixtureVersion": 1,
+  "id": "SB-02",
+  "title": "Insured ER visit with a duplicate panel and extra venipuncture",
+  "synthetic": true,
+  "scenario": "duplicate+units",
+  "bill": {
+    "id": "bill_sb02",
+    "hospital": {
+      "name": "Sample Medical Center (synthetic)",
+      "city": "Los Angeles",
+      "state": "CA"
+    },
+    "statementDate": "2026-08-20",
+    "accountRefMasked": "3307",
+    "kind": "itemized",
+    "sourceKind": "pdf",
+    "lines": [
+      {
+        "id": "sb02-l01",
+        "serviceDate": "2026-08-03",
+        "description": "ED VISIT LEVEL 5",
+        "code": "99285",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 380000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb02-l02",
+        "serviceDate": "2026-08-03",
+        "description": "COMPREHENSIVE METABOLIC PANEL",
+        "code": "80053",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 21200,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb02-l03",
+        "serviceDate": "2026-08-03",
+        "description": "COMPREHENSIVE METABOLIC PANEL",
+        "code": "80053",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 21200,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb02-l04",
+        "serviceDate": "2026-08-03",
+        "description": "CBC W/ AUTO DIFF",
+        "code": "85025",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 8400,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb02-l05",
+        "serviceDate": "2026-08-03",
+        "description": "VENIPUNCTURE",
+        "code": "36415",
+        "codeType": "CPT",
+        "units": 3,
+        "chargeCents": 11400,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb02-l06",
+        "serviceDate": "2026-08-03",
+        "description": "XR CHEST 2 VIEWS",
+        "code": "71046",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 52000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "sb02-l07",
+        "serviceDate": "2026-08-03",
+        "description": "ECG TRACING ONLY",
+        "code": "93005",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 31000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 525200,
+      "adjustmentsCents": 360000,
+      "paidCents": 120000,
+      "dueCents": 45200
+    }
+  },
+  "eob": {
+    "payer": "Synthetic Health Plan",
+    "claimRefMasked": "7731",
+    "patientResponsibilityCents": 45200
+  },
+  "expected": {
+    "clean": false,
+    "flags": [
+      {
+        "lever": "duplicate",
+        "tier": "confirmed",
+        "lineIds": ["sb02-l02", "sb02-l03"],
+        "amountCents": 21200
+      },
+      {
+        "lever": "units",
+        "tier": "rule",
+        "lineIds": ["sb02-l05"],
+        "amountCents": 3800,
+        "ruleRef": "mue:36415"
+      }
+    ],
+    "notes": "Units excess = (3 - 2) x 3800. EOB patient responsibility equals bill due, so no eob_mismatch."
+  },
+  "context": {
+    "hospitalKey": "sample-synthetic",
+    "patient": {
+      "householdSize": 2,
+      "annualIncomeCents": 6800000,
+      "state": "CA",
+      "insured": true
+    }
+  }
+}
