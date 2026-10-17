@@ -1,0 +1,122 @@
+{
+	"version": 1,
+	"disclaimer": "BetterBill is informational, not legal or medical advice.",
+	"estimateNote": "Savings are estimates. Results depend on the hospital.",
+	"syntheticNote": "This is a synthetic sample bill. The hospital price comparison uses real public data.",
+	"tierLabels": {
+		"confirmed": "Confirmed from your bill",
+		"rule": "Billing rule",
+		"published": "Hospital's published price",
+		"estimate": "Estimate"
+	},
+	"flagTemplates": {
+		"duplicate": {
+			"title": "Listed twice on the same day",
+			"explanation": "This charge appears twice with the same date and amount. Ask the hospital to confirm you had it twice."
+		},
+		"units": {
+			"title": "More units than usual",
+			"explanation": "You were billed {units} units. Medicare's usual daily limit for this code is {mue} (CMS, {effective})."
+		},
+		"eob_mismatch": {
+			"title": "Bill doesn't match your insurer",
+			"explanation": "Your insurer says you owe {eob}. The hospital is asking for {due}."
+		},
+		"published_price": {
+			"title": "Higher than the hospital's own cash price",
+			"explanation": "The hospital's published cash price is {cash}. You were billed {billed}."
+		},
+		"missing_itemization": {
+			"title": "Ask for an itemized bill",
+			"explanation": "This statement doesn't list each service. You can ask for an itemized bill."
+		},
+		"assistance": {
+			"title": "You may qualify for help paying",
+			"explanation": "The hospital's policy says: \"{quote}\". This is an estimate, not a decision."
+		}
+	},
+	"letterRules": [
+		"Every claim maps to a flag id.",
+		"Quote the evidence and its source.",
+		"Be polite and specific.",
+		"Ask for a corrected itemized bill and a hold on collections while the bill is under review. Phrase both as requests.",
+		"Never threaten.",
+		"Show the disclaimer in the app only, not in the letter body.",
+		"No medical details beyond codes and dates."
+	],
+	"callLines": {
+		"opening": "Hi, this is an automated assistant calling on behalf of a patient.",
+		"purpose": "I'm calling about two items on an account ending in {last4}.",
+		"ask": "Could you review these and tell me the next step?",
+		"close": "Thank you. Can I get a reference number for this call?",
+		"neverSay": [
+			"full account or member identifiers",
+			"date of birth",
+			"diagnosis"
+		]
+	},
+	"banned": [
+		"illegal",
+		"fraud",
+		"fraudulent",
+		"overcharge",
+		"overcharged",
+		"scam",
+		"guarantee",
+		"guaranteed",
+		"you will save",
+		"HIPAA compliant",
+		"legal advice"
+	],
+	"allowlistFiles": ["data/copy/wording.json#banned"],
+	"facts": [
+		{
+			"id": "N1",
+			"text": "Close to half (45%) of insured adults ages 19 to 64 got a medical bill in the past year they thought insurance should have covered.",
+			"footnote": "Commonwealth Fund Health Care Affordability Survey 2023 (n = 5,602 insured adults 19 to 64), published Aug 1, 2024.",
+			"sourceUrl": "https://www.commonwealthfund.org/sites/default/files/2024-07/Gupta_unforeseen_bills_coverage_denials_PR_2024-08-01.pdf",
+			"verifiedOn": "2026-10-17"
+		},
+		{
+			"id": "N2",
+			"text": "Fewer than half pushed back, mostly because they didn't know they could.",
+			"footnote": "Commonwealth Fund Health Care Affordability Survey 2023, published Aug 1, 2024.",
+			"sourceUrl": "https://www.commonwealthfund.org/sites/default/files/2024-07/Gupta_unforeseen_bills_coverage_denials_PR_2024-08-01.pdf",
+			"verifiedOn": "2026-10-17"
+		},
+		{
+			"id": "N3",
+			"text": "When people disputed, 38% saw the bill reduced or eliminated.",
+			"footnote": "Commonwealth Fund Health Care Affordability Survey 2023, published Aug 1, 2024.",
+			"sourceUrl": "https://www.commonwealthfund.org/sites/default/files/2024-07/Gupta_unforeseen_bills_coverage_denials_PR_2024-08-01.pdf",
+			"verifiedOn": "2026-10-17"
+		},
+		{
+			"id": "N4",
+			"text": "Goodbill charges 20% of savings, capped at $1,000 (its help center, Oct 2026).",
+			"sourceUrl": "https://help.goodbill.com/en/articles/254209",
+			"verifiedOn": "2026-10-17"
+		},
+		{
+			"id": "N5",
+			"text": "Goodbill handles unpaid hospital bills with human experts.",
+			"note": "Say \"different,\" never \"worse.\"",
+			"sourceUrl": "https://help.goodbill.com/en/articles/334657",
+			"verifiedOn": "2026-10-17"
+		},
+		{
+			"id": "N6",
+			"text": "2026 HHS poverty guidelines.",
+			"note": "48 states and DC: 1 person $15,960; each additional person adds $5,680. Full table in data/hospitals/fpl-2026.json (C-06).",
+			"sourceUrl": "https://aspe.hhs.gov/topics/poverty-economic-mobility/poverty-guidelines",
+			"verifiedOn": "2026-10-17"
+		},
+		{
+			"id": "N7",
+			"text": "LA County's program says care is free at or under 200% of the poverty level (its website, captured {capturedAt}).",
+			"note": "{capturedAt} is filled from the C-06 capture. Policy PDF details are unverified; cite the web page only.",
+			"sourceUrl": "https://dhs.lacounty.gov/patient-information/get-coverage/financial-services/",
+			"verifiedOn": "2026-10-17"
+		}
+	]
+}
