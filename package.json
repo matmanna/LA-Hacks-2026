@@ -47,7 +47,9 @@
     "auth:generate": "cd apps/web && bun run auth:generate",
     "check": "biome check --write .",
     "fixtures:validate": "bun scripts/fixtures/validate.ts",
-    "copy:check": "bun scripts/copy/check-wording.ts"
+    "copy:check": "bun scripts/copy/check-wording.ts",
+    "data:gen": "bun scripts/gen-api-data.ts",
+    "data:check": "bun scripts/gen-api-data.ts --check"
   },
   "dependencies": {
     "zod": "catalog:"
