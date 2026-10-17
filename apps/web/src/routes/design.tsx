@@ -1,4 +1,6 @@
 import { Badge } from "@betterbill/ui/components/badge";
+import { Money } from "@betterbill/ui/components/bb/money";
+import { TierBadge } from "@betterbill/ui/components/bb/tier-badge";
 import { Button } from "@betterbill/ui/components/button";
 import {
   Card,
@@ -122,6 +124,32 @@ function DesignPage() {
               <p className={t.className}>Your hospital bill, checked.</p>
             </div>
           ))}
+        </div>
+      </Section>
+
+      <Section title="Money">
+        <ul className="space-y-2 text-[22px] leading-[28px]">
+          <li>
+            <Money cents={125037} />
+          </li>
+          <li data-testid="money-negative">
+            <Money cents={-102247} sign="auto" />
+          </li>
+          <li>
+            <Money cents={8400} cents_display="hide" label="Duplicate charge" />
+          </li>
+          <li>
+            <Money cents={1200000} />
+          </li>
+        </ul>
+      </Section>
+
+      <Section title="Tiers">
+        <div className="flex flex-wrap gap-2">
+          <TierBadge tier="confirmed" />
+          <TierBadge tier="rule" />
+          <TierBadge tier="published" />
+          <TierBadge tier="estimate" />
         </div>
       </Section>
 
