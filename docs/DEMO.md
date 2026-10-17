@@ -15,7 +15,7 @@ Owner: C. Built from `docs/plans/C-evidence-data-demo.md` section 9 with measure
 | Assistance | "May qualify" (estimate): household 3, $52,000 = 190.3% FPL, at or under Cedars-Sinai's 400% charity care line | `data/hospitals/cedars-sinai/policy.json` quote "Charity Care will be made available to patients whose family income is at or below 400% of FPL." + `fpl-2026.json`. This comes from `assistance.check`, not `runAudit` |
 | Audit time | p50 0.009 ms, p95 0.048 ms | `results.json` `metrics.auditTimeMs` (20 runs x 10 bills) |
 
-**Run status:** `results.json` above was produced at 2026-10-17T23:22Z on a **local merge** of main + #12 (rules engine) + #21 (published-price amounts) + #25 (harness) + #29 (BotM). It is labelled that way in `gitSha` and `notes`. **Re-run `bun run eval:all` on main at 07:30** and update this table before the video and Devpost.
+**Run status:** the numbers above were re-measured at 2026-10-17T23:32Z on **real main code** (main 4725b9a + the eval harness, PR #34; Bill of the Month via PR #29), not a local merge. Same results as the earlier integration run. They reach `main` when #34 and #29 merge. **Re-run `bun run eval:all` on main at 07:30** (and `bun run data:gen`, since `results.json` is bundled into the API) and update this table before the video and Devpost.
 
 **Evidence completeness is 11 of 12.** SB-07's missing-itemization flag has no source link (finding for B on #12). Do not claim "every flag cites a source" until that is fixed and re-measured.
 
