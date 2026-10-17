@@ -27,26 +27,42 @@
       "interactive": true
     },
     "db:migrate": {
-      "cache": false,
-      "interactive": true
+      "cache": false
     },
     "db:studio": {
       "cache": false,
       "persistent": true
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"]
+    },
+    "test:integration": {
+      "cache": false
+    },
+    "db:seed": {
+      "cache": false
     }
   },
   "globalEnv": [
+    "BB_ADAPTER_KEY",
+    "BB_READER_MODE",
     "BETTER_AUTH_SECRET",
     "BETTER_AUTH_URL",
     "CI",
     "DATABASE_URL",
+    "GEMINI_API_KEY",
     "NODE_ENV",
     "POLAR_ACCESS_TOKEN",
     "POLAR_SUCCESS_URL",
+    "SENTRY_AUTH_TOKEN",
+    "SENTRY_DSN",
+    "STEPFUN_API_KEY",
     "VERCEL",
     "VERCEL_ENV",
     "VERCEL_PROJECT_PRODUCTION_URL",
     "VERCEL_URL",
+    "VITE_SENTRY_DSN",
     "_VARLOCK_ENV_KEY"
   ],
   "globalDependencies": [".env*", "apps/*/.env*", "packages/*/.env*"]
