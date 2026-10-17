@@ -7,7 +7,8 @@
   },
   "scripts": {
     "build": "tsc -b",
-    "check-types": "tsc -b"
+    "check-types": "tsc -b",
+    "test": "vitest run"
   },
   "dependencies": {
     "@betterbill/auth": "workspace:*",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "@betterbill/config": "workspace:*",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "5.0.5"
   }
 }
