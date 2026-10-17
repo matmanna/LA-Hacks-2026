@@ -61,11 +61,8 @@ describe("procedure stubs", () => {
   });
 
   it("bill procedures return their declared shapes", async () => {
+    // bill.parseText is real since B-09 (see parseText.int.test.ts).
     const parsed = ParseResult.parse(
-      await client.bill.parseText({ caseId, text: "x" }),
-    );
-    expect(parsed.caseId).toBe(caseId);
-    ParseResult.parse(
       await client.bill.parsePhoto({
         caseId,
         pages: [{ imageDataUrl: "data:image/jpeg;base64,AA==", page: 1 }],
