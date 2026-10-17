@@ -17,6 +17,8 @@
       "!**/.zed",
       "!**/.vscode",
       "!**/routeTree.gen.ts",
+      "!data/hospitals/**/evidence",
+      "!**/data.gen.ts",
       "!**/src-tauri",
       "!**/.nuxt",
       "!bts.jsonc",

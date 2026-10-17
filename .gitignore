@@ -56,3 +56,7 @@ coverage
 .cache
 tmp
 temp
+
+# Python
+__pycache__/
+*.pyc
