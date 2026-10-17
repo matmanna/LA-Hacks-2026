@@ -1,0 +1,56 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+concurrency:
+  group: ci-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+env:
+  NODE_ENV: test
+  DATABASE_URL: postgres://bb:bb@localhost:5432/betterbill_test
+  BETTER_AUTH_SECRET: ci-only-not-a-secret-0123456789abcdef
+  BETTER_AUTH_URL: http://localhost:3001
+  BB_READER_MODE: cache_only
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: timescale/timescaledb:latest-pg16
+        env:
+          POSTGRES_USER: bb
+          POSTGRES_PASSWORD: bb
+          POSTGRES_DB: betterbill_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U bb -d betterbill_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version: 1.3.12 }
+      - run: bun install --frozen-lockfile
+      - run: bun x biome ci .
+      - run: bun run check-types
+      - run: bun run test # Vitest unit (packages/core with coverage thresholds)
+      - run: bun run db:migrate # against the service container only
+      - run: bun run db:seed
+      - run: bun run test:integration
+      - run: bun run build
+  migrate-shared:
+    # Runs on main only. Skips until DATABASE_URL_SHARED is set (B-04, B-16).
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: checks
+    runs-on: ubuntu-latest
+    environment: shared-db
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL_SHARED }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version: 1.3.12 }
+      - run: bun install --frozen-lockfile
+        if: env.DATABASE_URL != ''
+      - run: bun run db:migrate
+        if: env.DATABASE_URL != ''

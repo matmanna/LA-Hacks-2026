@@ -61,7 +61,11 @@ function Bubble({
   );
 }
 
-function BubbleContent({ className, render, ...props }: useRender.ComponentProps<"div">) {
+function BubbleContent({
+  className,
+  render,
+  ...props
+}: useRender.ComponentProps<"div">) {
   return useRender({
     defaultTagName: "div",
     props: mergeProps<"div">(
@@ -120,4 +124,4 @@ function BubbleReactions({
   );
 }
 
-export { BubbleGroup, Bubble, BubbleContent, BubbleReactions };
+export { Bubble, BubbleContent, BubbleGroup, BubbleReactions };
