@@ -1,11 +1,23 @@
-import { BalanceCard } from "@betterbill/ui/components/bb/balance-card";
-import { FlagRow } from "@betterbill/ui/components/bb/flag-row";
-import { Money } from "@betterbill/ui/components/bb/money";
-import type { Tier } from "@betterbill/ui/components/bb/tier-badge";
+import {
+  TIER_LABELS,
+  type Tier,
+} from "@betterbill/ui/components/bb/tier-badge";
 import { Button } from "@betterbill/ui/components/button";
+import { cn } from "@betterbill/ui/lib/utils";
 import { Link } from "@tanstack/react-router";
+import { BadgeCheck, FileCheck2, ShieldCheck } from "lucide-react";
+import { useState } from "react";
 
 import { useStartSample } from "@/hooks/use-start-sample";
+import {
+  CheckScreen,
+  type DemoFlag,
+  FALLBACK_BALANCE,
+  FALLBACK_FLAGS,
+  PhoneFrame,
+} from "./demo-phone";
+import { PortedEdge } from "./edge";
+import { useMediaQuery } from "./motion";
 
 export type HeroSample = {
   hospitalName: string;
@@ -17,27 +29,44 @@ export type HeroSample = {
     isEstimate: boolean;
   };
   confirmedCents: number;
-  flags: {
-    id: string;
-    title: string;
-    explanation: string;
-    amountCents: number;
-    tier: Tier;
-    lever: string;
-  }[];
+  flags: (DemoFlag & { lever: string })[];
 };
+
+// Printed lines on the bill card. `levers` says which flag lights each line.
+const BILL: { text: string; amt: string; levers?: string[] }[] = [
+  { text: "99284 ED VISIT LEVEL 4", amt: "2,950.00" },
+  {
+    text: "72148 MRI LUMBAR W/O",
+    amt: "6,900.00",
+    levers: ["published_price"],
+  },
+  { text: "72100 XR LUMBAR 2-3V", amt: "640.00" },
+  { text: "85025 CBC W/ AUTO DIFF", amt: "84.00", levers: ["duplicate"] },
+  { text: "85025 CBC W/ AUTO DIFF", amt: "84.00", levers: ["duplicate"] },
+  { text: "36415 VENIPUNCTURE x4", amt: "152.00", levers: ["units"] },
+];
+
+const TRUST = [
+  [BadgeCheck, "Every flag shows its source"],
+  [ShieldCheck, "You approve every send"],
+  [FileCheck2, "Line by line, not a summary"],
+] as const;
 
 export function Hero({ sample }: { sample: HeroSample | null }) {
   const start = useStartSample();
+  const wide = useMediaQuery("(min-width: 1024px)");
+  const balance = sample
+    ? { hospitalName: sample.hospitalName, ...sample.balance }
+    : FALLBACK_BALANCE;
+  const flags = sample ? sample.flags.slice(0, 3) : FALLBACK_FLAGS;
+  const [openId, setOpenId] = useState<string | null>(flags[0]?.id ?? null);
+  const openFlag = flags.find((f) => f.id === openId) ?? null;
 
   return (
-    <section className="px-5 pt-10 pb-16 md:px-8 lg:py-0 lg:pt-20 lg:pb-28">
-      <div className="mx-auto max-w-6xl lg:grid lg:grid-cols-12 lg:items-center lg:gap-8">
+    <section className="overflow-hidden px-5 pt-10 pb-16 md:px-8 lg:pt-16 lg:pb-24">
+      <div className="mx-auto max-w-6xl lg:grid lg:grid-cols-12 lg:items-center lg:gap-6">
         <div className="lg:col-span-6">
-          <p className="font-medium text-muted-foreground text-xs uppercase leading-4 tracking-[0.08em]">
-            Free hospital bill check
-          </p>
-          <h1 className="mt-4 text-balance font-serif text-[40px] leading-[44px] tracking-[-0.01em] lg:text-[64px] lg:leading-[68px]">
+          <h1 className="text-balance font-serif text-[40px] leading-[44px] tracking-[-0.01em] lg:text-[64px] lg:leading-[68px]">
             Your hospital bill, checked{" "}
             <span className="relative inline-block">
               line by line.
@@ -51,8 +80,8 @@ export function Hero({ sample }: { sample: HeroSample | null }) {
           </h1>
           <p className="mt-5 max-w-[52ch] text-base text-muted-foreground leading-6 lg:text-lg lg:leading-7">
             Snap a photo or paste the text. BetterBill reads every charge, shows
-            what looks wrong with the proof, and drafts the letter. Nothing is
-            sent until you approve it.
+            what looks wrong with the proof, drafts the letter, and can make the
+            call. Nothing is sent until you approve it.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button
@@ -74,42 +103,103 @@ export function Hero({ sample }: { sample: HeroSample | null }) {
           <p className="mt-4 text-muted-foreground text-xs leading-4">
             Free. No account needed to see your results.
           </p>
+          <ul className="mt-8 grid gap-3 border-t pt-6 sm:grid-cols-3 lg:max-w-md">
+            {TRUST.map(([Icon, label]) => (
+              <li
+                key={label}
+                className="flex items-start gap-2 text-sm leading-5"
+              >
+                <Icon
+                  className="mt-0.5 size-4 shrink-0 text-primary"
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                />
+                {label}
+              </li>
+            ))}
+          </ul>
         </div>
 
-        {sample ? (
-          <div className="lg:col-span-5 lg:col-start-8">
-            <div className="relative mt-12 rounded-3xl border bg-muted p-4 lg:mt-0 lg:p-6">
-              <p className="sr-only">
-                Sample result for {sample.hospitalName}: {sample.flags.length}{" "}
-                flags, <Money cents={sample.confirmedCents} /> confirmed from
-                the bill, balance shown as an estimate.
+        <div className="mt-14 lg:col-span-6 lg:mt-0">
+          <div className="relative mx-auto w-fit">
+            {/* Bill node, left. Lights the lines behind the open flag. */}
+            <div className="lp-float absolute top-16 -left-3 z-10 hidden w-[196px] -translate-x-full rounded-xl border bg-card p-3 shadow-card xl:block">
+              <p className="font-medium text-[10px] text-muted-foreground uppercase tracking-[0.08em]">
+                Your bill
               </p>
-              <div inert className="pointer-events-none">
-                <BalanceCard
-                  hospitalName={sample.hospitalName}
-                  {...sample.balance}
-                />
-                <div className="mt-4 rounded-2xl border bg-card p-2 shadow-card [mask-image:linear-gradient(to_bottom,black_80%,transparent)]">
-                  {sample.flags.slice(0, 3).map((flag) => (
-                    <FlagRow
-                      key={flag.id}
-                      flag={flag}
-                      amountPrefix={
-                        flag.tier === "published" || flag.tier === "estimate"
-                          ? "up_to"
-                          : "none"
-                      }
-                      onOpen={() => {}}
-                    />
-                  ))}
-                </div>
+              <div className="mt-2 space-y-1 font-mono text-[#2A3440] text-[8.5px] leading-[11px]">
+                {BILL.map((l, i) => {
+                  const on =
+                    !!openFlag && !!l.levers?.includes(openFlag.lever ?? "");
+                  return (
+                    <div
+                      // biome-ignore lint/suspicious/noArrayIndexKey: static list
+                      key={i}
+                      className={cn(
+                        "flex justify-between rounded-[3px] px-0.5 transition-colors duration-300",
+                        on && "bg-mint/15 outline outline-1 outline-mint",
+                      )}
+                    >
+                      <span>{l.text}</span>
+                      <span>{l.amt}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div
+                aria-hidden="true"
+                className="absolute top-1/2 -right-5 w-5 -translate-y-1/2"
+              >
+                <PortedEdge />
               </div>
             </div>
-            <p className="mt-3 text-muted-foreground text-xs leading-4">
-              Sample bill. Synthetic data.
-            </p>
+
+            <PhoneFrame
+              scale={wide ? 0.82 : 0.76}
+              label="BetterBill results on a sample bill"
+            >
+              <CheckScreen
+                onNext={() => start.start()}
+                balance={balance}
+                flags={flags}
+                onOpenChange={setOpenId}
+              />
+            </PhoneFrame>
+
+            {/* Evidence node, right. Follows the open flag. */}
+            <div
+              className="lp-float absolute bottom-20 -left-3 z-10 hidden w-[196px] -translate-x-full rounded-xl border bg-card p-3 shadow-card xl:block"
+              style={{ "--d": "-2s" } as React.CSSProperties}
+            >
+              <div
+                aria-hidden="true"
+                className="absolute top-1/2 -right-5 w-5 -translate-y-1/2"
+              >
+                <PortedEdge delay={0.6} />
+              </div>
+              <p className="font-medium text-[10px] text-muted-foreground uppercase tracking-[0.08em]">
+                Evidence
+              </p>
+              {openFlag ? (
+                <div key={openFlag.id} className="lp-rise mt-1.5">
+                  <p className="font-semibold text-sm leading-5">
+                    {TIER_LABELS[openFlag.tier as Tier]}
+                  </p>
+                  <p className="mt-1 text-muted-foreground text-xs leading-4">
+                    {openFlag.explanation}
+                  </p>
+                </div>
+              ) : (
+                <p className="mt-1.5 text-muted-foreground text-xs leading-4">
+                  Tap a flag to see why it's there.
+                </p>
+              )}
+            </div>
           </div>
-        ) : null}
+          <p className="mt-4 text-center text-muted-foreground text-xs leading-4">
+            Sample bill. Synthetic data. Tap a flag.
+          </p>
+        </div>
       </div>
     </section>
   );

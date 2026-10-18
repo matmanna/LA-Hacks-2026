@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { AudienceBar } from "@/components/landing/audience-bar";
 import { Closing } from "@/components/landing/closing";
 import { Hero, type HeroSample } from "@/components/landing/hero";
 import { How } from "@/components/landing/how";
@@ -54,6 +55,7 @@ function Landing() {
   const sample = Route.useLoaderData();
   return (
     <>
+      <AudienceBar audience="patients" />
       <Nav />
       <main>
         <Hero sample={sample} />

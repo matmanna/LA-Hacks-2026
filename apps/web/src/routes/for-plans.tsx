@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { AudienceBar } from "@/components/landing/audience-bar";
 import { BulkPlan } from "@/components/landing/plans/bulk-plan";
 import { PlansEvidence } from "@/components/landing/plans/evidence";
 import { Fit } from "@/components/landing/plans/fit";
@@ -72,6 +73,7 @@ function ForPlans() {
   const { sample, results } = Route.useLoaderData();
   return (
     <>
+      <AudienceBar audience="plans" />
       <PlansNav />
       <main>
         <PlansHero sample={sample} />

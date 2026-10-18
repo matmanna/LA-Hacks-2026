@@ -1,1 +1,179 @@
 @import "@betterbill/ui/globals.css";
+
+/* Landing motion. Flat fills, hairlines, short transitions. Reduced motion turns it all off. */
+:root {
+  --lp-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --lp-edge: rgb(11 27 43 / 0.14);
+  --lp-beam: #1e4ed8;
+}
+
+.lp-edge {
+  position: relative;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--lp-edge);
+}
+.lp-edge > i {
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: var(--lp-beam);
+  opacity: 0.85;
+  border-radius: inherit;
+  transform: translateX(-100%);
+  animation: lp-beam-x 2.4s cubic-bezier(0.45, 0, 0.35, 1) var(--bd, 0s)
+    infinite;
+}
+.lp-edge-y > i {
+  width: auto;
+  height: 45%;
+  transform: translateY(-100%);
+  animation-name: lp-beam-y;
+}
+@keyframes lp-beam-x {
+  0% {
+    transform: translateX(-100%);
+  }
+  70%,
+  100% {
+    transform: translateX(225%);
+  }
+}
+@keyframes lp-beam-y {
+  0% {
+    transform: translateY(-100%);
+  }
+  70%,
+  100% {
+    transform: translateY(225%);
+  }
+}
+.lp-port {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1.5px var(--lp-edge),
+    0 1px 2px rgb(11 27 43 / 0.08);
+}
+
+.lp-lift {
+  transition:
+    transform 300ms var(--lp-ease),
+    box-shadow 300ms var(--lp-ease),
+    background-color 300ms var(--lp-ease),
+    border-color 300ms var(--lp-ease);
+}
+.lp-lift:hover,
+.lp-lift:focus-visible {
+  transform: translateY(-2px);
+}
+.lp-press {
+  transition: transform 150ms var(--lp-ease);
+}
+.lp-press:active {
+  transform: scale(0.985);
+}
+
+.lp-progress {
+  transform-origin: left;
+  animation: lp-progress var(--dur, 6s) linear forwards;
+}
+.lp-progress[data-paused="true"] {
+  animation-play-state: paused;
+}
+@keyframes lp-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.lp-rise {
+  animation: lp-rise 320ms var(--lp-ease) both;
+  animation-delay: var(--d, 0s);
+}
+@keyframes lp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.lp-scan {
+  animation: lp-scan 2.6s ease-in-out infinite alternate;
+}
+@keyframes lp-scan {
+  from {
+    top: 6%;
+  }
+  to {
+    top: 92%;
+  }
+}
+.lp-float {
+  animation: lp-float 5s ease-in-out var(--d, 0s) infinite alternate;
+}
+@keyframes lp-float {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-6px);
+  }
+}
+.lp-pulse {
+  animation: lp-pulse 1.8s ease-out infinite;
+}
+@keyframes lp-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(15 157 118 / 0.45);
+  }
+  100% {
+    box-shadow: 0 0 0 8px rgb(15 157 118 / 0);
+  }
+}
+.lp-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 500ms var(--lp-ease),
+    transform 500ms var(--lp-ease);
+}
+.lp-reveal[data-in="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-edge > i,
+  .lp-scan,
+  .lp-float,
+  .lp-pulse,
+  .lp-rise {
+    animation: none;
+  }
+  .lp-edge > i {
+    display: none;
+  }
+  .lp-progress {
+    animation: none;
+    transform: scaleX(1);
+  }
+  .lp-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .lp-lift:hover,
+  .lp-lift:focus-visible,
+  .lp-press:active {
+    transform: none;
+  }
+}
