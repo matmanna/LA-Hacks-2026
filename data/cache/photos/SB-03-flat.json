@@ -1,0 +1,124 @@
+{
+  "photo": "data/synthetic/photos/SB-03-flat.jpg",
+  "sha256": "a477e511963265cd6520d1f9c467aa328e997375f857809a6e725ee8d922e537",
+  "model": "step-5-preview",
+  "latencyMs": 20794,
+  "readAt": "2026-10-18T02:48:37.473Z",
+  "bill": {
+    "id": "cache-bill",
+    "hospital": {
+      "name": "Sample Medical Center (synthetic)",
+      "city": "Los Angeles",
+      "state": "CA"
+    },
+    "statementDate": "2026-08-05",
+    "accountRefMasked": null,
+    "kind": "itemized",
+    "sourceKind": "photo",
+    "lines": [
+      {
+        "id": "cache-l01",
+        "serviceDate": "2026-07-22",
+        "description": "IV HYDRATION INITIAL HOUR",
+        "code": "96360",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 62000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l02",
+        "serviceDate": "2026-07-22",
+        "description": "IV HYDRATION EACH ADDL HOUR",
+        "code": "96361",
+        "codeType": "CPT",
+        "units": 2,
+        "chargeCents": 42000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l03",
+        "serviceDate": "2026-07-22",
+        "description": "IV PUSH SINGLE DRUG",
+        "code": "96374",
+        "codeType": "CPT",
+        "units": 2,
+        "chargeCents": 97200,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l04",
+        "serviceDate": "2026-07-22",
+        "description": "KETOROLAC INJ 15 MG",
+        "code": "J1885",
+        "codeType": "HCPCS",
+        "units": 12,
+        "chargeCents": 115200,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l05",
+        "serviceDate": "2026-07-22",
+        "description": "NORMAL SALINE 1000 CC",
+        "code": "J7030",
+        "codeType": "HCPCS",
+        "units": 2,
+        "chargeCents": 37200,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l06",
+        "serviceDate": "2026-07-22",
+        "description": "ONDANSETRON INJ 1 MG",
+        "code": "J2405",
+        "codeType": "HCPCS",
+        "units": 4,
+        "chargeCents": 10000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 363600,
+      "adjustmentsCents": 0,
+      "paidCents": 0,
+      "dueCents": 363600
+    }
+  },
+  "reconciliation": {
+    "linesSumCents": 363600,
+    "statedChargesCents": 363600,
+    "diffCents": 0,
+    "ok": true
+  },
+  "warnings": []
+}

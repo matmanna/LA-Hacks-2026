@@ -54,7 +54,8 @@
     "data:check": "bun scripts/gen-api-data.ts --check",
     "eval": "bun scripts/eval/run.ts",
     "eval:photos": "bun scripts/eval/run.ts --photos",
-    "eval:all": "bun scripts/eval/run.ts --photos --botm"
+    "eval:all": "bun scripts/eval/run.ts --photos --botm",
+    "photos:read": "bun scripts/read-photos.ts"
   },
   "dependencies": {
     "zod": "catalog:"
