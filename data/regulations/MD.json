@@ -1,0 +1,70 @@
+{
+  "jurisdiction": "MD",
+  "title": "Maryland hospital financial assistance (Health-General 19-214.1)",
+  "rules": [
+    {
+      "id": "md-free",
+      "title": "Free care at or under 200% FPL",
+      "appliesWhen": {
+        "state": "MD",
+        "incomeFplMaxPct": 200
+      },
+      "effect": {
+        "kind": "charity_care",
+        "discountPct": 100
+      },
+      "plain": "Maryland hospitals must give free medically necessary care at or under 200% of the poverty line.",
+      "citation": "Md. Code, Health-Gen. 19-214.1(b)(2)(i)",
+      "sourceUrl": "https://mgaleg.maryland.gov/2026RS/Statute_Web/ghg/19-214.1.pdf",
+      "quote": "Free medically necessary care to patients with family income at or below 200% of the federal poverty level",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "md-reduced",
+      "title": "Required discounts above 200% FPL",
+      "appliesWhen": {
+        "state": "MD",
+        "incomeFplMinPct": 201
+      },
+      "effect": {
+        "kind": "charity_care",
+        "bands": [
+          {
+            "fpl": [201, 250],
+            "discountPct": 75
+          },
+          {
+            "fpl": [251, 300],
+            "discountPct": 60
+          }
+        ],
+        "hardshipBandsTo500": [
+          {
+            "fpl": [301, 350],
+            "discountPct": 50
+          },
+          {
+            "fpl": [351, 400],
+            "discountPct": 45
+          },
+          {
+            "fpl": [401, 450],
+            "discountPct": 40
+          },
+          {
+            "fpl": [451, 500],
+            "discountPct": 35
+          }
+        ]
+      },
+      "plain": "Between 201% and 300% of the poverty line, out-of-pocket costs drop 75% or 60%. With medical debt over 25% of income, discounts continue up to 500%.",
+      "citation": "Md. Code, Health-Gen. 19-214.1(b)(4)-(5)",
+      "sourceUrl": "https://mgaleg.maryland.gov/2026RS/Statute_Web/ghg/19-214.1.pdf",
+      "quote": "by 75%",
+      "notes": "Financial hardship: medical debt over 12 months above 25% of family income (19-214.1(a)(2)). Assets only above $100,000 may be considered (b)(8).",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    }
+  ]
+}

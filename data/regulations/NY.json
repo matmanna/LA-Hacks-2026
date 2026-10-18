@@ -1,0 +1,76 @@
+{
+  "jurisdiction": "NY",
+  "title": "New York hospital financial aid (Public Health Law 2807-k(9-a))",
+  "rules": [
+    {
+      "id": "ny-free",
+      "title": "Free care under 200% FPL",
+      "appliesWhen": {
+        "state": "NY",
+        "incomeFplMaxPct": 199,
+        "uninsuredOrUnderinsured": true
+      },
+      "effect": {
+        "kind": "charity_care",
+        "discountPct": 100
+      },
+      "plain": "Under 200% of the poverty line, New York hospitals must waive all charges.",
+      "citation": "N.Y. Pub. Health Law 2807-k(9-a)(b)(i)",
+      "sourceUrl": "https://www.nysenate.gov/legislation/laws/PBH/2807-K",
+      "quote": "the hospital shall waive all charges",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "ny-sliding",
+      "title": "Sliding scale to 400% FPL, capped against Medicaid rates",
+      "appliesWhen": {
+        "state": "NY",
+        "incomeFplMinPct": 200,
+        "incomeFplMaxPct": 400
+      },
+      "effect": {
+        "kind": "charge_cap",
+        "cap": "pct_of_medicaid",
+        "bands": [
+          {
+            "fpl": [200, 300],
+            "maxPctOfMedicaid": 10
+          },
+          {
+            "fpl": [301, 400],
+            "maxPctOfMedicaid": 20
+          }
+        ]
+      },
+      "plain": "Between 200% and 400% of the poverty line, you pay on a sliding scale capped at 10% to 20% of what Medicaid would pay.",
+      "citation": "N.Y. Pub. Health Law 2807-k(9-a)(b)(ii)-(iii)",
+      "sourceUrl": "https://www.nysenate.gov/legislation/laws/PBH/2807-K",
+      "quote": "up to a maximum of ten percent of the amount that would have been paid",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "ny-plans-collections",
+      "title": "Payment plans and lawsuit limits",
+      "appliesWhen": {
+        "state": "NY"
+      },
+      "effect": {
+        "kind": "collections_limit",
+        "maxMonthlyPctOfGrossIncome": 5,
+        "maxInterestPct": 2,
+        "noLawsuitUnderFplPct": 400,
+        "noLawsuitDaysAfterFirstBill": 180,
+        "collectionNoticeDays": 30
+      },
+      "plain": "Payment plans are capped at 5% of your gross monthly income, with at most 2% interest. Hospitals can't sue patients under 400% of the poverty line, and must wait 180 days after the first bill before any lawsuit.",
+      "citation": "N.Y. Pub. Health Law 2807-k(9-a)(d), (h), (l)",
+      "sourceUrl": "https://www.nysenate.gov/legislation/laws/PBH/2807-K",
+      "quote": "shall not exceed five percent of the gross monthly income of the patient",
+      "verified": true,
+      "capturedAt": "2026-10-18",
+      "notes": "Hospitals must also give at least 30 days' notice before sending a debt to collections (9-a(h))."
+    }
+  ]
+}
