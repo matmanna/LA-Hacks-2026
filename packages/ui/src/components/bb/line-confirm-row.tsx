@@ -68,6 +68,7 @@ export function LineConfirmRow<L extends ConfirmLine>({
   if (editing) {
     return (
       <div
+        data-sentry-block
         className={cn(
           "rounded-xl border bg-card p-3 ring-2 ring-ring",
           className,
@@ -123,6 +124,7 @@ export function LineConfirmRow<L extends ConfirmLine>({
 
   return (
     <div
+      data-sentry-block
       className={cn(
         "flex items-start gap-3 rounded-xl border bg-card p-3",
         className,

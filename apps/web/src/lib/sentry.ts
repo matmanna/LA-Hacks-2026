@@ -1,6 +1,6 @@
 // Shared by the client and server init. No DSN means Sentry stays disabled.
 // BetterBill handles bill text and photos: never send request bodies, cookies,
-// headers, or user info.
+// headers, user info, or model prompts and completions.
 type ScrubbableEvent = {
   request?: {
     data?: unknown;
@@ -24,8 +24,14 @@ export function scrubEvent<T extends ScrubbableEvent>(event: T): T {
 
 export const baseSentryOptions = {
   sendDefaultPii: false,
-  dataCollection: { userInfo: false },
+  dataCollection: {
+    userInfo: false,
+    // gen_ai spans carry model, token counts and durations only.
+    genAI: { inputs: false, outputs: false },
+  },
+  // Demo traffic is small, so sample everything.
   tracesSampleRate: 1.0,
+  enableLogs: true,
   beforeSend: scrubEvent,
   beforeSendTransaction: scrubEvent,
 };

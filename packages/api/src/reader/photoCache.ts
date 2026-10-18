@@ -5,6 +5,7 @@ import { createHash } from "node:crypto";
 
 import type { Bill, ParseResult, Reconciliation } from "@betterbill/core";
 
+import { heroStep } from "../telemetry";
 import { PhotoReadError, readPhoto } from "./parsePhoto";
 
 export type CachedRead = {
@@ -42,7 +43,7 @@ export function fromCache(caseId: string, hit: CachedRead): ParseResult {
   };
 }
 
-export async function readPhotoWithCache(
+async function readPhotoWithCacheInner(
   caseId: string,
   pages: { imageDataUrl: string; page: number }[],
   cache: Map<string, CachedRead>,
@@ -67,3 +68,21 @@ export async function readPhotoWithCache(
     throw e;
   }
 }
+
+export const readPhotoWithCache = (
+  caseId: string,
+  pages: { imageDataUrl: string; page: number }[],
+  cache: Map<string, CachedRead>,
+  mode: ReaderMode = "live",
+  live: typeof readPhoto = readPhoto,
+): Promise<ParseResult> =>
+  heroStep(
+    "parse",
+    { caseId, source: "photo", pages: pages.length, configuredMode: mode },
+    () => readPhotoWithCacheInner(caseId, pages, cache, mode, live),
+    (r) => ({
+      lineCount: r.bill.lines.length,
+      readerMode: r.reader.mode,
+      readerMs: r.reader.latencyMs,
+    }),
+  );

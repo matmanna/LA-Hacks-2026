@@ -85,6 +85,7 @@ export function EvidenceSheet({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
+        data-sentry-block
         side={isDesktop ? "right" : "bottom"}
         showCloseButton={false}
         initialFocus={bodyRef}

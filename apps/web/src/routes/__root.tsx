@@ -24,6 +24,9 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
     middleware: [createMiddleware().server(evlogErrorHandler)],
   },
 
+  // Required by Sentry browser profiling (Chromium). Harmless elsewhere.
+  headers: () => ({ "Document-Policy": "js-profiling" }),
+
   head: () => ({
     meta: [
       {
