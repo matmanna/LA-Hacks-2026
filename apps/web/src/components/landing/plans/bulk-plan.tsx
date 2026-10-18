@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 
 import { orpc } from "@/utils/orpc";
+import { ArrowSlide } from "../arrow-slide";
 import { Section, SectionTitle } from "../section";
 
 // Demo pricing set on the Polar sandbox product (see docs/POLAR.md).
@@ -46,6 +47,7 @@ export function BulkPlan() {
             disabled={checkout.isPending}
           >
             Start the bulk plan
+            <ArrowSlide />
           </Button>
           <div className="space-y-2">
             <Label htmlFor="bulk-promo">Promo code (for development)</Label>

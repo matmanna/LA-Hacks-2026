@@ -3,12 +3,12 @@ import { Button } from "@betterbill/ui/components/button";
 import { cn } from "@betterbill/ui/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { ArrowSlide } from "./arrow-slide";
 
 const LINKS = [
   { href: "#how", label: "How it works" },
   { href: "#evidence", label: "Evidence" },
   { href: "#pricing", label: "Pricing" },
-  { href: "/for-plans", label: "For plans" },
   { href: "#faq", label: "FAQ" },
 ];
 
@@ -28,7 +28,7 @@ export function Nav() {
         scrolled ? "border-border" : "border-transparent",
       )}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8 lg:grid lg:grid-cols-[1fr_auto_1fr]">
         <a href="/" aria-label="BetterBill home">
           <Wordmark />
         </a>
@@ -45,11 +45,12 @@ export function Nav() {
         </nav>
         <Button
           size="sm"
-          className="lg:h-11 lg:rounded-xl lg:px-5 lg:text-base"
+          className="lg:h-11 lg:justify-self-end lg:rounded-xl lg:px-5 lg:text-base"
           nativeButton={false}
           render={<Link to="/check" />}
         >
           Check my bill
+          <ArrowSlide />
         </Button>
       </div>
     </header>

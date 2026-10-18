@@ -2,6 +2,7 @@ import { Button } from "@betterbill/ui/components/button";
 import { Link } from "@tanstack/react-router";
 
 import { useStartSample } from "@/hooks/use-start-sample";
+import { ArrowSlide } from "./arrow-slide";
 
 export function Closing() {
   const start = useStartSample();
@@ -33,6 +34,7 @@ export function Closing() {
             render={<Link to="/check" />}
           >
             Check my bill
+            <ArrowSlide />
           </Button>
           <Button
             variant="secondary"

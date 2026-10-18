@@ -35,7 +35,7 @@ function List({ items, icon }: { items: string[]; icon: "check" | "circle" }) {
 
 export function Security() {
   return (
-    <Section id="security">
+    <Section id="security" band>
       <SectionTitle>Security, stated plainly.</SectionTitle>
       <div className="mt-10 grid gap-4 lg:grid-cols-2">
         <Card>

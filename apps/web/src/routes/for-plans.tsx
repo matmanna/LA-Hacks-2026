@@ -1,13 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { AudienceBar } from "@/components/landing/audience-bar";
 import { BulkPlan } from "@/components/landing/plans/bulk-plan";
+import { evalView } from "@/components/landing/plans/eval-data";
 import { PlansEvidence } from "@/components/landing/plans/evidence";
 import { Fit } from "@/components/landing/plans/fit";
 import { PlansHero, type PlansSample } from "@/components/landing/plans/hero";
 import { Integration } from "@/components/landing/plans/integration";
+import { PlansMap } from "@/components/landing/plans/map";
 import { PlansNav } from "@/components/landing/plans/nav";
 import { PilotForm } from "@/components/landing/plans/pilot-form";
+import { Pipeline } from "@/components/landing/plans/pipeline";
 import { PlansResults } from "@/components/landing/plans/results";
 import { Security } from "@/components/landing/plans/security";
+import { PlansStats } from "@/components/landing/plans/stats";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { client } from "@/utils/orpc";
 
@@ -27,8 +32,9 @@ async function loadPage() {
     detail.value.audit
   ) {
     sample = {
+      hospitalName: detail.value.bill.hospital.name,
       lines: detail.value.bill.lines,
-      flags: detail.value.audit.flags,
+      flags: detail.value.audit.flags.slice(0, 4),
       totalCents: detail.value.bill.totals.chargesCents,
       events: (events.status === "fulfilled" ? events.value : []).map((e) => ({
         id: e.id,
@@ -70,14 +76,19 @@ export const Route = createFileRoute("/for-plans")({
 
 function ForPlans() {
   const { sample, results } = Route.useLoaderData();
+  const data = evalView(results);
   return (
     <>
+      <AudienceBar audience="plans" />
       <PlansNav />
       <main>
         <PlansHero sample={sample} />
+        <PlansStats data={data} />
         <Fit />
+        <Pipeline />
         <PlansEvidence />
-        <PlansResults results={results} />
+        <PlansResults data={data} />
+        <PlansMap />
         <Integration />
         <Security />
         <BulkPlan />

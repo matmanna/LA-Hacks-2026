@@ -4,7 +4,7 @@ import { Input } from "@betterbill/ui/components/input";
 import { Label } from "@betterbill/ui/components/label";
 import { Textarea } from "@betterbill/ui/components/textarea";
 import { type FormEvent, useState } from "react";
-
+import { ArrowSlide } from "../arrow-slide";
 import { Section, SectionTitle } from "../section";
 
 const ROLES = [
@@ -116,6 +116,7 @@ export function PilotForm() {
                 disabled={!PILOT_EMAIL}
               >
                 Book a pilot
+                <ArrowSlide />
               </Button>
               {PILOT_EMAIL ? null : (
                 <p className="text-muted-foreground text-xs leading-4">

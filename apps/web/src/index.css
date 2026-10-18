@@ -1,1 +1,282 @@
 @import "@betterbill/ui/globals.css";
+
+/* Landing motion. Flat fills, hairlines, short transitions. Reduced motion turns it all off. */
+:root {
+  --lp-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --lp-edge: rgb(11 27 43 / 0.14);
+  --lp-beam: #1e4ed8;
+}
+
+.lp-edge {
+  position: relative;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--lp-edge);
+}
+.lp-edge > i {
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: var(--lp-beam);
+  opacity: 0.85;
+  border-radius: inherit;
+  transform: translateX(-100%);
+  animation: lp-beam-x 2.4s cubic-bezier(0.45, 0, 0.35, 1) var(--bd, 0s)
+    infinite;
+}
+.lp-edge-y > i {
+  width: auto;
+  height: 45%;
+  transform: translateY(-100%);
+  animation-name: lp-beam-y;
+}
+@keyframes lp-beam-x {
+  0% {
+    transform: translateX(-100%);
+  }
+  70%,
+  100% {
+    transform: translateX(225%);
+  }
+}
+@keyframes lp-beam-y {
+  0% {
+    transform: translateY(-100%);
+  }
+  70%,
+  100% {
+    transform: translateY(225%);
+  }
+}
+.lp-port {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1.5px var(--lp-edge),
+    0 1px 2px rgb(11 27 43 / 0.08);
+}
+
+.lp-lift {
+  transition:
+    transform 300ms var(--lp-ease),
+    box-shadow 300ms var(--lp-ease),
+    background-color 300ms var(--lp-ease),
+    border-color 300ms var(--lp-ease);
+}
+.lp-lift:hover,
+.lp-lift:focus-visible {
+  transform: translateY(-2px);
+}
+.lp-press {
+  transition: transform 150ms var(--lp-ease);
+}
+.lp-press:active {
+  transform: scale(0.985);
+}
+
+.lp-progress {
+  transform-origin: left;
+  animation: lp-progress var(--dur, 6s) linear forwards;
+}
+.lp-progress[data-paused="true"] {
+  animation-play-state: paused;
+}
+@keyframes lp-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.lp-rise {
+  animation: lp-rise 320ms var(--lp-ease) both;
+  animation-delay: var(--d, 0s);
+}
+@keyframes lp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.lp-scan {
+  animation: lp-scan 2.6s ease-in-out infinite alternate;
+}
+@keyframes lp-scan {
+  from {
+    top: 6%;
+  }
+  to {
+    top: 92%;
+  }
+}
+.lp-float {
+  animation: lp-float 5s ease-in-out var(--d, 0s) infinite alternate;
+}
+@keyframes lp-float {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-6px);
+  }
+}
+.lp-pulse {
+  animation: lp-pulse 1.8s ease-out infinite;
+}
+@keyframes lp-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(15 157 118 / 0.45);
+  }
+  100% {
+    box-shadow: 0 0 0 8px rgb(15 157 118 / 0);
+  }
+}
+.lp-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 500ms var(--lp-ease),
+    transform 500ms var(--lp-ease);
+}
+.lp-reveal[data-in="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-edge > i,
+  .lp-scan,
+  .lp-float,
+  .lp-pulse,
+  .lp-rise {
+    animation: none;
+  }
+  .lp-edge > i {
+    display: none;
+  }
+  .lp-progress {
+    animation: none;
+    transform: scaleX(1);
+  }
+  .lp-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .lp-lift:hover,
+  .lp-lift:focus-visible,
+  .lp-press:active {
+    transform: none;
+  }
+}
+
+/* Hero phone: a slow float with a slight turn about the vertical axis, and a
+   fast full turn back to flat on "Handle it for me". */
+.lp-tilt {
+  animation: lp-tilt 7s ease-in-out infinite alternate;
+}
+@keyframes lp-tilt {
+  from {
+    transform: perspective(1600px) translateY(0) rotateX(1.5deg) rotateY(-7deg);
+  }
+  to {
+    transform: perspective(1600px) translateY(-9px) rotateX(-1.5deg)
+      rotateY(7deg);
+  }
+}
+.lp-spin {
+  animation: lp-spin 760ms cubic-bezier(0.65, 0, 0.2, 1) both;
+}
+@keyframes lp-spin {
+  from {
+    transform: translateY(-4px) rotateY(-7deg);
+  }
+  to {
+    transform: translateY(0) rotateY(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-tilt,
+  .lp-spin {
+    animation: none;
+  }
+}
+
+.lp-progress-y {
+  transform-origin: top;
+  animation: lp-progress-y var(--dur, 5s) linear forwards;
+}
+.lp-progress-y[data-paused="true"] {
+  animation-play-state: paused;
+}
+@keyframes lp-progress-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* Arrow inside primary buttons: springs in on hover, then nudges. */
+.lp-arrow {
+  display: inline-flex;
+  width: 0;
+  margin-left: -0.5rem;
+  opacity: 0;
+  transition:
+    width 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    margin 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 160ms ease-out;
+}
+.lp-arrow > svg {
+  flex-shrink: 0;
+  transform: translateX(-10px);
+}
+.group\/button:hover .lp-arrow,
+.group\/button:focus-visible .lp-arrow {
+  width: 1.25rem;
+  margin-left: 0;
+  opacity: 1;
+}
+.group\/button:hover .lp-arrow > svg,
+.group\/button:focus-visible .lp-arrow > svg {
+  animation:
+    lp-arrow-in 520ms cubic-bezier(0.34, 1.56, 0.64, 1) both,
+    lp-arrow-nudge 1.1s ease-in-out 520ms infinite;
+}
+@keyframes lp-arrow-in {
+  from {
+    transform: translateX(-14px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes lp-arrow-nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-arrow,
+  .lp-arrow > svg,
+  .group\/button:hover .lp-arrow > svg,
+  .group\/button:focus-visible .lp-arrow > svg {
+    transition: none;
+    animation: none;
+    transform: none;
+  }
+}
