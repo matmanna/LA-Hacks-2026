@@ -1,4 +1,4 @@
-# BetterBill native (Expo, Better-T-Stack `native-uniwind`)
+# BetterBill native (Expo SDK 57, Better-T-Stack `native-uniwind`)
 
 Phone app for taking or choosing bill photos, uploading them, confirming the lines, and following the case status over time. Same oRPC API and Better Auth as `apps/web`. UI is placeholder until the mobile design files land.
 
@@ -23,3 +23,6 @@ Phone app for taking or choosing bill photos, uploading them, confirming the lin
 - **Your bills** (drawer home): Take a photo, Choose from photos (up to 3 pages, downscaled to 2000 px JPEG), Try a sample bill (SB-01), and the list of bills started on this phone with live status (refreshes every 10 s). The list is stored on the device because `case.list` needs a signed-in user.
 - **Case** (`/case/[id]`): lines read from the bill, Looks right (`bill.confirmLines` then `audit.run`), fair balance, flags with tier, savings, and the activity timeline. Polls every 5 s.
 - **Account** (drawer): Better-T-Stack's sign in, sign up, API status, and Polar screens.
+
+## Expo SDK version
+Pinned to SDK 57 because the Play Store build of Expo Go supports SDK 57 (SDK 58 reaches the stores "within a few weeks" of its release, per the Expo changelog). Upgrade to 58 with `bunx expo install expo@latest --fix` when the store Expo Go catches up. The root `package.json` `overrides` (`react`, `react-dom`, `react-native-screens`) keep a single copy of each native module; update them with the SDK.
