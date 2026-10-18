@@ -1,6 +1,7 @@
 import { expoClient } from "@better-auth/expo/client";
 import type { polar } from "@polar-sh/better-auth";
 import type { BetterAuthClientPlugin } from "better-auth/client";
+import { phoneNumberClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 import Constants from "expo-constants";
 import * as SecureStore from "expo-secure-store";
@@ -15,6 +16,7 @@ export const authClient = createAuthClient({
       id: "polar-client",
       $InferServerPlugin: {} as ReturnType<typeof polar>,
     } satisfies BetterAuthClientPlugin,
+    phoneNumberClient(),
     expoClient({
       scheme: Constants.expoConfig?.scheme as string,
       storagePrefix: Constants.expoConfig?.scheme as string,

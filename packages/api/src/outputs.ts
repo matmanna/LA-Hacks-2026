@@ -124,6 +124,9 @@ export const Contact = z.object({
   billingPhone: z.string().nullable(),
   hospitalUrl: z.string().nullable(),
   savedPatientPhone: z.string().nullable(),
+  // The verified number the signed-in patient used to sign in, if any.
+  accountPhone: z.string().nullable(),
+  signedIn: z.boolean(),
   hospitalName: z.string().nullable(),
 });
 export type Contact = z.infer<typeof Contact>;

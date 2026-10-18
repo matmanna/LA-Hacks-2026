@@ -1,6 +1,7 @@
 // Integration: where a call goes (patient phone, billing override, hospital
 // website) against a migrated Postgres. No network and no real calls.
 import { createDb } from "@betterbill/db";
+import { user } from "@betterbill/db/schema/auth";
 import { createRouterClient } from "@orpc/server";
 import {
   afterAll,
@@ -140,5 +141,32 @@ describe.skipIf(!url)("contact routes (integration)", () => {
     expect(action.draft).toContain(
       `patient test participant at ${TEST_PATIENT}`,
     );
+  });
+
+  it("takes an unclaimed case for the signed-in patient, once", async () => {
+    const { id } = await client.case.create({});
+    const userId = `u-${crypto.randomUUID()}`;
+    await db.insert(user).values({
+      id: userId,
+      name: "Test",
+      email: `${userId}@example.test`,
+    });
+    const signedIn = createRouterClient(appRouter, {
+      context: {
+        db,
+        session: { user: { id: userId, phoneNumber: "+13105550101" } } as never,
+        adapter: false,
+      },
+    });
+    expect((await signedIn.case.claim({ caseId: id })).claimed).toBe(true);
+    expect((await signedIn.case.claim({ caseId: id })).claimed).toBe(false);
+    expect((await signedIn.case.list({})).map((c) => c.id)).toContain(id);
+    const contact = await signedIn.contact.get({ caseId: id });
+    expect(contact).toMatchObject({
+      signedIn: true,
+      accountPhone: "+13105550101",
+    });
+    // Signed out, the case is not on anyone's list.
+    expect(await client.case.list({})).toEqual([]);
   });
 });

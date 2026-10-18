@@ -65,6 +65,7 @@ bun run --cwd packages/db db:migrate >/dev/null
 
 # The web app, the auth origin and the phone app all use the same address.
 export BETTER_AUTH_URL="$SERVER_URL"
+export BETTER_AUTH_TRUSTED_ORIGINS="http://localhost:$PORT,http://127.0.0.1:$PORT"
 export EXPO_PUBLIC_SERVER_URL="$SERVER_URL"
 
 WEB_PID=""

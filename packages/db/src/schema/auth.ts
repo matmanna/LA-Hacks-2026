@@ -9,6 +9,9 @@ export const user = pgTable("user", {
   image: text("image"),
   // Better Auth anonymous plugin (B-11): audit first, sign up to act.
   isAnonymous: boolean("is_anonymous").default(false),
+  // Better Auth phone number plugin: sign in with a texted code.
+  phoneNumber: text("phone_number").unique(),
+  phoneNumberVerified: boolean("phone_number_verified").default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
