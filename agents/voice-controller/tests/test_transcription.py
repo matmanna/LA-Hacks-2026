@@ -119,12 +119,14 @@ class TranscriptionTests(unittest.IsolatedAsyncioTestCase):
     async def test_pcm_chunks_are_batched_without_including_role_or_credentials(self):
         await self.begin()
         for _ in range(5):
-            self.frames.send()
+            self.frames.send(6000)  # speech level, so the noise gate passes it
         chunk = await asyncio.wait_for(self.socket.outgoing.get(), 1)
         self.assertEqual(chunk["message_type"], "input_audio_chunk")
         self.assertEqual(chunk["sample_rate"], 16000)
         self.assertFalse(chunk["commit"])
-        self.assertEqual(base64.b64decode(chunk["audio_base_64"]), b"{\x00" * 1600)
+        self.assertEqual(
+            base64.b64decode(chunk["audio_base_64"]), (6000).to_bytes(2, "little") * 1600
+        )
         self.assertEqual(
             set(chunk), {"message_type", "audio_base_64", "sample_rate", "commit"}
         )
@@ -136,6 +138,8 @@ class TranscriptionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(kwargs["params"]["commit_strategy"], "vad")
         self.assertEqual(kwargs["params"]["language_code"], "en")
         self.assertEqual(kwargs["params"]["filter_background_audio"], "true")
+        self.assertEqual(kwargs["params"]["vad_threshold"], "0.6")
+        self.assertEqual(kwargs["params"]["min_speech_duration_ms"], "300")
 
     async def test_empty_or_repeated_events_cannot_duplicate_an_invitation(self):
         await self.begin()
@@ -274,3 +278,24 @@ class TranscriptionTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaisesRegex(RuntimeError, "Participant transcription unavailable"):
             await asyncio.wait_for(self.task, 1)
         self.assertTrue(self.socket.outgoing.empty())
+
+
+class NoiseGateTests(unittest.TestCase):
+    def test_quiet_background_becomes_silence_and_speech_passes_with_hold(self):
+        import array
+
+        from betterbill_voice.transcription import NoiseGate, frame_dbfs
+
+        def frame(amplitude):
+            return array.array("h", [amplitude, -amplitude] * 160).tobytes()
+
+        speech, background = frame(6000), frame(150)  # about -15 dBFS and -47 dBFS
+        self.assertGreater(frame_dbfs(speech), -40)
+        self.assertLess(frame_dbfs(background), -40)
+        gate = NoiseGate(-40, hold_frames=2)
+        self.assertEqual(gate(background), bytes(640))
+        self.assertEqual(gate(speech), speech)
+        # Word endings right after speech pass for the hold, then silence again.
+        self.assertEqual(gate(background), background)
+        self.assertEqual(gate(background), background)
+        self.assertEqual(gate(background), bytes(640))

@@ -38,6 +38,8 @@ Before dialing, create a fresh draft and verify the patient suffix in its approv
 
 Required worker variables: `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`,
 `ELEVENLABS_API_KEY`, `BB_VOICE_WORKER_KEY`, `BETTERBILL_VOICE_API_URL`.
+
+Optional background-noise tuning: `BB_NOISE_GATE_DBFS` (default `-40`; audio quieter than this reaches transcription as silence, so lower it if a soft-spoken patient gets cut off, raise it if room noise still counts as speech), `BB_STT_VAD_THRESHOLD` (default `0.6`) and `BB_STT_MIN_SPEECH_MS` (default `300`).
 The API origin is currently `http://127.0.0.1:3001`; HTTPS is required outside localhost.
 The worker calls `/api/voice` with `x-bb-voice-key`. Never expose these credentials to
 client code. Dispatch metadata contains only:
