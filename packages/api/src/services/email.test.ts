@@ -1,9 +1,14 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { isAllowlisted, sendEmail } from "./email";
 import { emailFromDraft } from "./send";
 
-const msg = { to: "inbox@example.com", subject: "Hi", text: "Body" };
+const msg = {
+  to: "inbox@example.com",
+  subject: "Hi",
+  text: "Body",
+  idempotencyKey: "letter_action1_hash1",
+};
 
 function reply(status: number, body: object) {
   return vi
@@ -16,59 +21,124 @@ afterEach(() => {
 });
 
 describe("sendEmail", () => {
+  beforeEach(() => {
+    vi.stubEnv("BB_FAKE_PROVIDERS", "");
+    vi.stubEnv("EMAIL_PROVIDER", "photon");
+    vi.stubEnv("PHOTON_API_KEY", "photon_test");
+    vi.stubEnv("PHOTON_PROJECT_ID", "project_test");
+    vi.stubEnv("EMAIL_FROM", "betterbill@example.com");
+  });
+
+  function photonReply() {
+    return vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(Response.json({ id: "sender", kind: "agent" }))
+      .mockResolvedValueOnce(Response.json({ id: "recipient", kind: "human" }))
+      .mockResolvedValueOnce(Response.json({ id: "space" }))
+      .mockResolvedValueOnce(Response.json({ id: "message" }, { status: 202 }));
+  }
+
   it("uses the fake provider only when BB_FAKE_PROVIDERS=1", async () => {
     vi.stubEnv("BB_FAKE_PROVIDERS", "1");
     const fetch = reply(200, { id: "x" });
-    const sent = await sendEmail(msg, { fetch });
-    expect(sent.provider).toBe("fake");
+    expect((await sendEmail(msg, { fetch })).provider).toBe("fake");
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it("refuses to send without Resend settings", async () => {
-    vi.stubEnv("BB_FAKE_PROVIDERS", "");
-    vi.stubEnv("RESEND_API_KEY", "");
-    await expect(sendEmail(msg, { fetch: reply(200, {}) })).rejects.toThrow(
-      "RESEND_API_KEY or EMAIL_FROM is not set",
-    );
-  });
+  it.each(["PHOTON_API_KEY", "PHOTON_PROJECT_ID", "EMAIL_FROM"])(
+    "requires %s before making requests",
+    async (name) => {
+      vi.stubEnv(name, "");
+      const fetch = photonReply();
+      await expect(sendEmail(msg, { fetch })).rejects.toThrow("is not set");
+      expect(fetch).not.toHaveBeenCalled();
+    },
+  );
 
-  it("posts to Resend and returns its message id", async () => {
-    vi.stubEnv("BB_FAKE_PROVIDERS", "");
-    vi.stubEnv("EMAIL_PROVIDER", "");
-    vi.stubEnv("RESEND_API_KEY", "re_test");
-    vi.stubEnv("EMAIL_FROM", "BetterBill <demo@example.com>");
-    const fetch = reply(200, { id: "msg_1" });
+  it("sends a new email with the exact recipient, subject and plain text", async () => {
+    const fetch = photonReply();
     expect(await sendEmail(msg, { fetch })).toEqual({
-      provider: "resend",
-      messageId: "msg_1",
+      provider: "photon",
+      messageId: "message",
     });
-    const [url, init] = fetch.mock.calls[0] ?? [];
-    expect(String(url)).toBe("https://api.resend.com/emails");
-    expect(new Headers(init?.headers).get("authorization")).toBe(
-      "Bearer re_test",
-    );
-    expect(JSON.parse(String(init?.body))).toMatchObject({
-      from: "BetterBill <demo@example.com>",
-      to: ["inbox@example.com"],
-      subject: "Hi",
-      text: "Body",
-    });
+    expect(fetch.mock.calls.map(([url]) => url)).toEqual([
+      "https://api.photon.codes/v1/projects/project_test/users",
+      "https://api.photon.codes/v1/projects/project_test/users",
+      "https://api.photon.codes/v1/projects/project_test/spaces",
+      "https://api.photon.codes/v1/projects/project_test/messages",
+    ]);
+    expect(
+      fetch.mock.calls.map(([, init]) => JSON.parse(String(init?.body))),
+    ).toEqual([
+      { platform: "email", handle: "betterbill@example.com" },
+      { platform: "email", handle: msg.to },
+      { platform: "email", participantIds: ["sender", "recipient"] },
+      {
+        spaceId: "space",
+        senderId: "sender",
+        content: { type: "text", format: "plain", text: msg.text },
+        email: { subject: msg.subject, to: [{ address: msg.to }] },
+      },
+    ]);
+    for (const [, init] of fetch.mock.calls) {
+      expect(init?.method).toBe("POST");
+      expect(new Headers(init?.headers).get("authorization")).toBe(
+        "Bearer photon_test",
+      );
+    }
   });
 
-  it("throws on a Resend error status", async () => {
-    vi.stubEnv("BB_FAKE_PROVIDERS", "");
-    vi.stubEnv("RESEND_API_KEY", "re_test");
-    vi.stubEnv("EMAIL_FROM", "demo@example.com");
-    await expect(sendEmail(msg, { fetch: reply(422, {}) })).rejects.toThrow(
-      "422",
+  it("reuses the same thread and message keys after an uncertain send", async () => {
+    const first = photonReply();
+    first
+      .mockReset()
+      .mockResolvedValueOnce(Response.json({ id: "sender", kind: "agent" }))
+      .mockResolvedValueOnce(Response.json({ id: "recipient" }))
+      .mockResolvedValueOnce(Response.json({ id: "space" }))
+      .mockRejectedValueOnce(new Error("timeout"));
+    await expect(sendEmail(msg, { fetch: first })).rejects.toThrow("timeout");
+    const retry = photonReply();
+    await sendEmail(msg, { fetch: retry });
+    const keys = (f: typeof first) =>
+      f.mock.calls.map(([, init]) =>
+        new Headers(init?.headers).get("idempotency-key"),
+      );
+    expect(keys(first)).toEqual(keys(retry));
+    expect(keys(retry)[2]).toBe(`${msg.idempotencyKey}:space`);
+    expect(keys(retry)[3]).toBe(`${msg.idempotencyKey}:message`);
+  });
+
+  it("rejects a sender whose domain is not owned by the project", async () => {
+    const fetch = reply(200, { id: "sender", kind: "human" });
+    await expect(sendEmail(msg, { fetch })).rejects.toThrow(
+      "verified Photon email domain",
     );
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([null, {}, { id: 7 }])(
+    "rejects malformed Photon responses without sending",
+    async (body) => {
+      const fetch = vi
+        .fn<typeof globalThis.fetch>()
+        .mockResolvedValue(Response.json(body));
+      await expect(sendEmail(msg, { fetch })).rejects.toThrow(
+        "invalid response",
+      );
+      expect(fetch).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it("reports provider errors without exposing their response body", async () => {
+    await expect(
+      sendEmail(msg, { fetch: reply(403, { secret: "private" }) }),
+    ).rejects.toThrow("Photon users request failed: 403");
   });
 
   it("does not guess at an unsupported provider", async () => {
-    vi.stubEnv("BB_FAKE_PROVIDERS", "");
-    vi.stubEnv("EMAIL_PROVIDER", "photon");
+    vi.stubEnv("EMAIL_PROVIDER", "unknown");
     await expect(sendEmail(msg, { fetch: reply(200, {}) })).rejects.toThrow(
-      "photon is not set up",
+      "unknown is not set up",
     );
   });
 });
