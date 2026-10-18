@@ -58,18 +58,22 @@ export default function Home() {
     }, [reload]),
   );
 
-  const cases = useQueries({
-    queries: saved.map((c) => ({
-      ...orpc.case.get.queryOptions({ input: { caseId: c.id } }),
-      refetchInterval: 10_000,
-    })),
-  });
   const summary = useQuery({
     ...orpc.case.summary.queryOptions({
       input: { caseIds: saved.map((c) => c.id) },
     }),
     enabled: saved.length > 0,
     refetchInterval: 10_000,
+  });
+  // Local storage can outlive a production database reset. The summary
+  // deliberately skips unknown ids, so only fetch details for cases it knows.
+  const serverCaseIds = new Set(summary.data?.order.map((c) => c.id) ?? []);
+  const cases = useQueries({
+    queries: saved.map((c) => ({
+      ...orpc.case.get.queryOptions({ input: { caseId: c.id } }),
+      enabled: serverCaseIds.has(c.id),
+      refetchInterval: 10_000,
+    })),
   });
   const totals = summary.data;
   const many = saved.length > 1 && totals !== undefined && totals.bills > 1;

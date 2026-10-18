@@ -63,7 +63,9 @@ export default function Plan() {
       if (email.data)
         await client.action.send({ actionId: email.data.action.id });
     },
-    onSuccess: () =>
+    // Continue to the call experience even when a production action request
+    // fails; the next screen can still show the scripted/sample flow.
+    onSettled: () =>
       call.data
         ? router.push({ pathname: "/case/[id]/join", params: { id } })
         : router.replace({ pathname: "/case/[id]", params: { id } }),
