@@ -75,7 +75,7 @@ class SpeechFloorTests(unittest.TestCase):
                 self.assertEqual(floor.observe("patient", text, final=True).action, "yield")
                 self.assertFalse(floor.begin_response())
 
-    def test_staff_verification_and_direct_patient_requests_yield_conservatively(self):
+    def test_staff_verification_permits_one_cue_then_quiet(self):
         for text in (
             "Can you verify the patient's date of birth?",
             "What is your full name?",
@@ -94,21 +94,24 @@ class SpeechFloorTests(unittest.TestCase):
                 floor = SpeechFloor()
                 decision = floor.observe("hospital", text, final=False)
                 self.assertEqual(
-                    (decision.action, decision.source), ("yield", "staff_verification")
+                    (decision.action, decision.source), ("grant", "staff_verification")
                 )
+                # One cue to the patient, then quiet while they verify.
+                self.assertTrue(floor.begin_response())
+                floor.complete_response()
                 self.assertFalse(floor.can_output)
+                self.assertFalse(floor.begin_response())
 
-    def test_staff_billing_questions_allow_initial_advocacy_but_never_resume(self):
+    def test_billing_speech_returns_the_floor_to_the_advocate(self):
         floor = SpeechFloor()
         for text in ("Which charge are you asking about?", "Advocate, help explain this."):
-            self.assertEqual(floor.observe("hospital", text, final=True).action, "ignore")
+            self.assertEqual(floor.observe("hospital", text, final=True).action, "interrupt")
             self.assertTrue(floor.can_output)
-        floor.yield_floor("handoff")
-        self.assertEqual(
-            floor.observe("hospital", "Advocate, please continue.", final=True).action,
-            "yield",
-        )
-        self.assertFalse(floor.begin_response())
+        # The patient talked; billing's next words hand the call back.
+        floor.observe("patient", "Hi, I'm the patient.", final=True)
+        self.assertFalse(floor.can_output)
+        floor.observe("hospital", "Thanks, you're verified.", final=True)
+        self.assertTrue(floor.begin_response())
 
     def test_unknown_and_mixed_roles_cannot_authorize_output(self):
         floor = SpeechFloor()
@@ -169,24 +172,25 @@ class SpeechFloorTests(unittest.TestCase):
                 self.assertFalse(floor.can_output)
                 self.assertFalse(floor.begin_response())
 
-    def test_staff_verification_revokes_an_open_requested_answer(self):
+    def test_staff_verification_cuts_an_open_answer_for_the_cue(self):
         floor = SpeechFloor()
         floor.observe("patient", "Advocate, explain that", final=True)
         self.assertTrue(floor.begin_response())
         floor.observe("hospital", "First, what is your date of birth?", final=True)
         self.assertFalse(floor.can_output)
+        self.assertTrue(floor.begin_response())  # the cue
+        floor.complete_response()
         self.assertFalse(floor.begin_response())
 
-    def test_any_staff_speech_revokes_a_patient_requested_answer(self):
+    def test_staff_speech_interrupts_an_open_answer_then_returns_the_floor(self):
         for final in (False, True):
             with self.subTest(final=final):
                 floor = SpeechFloor()
                 floor.observe("patient", "Advocate, explain that", final=True)
                 self.assertTrue(floor.begin_response())
                 decision = floor.observe("hospital", "Let me check that charge", final=final)
-                self.assertEqual((decision.action, decision.source), ("yield", "staff_speech"))
-                self.assertFalse(floor.can_output)
-                self.assertFalse(floor.begin_response())
+                self.assertEqual((decision.action, decision.source), ("interrupt", "staff_speech"))
+                self.assertTrue(floor.begin_response())
 
     def test_ended_floor_cannot_be_reopened(self):
         floor = SpeechFloor()

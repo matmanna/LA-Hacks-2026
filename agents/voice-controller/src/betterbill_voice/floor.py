@@ -97,11 +97,16 @@ class SpeechFloor:
             return FloorDecision("withdraw", "participation_declined")
         if role == "hospital":
             if _VERIFICATION.search(text):
-                return self.yield_floor("staff_verification")
-            if self.protected:
-                return self.yield_floor("staff_speech")
-            return FloorDecision("ignore", "staff_transcript")
+                # One cue tells the patient to answer, then quiet until billing moves on.
+                self.protected = self._pending = True
+                self._response_open = False
+                return FloorDecision("grant", "staff_verification")
+            # Billing moved on (or verification is done): the advocate leads again.
+            # Billing talking over the advocate stops it; it answers once they finish.
+            self.protected = self._pending = self._response_open = False
+            return FloorDecision("interrupt", "staff_speech")
 
+        # The advocate waits while the patient talks, until billing speaks next.
         decision = self.yield_floor("patient_commit" if final else "patient_partial")
         if final and address and not _NEGATION.search(text) and _REQUEST.match(address[1]):
             self._pending = True

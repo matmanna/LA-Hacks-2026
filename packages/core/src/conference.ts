@@ -32,7 +32,7 @@ export function buildConferenceIntroduction(vars: CallVars): string {
       : []),
     `I'll ask ${vars.hospital_name} billing to hold your account, email your itemized bill, and explain how to get your medical records.`,
     "They'll need to verify you, so answer them yourself.",
-    "Then I stay quiet. If you need me, say 'Advocate, can you help?'",
+    "Then I keep talking to billing for you. If you speak, I'll wait for you to finish.",
     "This call may be recorded and transcribed. Hanging up ends the call for everyone. Connecting billing now.",
   ].join(" ");
 }
@@ -53,7 +53,7 @@ export function renderConferenceScript(
       : "The patient's phone remains connected while billing answers. A phone connection does not verify that a human answered.",
     `The advocate tells billing:\n${CONFERENCE_OPENING}`,
     `After permission: I'm calling about account ending in ${vars.account_last4} at ${vars.hospital_name}. ${vars.ask}`,
-    `When billing needs to verify the patient, the advocate says once: "${PATIENT_CUE}" Then it stays silent. After that it speaks only when the patient asks, for example 'Advocate, can you help?' Each request permits one answer, then the advocate returns to silence. Staff requests, identity answers, silence, or a finished verification do not resume it. The advocate does not argue charges, challenge the patient's identity answers, infer approval, or agree to payments or settlements. If either person hangs up, the entire call ends.`,
+    `The advocate speaks for the patient and leads the call. When billing needs to verify the patient, it says once: "${PATIENT_CUE}" It waits while the patient answers, then continues with billing. If the patient speaks, it waits for them to finish. It does not argue charges, answer identity questions, infer approval, or agree to payments or settlements. If either person hangs up, the entire call ends.`,
     `Approved facts, only if the patient asks:\n${vars.case_context}`,
   ].join("\n\n");
 }

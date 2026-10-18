@@ -18,6 +18,7 @@ from .transcription import transcribe_participant
 
 log = logging.getLogger(__name__)
 RATE = 16000
+AUDIO_IDLE_SECS = 1.2  # ponytail: fixed pause; raise it if replies get cut mid-sentence.
 MAX_CALL_SECONDS = 0  # Zero disables our deadline; provider limits still apply.
 ELEVEN_API = "https://api.elevenlabs.io/v1"
 PHONE_DIAL_SECONDS = 35
@@ -94,6 +95,8 @@ class CallController:
         self.response_serial = 0
         self.last_response_complete = -1
         self.pending_request = None
+        self.idle_task = None
+        self.finished_early = False
         self.transcript_lock = asyncio.Lock()
         self.transcription_ready = {role: asyncio.Event() for role in ("patient", "hospital")}
         self.pending_context = []
@@ -653,6 +656,9 @@ class CallController:
             if reason != self.last_audio_diagnostic:
                 self.lifecycle("hosted_audio_turn", event_id=event_id, reason=reason)
                 self.last_audio_diagnostic = reason
+            if self.idle_task:
+                self.idle_task.cancel()
+            self.idle_task = self.spawn(self.audio_idle_boundary(), ai=True)
             pcm = pcm_event(event, enabled=enabled, interrupted_before=self.interrupted_before)
             if pcm:
                 self.response_pcm.extend(pcm)
@@ -678,31 +684,47 @@ class CallController:
             if event_id <= self.last_response_complete:
                 return
             self.last_response_complete = event_id
-            # Admit only the requested, completed answer; tools cannot leak later turns.
-            if self.response_requested and self.state.can_output and self.response_pcm:
-                self.audio_queue.put_nowait((bytes(self.response_pcm), self.generation))
-            self.response_pcm.clear()
-            self.response_requested = self.hosted_busy = False
-            self.response_serial += 1
-            self.floor.complete_response()
-            self.state.quiet = self.floor.quiet
-            self.lifecycle("advocate_response_completed", event_id=event_id)
-            pending, self.pending_request = self.pending_request, None
-            if (
-                pending
-                and pending[1] == self.generation
-                and not self.ai_disabled
-                and self.state.phase == "active"
-                and all(event.is_set() for event in self.transcription_ready.values())
-                and self.floor.begin_response()
-            ):
-                await self.request_response("patient", pending[0])
+            if self.finished_early:
+                # The audio pause already closed this response.
+                self.finished_early = False
+                return
+            await self.finish_response(event_id)
         elif kind == "user_transcript":
             transcription = event.get("user_transcription_event", {})
             event_id = transcription.get("event_id")
             # Hosted transcripts lack a trusted human role and never grant permission.
             self.lifecycle("hosted_user_transcript_received", event_id=event_id)
             self.last_audio_diagnostic = None
+
+    async def audio_idle_boundary(self) -> None:
+        # ElevenLabs sends agent_response_complete only after playback, but this
+        # controller plays only after completion. A pause in audio ends the reply.
+        await asyncio.sleep(AUDIO_IDLE_SECS)
+        self.idle_task = None
+        if self.hosted_busy:
+            self.finished_early = True
+            await self.finish_response("audio_idle")
+
+    async def finish_response(self, event_id) -> None:
+        # Admit only the requested, completed answer; tools cannot leak later turns.
+        if self.response_requested and self.state.can_output and self.response_pcm:
+            self.audio_queue.put_nowait((bytes(self.response_pcm), self.generation))
+        self.response_pcm.clear()
+        self.response_requested = self.hosted_busy = False
+        self.response_serial += 1
+        self.floor.complete_response()
+        self.state.quiet = self.floor.quiet
+        self.lifecycle("advocate_response_completed", event_id=event_id)
+        pending, self.pending_request = self.pending_request, None
+        if (
+            pending
+            and pending[1] == self.generation
+            and not self.ai_disabled
+            and self.state.phase == "active"
+            and all(event.is_set() for event in self.transcription_ready.values())
+            and self.floor.begin_response()
+        ):
+            await self.request_response(pending[2], pending[0])
 
     def yield_advocate(self, reason: str) -> None:
         self.floor.yield_floor(reason)
@@ -753,7 +775,7 @@ class CallController:
                 self.yield_advocate(decision.source)
                 self.spawn(self.disable_advocate())
                 return
-            if decision.action in {"yield", "grant"}:
+            if decision.action in {"yield", "grant", "interrupt"}:
                 # Observe before forwarding input: no model tool is needed to mute speech.
                 self.state.quiet = True
                 self.response_requested = False
@@ -793,9 +815,9 @@ class CallController:
             ):
                 await self.request_response(role, text)
             else:
-                if decision.action == "grant" and self.hosted_busy:
-                    # Keep the fresh invitation behind the old response boundary.
-                    self.pending_request = (text, self.generation)
+                if request and final and self.hosted_busy:
+                    # Answer once the old response boundary arrives.
+                    self.pending_request = (text, self.generation, role)
                     self.lifecycle("advocate_request_waiting_for_boundary", role=role)
                 await self.ws.send_json(context)
 
@@ -812,7 +834,10 @@ class CallController:
         async def deadline():
             await asyncio.sleep(45)
             if serial == self.response_serial and self.hosted_busy:
-                raise TimeoutError("Hosted response boundary was not received")
+                # Drop the stuck reply instead of shutting the advocate down.
+                self.lifecycle("response_boundary_missing")
+                self.finished_early = True
+                await self.finish_response("deadline")
 
         self.spawn(deadline(), ai=True)
 

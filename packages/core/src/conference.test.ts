@@ -32,7 +32,7 @@ describe("conference approval", () => {
     expect(introduction).toContain("Alex Morgan");
     expect(introduction).toContain("Example");
     expect(introduction).toContain("hold your account");
-    expect(introduction).toContain("Advocate, can you help?");
+    expect(introduction).toContain("I keep talking to billing for you");
     // The controller refuses over 45 s of audio. 114 words measured 46.7 s,
     // so stay well under with a long hospital name and long service names.
     const long = buildConferenceIntroduction({
@@ -41,7 +41,8 @@ describe("conference approval", () => {
       review_topics:
         "MRI LUMBAR SPINE W/O CONTRAST on September 14, 2026; ".repeat(3),
     });
-    expect(long.split(" ").length).toBeLessThan(75);
+    // 72 words measured 26.6 s; 90 words is about 33 s.
+    expect(long.split(" ").length).toBeLessThan(90);
     expect(
       renderConferenceScript(vars, "+13105550100", "+13105550101"),
     ).toContain(introduction);
@@ -70,6 +71,7 @@ describe("conference approval", () => {
       "account ending in 1234 at Example. Please review.",
     );
     expect(script).toContain(PATIENT_CUE);
+    expect(script).toContain("leads the call");
     expect(script).toContain("does not argue charges");
     expect(buildConferenceIntroduction(vars)).toContain("itemized bill");
     expect(buildConferenceIntroduction(vars)).toContain("answer them yourself");

@@ -147,7 +147,7 @@ export default function Call() {
           {stage !== "joined"
             ? copy.sub
             : conference
-              ? "You and billing are talking. Your advocate is listening."
+              ? "Your advocate is talking to billing for you. Jump in any time; it waits for you."
               : "Your advocate is asking for a hold, your itemized bill, and how to get your records."}
         </T>
       </View>
@@ -171,9 +171,8 @@ export default function Call() {
       {conference && stage === "joined" ? (
         <View className="rounded-[14px] border border-hairline px-3.5 py-3">
           <T className="text-[13px] text-slate-ink leading-[19px]">
-            Answer billing's questions yourself. Need help? Say "Advocate, can
-            you help?" It answers once, then listens again. Hanging up ends the
-            call.
+            When billing asks to verify you, answer them yourself. Your advocate
+            handles the rest. Hanging up ends the call.
           </T>
         </View>
       ) : null}

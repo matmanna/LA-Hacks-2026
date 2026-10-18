@@ -173,7 +173,7 @@ export default function Plan() {
             title="Your advocate calls billing"
             body={
               conference
-                ? "We call the test patient phone first, then billing. We ask for a hold, your itemized bill, and how to get your records. Answer billing yourself. Your advocate stays quiet unless you ask for help."
+                ? "We call the test patient phone first, then billing. We ask for a hold, your itemized bill, and how to get your records. You answer when billing verifies you. Your advocate handles the rest."
                 : !scripted
                   ? "It says it's automated and asks for a hold, your itemized bill, and how to get your records. It never agrees to pay."
                   : itemized

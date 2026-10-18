@@ -72,7 +72,7 @@ export default function Join() {
             {scripted
               ? "Your advocate waits on hold for you. When a billing rep answers, we call your phone so you can join. Hold times vary."
               : conference
-                ? 'We call the test patient phone first and explain the call, then dial billing. We ask for a hold, your itemized bill, and how to get your records. Answer billing yourself. Your advocate stays quiet unless you say "Advocate, can you help?"'
+                ? "We call the test patient phone first and explain the call, then dial billing. We ask for a hold, your itemized bill, and how to get your records. Answer billing yourself when they verify you. Your advocate handles the rest."
                 : "Our assistant calls the billing office now. It asks for a hold, your itemized bill, and how to get your records. It never agrees to pay. You don't need to be on the call."}
           </T>
         </View>

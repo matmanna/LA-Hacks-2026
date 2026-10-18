@@ -42,6 +42,23 @@ class PatientFloorTests(unittest.IsolatedAsyncioTestCase):
             }
         )
 
+    async def test_opening_plays_after_an_audio_pause_without_a_completion_event(self):
+        # ElevenLabs sends completion only after playback; the pause must release audio.
+        import betterbill_voice.controller as module
+
+        module.AUDIO_IDLE_SECS, before = 0.01, module.AUDIO_IDLE_SECS
+        try:
+            c = self.controller()
+            await self.audio(c)
+            self.assertTrue(c.audio_queue.empty())
+            await asyncio.sleep(0.05)
+            self.assertFalse(c.audio_queue.empty())
+            self.assertFalse(c.hosted_busy)
+            await self.complete(c)  # the late completion changes nothing
+            self.assertEqual(c.audio_queue.qsize(), 1)
+        finally:
+            module.AUDIO_IDLE_SECS = before
+
     async def test_verification_yields_without_model_tool_and_patient_answers_stay_silent(self):
         c = self.controller()
         await self.complete(c)
@@ -53,11 +70,10 @@ class PatientFloorTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(c.audio_queue.empty())
         self.assertEqual(c.ws.send_json.call_args.args[0]["type"], "contextual_update")
 
-    async def test_staff_and_mixed_transcript_cannot_authorize_a_reply(self):
+    async def test_mixed_transcript_cannot_authorize_a_reply(self):
         c = self.controller()
         await self.complete(c)
         await c.on_transcript("patient", "Yes", final=True)
-        await c.on_transcript("hospital", "Advocate, can you explain that?", final=True)
         await c.handle_event(
             {
                 "type": "user_transcript",
