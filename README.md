@@ -78,7 +78,7 @@ Honest limits: the team planted the seeded errors, so 22 of 22 shows the rules w
 | **Photon** | Use Photon to reach people | Approved letters go out through the Photon email API; calls ride a Photon SIP trunk imported into ElevenLabs[^photon] | Stable idempotency keys on retries; sends only to an allowlist, only after approval. Live calls over the Photon line verified; email inbox delivery not verified live |
 | **ElevenLabs** | ElevenLabs is load-bearing | Conversational AI agent places the billing call, then `call.status` pulls the transcript and a structured outcome (reference number, next step, follow-up date)[^elevenlabs] | Disclosure first, at most 3 items, no codes or ids spoken; script is rebuilt and compared to the approved one before dialing; 3 calls per 10 minutes. Live calls verified |
 | **Gemini** | Gemini is load-bearing | Drafts every letter from the flags; cleans up pasted text when the parser misses more than 30% of rows[^gemini] | A claim checker rejects any dollar amount Gemini did not get from the bill or the evidence; measured 4.1 to 5.4 s per letter on 4 bills (#84) |
-| **Tiger Data (MLH)** | Postgres on Tiger Data, actually used | Cases, bills, flags, actions and an append-only case event log[^tiger] | Schema changes reach the shared database only through committed migrations run by CI on `main` |
+| **Tiger Data (MLH)** | Use Tiger Data as BetterBill's server-side system of record | The API persists cases, bills, itemized lines, EOBs, evidence-backed flags, actions, hospital price/policy captures and the append-only case event log in PostgreSQL through Drizzle[^tiger] | The web and phone clients never connect to the database directly. Local development and pull-request CI use disposable Timescale/Postgres containers; a `main`-only CI job can run migrations against a shared Tiger Data URL supplied as the `DATABASE_URL_SHARED` secret. The repository does not expose deployment secrets, so a live production connection is supported by configuration but is not claimed as verified here |
 | **Paper** | Design fundamentals and craft | One design for web, iOS and Android, designed in Paper; the phone app was built frame by frame from it[^paper] | Shared tokens on web and native: ink balance card, mint savings, cobalt actions, Instrument Serif; tier badges never rely on color alone |
 
 ## Screens
@@ -198,6 +198,10 @@ packages/db     Drizzle schema, migrations, seed
 packages/ui     shadcn components plus BetterBill components (Money, TierBadge, EvidenceSheet, ApprovalSheet, ...)
 data/           Synthetic bills, Bill of the Month cases, hospital captures, regulations, eval results, wording rules
 ```
+
+### Tiger Data connection model
+
+BetterBill's application server creates the Drizzle client from the server-only `DATABASE_URL`. It stores the durable case state and audit history there; clients call the typed API and never receive database credentials. For development, `docker compose` starts a local Timescale/Postgres instance. Pull requests run migrations and integration tests against a fresh CI service container. On pushes to `main`, the `migrate-shared` workflow migrates the shared database only when GitHub's `DATABASE_URL_SHARED` secret is configured. That workflow is the repository's evidence of shared-database support; whether the currently deployed app is connected to a live Tiger Data instance depends on its private Vercel environment variables and is not verifiable from this repository.
 
 Rules for contributors: business logic in `packages/core`, thin routers, money in integer cents, no keys in client code. See [AGENTS.md](AGENTS.md) and [docs/plans/00-shared-context.md](docs/plans/00-shared-context.md).
 
