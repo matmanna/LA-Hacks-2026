@@ -19,6 +19,7 @@ export type AuthConfig = {
   POLAR_ACCESS_TOKEN?: string;
   POLAR_SUCCESS_URL?: string;
   POLAR_SERVER?: string;
+  PHONE_AUTH_BYPASS_CODE?: string;
 };
 
 // Polar is optional: the plugin is only enabled when both values are set.
@@ -90,6 +91,19 @@ export function createAuth(env: AuthConfig, database: Database) {
         expiresIn: 300,
         allowedAttempts: 3,
         sendOTP: async ({ phoneNumber: to, code }) => {
+          const bypassCode = env.PHONE_AUTH_BYPASS_CODE;
+          if (bypassCode) {
+            if (!/^\d{6}$/.test(bypassCode)) {
+              throw new Error(
+                "PHONE_AUTH_BYPASS_CODE must be exactly 6 digits",
+              );
+            }
+            await database
+              .update(schema.verification)
+              .set({ value: `${bypassCode}:0` })
+              .where(eq(schema.verification.identifier, to));
+            return;
+          }
           if (!canText(to)) {
             throw new APIError("BAD_REQUEST", {
               message: "This demo can only text numbers on the test list.",
