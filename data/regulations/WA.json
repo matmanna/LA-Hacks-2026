@@ -1,0 +1,53 @@
+{
+  "jurisdiction": "WA",
+  "title": "Washington charity care (RCW 70.170.060)",
+  "rules": [
+    {
+      "id": "wa-charity",
+      "title": "Free care to 300% FPL at large systems, 200% elsewhere; discounts to 400%",
+      "appliesWhen": {
+        "state": "WA"
+      },
+      "effect": {
+        "kind": "charity_care",
+        "tiers": {
+          "large_system": [
+            {
+              "fpl": [0, 300],
+              "discountPct": 100
+            },
+            {
+              "fpl": [301, 350],
+              "discountPct": 75
+            },
+            {
+              "fpl": [351, 400],
+              "discountPct": 50
+            }
+          ],
+          "other": [
+            {
+              "fpl": [0, 200],
+              "discountPct": 100
+            },
+            {
+              "fpl": [201, 250],
+              "discountPct": 75
+            },
+            {
+              "fpl": [251, 300],
+              "discountPct": 50
+            }
+          ]
+        }
+      },
+      "plain": "Washington hospitals must give free care up to 300% of the poverty line (200% at smaller hospitals), and 75% or 50% off above that, whether or not you have insurance.",
+      "citation": "RCW 70.170.060(5)",
+      "sourceUrl": "https://app.leg.wa.gov/RCW/default.aspx?cite=70.170.060",
+      "quote": "not more than 300 percent of the federal poverty level, adjusted for family size",
+      "notes": "Large system: owned by a system with 3+ acute hospitals, or large bed counts in certain counties (RCW 70.170.060(5)(a)). Applications within two years of service use income at application (10)(b). 75% and 50% discounts may be reduced for assets (5)(c).",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    }
+  ]
+}

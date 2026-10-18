@@ -1,0 +1,25 @@
+{
+  "jurisdiction": "IL",
+  "title": "Illinois Hospital Uninsured Patient Discount Act (210 ILCS 89)",
+  "rules": [
+    {
+      "id": "il-uninsured-discount",
+      "title": "Uninsured discounts up to 600% FPL (UNVERIFIED)",
+      "verified": false,
+      "appliesWhen": {
+        "state": "IL",
+        "insured": false,
+        "incomeFplMaxPct": 600
+      },
+      "effect": {
+        "kind": "charity_care"
+      },
+      "plain": "Illinois hospitals must discount bills for uninsured residents up to 600% of the poverty line, and give free care up to 200%. Not yet checked against the official text.",
+      "citation": "210 ILCS 89/10",
+      "sourceUrl": "https://ilga.gov/legislation/ilcs/documents/021000890K10.htm",
+      "quote": null,
+      "notes": "ilga.gov was down (503, then connection refused) on 2026-10-18. Figures from secondary summaries only: 600% FPL non-rural, 300% rural/critical access, 100% at 200% (125% rural), apply within 60 days. Do not use in the audit until verified.",
+      "capturedAt": "2026-10-18"
+    }
+  ]
+}

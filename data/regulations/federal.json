@@ -1,0 +1,115 @@
+{
+  "jurisdiction": "US",
+  "title": "Federal rules that apply in every state",
+  "rules": [
+    {
+      "id": "us-501r-fap",
+      "title": "Nonprofit hospitals must have a financial assistance policy",
+      "appliesWhen": {
+        "hospitalType": "nonprofit_501c3"
+      },
+      "effect": {
+        "kind": "assistance_policy"
+      },
+      "plain": "Nonprofit hospitals must have a written financial assistance policy and follow it.",
+      "citation": "26 U.S.C. 501(r)(4)",
+      "sourceUrl": "https://www.irs.gov/charities-non-profits/charitable-organizations/requirements-for-501c3-hospitals-under-the-affordable-care-act-section-501r",
+      "quote": "hospital organizations must meet the requirements imposed by Section 501(r) on a facility-by-facility basis",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "us-501r-agb",
+      "title": "Assistance-eligible patients pay no more than insured patients",
+      "appliesWhen": {
+        "hospitalType": "nonprofit_501c3",
+        "fapEligible": true
+      },
+      "effect": {
+        "kind": "charge_cap",
+        "cap": "amounts_generally_billed_to_insured"
+      },
+      "plain": "If you qualify for the hospital's assistance, you can't be charged more than it usually gets from insured patients.",
+      "citation": "26 U.S.C. 501(r)(5)",
+      "sourceUrl": "https://www.irs.gov/charities-non-profits/limitation-on-charges-section-501r5",
+      "quote": "to not more that the amount generally billed (AGB) to individuals who have insurance covering such care",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "us-501r-eca",
+      "title": "Waiting periods before harsh collections",
+      "appliesWhen": {
+        "hospitalType": "nonprofit_501c3"
+      },
+      "effect": {
+        "kind": "collections_limit",
+        "noEcaDays": 120,
+        "applicationPeriodDays": 240
+      },
+      "plain": "A nonprofit hospital must wait at least 120 days after the first bill before credit reporting, selling the debt or suing, and must accept assistance applications for 240 days.",
+      "citation": "26 U.S.C. 501(r)(6); 26 CFR 1.501(r)-6",
+      "sourceUrl": "https://www.irs.gov/charities-non-profits/billing-and-collections-section-501r6",
+      "quote": "refrains from initiating such ECAs for at least 120 days",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "us-nsa-emergency",
+      "title": "Out-of-network emergency care at in-network cost-sharing",
+      "appliesWhen": {
+        "insured": true,
+        "emergency": true,
+        "outOfNetwork": true,
+        "serviceOnOrAfter": "2022-01-01"
+      },
+      "effect": {
+        "kind": "cost_sharing_cap",
+        "cap": "in_network_cost_sharing"
+      },
+      "plain": "For emergency care, your plan can't charge you more than in-network cost-sharing, even at an out-of-network hospital, and you can't be billed for the difference.",
+      "citation": "42 U.S.C. 300gg-111(a)(1)(C)(ii) (No Surprises Act)",
+      "sourceUrl": "https://www.law.cornell.edu/uscode/text/42/300gg-111",
+      "quote": "the cost-sharing requirement is not greater than the requirement that would apply",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "us-nsa-gfe",
+      "title": "Self-pay estimate and the $400 dispute",
+      "appliesWhen": {
+        "insured": false,
+        "scheduledCare": true,
+        "serviceOnOrAfter": "2022-01-01"
+      },
+      "effect": {
+        "kind": "dispute_right",
+        "thresholdCents": 40000
+      },
+      "plain": "If you're uninsured or self-pay and your bill is at least $400 above the good faith estimate, you may be able to dispute it.",
+      "citation": "No Surprises Act, patient-provider dispute resolution",
+      "sourceUrl": "https://www.cms.gov/medical-bill-rights",
+      "quote": "You may be able to dispute your bill if it's at least $400 more than the estimate.",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "us-medicare-itemized",
+      "title": "Medicare patients: free itemized statement within 30 days",
+      "appliesWhen": {
+        "payer": "medicare"
+      },
+      "effect": {
+        "kind": "itemized_right",
+        "responseDays": 30,
+        "penaltyPerFailureCents": 10000
+      },
+      "plain": "If Medicare paid for your care, you can ask in writing for an itemized statement, and the provider has 30 days to send it.",
+      "citation": "42 U.S.C. 1395b-7(b)(2)",
+      "sourceUrl": "https://www.law.cornell.edu/uscode/text/42/1395b-7",
+      "quote": "Not later than 30 days after the date on which a request under paragraph (1) has been made",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    }
+  ]
+}

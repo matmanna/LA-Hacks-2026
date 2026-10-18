@@ -1,0 +1,102 @@
+{
+  "jurisdiction": "CA",
+  "title": "California Hospital Fair Pricing Act (Health and Safety Code 127400-127446)",
+  "asOf": "Text as amended by AB 2297, effective 2025-01-01",
+  "rules": [
+    {
+      "id": "ca-fpq",
+      "title": "Who qualifies: self-pay or high medical costs, income at or under 400% FPL",
+      "appliesWhen": {
+        "state": "CA",
+        "incomeFplMaxPct": 400,
+        "selfPayOrHighCosts": true
+      },
+      "effect": {
+        "kind": "eligibility"
+      },
+      "plain": "If you're uninsured (or your out-of-pocket costs are high) and your family income is at or under 400% of the poverty line, California hospitals must offer you discounted payment or charity care.",
+      "citation": "Cal. Health & Safety Code 127400(c), 127405(a)(1)(A)",
+      "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127400",
+      "quote": "A patient who has a family income that does not exceed 400 percent of the federal poverty level.",
+      "notes": "High medical costs: out-of-pocket costs at the hospital over 10% of family income (127400(g)). Rural hospitals may set lower limits (127405(a)(2)).",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "ca-cap",
+      "title": "Charge cap: what Medicare or Medi-Cal would pay",
+      "appliesWhen": {
+        "state": "CA",
+        "incomeFplMaxPct": 400,
+        "eligibleDiscountPolicy": true
+      },
+      "effect": {
+        "kind": "charge_cap",
+        "cap": "greater_of_medicare_or_medical"
+      },
+      "plain": "If you qualify, the hospital can only expect what Medicare or Medi-Cal would pay for your care, whichever is more.",
+      "citation": "Cal. Health & Safety Code 127405(d)(1)",
+      "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127405",
+      "quote": "from Medicare or Medi-Cal, whichever is greater",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "ca-no-deadline",
+      "title": "No deadline to apply, assets not counted",
+      "appliesWhen": {
+        "state": "CA"
+      },
+      "effect": {
+        "kind": "application_rules",
+        "assetsConsidered": false,
+        "timeLimit": null,
+        "proofOfIncome": ["pay stubs", "tax returns"]
+      },
+      "plain": "There's no deadline to apply, the hospital can't count your savings, and pay stubs or a tax return are enough proof of income.",
+      "citation": "Cal. Health & Safety Code 127405(b)(1), (e)(1), (e)(3)",
+      "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127405",
+      "quote": "A hospital shall not impose time limits for applying for charity care or discounted payments",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "ca-payment-plan",
+      "title": "Interest-free payment plan, at most 10% of monthly income",
+      "appliesWhen": {
+        "state": "CA",
+        "eligibleDiscountPolicy": true
+      },
+      "effect": {
+        "kind": "payment_plan",
+        "interest": 0,
+        "maxMonthlyPctOfIncome": 10
+      },
+      "plain": "If you qualify, you can pay over time with no interest. If you can't agree on a plan, payments are capped at 10% of your monthly family income after essential expenses.",
+      "citation": "Cal. Health & Safety Code 127400(i), 127405(c), 127425(i)",
+      "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127425",
+      "quote": "shall be interest free",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "ca-collections",
+      "title": "No credit reporting; no lawsuit before 180 days",
+      "appliesWhen": {
+        "state": "CA"
+      },
+      "effect": {
+        "kind": "collections_limit",
+        "creditReporting": false,
+        "noLawsuitDays": 180,
+        "noWageGarnishOrHomeLienForEligible": true
+      },
+      "plain": "California hospitals and their collectors can't report your hospital debt to credit bureaus, can't sue within 180 days of the first bill, and can't garnish wages or put liens on your home if you qualify for assistance.",
+      "citation": "Cal. Health & Safety Code 127425(f), (h)",
+      "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127425",
+      "quote": "Report adverse information to a consumer credit reporting agency.",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    }
+  ]
+}
