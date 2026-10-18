@@ -16,8 +16,8 @@ export const Route = createFileRoute("/case/$id/activity")({
   component: ActivityPage,
 });
 
-// A owns the transcript format. Until A defines turns, only lines that start
-// with "agent:" or "billing:" are shown as turns.
+// call.status returns the transcript as "agent:" / "billing:" lines and the
+// outcome as a CallOutcome JSON string.
 function parseTurns(transcript: string | null) {
   if (!transcript) return [];
   return transcript.split("\n").flatMap((line) => {
@@ -33,6 +33,31 @@ function parseTurns(transcript: string | null) {
   });
 }
 
+function parseOutcome(outcome: string | null) {
+  if (!outcome) return null;
+  try {
+    return JSON.parse(outcome) as {
+      referenceNumber: string | null;
+      nextStep: string | null;
+      followUpDate: string | null;
+      source: "live" | "recorded_fallback";
+      recordedAt?: string;
+    };
+  } catch {
+    return null;
+  }
+}
+
+const CARD_STATUS = {
+  ringing: "ringing",
+  in_progress: "in_progress",
+  done: "ended",
+  no_consent: "ended",
+  failed: "failed",
+} as const;
+
+const LIVE_CALL = new Set(["ringing", "in_progress"]);
+
 function ActivityPage() {
   const { id } = Route.useParams();
   const events = useQuery(
@@ -41,18 +66,26 @@ function ActivityPage() {
   const detail = useQuery(
     orpc.case.get.queryOptions({ input: { caseId: id } }),
   );
-  const callAction = detail.data?.actions.find((a) => a.kind === "call");
+  const callAction = detail.data?.actions
+    .filter((a) => a.kind === "call" && a.approvedAt !== null)
+    .at(-1);
   const call = useQuery({
     ...orpc.call.status.queryOptions({
       input: { callId: `call-${callAction?.id ?? ""}` },
     }),
     enabled: Boolean(callAction),
+    refetchInterval: (query) =>
+      LIVE_CALL.has(query.state.data?.status ?? "") ? 3000 : false,
   });
 
   const pending = detail.data?.actions.find(
-    (a) => a.approvedAt !== null && a.outcome === null,
+    (a) => a.approvedAt !== null && a.outcome === null && a.kind !== "call",
   );
   const turns = parseTurns(call.data?.transcript ?? null);
+  const outcome = parseOutcome(call.data?.outcome ?? null);
+  const cardStatus =
+    CARD_STATUS[call.data?.status as keyof typeof CARD_STATUS] ?? null;
+  const recorded = outcome?.source === "recorded_fallback";
 
   return (
     <>
@@ -86,14 +119,32 @@ function ActivityPage() {
             }))}
           />
         )}
-        {callAction && turns.length > 0 ? (
-          <CallTranscriptCard
-            status={call.data?.outcome ? "ended" : "in_progress"}
-            turns={turns}
-            outcome={
-              call.data?.outcome ? { nextStep: call.data.outcome } : undefined
-            }
-          />
+        {callAction && cardStatus ? (
+          <div className="space-y-2" aria-live="polite">
+            <CallTranscriptCard
+              status={cardStatus}
+              recorded={recorded}
+              turns={turns}
+              outcome={
+                outcome
+                  ? {
+                      referenceNumber: outcome.referenceNumber ?? undefined,
+                      nextStep: outcome.nextStep ?? undefined,
+                      followUpBy: outcome.followUpDate ?? undefined,
+                    }
+                  : undefined
+              }
+            />
+            {recorded ? (
+              <p className="text-muted-foreground text-xs leading-4">
+                Recorded rehearsal call
+                {outcome?.recordedAt
+                  ? ` from ${new Date(outcome.recordedAt).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}`
+                  : ""}
+                . The live call did not connect.
+              </p>
+            ) : null}
+          </div>
         ) : null}
         <p className="pb-6 text-center text-muted-foreground text-xs leading-4">
           BetterBill is informational, not legal or medical advice.
