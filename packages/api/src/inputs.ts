@@ -45,4 +45,13 @@ export const DraftLetterInput = z.object({
 
 export const ActionIdInput = z.object({ actionId: z.string() });
 
+// cancel: true withdraws the draft instead, so the 16 binding procedure names
+// stay as they are.
+export const ApproveInput = z.object({
+  actionId: z.string(),
+  draftHash: z.string(),
+  consent: z.boolean().optional(),
+  cancel: z.boolean().optional(),
+});
+
 export const CallIdInput = z.object({ callId: z.string() });

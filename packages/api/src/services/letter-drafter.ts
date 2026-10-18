@@ -4,7 +4,6 @@
 import {
   type Action,
   approvalRef,
-  type CaseStatus,
   checkLetterClaims,
   type Flag,
   fallbackModelOutput,
@@ -13,10 +12,8 @@ import {
   type LetterModelOutput,
   LetterModelOutputSchema,
   type Line,
-  nextStatus,
   renderLetter,
   sha256Hex,
-  TransitionError,
 } from "@betterbill/core";
 import type { Database } from "@betterbill/db";
 import { action as actionTable } from "@betterbill/db/schema/index";
@@ -30,6 +27,7 @@ import {
   loadBill,
   setStatus,
 } from "../repo/cases";
+import { checkTransition } from "./actions";
 import { geminiJson } from "./gemini";
 
 export const LETTER_SYSTEM_PROMPT =
@@ -159,15 +157,11 @@ export async function draftLetter(
     });
   }
 
-  let status: CaseStatus;
-  try {
-    status = nextStatus(row.status as CaseStatus, "action.drafted");
-  } catch (error) {
-    if (!(error instanceof TransitionError)) throw error;
-    throw new ORPCError("CONFLICT", {
-      message: "This case is not ready for a letter yet.",
-    });
-  }
+  const status = checkTransition(
+    row.status,
+    "action.drafted",
+    "This case is not ready for a letter yet.",
+  );
 
   const { bill } = loaded;
   const { out, claims, usedFallback } = await chooseLetterOutput({

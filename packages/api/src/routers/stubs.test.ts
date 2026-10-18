@@ -39,7 +39,7 @@ describe("procedure stubs", () => {
     );
   });
 
-  // case, bill, audit, event and eval are real and covered by the
+  // case, bill, audit, action.approve, event and eval are real and covered by the
   // *.int.test.ts and reader tests.
   it("assistance, action, call stubs return their declared shapes", async () => {
     Assistance.parse(
@@ -50,7 +50,6 @@ describe("procedure stubs", () => {
       }),
     );
     const actionId = "action-test";
-    Action.parse(await client.action.approve({ actionId }));
     Action.parse(await client.action.send({ actionId }));
     const call = CallStarted.parse(await client.call.start({ actionId }));
     CallStatus.parse(await client.call.status({ callId: call.callId }));
