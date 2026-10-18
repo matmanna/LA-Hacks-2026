@@ -6,7 +6,7 @@ import { Button } from "@betterbill/ui/components/button";
 import { cn } from "@betterbill/ui/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { BadgeCheck, FileCheck2, ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { useStartSample } from "@/hooks/use-start-sample";
 import { ArrowSlide } from "./arrow-slide";
@@ -17,6 +17,7 @@ import {
   FALLBACK_FLAGS,
 } from "./demo-phone";
 import { PortedEdge } from "./edge";
+import { HeroVideo } from "./hero-video";
 import { useMediaQuery, usePrefersReducedMotion } from "./motion";
 import { Phone3D } from "./phone-3d";
 
@@ -53,8 +54,26 @@ const TRUST = [
   [FileCheck2, "Line by line, not a summary"],
 ] as const;
 
+function TrustList({ className }: { className: string }) {
+  return (
+    <ul className={`flex ${className}`}>
+      {TRUST.map(([Icon, label]) => (
+        <li key={label} className="flex items-start gap-2 text-sm leading-5">
+          <Icon
+            className="mt-0.5 size-4 shrink-0 text-primary"
+            strokeWidth={1.75}
+            aria-hidden="true"
+          />
+          {label}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function Hero({ sample }: { sample: HeroSample | null }) {
   const start = useStartSample();
+  const freeRef = useRef<HTMLParagraphElement>(null);
   const wide = useMediaQuery("(min-width: 1024px)");
   const balance = sample
     ? { hospitalName: sample.hospitalName, ...sample.balance }
@@ -78,45 +97,54 @@ export function Hero({ sample }: { sample: HeroSample | null }) {
   return (
     <section className="overflow-hidden px-5 pt-10 pb-16 md:px-8 lg:pt-16 lg:pb-24">
       <div className="mx-auto max-w-6xl lg:grid lg:grid-cols-12 lg:items-center lg:gap-6">
-        <div className="lg:col-span-6">
-          <h1 className="text-balance font-serif text-[40px] leading-[44px] tracking-[-0.01em] lg:text-[64px] lg:leading-[68px]">
-            Your hospital bill, checked{" "}
-            <span className="relative inline-block">
-              line by line.
-              <img
-                src="/marks/underline.svg"
-                alt=""
-                aria-hidden="true"
-                className="pointer-events-none absolute -bottom-1 left-0 w-full"
-              />
-            </span>
-          </h1>
-          <p className="mt-5 max-w-[52ch] text-base text-muted-foreground leading-6 lg:text-lg lg:leading-7">
-            Snap a photo or paste the text. BetterBill reads every charge, shows
-            what looks wrong with the proof, drafts the letter, and can make the
-            call. Nothing is sent until you approve it.
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button
-              className="w-full sm:w-auto"
-              nativeButton={false}
-              render={<Link to="/check" />}
+        <div className="lg:col-span-6 lg:flex lg:flex-col lg:justify-between lg:self-stretch lg:py-6">
+          <div className="xl:max-w-[480px]">
+            <h1 className="text-balance font-serif text-[40px] leading-[44px] tracking-[-0.01em] lg:text-[64px] lg:leading-[68px]">
+              Your hospital bill, checked{" "}
+              <span className="relative inline-block">
+                line by line.
+                <img
+                  src="/marks/underline.svg"
+                  alt=""
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -bottom-1 left-0 w-full"
+                />
+              </span>
+            </h1>
+            <p className="mt-5 max-w-[52ch] text-base text-muted-foreground leading-6 lg:text-lg lg:leading-7">
+              Snap a photo or paste the text. BetterBill reads every charge,
+              shows what looks wrong with the proof, drafts the letter, and can
+              make the call. Nothing is sent until you approve it.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Button
+                className="w-full sm:w-auto"
+                nativeButton={false}
+                render={<Link to="/check" />}
+              >
+                Check my bill
+                <ArrowSlide />
+              </Button>
+              <Button
+                variant="secondary"
+                className="w-full sm:w-auto"
+                disabled={start.pending}
+                onClick={start.start}
+              >
+                Try a sample bill
+              </Button>
+            </div>
+            <p
+              ref={freeRef}
+              className="mt-4 text-muted-foreground text-xs leading-4"
             >
-              Check my bill
-              <ArrowSlide />
-            </Button>
-            <Button
-              variant="secondary"
-              className="w-full sm:w-auto"
-              disabled={start.pending}
-              onClick={start.start}
-            >
-              Try a sample bill
-            </Button>
+              Free. No account needed to see your results.
+            </p>
           </div>
-          <p className="mt-4 text-muted-foreground text-xs leading-4">
-            Free. No account needed to see your results.
-          </p>
+          <div className="mt-10 hidden items-end gap-6 lg:flex xl:max-w-[480px]">
+            <HeroVideo anchor={freeRef} />
+            <TrustList className="flex-col gap-2.5 pb-1" />
+          </div>
         </div>
 
         <div className="mt-14 lg:col-span-6 lg:mt-0">
@@ -201,18 +229,9 @@ export function Hero({ sample }: { sample: HeroSample | null }) {
           </p>
         </div>
       </div>
-      <ul className="mx-auto mt-12 flex max-w-6xl flex-col gap-3 border-t pt-6 sm:flex-row sm:flex-wrap sm:gap-x-10 lg:mt-16">
-        {TRUST.map(([Icon, label]) => (
-          <li key={label} className="flex items-start gap-2 text-sm leading-5">
-            <Icon
-              className="mt-0.5 size-4 shrink-0 text-primary"
-              strokeWidth={1.75}
-              aria-hidden="true"
-            />
-            {label}
-          </li>
-        ))}
-      </ul>
+      <div className="mx-auto mt-12 max-w-6xl border-t pt-6 lg:hidden">
+        <TrustList className="flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-10" />
+      </div>
     </section>
   );
 }
