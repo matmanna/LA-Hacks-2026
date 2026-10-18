@@ -24,6 +24,9 @@ const PATHS = {
     "M8 12h8",
   ],
   user: ["M4 21a8 8 0 0116 0"],
+  mapPin: [
+    "M20 10c0 5-5.5 10.2-7.4 11.8a1 1 0 01-1.2 0C9.5 20.2 4 15 4 10a8 8 0 0116 0",
+  ],
   alert: ["M12 8v5M12 16.5v.01"],
   dash: ["M7 12h10"],
   doc: ["M6 3h9l3 3v15H6z", "M9 9h6M9 13h6M9 17h3"],
@@ -91,6 +94,7 @@ export function Icon({
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
       {name === "user" ? <Circle cx={12} cy={8} r={4} {...common} /> : null}
+      {name === "mapPin" ? <Circle cx={12} cy={10} r={3} {...common} /> : null}
       {name === "alert" ? <Circle cx={12} cy={12} r={9} {...common} /> : null}
       {name === "badgeCheck" ? (
         <>

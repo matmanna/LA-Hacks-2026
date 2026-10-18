@@ -10,6 +10,7 @@ export { EditLineSheet } from "./edit-line-sheet";
 export { Icon, type IconName } from "./icon";
 export { LookupCard } from "./lookup-card";
 export { Money } from "./money";
+export { PriceMap } from "./price-map";
 export { Progress } from "./progress";
 export { Receipt } from "./receipt";
 export { Row } from "./row";

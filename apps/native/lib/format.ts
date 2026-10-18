@@ -40,3 +40,21 @@ const day = new Intl.DateTimeFormat("en-US", {
 export function serviceDay(date: string | null) {
   return date ? day.format(new Date(`${date}T00:00:00Z`)) : null;
 }
+
+// Captures are stamped in UTC; the team captured them in Los Angeles.
+const capturedFormat = (() => {
+  try {
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      timeZone: "America/Los_Angeles",
+    });
+  } catch {
+    return day;
+  }
+})();
+
+// "2026-10-18T00:55:12Z" -> "Oct 17"
+export function capturedDay(iso: string) {
+  return capturedFormat.format(new Date(iso));
+}
