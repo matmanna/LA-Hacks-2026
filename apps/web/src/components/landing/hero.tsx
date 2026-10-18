@@ -56,6 +56,7 @@ const TRUST = [
 
 export function Hero({ sample }: { sample: HeroSample | null }) {
   const start = useStartSample();
+  const [videoW, setVideoW] = useState(0);
   const freeRef = useRef<HTMLParagraphElement>(null);
   const wide = useMediaQuery("(min-width: 1024px)");
   const balance = sample
@@ -206,9 +207,12 @@ export function Hero({ sample }: { sample: HeroSample | null }) {
           </p>
         </div>
       </div>
-      <div className="mx-auto mt-12 max-w-6xl border-t pt-6 lg:mt-16 lg:flex lg:items-end lg:gap-10">
-        <HeroVideo anchor={freeRef} />
-        <ul className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-10 lg:flex-nowrap lg:items-center lg:pb-1">
+      <div className="relative mx-auto mt-12 max-w-6xl border-t pt-6 lg:mt-16">
+        <HeroVideo anchor={freeRef} onWidth={setVideoW} />
+        <ul
+          className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-10 lg:flex-nowrap"
+          style={{ paddingLeft: wide ? videoW + 40 : undefined }}
+        >
           {TRUST.map(([Icon, label]) => (
             <li
               key={label}

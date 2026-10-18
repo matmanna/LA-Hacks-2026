@@ -12,8 +12,10 @@ const MAX_W = 400;
 // screen, so it sits in the first screen. Width follows at 16:9.
 export function HeroVideo({
   anchor,
+  onWidth,
 }: {
   anchor: RefObject<HTMLElement | null>;
+  onWidth: (width: number) => void;
 }) {
   const [width, setWidth] = useState(MIN_W);
   const [started, setStarted] = useState(false);
@@ -57,7 +59,9 @@ export function HeroVideo({
       const bottom = el.getBoundingClientRect().bottom + window.scrollY;
       const room = window.innerHeight - bottom;
       const h = Math.max(0, room) * 0.6;
-      setWidth(Math.round(Math.min(MAX_W, Math.max(MIN_W, (h * 16) / 9))));
+      const w = Math.round(Math.min(MAX_W, Math.max(MIN_W, (h * 16) / 9)));
+      setWidth(w);
+      onWidth(w);
     }
     measure();
     // Layout shifts once fonts load and the page settles. Measure again.
@@ -68,11 +72,11 @@ export function HeroVideo({
       ro.disconnect();
       window.removeEventListener("resize", measure);
     };
-  }, [anchor]);
+  }, [anchor, onWidth]);
 
   return (
     <div
-      className="relative hidden shrink-0 overflow-hidden rounded-xl border bg-ink shadow-card lg:block"
+      className="absolute bottom-0 left-0 hidden overflow-hidden rounded-xl border bg-ink shadow-card lg:block"
       style={{ width, aspectRatio: "16 / 9" }}
     >
       <iframe
