@@ -15,6 +15,7 @@ import {
   type IconName,
   Money,
   PIN_STEP_MS,
+  PriceLegend,
   PriceMap,
   T,
 } from "@/components/bb";
@@ -103,7 +104,7 @@ export default function Prices() {
             origin={origin}
             here={origin.here}
             onSelect={openHospital}
-            insets={{ top: insets.top + 130, bottom: sheet + 16 }}
+            insets={{ top: insets.top + 160, bottom: sheet + 16 }}
           />
         ) : null}
       </View>
@@ -145,6 +146,11 @@ export default function Prices() {
             </Pressable>
           ))}
         </ScrollView>
+        {list.length > 0 ? (
+          <View className="px-4">
+            <PriceLegend kind="hospital" />
+          </View>
+        ) : null}
       </View>
 
       {area > 0 ? (
@@ -173,7 +179,9 @@ export default function Prices() {
                   weight="semibold"
                   className="text-[22px] leading-7 tracking-[-0.01em]"
                 >
-                  {`${list.length} ${list.length === 1 ? "hospital" : "hospitals"} near you`}
+                  {hospitals.data
+                    ? `${list.length} ${list.length === 1 ? "hospital" : "hospitals"} near you`
+                    : "Finding hospitals near you…"}
                 </T>
                 <View className="mt-0.5 flex-row flex-wrap items-center gap-x-1.5">
                   <T className="text-[13px] text-muted leading-[18px]">
