@@ -27,6 +27,10 @@ function StackLayout() {
         options={{ headerShown: true, title: "Your bill" }}
       />
       <Stack.Screen
+        name="case/[id]/join"
+        options={{ presentation: "transparentModal", animation: "fade" }}
+      />
+      <Stack.Screen
         name="account"
         options={{ headerShown: true, title: "Account" }}
       />
