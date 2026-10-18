@@ -1,3 +1,47 @@
 @import "tailwindcss";
 @import "uniwind";
 @import "heroui-native/styles";
+
+/* BetterBill tokens (docs/plans/00-shared-context.md section 8.1), same names
+   as the Paper file. heroui's own names (background, foreground, muted,
+   accent, border, danger, success) are mapped below. */
+@theme {
+  --color-ink: #0b1b2b;
+  --color-ink-soft: #13283d;
+  --color-ink-muted: #b9c4d0;
+  --color-paper: #f7f5ef;
+  --color-hairline: #e3e8ef;
+  --color-wash: #f4f6fa;
+  --color-secondary: #eef2ff;
+  --color-secondary-ink: #1e3a8a;
+  --color-mint: #0f9d76;
+  --color-mint-soft: #d1fae5;
+  --color-mint-ink: #065f46;
+  --color-coral: #e5484d;
+  --color-coral-soft: #fdecec;
+  --color-coral-ink: #b4232a;
+  --color-amber-soft: #fef3c7;
+  --color-amber-ink: #92400e;
+  --color-slate-soft: #eef2f6;
+  --color-slate-ink: #334155;
+}
+
+@layer theme {
+  :root {
+    @variant light {
+      --background: #ffffff;
+      --foreground: #0b1b2b;
+      --surface: #ffffff;
+      --surface-secondary: #f4f6fa;
+      --muted: #5b6b7c;
+      --accent: #1e4ed8;
+      --accent-foreground: #ffffff;
+      --border: #e3e8ef;
+      --separator: #e3e8ef;
+      --link: #1e4ed8;
+      --focus: #1e4ed8;
+      --danger: #e5484d;
+      --success: #0f9d76;
+    }
+  }
+}

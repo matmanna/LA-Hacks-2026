@@ -11,7 +11,7 @@ import { SignUp } from "@/components/sign-up";
 import { authClient } from "@/lib/auth-client";
 import { orpc, queryClient } from "@/utils/orpc";
 
-import { ENV } from "../../src/env";
+import { ENV } from "../src/env";
 
 export default function Account() {
   const healthCheck = useQuery(orpc.healthCheck.queryOptions());
