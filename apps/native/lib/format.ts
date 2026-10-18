@@ -36,7 +36,15 @@ const PLAIN: Record<string, string> = {
   "81003": "Urine test",
 };
 
-export function lineName(line: { code: string | null; description: string }) {
+export function lineName(line: {
+  code: string | null;
+  description: string;
+  userEdited?: boolean;
+}) {
+  // A name the user typed wins. Printed descriptions are upper case, so an
+  // edited line that kept its printed text still gets the plain name.
+  const typed = line.description !== line.description.toUpperCase();
+  if (line.userEdited && typed) return line.description;
   const plain = line.code ? PLAIN[line.code] : undefined;
   if (plain) return plain;
   const text = line.description.trim().toLowerCase();

@@ -1,5 +1,11 @@
-export { BillMock, type MockLine, SAMPLE_PRINT } from "./bill-mock";
+export {
+  BillMock,
+  type MockLine,
+  printedLine,
+  SAMPLE_PRINT,
+} from "./bill-mock";
 export { Button } from "./button";
+export { EditLineSheet } from "./edit-line-sheet";
 export { Icon, type IconName } from "./icon";
 export { Money } from "./money";
 export { Row } from "./row";

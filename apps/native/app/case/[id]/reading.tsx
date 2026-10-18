@@ -1,5 +1,3 @@
-import type { Line } from "@betterbill/core";
-import { moneyParts } from "@betterbill/core/money";
 import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { cn } from "heroui-native";
@@ -13,7 +11,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { BillMock, Icon, Money, Screen, T } from "@/components/bb";
+import { BillMock, Icon, Money, printedLine, Screen, T } from "@/components/bb";
 import { errorMessage } from "@/lib/errors";
 import { lineName, serviceDay } from "@/lib/format";
 import { peekPages, takePages } from "@/lib/pending";
@@ -21,17 +19,6 @@ import { client, orpc } from "@/utils/orpc";
 
 const SHOWN = 4; // lines revealed before moving on
 const STEP_MS = 900;
-
-function printed(line: Line) {
-  const d = line.serviceDate?.slice(5).replace("-", "/") ?? "";
-  const p = moneyParts(line.chargeCents);
-  return {
-    text: [d, line.code, line.description.toUpperCase()]
-      .filter(Boolean)
-      .join(" "),
-    amount: `${p.dollars}.${p.cents}`,
-  };
-}
 
 // L2 Reading: shows the bill being read, then the first lines we found, then
 // moves on to the lines for the user to confirm.
@@ -138,7 +125,7 @@ export default function Reading() {
             size="md"
             className="w-[300px]"
             lines={lines.slice(0, 8).map((l, i) => ({
-              ...printed(l),
+              ...printedLine(l),
               state:
                 i < shown - 1
                   ? "read"
@@ -220,9 +207,8 @@ export default function Reading() {
   );
 }
 
-// Lines go to the confirm screen (PR 3); until then the case screen.
 function next(id: string) {
-  router.replace({ pathname: "/case/[id]", params: { id } });
+  router.replace({ pathname: "/case/[id]/confirm", params: { id } });
 }
 
 function Step({

@@ -1,3 +1,5 @@
+import type { Line } from "@betterbill/core";
+import { moneyParts } from "@betterbill/core/money";
 import { cn } from "heroui-native";
 import { type StyleProp, View, type ViewStyle } from "react-native";
 
@@ -116,3 +118,16 @@ export const SAMPLE_PRINT: MockLine[] = [
   { text: "09/14 J7030 SALINE 1000CC", amount: "186.00" },
   { text: "09/14 81003 URINALYSIS AUTO", amount: "210.00" },
 ];
+
+// A bill line as it would be printed: "09/14 36415 VENIPUNCTURE x4".
+export function printedLine(line: Line): { text: string; amount: string } {
+  const d = line.serviceDate?.slice(5).replace("-", "/") ?? "";
+  const p = moneyParts(line.chargeCents);
+  const units = line.units > 1 ? `x${line.units}` : null;
+  return {
+    text: [d, line.code, line.description.toUpperCase(), units]
+      .filter(Boolean)
+      .join(" "),
+    amount: `${p.dollars}.${p.cents}`,
+  };
+}
