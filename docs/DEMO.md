@@ -8,7 +8,8 @@ Owner: C. Built from `docs/plans/C-evidence-data-demo.md` section 9 with measure
 |---|---|---|
 | `{cash}` | $5,143.15 | `data/hospitals/cedars-sinai/capture.json`: 72148, "HB MRI L-SPINE WO CONTRAST", outpatient discounted cash 514315 cents. Price file `last_updated_on` 2025-11-26, captured 2026-10-17T23:00:38Z, sha256 `8c188ab3...2dcd2dbf` |
 | `{confirmed}` | $84.00 | `runAudit` on SB-01: duplicate 85025, tier confirmed, 8400 cents |
-| `{low}` to `{high}` | $1,832.85 to $1,832.85 | `runAudit` on SB-01: potentialLow = potentialHigh = 183285 cents (units $76.00 + published price $1,756.85). One figure, so say "about $1,833 more potential" |
+| `{low}` to `{high}` | $1,832.85 (one figure) | `runAudit` on SB-01 as the app runs it: `scripts/gen-api-data.ts` bundles cash prices only, so potentialLow = potentialHigh = 183285 cents (units $76.00 + published price $1,756.85). Say "about $1,833 more potential". If the API later passes insurer-negotiated rates, the high end widens (to $6,675.01 with the file's lowest negotiated rate); re-check at 07:30 |
+| UCLA (SB-11, optional beat) | MRI cash $3,063.50; gap $3,836.50; SB-11 $84.00 confirmed + $6,083.50 potential | `data/hospitals/ucla-ronald-reagan/capture.json` (PR #41): Ronald Reagan UCLA price file dated 2026-03-29, captured 2026-10-18T00:55Z, sha256 `97215d1e...51c5a6`. UCLA's cash lines carry CDM item numbers only; the CPT code is read from the item number (`codeSource: parsed_from_cdm`) |
 | `{caught}` of `{expected}` | 12 of 12 | `data/eval/results.json` `metrics.seededRecall`, 10 synthetic bills |
 | `{falseFlags}` | 0 on 3 clean bills | `results.json` `metrics.falseFlagsOnClean` |
 | `{botm_clause}` | 1 of 3 in-scope findings, 5 cases (13 findings, 3 in scope) | `results.json` `metrics.botmRecall` (PR #29) |
@@ -47,6 +48,7 @@ Setup before going on: phone mirrored to the screen (or laptop with phone frame)
 | 0:15 to 0:35 | Camera capture of the printed SB-01; lines appear | "BetterBill reads every line from a photo with StepFun's step-5-preview. I check them before anything happens. One tap to fix a line if it misread." (Tap Looks right.) |
 | 0:35 to 1:05 | Flag list with tier badges | "Three things look wrong, and each shows its proof. The blood count is listed twice, same day, same amount: confirmed from the bill itself. Venipuncture billed four times: Medicare's usual daily limit is two, from the CMS table. That's a billing rule, so we label it that way." |
 | 1:05 to 1:40 | Published-price card, ComparePriceBar, source link; cut to Browser Use recording for 5 s | "Here's the real data. On October 17, Browser Use went to Cedars-Sinai's public price page and found its own price file; we hashed all 884 megabytes of it. The hospital's published cash price for this MRI is five thousand one hundred forty-three dollars and fifteen cents. The bill says six thousand nine hundred. Source and capture date are right here." |
+| 1:40 (optional, +10 s) | Switch the sample to SB-11; published-price card | "Same bill, but at the hospital hosting this hackathon. UCLA's own published cash price for this MRI is three thousand sixty-three fifty. That's thirty-eight hundred dollars less than billed." Cut this beat if the run is over 3:00. |
 | 1:40 to 1:55 | Savings summary and assistance card | "So: eighty-four dollars confirmed, about eighteen hundred thirty-three dollars more potential, all labelled. And from the hospital's assistance policy, quoted word for word, this household may qualify for help. It's an estimate, not a decision." |
 | 1:55 to 2:20 | Letter draft, ApprovalSheet, Approve and send | "BetterBill drafts the dispute letter. Every sentence points to a flag. Nothing is sent until I approve the exact text." (Approve.) "Sent to our test inbox." |
 | 2:20 to 2:40 | **If A1:** call starts to the judge's phone | "Want to be the billing office? Read line one of this card." (Judge answers; agent opens: "Hi, this is an automated assistant calling on behalf of a patient.") **If no A1:** show the transcript card labelled "Recorded test call." |
@@ -79,6 +81,7 @@ Target 2:30 to 3:00, 1080p, screen capture plus phone close-ups, voiceover recor
 | 5 | Units flag evidence with CMS source | 8 s | Phone screen |
 | 6 | Browser Use run recording navigating Cedars-Sinai price page | 10 s | Browser Use live preview or recording (UNVERIFIED export) or screen capture |
 | 7 | Published-price card with source and capture date | 10 s | Phone screen |
+| 7b | Optional: SB-11 at UCLA, published-price card | 6 s | Phone screen |
 | 8 | Desktop full insights table | 8 s | Laptop 1280 px |
 | 9 | Assistance card with verbatim quote | 8 s | Phone |
 | 10 | Letter approval and send; inbox receives it | 15 s | Phone + laptop |
@@ -153,6 +156,7 @@ Plan: 07:00 record shots 3 to 10 on main build with a fresh case; 07:40 shots 11
 | Why not just ChatGPT? | "A chat model can guess. We read every line, you confirm it, then deterministic rules flag with cited sources, the hospital's own price file is captured live with a hash and date, and every action needs your approval and is traced." |
 | Is the price comparison fair? | "It's the same hospital's own published cash price, with its file date and our capture date. A self-pay patient can ask for it. It's leverage, not proof of an error." |
 | Why is two CBCs flagged when Medicare allows four? | "We don't flag the units. We flag that the same charge appears twice with the same date and amount, and we ask the hospital to confirm." |
+| How do you know UCLA's code? | "UCLA's file puts cash prices on its chargemaster lines, which carry UCLA's own item numbers, not CPT codes. The CPT code is part of that item number, and it matches the description. We label it as read from the item number, not as a code UCLA tagged." |
 | Where does the MRI price come from? | Show capture.json fields: URL, file date, capture time, hash. |
 
 ### 7. Rehearsal schedule
