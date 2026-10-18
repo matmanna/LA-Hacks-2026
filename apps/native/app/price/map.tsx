@@ -64,9 +64,10 @@ export default function PriceMapScreen() {
   const reduced = useReducedMotion();
   const shown = useSharedValue(reduced ? 1 : 0);
   useEffect(() => {
-    if (!data) return;
+    // Rise with the prices, or with the error and "Try again".
+    if (!data && !nearby.isError) return;
     // The sheet rises once the last pin has popped in.
-    const pins = data.rows.length * PIN_STEP_MS;
+    const pins = (data?.rows.length ?? 0) * PIN_STEP_MS;
     shown.value = reduced
       ? 1
       : withDelay(
@@ -76,7 +77,7 @@ export default function PriceMapScreen() {
             easing: Easing.bezier(0.2, 0.8, 0.2, 1),
           }),
         );
-  }, [data, reduced, shown]);
+  }, [data, nearby.isError, reduced, shown]);
   const sheetStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: (1 - shown.value) * 420 }],
   }));

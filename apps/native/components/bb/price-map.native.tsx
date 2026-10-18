@@ -13,7 +13,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { Money } from "./money";
-import { PIN_STEP_MS, type PriceMapProps } from "./price-map";
+import { PIN_STEP_MS, type PriceMapProps } from "./price-map-shared";
 import { T } from "./t";
 
 // Phone only (Price A): the patient's spot pulses while we check, then a
