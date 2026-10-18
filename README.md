@@ -2,11 +2,11 @@
 
 **Your billing advocate for hospital bills.** Snap a photo of the bill. BetterBill reads every line, shows what looks wrong with the proof behind it, checks if you qualify for free or cheaper care, drafts the letter and the call, and acts only after you approve.
 
-Built in 24 hours at LA Hacks 2026. Free to check. [Live app](https://betterbill.matmanna.dev) · [Demo video](betterbill-demo.mp4) · [Try the sample bill](https://betterbill.matmanna.dev/check)
+Built in 24 hours at LA Hacks 2026. Free to check. [Live app](https://betterbill.matmanna.dev) · [Demo video](https://vimeo.com/matmanna/betterbillgg) · [Try the sample bill](https://betterbill.matmanna.dev/check)
 
-[![Watch the BetterBill demo (2:56)](docs/screenshots/demo-thumbnail.jpg)](betterbill-demo.mp4)
+[![Watch the BetterBill trailer on Vimeo (2:56)](docs/screenshots/trailer-thumbnail.jpg)](https://vimeo.com/matmanna/betterbillgg)
 
-▶ **[Watch the demo video (2:56, MP4)](betterbill-demo.mp4)**. GitHub opens the file page; press "View raw" or download it to play.
+▶ **[Watch the trailer on Vimeo (2:56)](https://vimeo.com/matmanna/betterbillgg)** · [download the MP4](betterbill-demo.mp4)
 
 > All bills in this repo and the demo are synthetic. Hospital prices, policies and laws are real public sources, captured with dates and hashes. BetterBill is informational, not legal or medical advice.
 
@@ -54,24 +54,27 @@ Measured, not promised. Every number comes from a file in this repo, with the da
 
 Honest limits: the team planted the seeded errors, so 22 of 22 shows the rules work as designed, not real-world accuracy. The Bill of the Month number shows what we miss. There is no ground truth for who qualifies for assistance; the hospital decides, so every assistance result is labelled an estimate.
 
-## Tracks
+## Track: Applied Intelligence
 
-Status: **Shipped** means the code is on `main`. "Not verified live" means the code and tests exist but this README does not claim a live run.
+| What it asks | What we built | Proof | Where we go further |
+|---|---|---|---|
+| A real problem, a working product, a measured result | End to end bill check on web and phone: photo in, proof, assistance, letter, live call, shareable packet | This README's [measured results](#what-we-measured); 89 merged PRs | We publish our misses (Bill of the Month 1 of 3) and keep every claim sourced |
 
-| Track | What it asks | What we built | Proof | Where we go further |
+## Challenges
+
+"Not verified live" means the code and tests exist but this README does not claim a live run.
+
+| Challenge | What it asks | What we built | Proof | Where we go further |
 |---|---|---|---|---|
-| **Overall / Applied Intelligence (healthcare)** | A real problem, a working product, a measured result | End to end bill check on web and phone: photo in, proof, assistance, letter, call, shareable packet | This README's [measured results](#what-we-measured); 89 merged PRs | We publish our misses (Bill of the Month 1 of 3) and keep every claim sourced |
 | **StepFun** | `step-5-preview` at runtime; reliability; user understanding and control | Bill photo reader with per-line confidence and a total reconciliation check; patient confirms or fixes every line | [`reader/stepfun.ts`](packages/api/src/reader/stepfun.ts), #53, #58; 88.8% line recall, p50 26.2 s on 35 photos | Measured across 5 photo conditions; saved readings (`cache_first`) keep the demo working if the model is slow; reconciliation caught 4 of 7 imperfect reads |
 | **Sentry** | Tracing, Logs, AI agent monitoring | Browser to server traces, `orpc.*` and hero-path spans, structured logs, Session Replay, browser profiling, `gen_ai` spans for StepFun and Gemini grouped by case | [`docs/SENTRY.md`](docs/SENTRY.md), [`docs/OBSERVABILITY.md`](docs/OBSERVABILITY.md), #59, #68, #69 | No bill text, prompts, images or model output on any span, and a test proves it ([`aiSpan.test.ts`](packages/api/src/aiSpan.test.ts)); replay blocks bill content |
 | **Browser Use** | An agent on real public pages, structured output, used in the product | Captured Cedars-Sinai and UCLA price files and assistance policies; in-app live lookup of a missing hospital policy, with a view-only "Watch the agent" link | #15, #41, #98, #99; Cedars-Sinai price file 883,973,507 bytes, SHA-256 in [`capture.json`](data/hospitals/cedars-sinai/capture.json); UCLA policy run 145 s, $0.033 | Agent quotes are kept only if they appear word for word in the downloaded PDF (11 kept, 4 dropped for UCLA); the found policy feeds the screener right away |
-| **Photon** | Use Photon to reach people | Approved letters go out through the Photon email API; calls ride a Photon SIP trunk imported into ElevenLabs | [`services/email.ts`](packages/api/src/services/email.ts), [`services/call.ts`](packages/api/src/services/call.ts), #67 | Stable idempotency keys on retries; sends only to an allowlist, only after approval. Not verified live |
-| **ElevenLabs** | ElevenLabs is load-bearing | Conversational AI agent places the billing call, then `call.status` pulls the transcript and a structured outcome (reference number, next step, follow-up date) | [`services/elevenlabs.ts`](packages/api/src/services/elevenlabs.ts), [`call-outcome.ts`](packages/api/src/services/call-outcome.ts), #49 | Disclosure first, at most 3 items, no codes or ids spoken; script is rebuilt and compared to the approved one before dialing; 3 calls per 10 minutes. Not verified live |
+| **Photon** | Use Photon to reach people | Approved letters go out through the Photon email API; calls ride a Photon SIP trunk imported into ElevenLabs | [`services/email.ts`](packages/api/src/services/email.ts), [`services/call.ts`](packages/api/src/services/call.ts), #67 | Stable idempotency keys on retries; sends only to an allowlist, only after approval. Live calls over the Photon line verified; email inbox delivery not verified live |
+| **ElevenLabs** | ElevenLabs is load-bearing | Conversational AI agent places the billing call, then `call.status` pulls the transcript and a structured outcome (reference number, next step, follow-up date) | [`services/elevenlabs.ts`](packages/api/src/services/elevenlabs.ts), [`call-outcome.ts`](packages/api/src/services/call-outcome.ts), #49 | Disclosure first, at most 3 items, no codes or ids spoken; script is rebuilt and compared to the approved one before dialing; 3 calls per 10 minutes. Live calls verified |
 | **Gemini** | Gemini is load-bearing | Drafts every letter from the flags; cleans up pasted text when the parser misses more than 30% of rows | [`services/gemini.ts`](packages/api/src/services/gemini.ts), [`letter-drafter.ts`](packages/api/src/services/letter-drafter.ts), #40, #84 | A claim checker rejects any dollar amount Gemini did not get from the bill or the evidence; measured 4.1 to 5.4 s per letter on 4 bills (#84) |
 | **Tiger Data (MLH)** | Postgres on Tiger Data, actually used | Cases, bills, flags, actions and an append-only case event log | [`packages/db`](packages/db), CI job `migrate-shared` in [`ci.yml`](.github/workflows/ci.yml) (green on the latest `main` run) | Schema changes reach the shared database only through committed migrations run by CI on `main` |
 | **Vercel** | Deployed on Vercel | One Vercel project (Services config, TanStack Start) with per-PR previews | [`vercel.json`](vercel.json), [betterbill.matmanna.dev](https://betterbill.matmanna.dev) | Env sync scripts for preview and production; OG images and manifest (#56, #91) |
 | **Paper** | Design fundamentals and craft | One design for web, iOS and Android, designed in Paper; the phone app was built frame by frame from it | #72 to #88 (native), #56 (OG images from Paper), [`/design`](apps/web/src/routes/design.tsx) gallery | Shared tokens on web and native: ink balance card, mint savings, cobalt actions, Instrument Serif; tier badges never rely on color alone |
-| **Polar** | Real money flow (sandbox) | Savings fee checkout (10% of confirmed savings) and a bulk plan checkout for plans and employers | [`payments.ts`](packages/core/src/payments.ts), #70, [`docs/POLAR.md`](docs/POLAR.md) | Never charges on estimates; fee math is pure and tested. Sandbox only |
-| **Fetch.ai** | Agent on Agentverse, whole flow inside ASI:One | Thin uAgents adapter: paste a bill or type `sample`, confirm lines on a card, see flags with tiers, approve the exact letter on a card | [`agents/fetch-adapter`](agents/fetch-adapter), #16, #50; [agent section below](#fetchai-agent) | No business logic in Python; approval counts only from the card or the exact word `approve`. Agentverse registration and a recorded ASI:One run are not verified here |
 
 ## Screens
 
@@ -146,7 +149,6 @@ Free or cheaper care (from #96 and #99):
 - **Accounts:** check without an account; an anonymous session moves to your account when you sign up (#60). Better Auth on web and native.
 - **Plans and employers:** `/for-plans` lander with a claim review console, measured results, and bulk checkout (#37, #70, #90).
 - **Apps:** TanStack Start web app (mobile first, full insights on desktop) and an Expo app with tabs for Bills, Scan and Account (#66, #72 to #81, #87, #88, #96).
-- **Fetch.ai:** ASI:One chat flow with review cards (#16, #50).
 
 ## Key decisions
 
@@ -169,7 +171,8 @@ Free or cheaper care (from #96 and #99):
 ## What's real, what's in progress
 
 - **Real on `main`:** reading, confirm, rules, savings, assistance screener, live policy lookup, letters, approval, packet, Polar sandbox checkout, Sentry wiring, web and native apps.
-- **Not verified live in this README:** Photon email delivery to an inbox, a full live ElevenLabs call, a real Polar checkout, Agentverse registration and a recorded ASI:One run.
+- **Verified live:** outbound ElevenLabs calls over the Photon line, after approval.
+- **Not verified live in this README:** Photon email delivery to an inbox, a real Polar checkout.
 - **Sample call:** on sample bills the phone app replays a scripted call labelled "Sample call" (`DEMO_CALL_SCRIPT` in [`use-call-flow.ts`](apps/native/lib/use-call-flow.ts)); no number is dialled. The call audio in the demo video is an ElevenLabs text-to-speech stand-in.
 - **Demo video phone screens:** some are mockups from the team's design file rather than the running app. The screenshots above are the running app.
 - **Scheduling a call** ("Pick a time") says coming soon. The app is not in the app stores; it runs in Expo Go.
@@ -182,7 +185,7 @@ Free or cheaper care (from #96 and #99):
 ## Architecture
 
 ```
-apps/web        TanStack Start: routes, UI, /api/rpc (oRPC), /api/v1 (OpenAPI for the Fetch adapter), /api/auth
+apps/web        TanStack Start: routes, UI, /api/rpc (oRPC), /api/v1 (OpenAPI adapter), /api/auth
 apps/native     Expo Router phone app (same API and auth)
 packages/core   Pure TypeScript: schemas, reader output parsing, rules, savings, assistance screener, letters, call script
 packages/api    Thin oRPC routers; StepFun, Gemini, Photon, ElevenLabs, Browser Use, Polar clients; Sentry spans
@@ -221,26 +224,6 @@ bun run dev                       # web app on http://localhost:3001
 
 **Deploy:** Vercel (`bun run deploy`, env sync with `bun run env:preview` or `env:production`). CI on every PR runs Biome, types, unit and integration tests and the build, with `BB_READER_MODE=cache_only`. On `main`, CI applies migrations to the shared Tiger Data database.
 
-## Fetch.ai agent
-
-![tag:innovationlab](https://img.shields.io/badge/innovationlab-3D8BD3)
-![tag:hackathon](https://img.shields.io/badge/hackathon-5F43F1)
-
-| | |
-|---|---|
-| Agent name | `betterbill` |
-| Address | `agent1qwqz9059qrve4w2vykv4lrsws3hsw0r4ru4mmeh8wd3v0796al8zjh4uf7n` |
-| Agentverse profile | add after registering the agent |
-| ASI:One shared chat | add after the recorded run |
-
-```bash
-cd agents/fetch-adapter
-uv sync
-cp .env.example .env   # set AGENT_SEED, BETTERBILL_API_BASE, BB_ADAPTER_KEY
-uv run python -m betterbill_agent.agent
-```
-
-Open the inspector URL it logs, connect the mailbox, then use "Chat with Agent" on the Agentverse profile. Keep `AGENT_SEED` unchanged: it sets the address above. More in [agents/fetch-adapter/README.md](agents/fetch-adapter/README.md).
 
 ## Team
 
