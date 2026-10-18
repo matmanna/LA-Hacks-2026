@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SB-07 synthetic statement</title>
+<style>
+	@page { size: letter; margin: 0.5in; }
+	* { box-sizing: border-box; }
+	html, body { margin: 0; background: #fff; color: #111; }
+	body { font: 11pt/1.35 -apple-system, "Helvetica Neue", Arial, sans-serif; padding: 0.5in; width: 8.5in; min-height: 11in; position: relative; }
+	@media print { body { padding: 0; width: auto; min-height: 0; } }
+	.watermark { position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 40pt; font-weight: 700; color: rgba(0, 0, 0, 0.09); white-space: nowrap; pointer-events: none; z-index: 0; letter-spacing: 0.05em; }
+	main { position: relative; z-index: 1; }
+	header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #111; padding-bottom: 10pt; }
+	.hospital { font-size: 15pt; font-weight: 700; }
+	.place { color: #444; }
+	h1 { font-size: 16pt; margin: 0; text-align: right; }
+	.notice { margin: 8pt 0 0; font-weight: 600; font-size: 10pt; }
+	.account { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6pt 16pt; border: 1px solid #999; padding: 8pt 10pt; margin: 14pt 0; }
+	.account .label { display: block; font-size: 8.5pt; text-transform: uppercase; color: #555; letter-spacing: 0.04em; }
+	table { width: 100%; border-collapse: collapse; margin-top: 6pt; }
+	th { text-align: left; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid #111; padding: 4pt 6pt; }
+	td { padding: 5pt 6pt; border-bottom: 1px solid #ddd; vertical-align: top; }
+	.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+	.totals { margin: 14pt 0 0 auto; width: 3.4in; }
+	.totals td { border: none; padding: 3pt 6pt; }
+	.totals tr.due td { border-top: 2px solid #111; font-weight: 700; font-size: 12pt; padding-top: 6pt; }
+	footer { margin-top: 28pt; font-size: 9pt; color: #444; border-top: 1px solid #ccc; padding-top: 6pt; }
+</style>
+</head>
+<body>
+<div class="watermark">SYNTHETIC DEMO BILL</div>
+<main>
+	<header>
+		<div>
+			<div class="hospital">Sample Medical Center (synthetic)</div>
+			<div class="place">Los Angeles, CA</div>
+		</div>
+		<h1>Patient Statement</h1>
+	</header>
+	
+	<section class="account">
+		<div><span class="label">Patient</span>SAMPLE PATIENT</div>
+		<div><span class="label">Account</span>Account ending 8804</div>
+		<div><span class="label">Statement date</span>04/30/2026</div>
+	</section>
+	<table>
+		<thead>
+			<tr><th>Date</th><th>Code</th><th>Description</th><th class="num">Units</th><th class="num">Charges</th></tr>
+		</thead>
+		<tbody>
+			<tr><td>04/11/2026</td><td></td><td>HOSPITAL SERVICES</td><td class="num">1</td><td class="num">$4,875.00</td></tr>
+		</tbody>
+	</table>
+	<table class="totals">
+		<tr><td>Total charges</td><td class="num">$4,875.00</td></tr>
+		<tr><td>Adjustments</td><td class="num">$0.00</td></tr>
+		<tr><td>Payments</td><td class="num">$0.00</td></tr>
+		<tr class="due"><td>Amount due</td><td class="num">$4,875.00</td></tr>
+	</table>
+	<footer>Synthetic document for testing. Not a real bill. (SB-07)</footer>
+</main>
+</body>
+</html>
