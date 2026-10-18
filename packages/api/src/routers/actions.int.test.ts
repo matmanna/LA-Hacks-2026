@@ -1,6 +1,7 @@
 // Integration: A's action routes on a real audited case, against a migrated
 // Postgres. Without GEMINI_API_KEY (CI) drafting uses the fallback letter.
 import {
+  approvalCoverage,
   approvalRef,
   checkWording,
   findApproval,
@@ -8,7 +9,15 @@ import {
 } from "@betterbill/core";
 import { createDb } from "@betterbill/db";
 import { createRouterClient, ORPCError } from "@orpc/server";
-import { afterAll, describe, expect, it } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 import { appRouter } from "./index";
 
@@ -118,6 +127,76 @@ describe.skipIf(!url)("action routes (integration)", () => {
       const events = await client.event.list({ caseId });
       expect(events.at(-1)?.type).toBe("action.cancelled");
       expect(findApproval(events, action.id)).toBeNull();
+    });
+  });
+
+  describe("send", () => {
+    const INBOX = "test-inbox@example.com";
+
+    beforeEach(() => {
+      vi.stubEnv("EMAIL_TEST_INBOX", INBOX);
+      vi.stubEnv("EMAIL_ALLOWLIST", INBOX);
+      vi.stubEnv("BB_FAKE_PROVIDERS", "1");
+    });
+    afterEach(() => {
+      vi.unstubAllEnvs();
+    });
+
+    const sentEvents = async (caseId: string) =>
+      (await client.event.list({ caseId })).filter(
+        (e) => e.type === "action.sent",
+      );
+
+    it("refuses to send a letter nobody approved", async () => {
+      const { action } = await drafted();
+      await expect(
+        client.action.send({ actionId: action.id }),
+      ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    });
+
+    it("sends once after approval, and a second send changes nothing", async () => {
+      const { caseId, action, draftHash } = await drafted();
+      await client.action.approve({ actionId: action.id, draftHash });
+
+      const sent = await client.action.send({ actionId: action.id });
+      expect(sent.sentAt).not.toBeNull();
+      expect(await status(caseId)).toBe("sent");
+      await client.action.send({ actionId: action.id });
+
+      const events = await client.event.list({ caseId });
+      const sends = events.filter((e) => e.type === "action.sent");
+      expect(sends).toHaveLength(1);
+      expect(sends[0]?.artifactRef).toBe(approvalRef(action.id, draftHash));
+      expect(sends[0]?.summary).toContain("fake");
+      expect(approvalCoverage(events).ratio).toBe(1);
+    });
+
+    it("only sends to the allowlisted test inbox", async () => {
+      const { action, draftHash } = await drafted();
+      await client.action.approve({ actionId: action.id, draftHash });
+      vi.stubEnv("EMAIL_ALLOWLIST", "someone-else@example.com");
+      await expect(
+        client.action.send({ actionId: action.id }),
+      ).rejects.toMatchObject({
+        code: "FORBIDDEN",
+        message: "This demo only sends to the test inbox.",
+      });
+    });
+
+    it("records a failed send and keeps the approval for a retry", async () => {
+      const { caseId, action, draftHash } = await drafted();
+      await client.action.approve({ actionId: action.id, draftHash });
+      vi.stubEnv("BB_FAKE_PROVIDERS", "");
+      vi.stubEnv("RESEND_API_KEY", "");
+      await expect(
+        client.action.send({ actionId: action.id }),
+      ).rejects.toMatchObject({ code: "BAD_GATEWAY" });
+
+      const events = await client.event.list({ caseId });
+      expect(events.at(-1)?.type).toBe("action.send_failed");
+      expect(await status(caseId)).toBe("action_pending");
+      expect(await sentEvents(caseId)).toHaveLength(0);
+      expect(findApproval(events, action.id)?.hash).toBe(draftHash);
     });
   });
 });
