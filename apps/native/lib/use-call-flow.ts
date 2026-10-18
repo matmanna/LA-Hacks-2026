@@ -1,4 +1,4 @@
-import { CallOutcomeSchema } from "@betterbill/core";
+import { CallOutcomeSchema, isConferenceScript } from "@betterbill/core";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
@@ -6,7 +6,7 @@ import { orpc } from "@/utils/orpc";
 
 // One stage drives every call screen (L7a to L7e, A2, A3).
 export type CallStage =
-  | "on_hold" // L7a: the advocate is calling and waiting for a person
+  | "on_hold" // L7a: sample: on hold. Live: dialing (conference: patient, then billing)
   | "incoming" // A2: a rep answered; we ring the patient to join
   | "joined" // L7b/L7c: the patient is on the line
   | "done" // L7d: call over, email going out
@@ -14,9 +14,10 @@ export type CallStage =
   | "missed" // A3: the patient could not join
   | "failed";
 
-// The phone backend does not bring the patient onto the call yet, so the
-// join stages only exist in the scripted sample call. Set to false to show
-// live call states only. A scripted call places no call and writes nothing.
+// Hold-and-join (on hold, then ring the patient when a rep answers) only
+// exists in the scripted sample call. Live calls either dial billing alone,
+// or (CALL_MODE=conference) ring the patient first, then billing. Set to false
+// to show live call states only. A scripted call places no call and writes nothing.
 export const DEMO_CALL_SCRIPT = true;
 
 const SCRIPT: { stage: CallStage; ms: number }[] = [
@@ -28,6 +29,9 @@ const SCRIPT: { stage: CallStage; ms: number }[] = [
 ];
 
 // Live: map call.status (not_started, ringing, in_progress, done, failed).
+// Conference calls report the same set: the server folds patient_inviting
+// through billing_connected into "ringing", and ready or ai_unavailable into
+// "in_progress" (conferenceProgress), so a live conference reaches "joined".
 function liveStage(status: string | undefined, emailSent: boolean): CallStage {
   if (status === "failed" || status === "no_consent") return "failed";
   if (status === "done") return emailSent ? "waiting" : "done";
@@ -71,6 +75,8 @@ export function useCallFlow(caseId: string, scripted: boolean) {
 
   return {
     stage,
+    // The approved script says whether the patient is called first.
+    conference: !scripted && Boolean(call && isConferenceScript(call.draft)),
     detail: detail.data,
     outcome: status.data?.outcome
       ? CallOutcomeSchema.parse(JSON.parse(status.data.outcome))

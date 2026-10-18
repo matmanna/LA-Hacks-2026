@@ -1,3 +1,4 @@
+import { isConferenceScript } from "@betterbill/core";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { cn } from "heroui-native";
@@ -29,6 +30,10 @@ export default function Join() {
     orpc.case.get.queryOptions({ input: { caseId: id } }),
   );
   const call = detail.data?.actions.find((a) => a.kind === "call");
+  // CALL_MODE=conference: we ring the patient first, then billing. No hold.
+  // Native sends no patientConnection, so it rings the fixed test phone.
+  const conference =
+    !scripted && Boolean(call && isConferenceScript(call.draft));
 
   const start = useMutation({
     mutationFn: async () => {
@@ -57,60 +62,60 @@ export default function Join() {
         <View className="h-[5px] w-10 self-center rounded-full bg-hairline" />
         <View className="gap-1.5">
           <T weight="semibold" className="text-[22px] leading-7">
-            {scripted ? "Can you join the call?" : "Ready to call billing?"}
+            {scripted
+              ? "Can you join the call?"
+              : conference
+                ? "Ready for the call?"
+                : "Ready to call billing?"}
           </T>
           <T className="text-[15px] text-muted leading-[22px]">
             {scripted
               ? "Your advocate waits on hold for you. When a billing rep answers, we call your phone so you can join. Hold times vary."
-              : "Our assistant calls the billing office now. It says it's automated, sticks to the script you approved, and never agrees to pay. You don't need to be on the call."}
+              : conference
+                ? 'We call the test patient phone first and explain the call, then dial billing. Stay on the line and answer billing yourself. Your advocate stays quiet unless you say "Advocate, can you help?"'
+                : "Our assistant calls the billing office now. It says it's automated, sticks to the script you approved, and never agrees to pay. You don't need to be on the call."}
           </T>
         </View>
 
-        {/* Live calls can't bring the patient on yet, so only the sample
-            shows when to join and what to have ready. */}
+        {/* Only the sample offers a time to join. Direct live calls have no
+            patient on the line; conference calls do, so they show the list. */}
         {scripted ? (
-          <>
-            <View accessibilityRole="radiogroup" className="gap-2.5">
-              <Choice
-                selected={when === "now"}
-                onPress={() => setWhen("now")}
-                title="Call now"
-                note="I'm free and can pick up"
-              />
-              <Choice
-                selected={when === "later"}
-                onPress={() => setWhen("later")}
-                title="Pick a time"
-                note="During billing office hours"
-              />
+          <View accessibilityRole="radiogroup" className="gap-2.5">
+            <Choice
+              selected={when === "now"}
+              onPress={() => setWhen("now")}
+              title="Call now"
+              note="I'm free and can pick up"
+            />
+            <Choice
+              selected={when === "later"}
+              onPress={() => setWhen("later")}
+              title="Pick a time"
+              note="During billing office hours"
+            />
+          </View>
+        ) : null}
+        {scripted || conference ? (
+          <View className="gap-2">
+            <T weight="semibold" className="text-[13px] text-muted">
+              Have these ready. Billing may ask.
+            </T>
+            <View className="flex-row flex-wrap gap-y-1.5">
+              {READY.map((r) => (
+                <View
+                  key={r.text}
+                  className="w-1/2 flex-row items-start gap-1.5 pr-3"
+                >
+                  {r.have ? (
+                    <Icon name="check" size={16} color="#0F9D76" stroke={2.5} />
+                  ) : (
+                    <View className="mt-0.5 size-4 rounded-full border-2 border-[#5B6B7C]" />
+                  )}
+                  <T className="flex-1 text-sm leading-[19px]">{r.text}</T>
+                </View>
+              ))}
             </View>
-
-            <View className="gap-2">
-              <T weight="semibold" className="text-[13px] text-muted">
-                Have these ready. Billing may ask.
-              </T>
-              <View className="flex-row flex-wrap gap-y-1.5">
-                {READY.map((r) => (
-                  <View
-                    key={r.text}
-                    className="w-1/2 flex-row items-start gap-1.5 pr-3"
-                  >
-                    {r.have ? (
-                      <Icon
-                        name="check"
-                        size={16}
-                        color="#0F9D76"
-                        stroke={2.5}
-                      />
-                    ) : (
-                      <View className="mt-0.5 size-4 rounded-full border-2 border-[#5B6B7C]" />
-                    )}
-                    <T className="flex-1 text-sm leading-[19px]">{r.text}</T>
-                  </View>
-                ))}
-              </View>
-            </View>
-          </>
+          </View>
         ) : null}
 
         {start.isError ? (

@@ -27,10 +27,15 @@ const COPY: Record<string, { title: string; sub: string }> = {
   },
 };
 
-// A live call dials billing directly: no phone menu, no hold, no joining.
+// Live calls have no phone menu, no hold, and no join prompt. A direct call
+// dials billing alone; a conference call rings the patient first.
 const DIALING = {
   title: "Calling billing",
   sub: "Our assistant says it's automated and sticks to the script you approved.",
+};
+const CONFERENCE_DIALING = {
+  title: "Calling you first",
+  sub: "We ring the test patient phone and explain the call, then dial billing. Stay on the line.",
 };
 
 // L7 call tracking, with A2 Incoming call and A3 Missed. ?script=1 replays
@@ -61,11 +66,18 @@ export default function Call() {
     return <Missed id={id} onRetry={flow.retry} />;
   }
 
+  const { conference } = flow;
   const copy =
-    !scripted && stage === "on_hold" ? DIALING : (COPY[stage] ?? COPY.on_hold);
+    !scripted && stage === "on_hold"
+      ? conference
+        ? CONFERENCE_DIALING
+        : DIALING
+      : (COPY[stage] ?? COPY.on_hold);
   const eyebrow = {
-    on_hold: scripted ? "on hold" : "dialing",
-    joined: scripted ? "3 on the call" : "on the call",
+    on_hold: scripted ? "on hold" : conference ? "connecting" : "dialing",
+    // ponytail: ai_unavailable also reads as in_progress, so a conference
+    // whose advocate dropped still says 3. Split the status if that matters.
+    joined: scripted || conference ? "3 on the call" : "on the call",
     done: `account ending ${bill?.accountRefMasked ?? ""}`,
     waiting: `account ending ${bill?.accountRefMasked ?? ""}`,
     failed: "call ended",
@@ -132,9 +144,11 @@ export default function Call() {
           {copy.title}
         </T>
         <T className="text-base text-muted leading-6">
-          {stage === "joined"
-            ? `Your advocate is asking about the ${flags} item${flags === 1 ? "" : "s"}.`
-            : copy.sub}
+          {stage !== "joined"
+            ? copy.sub
+            : conference
+              ? "You and billing are talking. Your advocate is listening."
+              : `Your advocate is asking about the ${flags} item${flags === 1 ? "" : "s"}.`}
         </T>
       </View>
 
@@ -154,8 +168,17 @@ export default function Call() {
         </View>
       ) : null}
 
-      {/* Live calls have no patient on the line, and the transcript only
-          arrives after the call ends. */}
+      {conference && stage === "joined" ? (
+        <View className="rounded-[14px] border border-hairline px-3.5 py-3">
+          <T className="text-[13px] text-slate-ink leading-[19px]">
+            Answer billing's questions yourself. Need help? Say "Advocate, can
+            you help?" It answers once, then listens again. Hanging up ends the
+            call.
+          </T>
+        </View>
+      ) : null}
+
+      {/* The live transcript only arrives after the call ends. */}
       {stage === "joined" && scripted ? (
         <View className="gap-3">
           <View className="flex-row gap-2">
@@ -463,8 +486,7 @@ function Missed({ id, onRetry }: { id: string; onRetry: () => void }) {
       </View>
       <View className="pt-[22px]">
         <Row label="Email to billing" value="Sent" />
-        <Row label="Call" value="Not done yet" />
-        <Row label="We texted you" value="To pick a new time" last />
+        <Row label="Call" value="Not done yet" last />
       </View>
     </Screen>
   );

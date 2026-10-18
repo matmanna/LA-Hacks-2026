@@ -1,3 +1,4 @@
+import { isConferenceScript } from "@betterbill/core";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { cn } from "heroui-native";
@@ -35,6 +36,11 @@ export default function Plan() {
     retry: false,
     staleTime: Number.POSITIVE_INFINITY,
   });
+  // CALL_MODE=conference drafts a patient-first script. The sample keeps its
+  // own hold-and-join story either way.
+  const conference =
+    !scripted &&
+    Boolean(call.data && isConferenceScript(call.data.action.draft));
   const email = useQuery({
     queryKey: ["draft", id, emailKind],
     queryFn: () => client.action.draftLetter({ caseId: id, kind: emailKind }),
@@ -166,11 +172,13 @@ export default function Plan() {
             n={1}
             title="Your advocate calls billing"
             body={
-              !scripted
-                ? `It says it's automated, asks ${itemized ? "for your itemized bill" : "billing to review each item"}, and never agrees to pay.`
-                : itemized
-                  ? "To make sure they send your itemized bill. When a person answers, we bring you on."
-                  : "It waits on hold for you. When a person answers, we bring you on. Your advocate leads; you're there if they need you."
+              conference
+                ? "We call the test patient phone first, then billing. Stay on and answer billing yourself. Your advocate stays quiet unless you ask for help."
+                : !scripted
+                  ? `It says it's automated, asks ${itemized ? "for your itemized bill" : "billing to review each item"}, and never agrees to pay.`
+                  : itemized
+                    ? "To make sure they send your itemized bill. When a person answers, we bring you on."
+                    : "It waits on hold for you. When a person answers, we bring you on. Your advocate leads; you're there if they need you."
             }
             toggle={
               open === "call" ? "Hide the call script" : "See what we'll say"
