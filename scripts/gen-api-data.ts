@@ -70,9 +70,64 @@ export function buildData() {
       return [];
     }
   })();
+  // Assistance screener inputs: state and federal rules, captured hospital
+  // policies (income limits with quotes), and the poverty guidelines.
+  const regulations = readdirSync(join(ROOT, "data/regulations"))
+    .filter((f) => f.endsWith(".json"))
+    .sort()
+    .flatMap((f) => {
+      const file = read(`data/regulations/${f}`);
+      const lawName = String(file.title).split(" (")[0];
+      return file.rules.map((r: Record<string, unknown>) => ({
+        id: r.id,
+        jurisdiction: file.jurisdiction,
+        title: r.title,
+        lawName,
+        effectKind: (r.effect as { kind: string }).kind,
+        plain: r.plain,
+        ...(r.short ? { short: r.short } : {}),
+        citation: r.citation,
+        sourceUrl: r.sourceUrl,
+        quote: r.quote ?? null,
+        capturedAt: r.capturedAt,
+        verified: r.verified,
+        ...(r.screen ? { screen: r.screen } : {}),
+      }));
+    });
+  const policies = readdirSync(join(ROOT, "data/hospitals"), {
+    withFileTypes: true,
+  })
+    .filter((d) => d.isDirectory())
+    .map((d) => {
+      const p = tryRead(`data/hospitals/${d.name}/policy.json`);
+      const c = tryRead(`data/hospitals/${d.name}/capture.json`);
+      if (!p?.thresholds) return null;
+      return {
+        hospitalName: p.hospitalName ?? c?.hospitalName ?? d.name,
+        policyTitle: p.policyTitle,
+        policyUrl: p.policyUrl,
+        capturedAt: p.capturedAt,
+        freeCareMaxFplPct: p.thresholds.freeCareMaxFplPct ?? null,
+        freeCareQuote: p.thresholds.freeCareQuote ?? null,
+        discountMaxFplPct: p.thresholds.discountMaxFplPct ?? null,
+        discountQuote: p.thresholds.discountQuote ?? null,
+        references501r: p.references501r?.quote ?? null,
+      };
+    })
+    .filter(Boolean);
+  const fpl = read("data/hospitals/fpl-2026.json");
   return {
     samples,
     photoCache,
+    regulations,
+    policies,
+    fpl: {
+      year: fpl.year,
+      source: fpl.source,
+      contiguous48AndDC: fpl.contiguous48AndDC,
+      alaska: fpl.alaska,
+      hawaii: fpl.hawaii,
+    },
     captures: hospitals,
     mue: tryRead("data/rules/mue-subset.json"),
     evalResults: tryRead("data/eval/results.json"),

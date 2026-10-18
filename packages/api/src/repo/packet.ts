@@ -4,6 +4,7 @@ import type { Database } from "@betterbill/db";
 
 import { DATA } from "../data.gen";
 import { auditResult } from "../routers/audit";
+import { loadAssistance } from "../services/assistance";
 import {
   getCaseRow,
   latestAudit,
@@ -86,7 +87,13 @@ export async function buildPacket(
   const loaded = row ? await loadBill(db, caseId) : null;
   if (!row || !loaded) return null;
   const run = await latestAudit(db, caseId);
-  const audit = auditResult(caseId, loaded.bill, run?.flags ?? [], 0);
+  const audit = auditResult(
+    caseId,
+    loaded.bill,
+    run?.flags ?? [],
+    0,
+    await loadAssistance(db, caseId, loaded.bill),
+  );
   return redactPacket({
     case: toSummary(row, run ? audit.savings : null),
     bill: loaded.bill,
