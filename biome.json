@@ -18,6 +18,7 @@
       "!**/.vscode",
       "!**/routeTree.gen.ts",
       "!data/hospitals/**/evidence",
+      "!data/labs/**/evidence",
       "!**/data.gen.ts",
       "!**/src-tauri",
       "!**/.nuxt",
