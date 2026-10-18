@@ -27,7 +27,9 @@
       "httpContentLength": null,
       "httpLastModified": "Tue, 16 Dec 2025 16:19:50 GMT",
       "fileLastUpdatedOn": "2025-11-26",
-      "fileVersion": "2.0.0"
+      "fileVersion": "2.0.0",
+      "fileHospitalAddress": ["8700 Beverly Blvd, Los Angeles, CA 90048"],
+      "fileHospitalAddressReadAt": "2026-10-18T14:27:24Z"
     }
   ],
   "prices": [
@@ -297,5 +299,18 @@
       "maxNegotiatedCents": 10815,
       "count": 4
     }
-  ]
+  ],
+  "location": {
+    "address": "8700 Beverly Blvd, Los Angeles, CA 90048",
+    "lat": 34.07516,
+    "lng": -118.381094,
+    "source": {
+      "kind": "mrf_header",
+      "url": "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/documents/951644600_CEDARS-SINAI-MEDICAL-CENTER_standardcharges.json"
+    },
+    "geocoder": "nominatim",
+    "geocoderQuery": "8700 Beverly Blvd, Los Angeles, CA 90048",
+    "geocoderMatch": "Cedars-Sinai Medical Center, 8700, Beverly Boulevard, Beverly Grove, Los Angeles, Los Angeles County, California, 90048, United States",
+    "geocodedAt": "2026-10-18T14:27:26Z"
+  }
 }

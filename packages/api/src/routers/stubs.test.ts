@@ -19,6 +19,7 @@ describe("procedure stubs", () => {
       [
         "case.create",
         "case.get",
+        "case.claim",
         "case.list",
         "case.share",
         "case.revokeShare",
@@ -43,6 +44,8 @@ describe("procedure stubs", () => {
         "payment.quote",
         "payment.checkout",
         "payment.bulkCheckout",
+        "price.services",
+        "price.nearby",
       ].sort(),
     );
   });

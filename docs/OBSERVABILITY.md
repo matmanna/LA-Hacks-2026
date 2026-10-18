@@ -31,7 +31,10 @@ One line per finding: time (PDT), trace link, what the trace showed, fix PR. Onl
 
 | Time | Trace | What it showed | Fix |
 |---|---|---|---|
-| | | | |
+| Oct 17, 21:07 | [762858848e27](https://eng-hackclub-benderhq.sentry.io/explore/traces/trace/762858848e274eea9d27a83099eaf0b4/) | During the first production run of the hero path, the demo photo took 26 s. The trace put almost all of `bill.parsePhoto` in the StepFun call, for a photo whose saved reading was already bundled in the build. So the saved reading was never used. Cause 1: `BB_READER_MODE` was not set on Vercel, so production read every photo live. | Set `BB_READER_MODE=cache_first` on Vercel; the same photo then read in 0.45 s (22:03). #68 adds `bb.reader.mode_setting` and `bb.reader.mode` to the `invoke_agent bill-reader` span so this is visible in one look. |
+| Oct 17, about 22:50 | (follow-up from the same span fields) | With `cache_first` on, photos uploaded through the web app still read live (27 s) while the script upload hit the saved reading. Cause 2: the web app re-encoded every photo through a canvas, so the hash never matched the saved reading. | #82 sends small JPEGs unchanged; a browser upload of the demo photo then used the saved reading in under a second. |
+
+How it was found, honestly: we noticed the slow read while testing, and the trace showed where the time went and that it was a live model call, not the database or the network. The second cause came from comparing a script upload with a browser upload.
 
 ## Which Sentry product is used where
 

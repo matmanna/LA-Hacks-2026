@@ -1,3 +1,5 @@
+import { FEE_BPS, MAX_FEE_CENTS, percentLabel } from "@betterbill/core";
+import { Money } from "@betterbill/ui/components/bb/money";
 import { Button } from "@betterbill/ui/components/button";
 import { Card } from "@betterbill/ui/components/card";
 import { Link } from "@tanstack/react-router";
@@ -45,11 +47,17 @@ export function Pricing() {
           </Button>
         </Card>
         <Card className="gap-5">
-          <h3 className="font-semibold text-lg leading-6">Assisted call</h3>
-          <p className="font-serif text-[40px] leading-[44px]">Optional</p>
+          <h3 className="font-semibold text-lg leading-6">
+            When we save you money
+          </h3>
+          <p className="font-serif text-[40px] leading-[44px]">
+            {percentLabel(FEE_BPS)}
+          </p>
           <p className="text-base text-muted-foreground leading-6">
-            We call the billing office for you, using a script you approve. You
-            see the transcript and what they said.
+            Of confirmed savings only, capped at{" "}
+            <Money cents={MAX_FEE_CENTS} cents_display="hide" />. Estimates
+            never count, and if nothing is confirmed you pay nothing. Calls to
+            billing use a script you approve.
           </p>
           <Checks
             items={[
@@ -59,16 +67,9 @@ export function Pricing() {
             ]}
           />
           <p className="text-muted-foreground text-xs leading-4">
-            One flat price per call, shown before you pay. Payments run in Polar
-            test mode during LA Hacks; no real charges.
+            The fee is shown before you pay. Payments run in Polar test mode
+            during LA Hacks; no real charges.
           </p>
-          <Button
-            variant="secondary"
-            render={<a href="#pricing" />}
-            nativeButton={false}
-          >
-            See pricing
-          </Button>
         </Card>
       </div>
     </Section>

@@ -18,7 +18,7 @@ import {
   flag as flagTable,
   line as lineTable,
 } from "@betterbill/db/schema/index";
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, isNull } from "drizzle-orm";
 
 type Tx = Parameters<Parameters<Database["transaction"]>[0]>[0];
 type Db = Database | Tx;
@@ -269,4 +269,20 @@ export function toSummary(
     createdAt: row.createdAt.toISOString(),
     savings,
   };
+}
+
+// A signed-in patient takes an unclaimed case, so it shows on all their
+// devices. A case that already belongs to someone is left alone.
+export async function claimCase(db: Db, caseId: string, userId: string) {
+  const claimed = await db
+    .update(caseTable)
+    .set({ userId })
+    .where(and(eq(caseTable.id, caseId), isNull(caseTable.userId)))
+    .returning({ id: caseTable.id });
+  if (claimed.length > 0) {
+    await addEvent(db, caseId, "case.claimed", "Saved to your account", {
+      actor: "user",
+    });
+  }
+  return claimed.length > 0;
 }

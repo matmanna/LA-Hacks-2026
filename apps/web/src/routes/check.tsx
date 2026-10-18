@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import { AppBar } from "@/components/app-bar";
 import { useStartSample } from "@/hooks/use-start-sample";
+import { rememberDeviceCase } from "@/lib/device-cases";
 import { fileToDataUrl } from "@/lib/downscale";
 import { client } from "@/utils/orpc";
 
@@ -37,6 +38,7 @@ function CheckPage() {
     setError(null);
     try {
       const created = await client.case.create({});
+      rememberDeviceCase(created.id);
       await read(created.id);
       await navigate({ to: "/case/$id/phone", params: { id: created.id } });
     } catch {

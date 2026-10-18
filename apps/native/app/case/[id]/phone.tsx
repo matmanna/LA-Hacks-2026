@@ -6,6 +6,7 @@ import { TextInput, View } from "react-native";
 
 import { Button, Screen, T } from "@/components/bb";
 import { errorMessage } from "@/lib/errors";
+import { sendCode, verifyCode } from "@/lib/phone-sign-in";
 import { client, orpc } from "@/utils/orpc";
 
 const INPUT =
@@ -25,12 +26,14 @@ export default function Phone() {
   const [filled, setFilled] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [code, setCode] = useState<string | null>(null);
 
   // Fill once: this case first, then the number from the patient's last case.
   useEffect(() => {
     const data = contact.data;
     if (!data || filled) return;
-    const phone = data.patientPhone ?? data.savedPatientPhone;
+    const phone =
+      data.accountPhone ?? data.patientPhone ?? data.savedPatientPhone;
     setPatientPhone(phone ? formatPhone(phone) : "");
     setHospitalUrl(data.hospitalUrl ?? "");
     setBillingPhone(data.billingPhone ? formatPhone(data.billingPhone) : "");
@@ -39,6 +42,33 @@ export default function Phone() {
 
   const toConfirm = () =>
     router.replace({ pathname: "/case/[id]/confirm", params: { id } });
+
+  // A typed number on a signed-out phone becomes a sign-in by texted code, so
+  // the bill follows the patient to the web and other devices.
+  const willSignIn = !contact.data?.signedIn && patientPhone.trim() !== "";
+
+  async function primary() {
+    if (code !== null) {
+      setBusy(true);
+      setError(null);
+      const problem = await verifyCode(patientPhone, code);
+      if (problem) {
+        setBusy(false);
+        setError(problem);
+        return;
+      }
+      await save();
+    } else if (willSignIn) {
+      setBusy(true);
+      setError(null);
+      const problem = await sendCode(patientPhone);
+      setBusy(false);
+      if (problem) setError(problem);
+      else setCode("");
+    } else {
+      await save();
+    }
+  }
 
   async function save() {
     setBusy(true);
@@ -66,11 +96,29 @@ export default function Phone() {
       footer={
         <>
           <Button
-            label="Continue"
-            variant={busy ? "disabled" : "primary"}
-            onPress={save}
+            label={
+              code !== null
+                ? "Verify and continue"
+                : willSignIn
+                  ? "Text me a code"
+                  : "Continue"
+            }
+            variant={
+              busy || (code !== null && code.length < 6)
+                ? "disabled"
+                : "primary"
+            }
+            onPress={primary}
           />
-          <Button label="Skip for now" variant="quiet" onPress={toConfirm} />
+          {willSignIn || code !== null ? (
+            <Button
+              label="Continue without signing in"
+              variant="quiet"
+              onPress={save}
+            />
+          ) : (
+            <Button label="Skip for now" variant="quiet" onPress={toConfirm} />
+          )}
         </>
       }
     >
@@ -99,8 +147,31 @@ export default function Phone() {
           value={patientPhone}
           onChangeText={setPatientPhone}
         />
-        <T className="text-[13px] text-muted">Optional.</T>
+        <T className="text-[13px] text-muted">
+          {contact.data?.signedIn
+            ? "You're signed in. Your bills sync to the web and your other devices."
+            : "Optional. We text a code to sign you in, so your bills follow you to the web."}
+        </T>
       </View>
+
+      {code !== null ? (
+        <View className="mt-6 gap-1.5">
+          <T weight="semibold" className="text-[15px]">
+            Code from the text
+          </T>
+          <TextInput
+            accessibilityLabel="Code from the text"
+            className={INPUT}
+            style={FONT}
+            keyboardType="number-pad"
+            textContentType="oneTimeCode"
+            maxLength={6}
+            placeholder="123456"
+            value={code}
+            onChangeText={(v) => setCode(v.replace(/\D/g, ""))}
+          />
+        </View>
+      ) : null}
 
       <View className="mt-6 gap-3 rounded-2xl border border-hairline p-4">
         <T weight="semibold" className="text-[15px]">

@@ -12,4 +12,4 @@ Before any task, read docs/plans/00-shared-context.md and your role plan in docs
 - Never commit secrets. Never put API keys in client code.
 - Never invent statistics, testimonials, logos, or compliance claims.
 - Wording: never "illegal", "fraud", or "overcharge" as a conclusion. Always show the evidence tier.
-- Goodbill reference screenshots live temporarily in docs/design/goodbill-refs/ (to be removed before submission). Use them for flow and density only. Never copy them into app code or assets, and never commit other third-party images.
+- Never commit third-party images.

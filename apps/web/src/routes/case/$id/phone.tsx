@@ -1,4 +1,4 @@
-import { formatPhone } from "@betterbill/core";
+import { formatPhone, normalizePhone } from "@betterbill/core";
 import { Button } from "@betterbill/ui/components/button";
 import { Input } from "@betterbill/ui/components/input";
 import { Label } from "@betterbill/ui/components/label";
@@ -8,6 +8,8 @@ import { Lock } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { AppBar } from "@/components/app-bar";
+import { authClient } from "@/lib/auth-client";
+import { claimDeviceCases, rememberDeviceCase } from "@/lib/device-cases";
 import { client, orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/case/$id/phone")({
@@ -33,20 +35,80 @@ function PhonePage() {
   const [filled, setFilled] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [code, setCode] = useState<string | null>(null);
 
   // Fill once from what is saved: this case first, then the number from the
   // patient's earlier case.
   useEffect(() => {
     if (!data || filled) return;
-    const phone = data.patientPhone ?? data.savedPatientPhone;
+    const phone =
+      data.accountPhone ?? data.patientPhone ?? data.savedPatientPhone;
     setPatientPhone(phone ? formatPhone(phone) : "");
     setHospitalUrl(data.hospitalUrl ?? "");
     setBillingPhone(data.billingPhone ? formatPhone(data.billingPhone) : "");
     setFilled(true);
   }, [data, filled]);
 
+  // A typed number on a signed-out device becomes a sign-in by texted code.
+  const willSignIn = !data?.signedIn && patientPhone.trim() !== "";
+
   const toConfirm = () =>
     navigate({ to: "/case/$id/confirm", params: { id }, replace: true });
+
+  // Signed out with a number: text a code first, so the bill follows the
+  // patient to their other devices.
+  async function sendCode() {
+    const phone = normalizePhone(patientPhone);
+    if (!phone) {
+      setError(
+        "Your phone number doesn't look right. Use a full number, like (415) 555-0123.",
+      );
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    const { error: sendError } = await authClient.phoneNumber.sendOtp({
+      phoneNumber: phone,
+    });
+    setBusy(false);
+    if (sendError) {
+      setError(sendError.message ?? "We couldn't text that number.");
+      return;
+    }
+    setCode("");
+  }
+
+  async function verify() {
+    const phone = normalizePhone(patientPhone);
+    if (!phone || !code) return;
+    setBusy(true);
+    setError(null);
+    const { error: verifyError } = await authClient.phoneNumber.verify({
+      phoneNumber: phone,
+      code,
+    });
+    if (verifyError) {
+      setBusy(false);
+      setError(verifyError.message ?? "That code didn't work. Try again.");
+      return;
+    }
+    try {
+      rememberDeviceCase(id);
+      await claimDeviceCases(
+        (caseId) => client.case.claim({ caseId }),
+        localStorage,
+      );
+    } catch (syncError) {
+      setBusy(false);
+      setError(
+        syncError instanceof Error
+          ? syncError.message
+          : "Signed in, but your bill could not be synced.",
+      );
+      return;
+    }
+    await save();
+  }
 
   async function save() {
     setBusy(true);
@@ -91,7 +153,9 @@ function PhonePage() {
           className="space-y-6"
           onSubmit={(e) => {
             e.preventDefault();
-            void save();
+            if (code !== null) void verify();
+            else if (willSignIn) void sendCode();
+            else void save();
           }}
         >
           <div className="space-y-2">
@@ -106,9 +170,29 @@ function PhonePage() {
               onChange={(e) => setPatientPhone(e.target.value)}
             />
             <p className="text-muted-foreground text-sm leading-5">
-              Optional. Leave blank to join from your browser.
+              {data?.signedIn
+                ? "You're signed in. Your bills sync to your other devices."
+                : "Optional. We text a code to sign you in, so your bills follow you to the app and the web."}
             </p>
           </div>
+
+          {code !== null ? (
+            <div className="space-y-2">
+              <Label htmlFor="sms-code">Code from the text</Label>
+              <Input
+                id="sms-code"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                placeholder="123456"
+                maxLength={6}
+                value={code}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+              />
+              <p className="text-muted-foreground text-sm leading-5">
+                It can take a minute to arrive.
+              </p>
+            </div>
+          ) : null}
 
           <section className="space-y-4 rounded-2xl border p-5">
             <h2 className="font-semibold text-lg leading-6">
@@ -158,18 +242,38 @@ function PhonePage() {
           ) : null}
 
           <div className="space-y-2">
-            <Button type="submit" className="w-full" disabled={busy}>
-              Continue
-            </Button>
             <Button
-              type="button"
-              variant="ghost"
+              type="submit"
               className="w-full"
-              disabled={busy}
-              onClick={() => void toConfirm()}
+              disabled={busy || (code !== null && code.length < 6)}
             >
-              Skip for now
+              {code !== null
+                ? "Verify and continue"
+                : willSignIn
+                  ? "Text me a code"
+                  : "Continue"}
             </Button>
+            {willSignIn || code !== null ? (
+              <Button
+                type="button"
+                variant="ghost"
+                className="w-full"
+                disabled={busy}
+                onClick={() => void save()}
+              >
+                Continue without signing in
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                variant="ghost"
+                className="w-full"
+                disabled={busy}
+                onClick={() => void toConfirm()}
+              >
+                Skip for now
+              </Button>
+            )}
           </div>
         </form>
 

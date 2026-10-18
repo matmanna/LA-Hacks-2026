@@ -1,6 +1,7 @@
 import type { Tier } from "@betterbill/ui/components/bb/tier-badge";
 import { Button } from "@betterbill/ui/components/button";
-import { Link } from "@tanstack/react-router";
+import { useStartSample } from "@/hooks/use-start-sample";
+
 import { ArrowSlide } from "../arrow-slide";
 import { Console, type ConsoleData, FALLBACK_CONSOLE } from "./console";
 
@@ -26,6 +27,8 @@ export type PlansSample = {
 };
 
 export function PlansHero({ sample }: { sample: PlansSample | null }) {
+  // Opens a fresh sample case (SB-01), like "Try a sample bill" on the home page.
+  const sampleReview = useStartSample();
   const data: ConsoleData = sample
     ? {
         hospitalName: sample.hospitalName,
@@ -64,8 +67,8 @@ export function PlansHero({ sample }: { sample: PlansSample | null }) {
             <Button
               variant="secondary"
               className="w-full sm:w-auto"
-              nativeButton={false}
-              render={<Link to="/case/$id" params={{ id: "case-demo" }} />}
+              onClick={() => void sampleReview.start()}
+              disabled={sampleReview.pending}
             >
               See a sample review
             </Button>
