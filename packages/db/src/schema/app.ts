@@ -22,6 +22,8 @@ export const caseTable = pgTable("case", {
   userId: text("user_id").references(() => user.id, { onDelete: "set null" }),
   status: text("status").notNull().default("new"),
   hospitalName: text("hospital_name"),
+  // B2: random token for the read-only evidence packet link; null = not shared.
+  shareToken: text("share_token").unique(),
   createdAt: ts("created_at").defaultNow().notNull(),
   updatedAt: ts("updated_at")
     .defaultNow()
