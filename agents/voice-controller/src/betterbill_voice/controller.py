@@ -1,5 +1,4 @@
 import asyncio
-import base64
 import json
 import logging
 import os
@@ -13,7 +12,9 @@ from livekit import api, rtc
 from livekit.agents import AutoSubscribe
 
 from .audio import ContinuousAudioInput
+from .floor import SpeechFloor
 from .protocol import FLOW_VERSION, BridgeState, pcm_event, tool_result
+from .transcription import transcribe_participant
 
 log = logging.getLogger(__name__)
 RATE = 16000
@@ -74,6 +75,7 @@ class CallController:
         self.ctx, self.http, self.lk = ctx, http, livekit
         self.action_id, self.room_name = action_id, room_name
         self.state = BridgeState()
+        self.floor = SpeechFloor()
         self.done = asyncio.Event()
         self.ready = asyncio.Event()
         self.arrivals = {identity: asyncio.Event() for identity in ("patient", "hospital")}
@@ -83,10 +85,20 @@ class CallController:
         self.generation = 0
         self.interrupted_before = -1
         self.last_audio_event = -1
-        self.resume_invited = False
-        self.stop_requested = False
-        self.ws = self.source = self.mixer = None
+        self.ws = self.source = None
+        self.ai_tasks: set[asyncio.Task] = set()
+        self.ai_disabled = False
+        self.hosted_busy = True
+        self.response_requested = True  # The approved opening message.
+        self.response_pcm = bytearray()
+        self.response_serial = 0
+        self.last_response_complete = -1
+        self.pending_request = None
+        self.transcript_lock = asyncio.Lock()
+        self.transcription_ready = {role: asyncio.Event() for role in ("patient", "hospital")}
+        self.pending_context = []
         self.streams = {}
+        self.stream_tasks = {}
         self.config = {}
         self.disclosure_pcm = b""
         self.accepting_input = False
@@ -170,12 +182,15 @@ class CallController:
         await self.post("status", status=value, **extra)
         self.lifecycle("status_saved", status=value)
 
-    def spawn(self, awaitable) -> asyncio.Task:
+    def spawn(self, awaitable, *, ai=False) -> asyncio.Task:
         task = asyncio.create_task(awaitable, name=awaitable.__qualname__)
         self.tasks.add(task)
+        if ai:
+            self.ai_tasks.add(task)
 
         def finished(t):
             self.tasks.discard(t)
+            self.ai_tasks.discard(t)
             if not t.cancelled() and t.exception() is not None:
                 log_failure(t.get_name(), t.exception())
                 self.lifecycle(
@@ -183,16 +198,22 @@ class CallController:
                     reason=t.get_name(),
                     close_code=getattr(self.ws, "close_code", None),
                 )
-                self.stop(
-                    "failed",
-                    reason="timeout" if isinstance(t.exception(), TimeoutError) else "error",
-                )
+                if ai and not self.done.is_set():
+                    self.yield_advocate("ai_unavailable")
+                    self.spawn(self.disable_advocate())
+                else:
+                    self.stop(
+                        "failed",
+                        reason="timeout" if isinstance(t.exception(), TimeoutError) else "error",
+                    )
 
         task.add_done_callback(finished)
         return task
 
     def clear_audio(self) -> None:
         self.generation += 1
+        self.response_pcm.clear()
+        self.pending_request = None
         if self.source:
             self.source.clear_queue()
         while not self.audio_queue.empty():
@@ -205,6 +226,7 @@ class CallController:
         self.terminal_status, self.terminal_reason = status, reason
         self.lifecycle("session_stopping", status=status, reason=reason)
         self.state.end()
+        self.floor.end()
         self.accepting_input = False
         self.clear_audio()
         self.done.set()
@@ -256,12 +278,27 @@ class CallController:
             stream, lambda event: self.lifecycle(event, role=participant.identity)
         )
         self.streams[track.sid] = iterator
-        self.mixer.add_stream(iterator)
+        self.stream_tasks[track.sid] = self.spawn(
+            transcribe_participant(
+                self.http,
+                os.environ["ELEVENLABS_API_KEY"],
+                participant.identity,
+                iterator,
+                self.on_transcript,
+                on_ready=self.on_transcription_ready,
+            ),
+            ai=True,
+        )
 
     def on_track_removed(self, track, _publication, _participant) -> None:
         stream = self.streams.get(track.sid)
         if stream:
-            self.mixer.remove_stream(stream)
+            self.yield_advocate("human_audio_unavailable")
+            if getattr(_participant, "identity", None) in self.transcription_ready:
+                self.transcription_ready[_participant.identity].clear()
+            task = self.stream_tasks.pop(track.sid, None)
+            if task:
+                task.cancel()
 
             async def close_stream():
                 await stream.aclose()
@@ -269,7 +306,7 @@ class CallController:
                     self.streams.pop(track.sid)
 
             # Retain ownership if room shutdown cancels cleanup before it starts.
-            self.spawn(close_stream())
+            self.spawn(close_stream(), ai=True)
 
     async def preflight(self) -> None:
         headers = {"xi-api-key": os.environ["ELEVENLABS_API_KEY"]}
@@ -325,6 +362,10 @@ class CallController:
 
     @staticmethod
     def validate_hosted_agent(agent: dict) -> None:
+        if "agent_response_complete" not in (
+            agent["conversation_config"].get("conversation", {}).get("client_events", [])
+        ):
+            raise ValueError("Conference branch requires response completion events")
         prompt = agent["conversation_config"]["agent"]["prompt"]
         tools = prompt.get("tools", [])
         client_tools = [tool for tool in tools if tool.get("type") == "client"]
@@ -355,6 +396,7 @@ class CallController:
             or workflow.get("subgraphs")
         ):
             raise ValueError("Use one advocate prompt without a staged workflow")
+
         def is_skip_turn(tool):
             return (
                 isinstance(tool, dict)
@@ -364,7 +406,8 @@ class CallController:
             )
 
         builtins = {
-            name: tool for name, tool in prompt.get("built_in_tools", {}).items()
+            name: tool
+            for name, tool in prompt.get("built_in_tools", {}).items()
             if tool is not None
         }
         if (
@@ -471,7 +514,11 @@ class CallController:
         await self.status("patient_briefed")
         await self.dial("billing")
         self.require_present("patient", "hospital")
-        await self.start_conversation()
+        try:
+            await self.start_conversation()
+        except Exception as error:
+            log_failure("hosted_conversation", error)
+            await self.disable_advocate()
 
     async def run(self) -> None:
         # A rejected duplicate bootstrap must not delete the first worker's active room.
@@ -485,7 +532,6 @@ class CallController:
                 await self.preflight()
                 self.stage = "rtc_audio_init"
                 self.source = rtc.AudioSource(RATE, 1, queue_size_ms=100)
-                self.mixer = rtc.AudioMixer(RATE, 1, blocksize=320, capacity=50)
                 room = self.ctx.room
                 room.on("participant_disconnected", self.on_participant_left)
                 room.on("participant_connected", self.on_participant_joined)
@@ -532,6 +578,9 @@ class CallController:
             raise ValueError("Invalid approved dynamic variables")
 
     async def start_conversation(self) -> None:
+        await self.prepare_transcription()
+        if self.ai_disabled or self.done.is_set():
+            return
         signed_url = await self.signed_url()
         self.require_present("patient", "hospital")
         self.stage = "hosted_connect"
@@ -544,14 +593,9 @@ class CallController:
                     "dynamic_variables": self.config["vars"],
                 }
             )
-            # Construct streams now so the private introduction is never buffered for ASR.
-            self.accepting_input = True
-            for participant in self.ctx.room.remote_participants.values():
-                for publication in participant.track_publications.values():
-                    if publication.track:
-                        self.on_track(publication.track, publication, participant)
-            self.spawn(self.send_audio())
-            self.spawn(self.play_audio())
+            self.spawn(self.play_audio(), ai=True)
+            self.spawn(self.keep_listening(), ai=True)
+            self.watch_response()
             async for message in ws:
                 if message.type == aiohttp.WSMsgType.TEXT:
                     await self.handle_event(json.loads(message.data))
@@ -575,6 +619,9 @@ class CallController:
             self.require_present("patient", "hospital")
             self.state.phase = "active"
             self.ready.set()
+            for context in self.pending_context:
+                await self.ws.send_json(context)
+            self.pending_context.clear()
         elif kind == "ping":
             await self.ws.send_json({"type": "pong", "event_id": event["ping_event"]["event_id"]})
         elif kind == "interruption":
@@ -589,7 +636,14 @@ class CallController:
             event_id = event["audio_event"].get("event_id", -1)
             if type(event_id) is int:
                 self.last_audio_event = max(self.last_audio_event, event_id)
-            reason = "output_available" if self.state.can_output else "session_not_active"
+            self.hosted_busy = True
+            enabled = (
+                self.state.can_output
+                and self.response_requested
+                and not self.ai_disabled
+                and all(event.is_set() for event in self.transcription_ready.values())
+            )
+            reason = "response_buffered" if enabled else "unrequested_response"
             if self.state.quiet:
                 reason = "patient_handoff"
             if self.state.can_output and event_id <= self.interrupted_before:
@@ -599,49 +653,203 @@ class CallController:
             if reason != self.last_audio_diagnostic:
                 self.lifecycle("hosted_audio_turn", event_id=event_id, reason=reason)
                 self.last_audio_diagnostic = reason
-            pcm = pcm_event(
-                event, enabled=self.state.can_output, interrupted_before=self.interrupted_before
-            )
+            pcm = pcm_event(event, enabled=enabled, interrupted_before=self.interrupted_before)
             if pcm:
-                self.audio_queue.put_nowait((pcm, self.generation))
+                self.response_pcm.extend(pcm)
+                if len(self.response_pcm) > RATE * 2 * 45:
+                    raise ValueError("Advocate response exceeded the output limit")
         elif kind == "client_tool_call":
-            self.spawn(self.handle_tool(event["client_tool_call"]))
+            self.spawn(self.handle_tool(event["client_tool_call"]), ai=True)
         elif kind == "agent_response":
-            event_id = event.get("agent_response_event", {}).get("event_id")
+            response = event.get("agent_response_event", {})
+            event_id = response.get("event_id")
             self.lifecycle("hosted_agent_response_received", event_id=event_id)
+            decision = (
+                self.floor.observe_agent(response.get("agent_response", ""))
+                if not self.floor.protected
+                else None
+            )
+            if decision and decision.action == "yield":
+                self.yield_advocate(decision.source)
+        elif kind == "agent_response_complete":
+            event_id = event.get("agent_response_complete_event", {}).get("event_id")
+            if type(event_id) is not int:
+                raise ValueError("Missing response completion ID")
+            if event_id <= self.last_response_complete:
+                return
+            self.last_response_complete = event_id
+            # Admit only the requested, completed answer; tools cannot leak later turns.
+            if self.response_requested and self.state.can_output and self.response_pcm:
+                self.audio_queue.put_nowait((bytes(self.response_pcm), self.generation))
+            self.response_pcm.clear()
+            self.response_requested = self.hosted_busy = False
+            self.response_serial += 1
+            self.floor.complete_response()
+            self.state.quiet = self.floor.quiet
+            self.lifecycle("advocate_response_completed", event_id=event_id)
+            pending, self.pending_request = self.pending_request, None
+            if (
+                pending
+                and pending[1] == self.generation
+                and not self.ai_disabled
+                and self.state.phase == "active"
+                and all(event.is_set() for event in self.transcription_ready.values())
+                and self.floor.begin_response()
+            ):
+                await self.request_response("patient", pending[0])
         elif kind == "user_transcript":
             transcription = event.get("user_transcription_event", {})
             event_id = transcription.get("event_id")
-            text = transcription.get("user_transcript", "")
-            self.resume_invited = self.stop_requested = False
-            if isinstance(text, str):
-                text = text.lower().replace("\u2019", "'").strip()
-                negated = bool(re.search(
-                    r"\b(?:no|not|never|don't|doesn't|isn't|can't|won't|shouldn't)\b", text
-                ))
-                # shortcut: conservative demo cues cannot authenticate mixed speakers;
-                # use participant-specific control before real patient authorizations.
-                self.resume_invited = self.state.quiet and not negated and bool(
-                    re.match(r"(?:(?:hey|okay|ok)[,. ]+)?(?:advocate|better\s?bill)[,. ]+\S", text)
-                )
-                self.stop_requested = not negated and bool(re.fullmatch(
-                    r"(?:please )?(?:(?:end|stop) (?:the |this )?call|hang up)"
-                    r"(?: now)?(?: please)?[.!]*", text
-                ))
+            # Hosted transcripts lack a trusted human role and never grant permission.
             self.lifecycle("hosted_user_transcript_received", event_id=event_id)
             self.last_audio_diagnostic = None
 
-    async def send_audio(self) -> None:
+    def yield_advocate(self, reason: str) -> None:
+        self.floor.yield_floor(reason)
+        self.state.quiet = True
+        self.response_requested = False
+        self.clear_audio()
+        self.lifecycle("advocate_paused", reason=reason)
+
+    async def on_transcription_ready(self, role: str) -> None:
+        self.transcription_ready[role].set()
+        self.lifecycle("participant_transcription_ready", role=role)
+
+    async def prepare_transcription(self) -> None:
+        self.stage = "participant_transcription"
+        self.accepting_input = True
+        for participant in self.ctx.room.remote_participants.values():
+            for publication in participant.track_publications.values():
+                if publication.track:
+                    self.on_track(publication.track, publication, participant)
+        async with asyncio.timeout(10):
+            await asyncio.gather(*(event.wait() for event in self.transcription_ready.values()))
+        self.require_present("patient", "hospital")
+
+    async def on_transcript(
+        self,
+        role: str,
+        text: str,
+        *,
+        final=False,
+        utterance_id=None,
+    ) -> None:
+        async with self.transcript_lock:
+            if (
+                self.ai_disabled
+                or self.done.is_set()
+                or (self.state.phase != "active" and not self.accepting_input)
+            ):
+                return
+            decision = self.floor.observe(role, text, final=final, utterance_id=utterance_id)
+            self.lifecycle("participant_transcript_received", role=role, reason=decision.source)
+            if decision.source in {
+                "duplicate_commit",
+                "empty_transcript",
+                "inactive_or_unknown_role",
+            }:
+                return
+            if decision.action == "withdraw":
+                self.yield_advocate(decision.source)
+                self.spawn(self.disable_advocate())
+                return
+            if decision.action in {"yield", "grant"}:
+                # Observe before forwarding input: no model tool is needed to mute speech.
+                self.state.quiet = True
+                self.response_requested = False
+                self.clear_audio()
+                self.lifecycle("advocate_paused", role=role, reason=decision.source)
+            if (
+                role == "patient"
+                and re.fullmatch(
+                    r"(?:please )?(?:(?:end|stop) (?:the |this )?call|hang up)"
+                    r"(?: now)?(?: please)?[.!]*",
+                    text.lower().strip(),
+                )
+                and final
+            ):
+                self.stop("completed", reason="finished")
+                return
+            context = {"type": "contextual_update", "text": f"{role}: {text}"}
+            if self.state.phase != "active":
+                if decision.action == "grant":
+                    self.yield_advocate("patient_request_before_advocate_ready")
+                if final:
+                    if len(self.pending_context) >= 20:
+                        raise ValueError("Too much speech before advocate readiness")
+                    self.pending_context.append(context)
+                return
+            if not final:
+                await self.ws.send_json({"type": "user_activity"})
+                return
+            request = decision.action == "grant" or (
+                role == "hospital" and not self.floor.protected
+            )
+            if (
+                request
+                and not self.hosted_busy
+                and (all(event.is_set() for event in self.transcription_ready.values()))
+                and self.floor.begin_response()
+            ):
+                await self.request_response(role, text)
+            else:
+                if decision.action == "grant" and self.hosted_busy:
+                    # Keep the fresh invitation behind the old response boundary.
+                    self.pending_request = (text, self.generation)
+                    self.lifecycle("advocate_request_waiting_for_boundary", role=role)
+                await self.ws.send_json(context)
+
+    async def request_response(self, role: str, text: str) -> None:
+        self.state.quiet = False
+        self.response_requested = self.hosted_busy = True
+        self.watch_response()
+        self.lifecycle("advocate_response_requested", role=role)
+        await self.ws.send_json({"type": "user_message", "text": f"{role}: {text}"})
+
+    def watch_response(self) -> None:
+        serial = self.response_serial
+
+        async def deadline():
+            await asyncio.sleep(45)
+            if serial == self.response_serial and self.hosted_busy:
+                raise TimeoutError("Hosted response boundary was not received")
+
+        self.spawn(deadline(), ai=True)
+
+    async def keep_listening(self) -> None:
         await asyncio.wait_for(self.ready.wait(), 20)
-        async for frame in self.mixer:
-            await self.ws.send_json({"user_audio_chunk": base64.b64encode(frame.data).decode()})
+        while True:
+            if not self.hosted_busy:
+                await self.ws.send_json({"type": "user_activity"})
+            await asyncio.sleep(5)
+
+    async def disable_advocate(self) -> None:
+        if self.ai_disabled or self.done.is_set():
+            return
+        self.ai_disabled = True
+        self.accepting_input = False
+        self.yield_advocate("ai_unavailable")
+        current = asyncio.current_task()
+        tasks = [task for task in self.ai_tasks if task is not current]
+        for task in tasks:
+            task.cancel()
+        await asyncio.gather(*tasks, return_exceptions=True)
+        operations = [stream.aclose() for stream in self.streams.values()]
+        if self.ws:
+            operations.append(self.ws.close())
+        await asyncio.gather(*operations, return_exceptions=True)
+        self.lifecycle("advocate_unavailable_humans_connected")
+        try:
+            await self.status("ai_unavailable")
+        except Exception as error:
+            log_failure("ai_unavailable_status", error)
 
     async def play_audio(self) -> None:
         while True:
             pcm, generation = await self.audio_queue.get()
             try:
                 for offset in range(0, len(pcm), 640):
-                    if not self.state.can_output or generation != self.generation:
+                    if self.state.phase != "active" or generation != self.generation:
                         break
                     chunk = pcm[offset : offset + 640]
                     await self.source.capture_frame(rtc.AudioFrame(chunk, RATE, 1, len(chunk) // 2))
@@ -665,49 +873,37 @@ class CallController:
             if self.state.phase != "active" or self.done.is_set():
                 await self.ws.send_json(tool_result(call_id, "The call is not active.", error=True))
                 return
-            if name == "resume_advocate" and (not self.state.quiet or not self.resume_invited):
-                self.lifecycle("advocate_resume_blocked")
-                await self.ws.send_json(tool_result(
-                    call_id,
-                    "Remain quiet until someone explicitly addresses Advocate or BetterBill.",
-                    error=True,
-                ))
-                return
-            self.state.quiet = name == "pause_advocate"
-            self.resume_invited = False
-            self.stop_requested = False
-            self.interrupted_before = max(self.interrupted_before, self.last_audio_event)
-            self.clear_audio()
-            self.lifecycle("advocate_paused" if self.state.quiet else "advocate_resumed")
-            await self.ws.send_json(tool_result(
-                call_id,
-                "Your audio is muted. Let the humans talk; do not speak or end the call."
-                if self.state.quiet else "You may answer the request. Speak only as the advocate.",
-            ))
+            if name == "resume_advocate":
+                allowed = self.response_requested and self.floor.can_output and not self.ai_disabled
+                self.lifecycle(
+                    "advocate_resume_acknowledged" if allowed else "advocate_resume_blocked"
+                )
+                await self.ws.send_json(
+                    tool_result(
+                        call_id,
+                        "Answer only the patient's current request, then remain silent."
+                        if allowed
+                        else "Only a fresh patient request permits one answer.",
+                        error=not allowed,
+                    )
+                )
+            else:
+                # A post-speech pause must not discard the single authorized answer.
+                if not (self.floor.protected and self.response_requested):
+                    self.yield_advocate("pause_tool")
+                await self.ws.send_json(
+                    tool_result(call_id, "Remain silent after the current authorized answer.")
+                )
             return
         if name == "finish_call":
-            def allowed():
-                return self.state.phase == "active" and (
-                    self.state.can_finish or self.stop_requested
+            self.lifecycle("advocate_departure_requested")
+            await self.ws.send_json(
+                tool_result(
+                    call_id,
+                    "The advocate is leaving. Both humans remain connected.",
                 )
-            if not allowed():
-                self.lifecycle("finish_call_blocked")
-                await self.ws.send_json(
-                    tool_result(call_id, "Remain connected while the humans speak.", error=True)
-                )
-                return
-            generation = self.generation
-            async with asyncio.timeout(45):
-                await self.audio_queue.join()
-                await self.source.wait_for_playout()
-            if allowed() and generation == self.generation:
-                await self.ws.send_json(tool_result(call_id, "Ending the billing call."))
-                if allowed() and generation == self.generation:
-                    self.stop("completed", reason="finished")
-            else:
-                await self.ws.send_json(
-                    tool_result(call_id, "The call changed; remain connected.", error=True)
-                )
+            )
+            await self.disable_advocate()
             return
         await self.ws.send_json(tool_result(call_id, "Unknown tool; do not retry.", error=True))
 
@@ -734,8 +930,6 @@ class CallController:
         ]
         if self.ws:
             operations.append(self.ws.close())
-        if self.mixer:
-            operations.append(self.mixer.aclose())
         operations.extend(stream.aclose() for stream in self.streams.values())
         if self.source:
             operations.append(self.source.aclose())

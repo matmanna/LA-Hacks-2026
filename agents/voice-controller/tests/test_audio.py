@@ -1,4 +1,5 @@
 import asyncio
+import os
 import unittest
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, Mock, patch
@@ -13,6 +14,7 @@ class PacketStream:
     def __init__(self):
         self.packets = asyncio.Queue(maxsize=50)
         self.closed = False
+        self.closed_event = asyncio.Event()
         self.reads = 0
 
     def __aiter__(self):
@@ -28,34 +30,61 @@ class PacketStream:
 
     async def aclose(self):
         self.closed = True
+        self.closed_event.set()
 
 
 class AudioInputTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
-        self.stream = PacketStream()
+        self.streams = {role: PacketStream() for role in ("patient", "hospital")}
+        self.stream = self.streams["patient"]
+        self.heard_frames = asyncio.Queue()
+        self.started, self.cancelled = [], set()
         self.controller = CallController(Mock(), Mock(), Mock(), "act_audio", "bb-act_audio")
         self.controller.accepting_input = True
-        self.controller.mixer = rtc.AudioMixer(16000, 1, blocksize=320, capacity=50)
-        self.track = SimpleNamespace(kind=rtc.TrackKind.KIND_AUDIO, sid="audio_track")
-        with patch("betterbill_voice.controller.rtc.AudioStream", return_value=self.stream):
-            self.controller.on_track(self.track, None, SimpleNamespace(identity="patient"))
+        self.controller.authorized = True
+        self.controller.status = AsyncMock()
+        self.controller.lk.room.delete_room = AsyncMock()
+        self.tracks = {
+            role: SimpleNamespace(kind=rtc.TrackKind.KIND_AUDIO, sid=f"{role}_track")
+            for role in self.streams
+        }
+        self.track = self.tracks["patient"]
+
+        async def transcribe(_http, _key, role, frames, _on_transcript, *, on_ready=None):
+            self.started.append(role)
+            if on_ready:
+                await on_ready(role)
+            try:
+                async for frame in frames:
+                    await self.heard_frames.put((role, frame.data[0]))
+            finally:
+                self.cancelled.add(role)
+
+        self.enterContext(patch.dict(os.environ, ELEVENLABS_API_KEY="test-key"))
+        self.audio_stream = self.enterContext(
+            patch(
+                "betterbill_voice.controller.rtc.AudioStream",
+                side_effect=lambda track, **_kwargs: self.streams[track.sid.removesuffix("_track")],
+            )
+        )
+        self.enterContext(patch("betterbill_voice.controller.transcribe_participant", transcribe))
+        self.controller.on_track(self.track, None, SimpleNamespace(identity="patient"))
+        await asyncio.sleep(0)
 
     async def asyncTearDown(self):
-        self.controller.on_track_removed(self.track, None, None)
-        await asyncio.gather(*self.controller.tasks)
-        await self.controller.mixer.aclose()
+        await self.controller.close()
 
-    async def heard(self, sample):
+    async def heard(self, sample, role="patient"):
         async def wait_for_sample():
-            async for frame in self.controller.mixer:
-                if frame.data[0] == sample:
+            while True:
+                if await self.heard_frames.get() == (role, sample):
                     return True
         try:
             return await asyncio.wait_for(wait_for_sample(), 0.5)
         except TimeoutError:
             return False
 
-    async def test_audio_resumes_after_packet_gap_longer_than_mixer_timeout(self):
+    async def test_transcriber_audio_resumes_after_packet_gap(self):
         self.stream.send(123)
         self.assertTrue(await self.heard(123))
         await asyncio.sleep(0.16)
@@ -68,10 +97,45 @@ class AudioInputTests(unittest.IsolatedAsyncioTestCase):
         await asyncio.sleep(0.16)
         self.assertTrue(await self.heard(0), "A stalled microphone must keep sending silence")
 
+    async def test_patient_and_hospital_have_separate_transcriber_audio(self):
+        self.controller.on_track(
+            self.tracks["hospital"], None, SimpleNamespace(identity="hospital")
+        )
+        self.stream.send(123)
+        self.streams["hospital"].send(456)
+        async with asyncio.timeout(1):
+            heard = set()
+            while len(heard) < 2:
+                frame = await self.heard_frames.get()
+                if frame[1] != 0:
+                    heard.add(frame)
+        self.assertEqual(heard, {("patient", 123), ("hospital", 456)})
+        self.assertCountEqual(self.started, ["patient", "hospital"])
+
+    async def test_duplicate_track_sid_cannot_create_another_transcriber(self):
+        self.controller.on_track(self.track, None, SimpleNamespace(identity="hospital"))
+        self.stream.send(123)
+        self.assertTrue(await self.heard(123))
+        self.assertEqual(self.started, ["patient"])
+        self.assertEqual(self.audio_stream.call_count, 1)
+
+    async def test_track_removal_cancels_its_transcriber_and_closes_only_its_source(self):
+        self.controller.on_track(
+            self.tracks["hospital"], None, SimpleNamespace(identity="hospital")
+        )
+        await asyncio.sleep(0)
+        patient_task = self.controller.stream_tasks[self.track.sid]
+        self.controller.on_track_removed(self.track, None, SimpleNamespace(identity="patient"))
+        self.assertTrue(self.controller.floor.quiet)
+        self.assertFalse(self.controller.transcription_ready["patient"].is_set())
+        await asyncio.wait_for(self.stream.closed_event.wait(), 1)
+        self.assertTrue(patient_task.cancelled())
+        self.assertIn("patient", self.cancelled)
+        self.assertFalse(self.streams["hospital"].closed)
+        self.streams["hospital"].send(456)
+        self.assertTrue(await self.heard(456, "hospital"))
+
     async def test_immediate_room_shutdown_closes_a_just_removed_track(self):
-        self.controller.authorized = True
-        self.controller.status = AsyncMock()
-        self.controller.lk.room.delete_room = AsyncMock()
         self.controller.on_track_removed(self.track, None, None)
         await self.controller.close()
         self.assertTrue(self.stream.closed, "Shutdown cancelled cleanup before it started")

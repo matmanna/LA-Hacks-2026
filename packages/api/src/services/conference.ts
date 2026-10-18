@@ -48,6 +48,8 @@ const statusSummary: Record<ConferenceStatus, string> = {
   patient_joined: "Patient line connected; person not verified",
   patient_briefed: "Introduction playback finished",
   billing_connected: "Billing phone connected",
+  ai_unavailable:
+    "Advocate unavailable; the patient and billing line remain connected",
   patient_left: "You disconnected; ending the call",
   patient_failed: "Could not connect you",
   completed: "Conference finished",
@@ -189,7 +191,7 @@ export function conferenceProgress(actionId: string, events: CaseEvent[]) {
       ? ("failed" as const)
       : seen.includes("completed")
         ? ("done" as const)
-        : seen.includes("ready")
+        : seen.includes("ready") || seen.includes("ai_unavailable")
           ? ("in_progress" as const)
           : ("ringing" as const),
     conversationId: /elevenlabs:([\w-]+)/.exec(ready?.summary ?? "")?.[1],

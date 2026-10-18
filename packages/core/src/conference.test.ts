@@ -31,7 +31,7 @@ describe("conference approval", () => {
     expect(introduction).toContain("Alex Morgan");
     expect(introduction).toContain("Example");
     expect(introduction).toContain("Duplicate test");
-    expect(introduction).toContain("Advocate, continue");
+    expect(introduction).toContain("Advocate, can you help?");
     expect(
       renderConferenceScript(vars, "+13105550100", "+13105550101"),
     ).toContain(introduction);
@@ -138,6 +138,20 @@ describe("conference lifecycle", () => {
     "billing_connected",
     "ready",
   ];
+  it("records an unavailable advocate while keeping the human conference active", () => {
+    expect(
+      canReportConferenceStatus([], "ai_unavailable" as ConferenceStatus),
+    ).toBe(false);
+    expect(
+      canReportConferenceStatus(order, "ai_unavailable" as ConferenceStatus),
+    ).toBe(true);
+    expect(
+      canReportConferenceStatus(
+        [...order, "ai_unavailable" as ConferenceStatus],
+        "completed",
+      ),
+    ).toBe(true);
+  });
   it("requires patient connection and completed introduction before billing, then allows completion with both present", () => {
     const seen: ConferenceStatus[] = [];
     for (const next of order) {

@@ -64,17 +64,18 @@ Phone answer and introduction completion
 are connection progress, not patient approval. An answered phone can be voicemail;
 this automatic design does not verify a human is listening.
 
-The patient stays in the same room throughout. Both human audio streams start feeding
-the hosted advocate only when its conversation starts, so briefing-phase input is not
-buffered and forwarded. The signed hosted URL is fetched near that connection, after
-both phone legs connect. The advocate remains active with both people present. Both
-humans hear each other and can speak directly; transcript lines remain neutral
-“Participant” because mixed audio cannot reliably identify the approving person.
+The patient stays in the same room throughout. After billing connects, each human's
+audio goes to a separate Scribe realtime transcription connection. Both must report
+ready before the hosted advocate starts. The controller forwards role-labeled text,
+never mixed audio. Connection roles do not authenticate the physical person speaking.
+Briefing-phase input is not buffered. Both humans hear each other directly.
 
 Either human hanging up stops the session, cancels pending dialing, clears agent
-output and deletes the room to end both phone legs. A normal `finish_call` also ends
-both legs. There is no continuing without the patient or automatic second attempt.
-Failure after `billing_connected` is an interrupted call, even if hosted setup failed.
+output and deletes the room to end both phone legs. A finalized patient instruction
+to end the call does the same. The model's `finish_call` only withdraws the advocate,
+including AI processing. AI/transcription failure or explicit refusal of AI leaves
+both humans connected, with an activity event explaining the advocate is unavailable.
+There is no continuing without the patient or automatic second attempt.
 
 Phone ringing is bounded to 30 seconds, with 35 seconds for the SIP response and up to
 five seconds for the RTC participant event to catch up. Introduction playback is
@@ -118,7 +119,8 @@ microphone denial without calling any provider.
 
 Use the dedicated patient conference branch with PCM 16000 input/output and three
 parameterless client tools: `finish_call`, `pause_advocate`, and `resume_advocate`.
-The single advocate prompt follows the conversation without workflow stages. Preflight
+The single advocate prompt follows the conversation without workflow stages. Enable
+`agent_response_complete` in `conversation.client_events`. Preflight
 rejects extra tools, unsupported built-in tools, old invitation instructions and remaining workflow
 stages before any phone call. The [configuration script](../../packages/api/scripts/configure-demo-advocate.md)
 backs up and updates only the conference branch, preserving the voice/model, audio
@@ -129,13 +131,21 @@ account or thinking. It does not latch the patient-handoff gate: staff can conti
 normally when ready. The hosted branch uses patient turn-taking, a 20-second silence
 window, and no speculative response generation. Silence does not end the call.
 
-When the model calls `pause_advocate`, the controller discards queued speech and blocks
-new agent audio. Both humans remain audible. A fresh request addressing "Advocate" or
-"BetterBill" allows `resume_advocate`; an ordinary "yes" or a pause does not. This is a
-demo convention, not speaker authentication: mixed audio cannot prove the patient made
-the request. Pausing speech does not stop transcription or AI processing. Do not infer
-approvals from silence, unclear speech, phone presence or departure, and do not make
-payment or settlement commitments.
+Patient speech, staff verification cues, or a handoff latch the advocate silent without
+waiting for a model tool. Once latched, only a finalized request for help addressing
+"Advocate" or "BetterBill" from the patient connection permits one answer. Staff,
+silence, identity answers and model tools cannot resume it. Human speech revokes that
+answer. Microphone track loss also latches silence. The completed response is buffered
+before playback, so later model turns cannot escape that one-answer permission; this
+adds response latency that still needs a live rehearsal. A missing response boundary
+withdraws the AI rather than disconnecting the humans.
+
+Normal discussion updates context without triggering replies. Two realtime Scribe
+streams use provider credits; hosted mixed-audio ASR is not used. Pausing speech alone
+does not stop transcription or AI processing; explicit AI/recording refusal withdraws
+the AI. Never infer approval from silence, unclear speech, phone presence or departure,
+or make payment or settlement commitments. Identity verification belongs to the humans;
+the advocate must not correct a patient against the fictional profile.
 
 The approval includes the top three concerns with service dates, codes, units, original
 charges and evidence. Only cases loaded from a known synthetic sample get the fictional
@@ -160,9 +170,9 @@ type and an allowlisted Twirp code. No phone numbers, speech, audio, credentials
 URLs or provider error bodies belong in logs. Background failures name the originating
 coroutine and record the available numeric WebSocket close code before room cleanup.
 Input stalls and recoveries are logged per participant. A stalled input supplies paced
-silence while retaining its pending audio read, so brief mixer timeouts do not permanently
-close the stream. Source closure still requires a new LiveKit track. Handoffs log
-`advocate_paused`, `advocate_resumed`, and rejected resume/finish attempts without speech.
+silence while retaining its pending audio read. Source closure requires a new LiveKit
+track. Logs include transcription readiness, each gate decision and its trusted role,
+requested/completed answers, rejected resume attempts, and AI withdrawal without speech.
 
 ```powershell
 uv run --env-file ../../apps/web/.env betterbill-voice dev 2>&1 | Tee-Object ../../tmp/voice-controller.log
@@ -184,7 +194,8 @@ The background filter cannot guarantee intended-speaker detection.
 
 For the small role-play demo: ask about one flagged charge; request the patient for
 verification; let both humans talk and pause without inviting the advocate; then say
-"Advocate, continue." Ask a follow-up using the approved bill facts, propose a next step
+"Advocate, can you help?" Check one answer followed by silence, including if staff
+addresses the advocate. Ask a follow-up using the approved bill facts, propose a next step
 and reference number, and agree on a recap before ending. Check the stall/recovery and
 handoff logs afterward. Do not treat this rehearsal as a real hospital authorization.
 

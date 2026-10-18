@@ -292,6 +292,24 @@ async function brief(db: Database) {
   await status(db, "patient_briefed");
 }
 
+it("keeps the human conference active when the advocate withdraws", async () => {
+  const db = fakeDb();
+  await boot(db);
+  await brief(db);
+  await dial(db, "billing");
+  await status(db, "billing_connected");
+  await status(db, "ai_unavailable");
+  expect(conferenceProgress("a1", fixture.events)).toMatchObject({
+    ended: false,
+    failed: false,
+    billingConnected: true,
+    status: "in_progress",
+  });
+  expect(fixture.close).not.toHaveBeenCalled();
+  await status(db, "completed", { reason: "finished" });
+  expect(conferenceProgress("a1", fixture.events).ended).toBe(true);
+});
+
 it("binds a versioned bootstrap without exposing destinations and prevents duplicate workers", async () => {
   const db = fakeDb();
   await startConferenceCall(db, "a1");

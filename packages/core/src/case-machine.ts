@@ -29,6 +29,7 @@ const TRANSITIONS: Record<EventTypeName, TransitionRule> = {
   "call.patient_joined": { from: "any", to: "same" },
   "call.patient_briefed": { from: "any", to: "same" },
   "call.billing_connected": { from: "any", to: "same" },
+  "call.ai_unavailable": { from: "any", to: "same" },
   "call.patient_left": { from: "any", to: "same" },
   "call.patient_failed": { from: "any", to: "same" },
   "call.conference_completed": { from: "any", to: "same" },

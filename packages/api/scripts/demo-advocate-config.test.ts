@@ -22,7 +22,10 @@ const current = {
       },
     },
     tts: { voice_id: "retained-voice", speed: 1.1 },
-    conversation: { max_duration_seconds: 7200 },
+    conversation: {
+      max_duration_seconds: 7200,
+      client_events: ["audio", "interruption", "agent_response"],
+    },
     turn: {
       turn_timeout: 7,
       turn_eagerness: "normal",
@@ -65,7 +68,15 @@ describe("demo advocate configuration", () => {
       },
     });
     expect(patch.conversation_config).not.toHaveProperty("tts");
-    expect(patch.conversation_config).not.toHaveProperty("conversation");
+    expect(patch.conversation_config.conversation).toEqual({
+      max_duration_seconds: 7200,
+      client_events: [
+        "audio",
+        "interruption",
+        "agent_response",
+        "agent_response_complete",
+      ],
+    });
     expect(patch.conversation_config.turn).toEqual({
       ...current.conversation_config.turn,
       turn_timeout: 20,
@@ -77,6 +88,25 @@ describe("demo advocate configuration", () => {
     expect(current.conversation_config.agent.prompt.tool_ids).toEqual([
       "old-tool",
     ]);
+  });
+
+  it("enables completion once without dropping existing events or conversation settings", () => {
+    const alreadyEnabled = structuredClone(current);
+    alreadyEnabled.conversation_config.conversation.client_events.push(
+      "agent_response_complete",
+    );
+    expect(
+      buildDemoAdvocatePatch(alreadyEnabled, ids).conversation_config
+        .conversation,
+    ).toEqual({
+      max_duration_seconds: 7200,
+      client_events: [
+        "audio",
+        "interruption",
+        "agent_response",
+        "agent_response_complete",
+      ],
+    });
   });
 
   it("rejects a missing, original, main, or mismatched branch before any write", () => {
@@ -170,6 +200,15 @@ describe("demo advocate configuration", () => {
       },
     };
     expect(() => verifyDemoAdvocate(current, updated, ids)).not.toThrow();
+    for (const clientEvents of [
+      ["audio", "interruption", "agent_response"],
+      ["agent_response_complete"],
+    ]) {
+      const missingEvent = structuredClone(updated);
+      missingEvent.conversation_config.conversation.client_events =
+        clientEvents;
+      expect(() => verifyDemoAdvocate(current, missingEvent, ids)).toThrow();
+    }
     expect(() =>
       verifyDemoAdvocate(
         current,

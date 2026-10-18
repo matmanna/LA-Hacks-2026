@@ -24,6 +24,7 @@ def agent_config():
             "asr": {"user_input_audio_format": "pcm_16000"},
             "tts": {"agent_output_audio_format": "pcm_16000", "voice_id": "voice"},
             "vad": {"background_voice_detection": True},
+            "conversation": {"client_events": ["agent_response_complete"]},
             "agent": {
                 "prompt": {
                     "prompt": "Advocate with the patient present. Pause for direct spoken answers.",

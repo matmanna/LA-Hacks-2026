@@ -47,6 +47,8 @@ class ControllerTests(unittest.IsolatedAsyncioTestCase):
         c.disclosure_pcm = b"\0\0" * 320
         c.source = self.source
         c.ws = SimpleNamespace(send_json=AsyncMock(), close=AsyncMock())
+        for event in c.transcription_ready.values():
+            event.set()
         c.preflight = AsyncMock()
 
         async def post(event, **extra):
@@ -83,11 +85,9 @@ class ControllerTests(unittest.IsolatedAsyncioTestCase):
         c.callbacks = callbacks
         return c
 
-    async def run_controller(self, c, limit=1):
-        mixer = SimpleNamespace(aclose=AsyncMock(), add_stream=Mock(), remove_stream=Mock())
+    async def run_controller(self, c, limit=3):
         with (
             patch("betterbill_voice.controller.rtc.AudioSource", return_value=self.source),
-            patch("betterbill_voice.controller.rtc.AudioMixer", return_value=mixer),
             patch("betterbill_voice.controller.rtc.LocalAudioTrack.create_audio_track"),
         ):
             await asyncio.wait_for(c.run(), limit)
@@ -293,14 +293,30 @@ class ControllerTests(unittest.IsolatedAsyncioTestCase):
             await self.run_controller(c)
         self.assertEqual(c.lk.sip.create_sip_participant.await_count, 0)
 
-    async def test_failed_hosted_start_preserves_billing_connected_history_and_cleans(self):
+    async def test_failed_hosted_start_preserves_humans_until_patient_leaves(self):
         c = self.controller()
         c.start_conversation.side_effect = RuntimeError("private provider details")
+        failed = asyncio.Event()
+        original_status = c.status
+
+        async def record_status(value, **kwargs):
+            await original_status(value, **kwargs)
+            if value == "ai_unavailable":
+                failed.set()
+
+        c.status = record_status
+
+        async def patient_leaves_after_ai_failure():
+            await failed.wait()
+            self.assertFalse(c.done.is_set())
+            c.lk.room.delete_room.assert_not_awaited()
+            c.on_participant_left(self.phones["patient"])
+
         with self.assertLogs("betterbill_voice.controller", level="ERROR"):
-            await self.run_controller(c)
+            await asyncio.gather(self.run_controller(c), patient_leaves_after_ai_failure())
         self.assertIn("billing_connected", self.events)
         self.assertEqual(self.events[-1], "failed")
-        self.assertEqual(c.terminal_reason, "error")
+        self.assertEqual(c.terminal_reason, "patient_left")
         self.assertEqual(c.lk.room.delete_room.await_count, 1)
 
     async def test_terminal_status_rejection_falls_back_once_and_close_is_idempotent(self):
@@ -318,7 +334,10 @@ class ControllerTests(unittest.IsolatedAsyncioTestCase):
     async def test_hosted_metadata_enables_audio_only_after_ready_recorded(self):
         c = self.controller()
         self.phones.update(
-            {name: SimpleNamespace(identity=name) for name in ("patient", "hospital")}
+            {
+                name: SimpleNamespace(identity=name, track_publications={})
+                for name in ("patient", "hospital")
+            }
         )
         await c.handle_event(
             {
@@ -345,7 +364,7 @@ class ControllerTests(unittest.IsolatedAsyncioTestCase):
             }
         )
         c.signed_url = AsyncMock(return_value="wss://private-signed-url")
-        c.spawn = lambda coroutine: coroutine.close()
+        c.spawn = lambda coroutine, **_kwargs: coroutine.close()
         ws = AsyncMock()
         ws.close_code, ws.close_reason = 1008, "private close reason"
         ws.__aiter__.return_value = []
@@ -372,6 +391,9 @@ class ControllerTests(unittest.IsolatedAsyncioTestCase):
         await c.handle_event(
             {"type": "audio", "audio_event": {"audio_base_64": "AAA=", "event_id": 3}}
         )
+        await c.handle_event(
+            {"type": "agent_response_complete", "agent_response_complete_event": {"event_id": 3}}
+        )
         self.assertFalse(c.audio_queue.empty())
         c.on_participant_left(SimpleNamespace(identity="patient"))
         self.assertTrue(c.audio_queue.empty())
@@ -383,10 +405,13 @@ class ControllerTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_initial_tracks_are_not_buffered_for_hosted_agent(self):
         c = self.controller()
-        c.mixer = Mock()
         track = SimpleNamespace(kind=rtc.TrackKind.KIND_AUDIO, sid="track")
         participant = SimpleNamespace(identity="patient")
-        with patch("betterbill_voice.controller.rtc.AudioStream") as stream:
+        c.spawn = lambda coroutine, **_kwargs: coroutine.close()
+        with (
+            patch("betterbill_voice.controller.rtc.AudioStream") as stream,
+            patch.dict("os.environ", {"ELEVENLABS_API_KEY": "secret"}),
+        ):
             c.on_track(track, None, participant)
             stream.assert_not_called()
             c.accepting_input = True
@@ -394,7 +419,7 @@ class ControllerTests(unittest.IsolatedAsyncioTestCase):
             stream.assert_called_once()
         c.streams.clear()
 
-    async def test_unknown_tool_never_invites_and_finish_works_with_patient_present(self):
+    async def test_unknown_tool_never_invites_and_finish_only_withdraws_ai(self):
         c = self.controller()
         c.state.phase = "active"
         self.source.wait_for_playout.side_effect = None
@@ -404,8 +429,9 @@ class ControllerTests(unittest.IsolatedAsyncioTestCase):
         await c.handle_tool(
             {"tool_name": "finish_call", "tool_call_id": "finish", "parameters": {}}
         )
-        self.assertTrue(c.done.is_set())
-        self.assertEqual(c.terminal_reason, "finished")
+        self.assertFalse(c.done.is_set())
+        self.assertTrue(c.ai_disabled)
+        c.lk.room.delete_room.assert_not_awaited()
 
     async def test_duplicate_finish_and_model_destination_are_rejected(self):
         c = self.controller()

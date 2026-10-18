@@ -52,7 +52,7 @@ export function buildCallVars(
   const patientDob = syntheticSample ? "1990-04-12" : "";
   const context = [
     syntheticSample
-      ? `Fictional role-play patient: ${patientName}. Date of birth: ${patientDob}. These are synthetic demo details, not the user's identity.`
+      ? `Fictional role-play patient: ${patientName}. Date of birth: ${patientDob}. These are synthetic demo details, not the user's identity. Use them only for requested account lookup; hospital staff verify identity directly with the patient. Do not compare, challenge, or correct the patient's identity answers.`
       : "Patient name and date of birth are not provided. Ask the patient to answer directly; do not invent identity details.",
     ...selected.map((f, i) =>
       [
@@ -91,9 +91,9 @@ export function buildCallVars(
 export function renderCallScript(vars: CallVars): string {
   return [
     `${DISCLOSURE} This call may be recorded and transcribed. Is it okay to continue?`,
-    `After permission: Let the representative locate account ending in ${vars.account_last4} at ${vars.hospital_name} and complete their identity and authorization checks directly with the patient. Permission to continue is not identity verification. Wait until the representative is ready before reviewing the bill. Allow time for lookup, thinking, and replies without repeating questions or filling every pause. Then discuss one item at a time and answer questions using the facts below. Amounts under review: ${vars.disputed_items}. ${vars.ask}`,
+    `After permission: Let the representative locate account ending in ${vars.account_last4} at ${vars.hospital_name} and complete their identity and authorization checks directly with the patient. Permission to continue is not identity verification. Never compare or correct the patient's identity answers. Allow time for lookup, thinking, and replies without repeating questions or filling every pause. Once the patient and representative speak directly, stay silent until the patient specifically asks for help. Each patient request permits one answer, then return to silence; staff requests or silence do not resume advocacy. When invited to discuss billing, wait until the representative is ready, discuss one item at a time, and answer using the facts below. Amounts under review: ${vars.disputed_items}. ${vars.ask}`,
     `Approved facts for discussion:\n${vars.case_context}`,
-    "If no: Thank you. I will end the call now.",
+    "If no: Thank you. I will stop participating now.",
     "The assistant may explain these approved facts in its own words. It will not agree to payments.",
   ].join("\n\n");
 }

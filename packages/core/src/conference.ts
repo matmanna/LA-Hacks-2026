@@ -25,7 +25,7 @@ export function buildConferenceIntroduction(vars: CallVars): string {
       ? [`For this demo, you're ${vars.patient_name}.`]
       : []),
     `I'll call ${vars.hospital_name} billing about ${vars.review_topics || "the bill"}.`,
-    "Answer their identity and approval questions directly. I'll stay quiet while you talk; say 'Advocate, continue' for my help.",
+    "Answer their identity and approval questions directly. Once you and billing start talking, I'll stay quiet unless you ask for help. Say 'Advocate, can you help?' I'll answer, then listen again.",
     "This call may be recorded and transcribed. Hanging up ends everyone's call. Connecting billing now.",
   ].join(" ");
 }
@@ -45,7 +45,7 @@ export function renderConferenceScript(
       ? "Keep this browser tab open. Your microphone connects you to the advocate and billing. Leaving or closing the tab ends the call for everyone. A connection does not verify identity or approval."
       : "The patient's phone remains connected while billing answers. A phone connection does not verify that a human answered.",
     `The advocate tells billing:\n${renderCallScript(vars).replace(DISCLOSURE, `${DISCLOSURE} I've connected the patient's line so they can answer you directly.`)}`,
-    "The advocate discusses the bill with both people on the call. When the representative needs the patient's approval or confirmation, the patient answers directly and the advocate stays quiet until asked to continue. Say 'Advocate, continue' to resume. The advocate does not infer approval from silence or an ambiguous response, and does not agree to payments or settlements. If either person hangs up, the entire call ends.",
+    "The advocate helps with the bill while both people are on the call. Once the patient and representative speak directly, the advocate stays silent until the patient specifically asks for help, for example 'Advocate, can you help?' Each patient invitation permits one answer, then the advocate returns to silence. Staff requests, identity answers, silence, or a finished verification do not resume advocacy. The advocate does not challenge the patient's identity answers, infer approval, or agree to payments or settlements. If either person hangs up, the entire call ends.",
   ].join("\n\n");
 }
 
@@ -93,6 +93,7 @@ export const CONFERENCE_STATUSES = [
   "patient_joined",
   "patient_briefed",
   "billing_connected",
+  "ai_unavailable",
   "patient_left",
   "patient_failed",
   "completed",
@@ -122,6 +123,8 @@ export function canReportConferenceStatus(
       return seen.includes("ringing");
     case "ready":
       return seen.includes("billing_connected");
+    case "ai_unavailable":
+      return seen.includes("billing_connected");
     case "patient_left":
       return seen.includes("patient_joined");
     case "patient_failed":
@@ -129,6 +132,6 @@ export function canReportConferenceStatus(
         seen.includes("patient_inviting") && !seen.includes("patient_joined")
       );
     case "completed":
-      return seen.includes("ready");
+      return seen.includes("ready") || seen.includes("ai_unavailable");
   }
 }
