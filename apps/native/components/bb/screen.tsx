@@ -50,7 +50,7 @@ export function Screen({
     >
       <StatusBar style={dark ? "light" : "dark"} />
       {nav || aside || action ? (
-        <View className="h-14 flex-row items-center justify-between px-5">
+        <View className="relative h-14 flex-row items-center justify-between px-5">
           {nav ? (
             <Pressable
               accessibilityRole="button"
@@ -66,6 +66,17 @@ export function Screen({
           ) : (
             <View />
           )}
+          <View
+            className="absolute inset-0 items-center justify-center"
+            pointerEvents="none"
+          >
+            <View className="flex-row items-baseline gap-1">
+              <T weight="serif" className="text-[22px] leading-none">
+                BetterBill
+              </T>
+              <Icon name="check" size={15} color="#0F9D76" stroke={2} />
+            </View>
+          </View>
           <View className="flex-row items-center gap-2">
             {aside ? (
               <T

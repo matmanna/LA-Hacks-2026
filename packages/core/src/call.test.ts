@@ -7,11 +7,47 @@ import {
   checkDisclosure,
   DISCLOSURE,
   isAllowedNumber,
+  isSyntheticSampleCase,
   mapConversationStatus,
   renderCallScript,
   transcriptText,
 } from "./call";
 import type { Bill, Flag } from "./schemas";
+
+describe("synthetic call provenance", () => {
+  const sample = {
+    type: "bill.parsed",
+    actor: "system" as const,
+    at: "2026-10-18T01:00:00Z",
+    summary: "Loaded sample bill SB-01 (10 lines)",
+  };
+  it("requires a known sample in the latest server bill parse event", () => {
+    expect(isSyntheticSampleCase([sample], ["SB-01"])).toBe(true);
+    expect(isSyntheticSampleCase([sample], ["SB-02"])).toBe(false);
+    expect(
+      isSyntheticSampleCase([{ ...sample, actor: "user" }], ["SB-01"]),
+    ).toBe(false);
+    expect(
+      isSyntheticSampleCase(
+        [{ ...sample, summary: `${sample.summary} extra` }],
+        ["SB-01"],
+      ),
+    ).toBe(false);
+    expect(isSyntheticSampleCase([], ["SB-01"])).toBe(false);
+    const upload = {
+      ...sample,
+      at: "2026-10-18T01:01:00Z",
+      summary: "Read uploaded bill",
+    };
+    expect(isSyntheticSampleCase([upload, sample], ["SB-01"])).toBe(false);
+    expect(
+      isSyntheticSampleCase(
+        [sample, { ...upload, type: "bill.confirmed" }],
+        ["SB-01"],
+      ),
+    ).toBe(true);
+  });
+});
 
 const bill = {
   id: "b1",
@@ -39,6 +75,70 @@ function flag(id: string, title: string, amountCents: number): Flag {
 }
 
 describe("buildCallVars", () => {
+  it("provides approved line facts and separates the disputed difference from the charge", () => {
+    const vars = buildCallVars(
+      {
+        ...bill,
+        lines: [
+          {
+            id: "mri",
+            serviceDate: "2026-09-14",
+            description: "MRI lumbar spine",
+            code: "72148",
+            codeType: "CPT",
+            units: 1,
+            chargeCents: 690000,
+            source: { page: 1, bbox: null },
+            confidence: 1,
+            userEdited: false,
+          },
+        ],
+      },
+      [
+        {
+          ...flag("price", "Published price difference", 175685),
+          lineIds: ["mri"],
+          lever: "published_price",
+          tier: "published",
+          explanation: "Published cash price $5,143.15; billed $6,900.00.",
+          evidence: {
+            kind: "price_file",
+            detail:
+              "72148: billed 690000 cents, published cash price 514315 cents.",
+            sourceUrl: "https://example.org/prices.csv",
+            capturedAt: "2026-10-17",
+          },
+        },
+        flag("two", "Second item", 100),
+        flag("three", "Third item", 50),
+        flag("four", "Excluded fourth item", 1),
+      ],
+    );
+    expect(vars.case_context).toContain("Amount under review: $1,756.85");
+    expect(vars.case_context).toContain("not the original billed charge");
+    expect(vars.case_context).toContain("Billed charge: $6,900.00");
+    expect(vars.case_context).toContain("2026-09-14");
+    expect(vars.case_context).toContain("CPT 72148");
+    expect(vars.case_context).toContain("MRI lumbar spine");
+    expect(vars.case_context).toContain("Units: 1");
+    expect(vars.case_context).toContain("Evidence tier: published");
+    expect(vars.case_context).toContain("$5,143.15");
+    expect(vars.case_context).toContain("https://example.org/prices.csv");
+    expect(vars.case_context).not.toContain("Excluded fourth item");
+  });
+
+  it("adds fictional identity only with trusted synthetic sample provenance", () => {
+    const real = buildCallVars(bill, []);
+    expect(real.patient_name).toBe("");
+    expect(real.patient_dob).toBe("");
+    expect(real.case_context).not.toContain("Alex Morgan");
+    const sample = buildCallVars(bill, [], true);
+    expect(sample.patient_name).toBe("Alex Morgan");
+    expect(sample.patient_dob).toBe("1990-04-12");
+    expect(sample.case_context).toContain("Fictional role-play patient");
+    expect(sample.case_context).toContain("1990-04-12");
+  });
+
   it("names at most 3 items, largest first, with formatted amounts", () => {
     const vars = buildCallVars(bill, [
       flag("a", "Small", 100),
@@ -64,6 +164,14 @@ describe("buildCallVars", () => {
 });
 
 describe("renderCallScript", () => {
+  it("binds all additional case facts into the reviewed script", () => {
+    const vars = buildCallVars(bill, []);
+    const before = renderCallScript(vars);
+    expect(before).toContain(vars.case_context);
+    expect(
+      renderCallScript({ ...vars, case_context: "A changed fact" }),
+    ).not.toBe(before);
+  });
   it("opens with the disclosure and says only the call variables", () => {
     const vars = buildCallVars(bill, [flag("b", "Big", 175685)]);
     const script = renderCallScript(vars);

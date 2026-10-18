@@ -9,7 +9,7 @@ const client = createRouterClient(appRouter, { context });
 const caseId = "case-test";
 
 describe("procedure stubs", () => {
-  it("exposes the 16 binding procedures", () => {
+  it("exposes the binding procedures", () => {
     const names = Object.entries(appRouter).flatMap(([router, value]) =>
       typeof value === "object" && value !== null && !("~orpc" in value)
         ? Object.keys(value).map((p) => `${router}.${p}`)
@@ -19,10 +19,13 @@ describe("procedure stubs", () => {
       [
         "case.create",
         "case.get",
+        "case.claim",
         "case.list",
         "case.share",
         "case.revokeShare",
         "case.packet",
+        "contact.get",
+        "contact.set",
         "bill.parseText",
         "bill.parsePhoto",
         "bill.confirmLines",

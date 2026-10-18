@@ -47,6 +47,7 @@ export const AssistanceCheckInput = z.object({
 export const DraftLetterInput = z.object({
   caseId: z.string(),
   kind: z.enum(["letter", "itemized_request", "call"]),
+  patientConnection: z.enum(["phone", "browser"]).optional(),
 });
 
 export const ActionIdInput = z.object({ actionId: z.string() });
@@ -73,6 +74,14 @@ export const PaymentCheckoutInput = z.object({
   promoCode: PromoCode,
 });
 export const BulkCheckoutInput = z.object({ promoCode: PromoCode });
+
+// contact.set: blank clears a field, omitted leaves it as it is.
+export const ContactSetInput = z.object({
+  caseId: z.string(),
+  patientPhone: z.string().max(40).optional(),
+  billingPhone: z.string().max(40).optional(),
+  hospitalUrl: z.string().max(300).optional(),
+});
 
 // "Before you go" price comparison: one service code and where the patient is.
 export const NearbyPricesInput = z.object({

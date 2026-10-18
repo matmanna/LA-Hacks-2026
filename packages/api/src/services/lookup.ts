@@ -3,6 +3,8 @@
 // events into plain steps, and on completion keeps a policy only when quotes
 // back its income limits. Only started/completed/failed are stored as case
 // events; the live view URL is never stored.
+
+import { sendText } from "@betterbill/auth/lib/sms";
 import {
   type Bill,
   findPolicy,
@@ -10,16 +12,16 @@ import {
   type LookupEvent,
   type LookupStep,
   lookupSteps,
+  normalizePhone,
   policyFromLookup,
   shortHospitalName,
 } from "@betterbill/core";
 import type { Database } from "@betterbill/db";
 import { caseEvent } from "@betterbill/db/schema/index";
 import { and, asc, eq, like } from "drizzle-orm";
-
 import { POLICIES } from "../data";
 import type { LookupStatus } from "../outputs";
-import { addEvent } from "../repo/cases";
+import { addEvent, getCaseRow } from "../repo/cases";
 import {
   type Fetch,
   getLiveUrl,
@@ -86,6 +88,17 @@ export async function caseLookupPolicy(
   return parse<Finished>(end.artifactRef)?.policy ?? null;
 }
 
+// The billing phone a finished lookup found on the hospital's site, as E.164.
+export async function caseLookupBillingPhone(
+  db: Db,
+  caseId: string,
+): Promise<string | null> {
+  const { end } = await lookupRecords(db, caseId);
+  if (end?.type !== LOOKUP_COMPLETED) return null;
+  const phone = parse<Finished>(end.artifactRef)?.billingPhone;
+  return phone ? normalizePhone(phone) : null;
+}
+
 const base = (bill: Bill): LookupStatus => ({
   state: "none",
   hospitalName: shortHospitalName(bill.hospital.name),
@@ -131,6 +144,35 @@ async function allEvents(deps: LookupDeps, key: string, runId: string) {
     after = r.nextAfter;
   }
   return out;
+}
+
+// Texts the patient's number once, when the lookup finishes. Best effort: a
+// missing number, an unlisted number or a Photon error never fails the poll.
+async function textWhenReady(
+  db: Db,
+  caseId: string,
+  hospital: string,
+  found: boolean,
+) {
+  try {
+    const to = (await getCaseRow(db, caseId))?.patientPhone;
+    if (!to) return;
+    await sendText({
+      to,
+      text: found
+        ? `BetterBill: we found ${hospital}'s assistance policy. Open the app to see if you may qualify.`
+        : `BetterBill: we couldn't find ${hospital}'s income limits online. Open the app to see your options.`,
+      idempotencyKey: `lookup:${caseId}`,
+    });
+    await addEvent(
+      db,
+      caseId,
+      "lookup.texted",
+      "Texted you that the lookup is done",
+    );
+  } catch {
+    // Not texting is fine; the app shows the result either way.
+  }
 }
 
 export async function lookupStatus(
@@ -216,6 +258,7 @@ export async function lookupStatus(
         : `Couldn't find ${name}'s income limits online`,
       { actor: "agent", artifactRef: JSON.stringify(finished) },
     );
+    await textWhenReady(db, caseId, name, built !== null);
     return finishedStatus(bill, started, type, finished);
   }
 
@@ -256,6 +299,7 @@ export async function startLookup(
       state: bill.hospital.state,
     },
     deps.fetch,
+    (await getCaseRow(db, caseId))?.hospitalUrl ?? null,
   );
   const started: Started = {
     runId: run.id,

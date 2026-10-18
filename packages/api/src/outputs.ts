@@ -39,7 +39,13 @@ export const DraftLetterResult = z.object({
   usedFallback: z.boolean(),
 });
 
-export const CallStarted = z.object({ callId: z.string(), status: z.string() });
+export const CallStarted = z.object({
+  callId: z.string(),
+  status: z.string(),
+  browserSession: z
+    .object({ serverUrl: z.string(), token: z.string() })
+    .optional(),
+});
 
 export const CallStatus = z.object({
   status: z.string(),
@@ -110,6 +116,20 @@ export const LookupStatus = z.object({
     .nullable(),
 });
 export type LookupStatus = z.infer<typeof LookupStatus>;
+
+// contact.get / contact.set: where calls for a case go. Phones are E.164.
+// savedPatientPhone is the number from the signed-in patient's earlier case.
+export const Contact = z.object({
+  patientPhone: z.string().nullable(),
+  billingPhone: z.string().nullable(),
+  hospitalUrl: z.string().nullable(),
+  savedPatientPhone: z.string().nullable(),
+  // The verified number the signed-in patient used to sign in, if any.
+  accountPhone: z.string().nullable(),
+  signedIn: z.boolean(),
+  hospitalName: z.string().nullable(),
+});
+export type Contact = z.infer<typeof Contact>;
 
 // "Before you go" price comparison (core prices/). Amounts are integer cents
 // from the hospital's own machine-readable price file.

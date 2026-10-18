@@ -14,6 +14,8 @@ type ApprovalSheetProps = {
   text: string;
   dataShared: string[];
   pending?: boolean;
+  patientFirst?: boolean;
+  browserPatient?: boolean;
   onApprove: () => void;
   // Calls only: Approve stays disabled until the person's consent is confirmed.
   consent?: { checked: boolean; onCheckedChange: (checked: boolean) => void };
@@ -31,6 +33,8 @@ export function ApprovalSheet({
   text,
   dataShared,
   pending,
+  patientFirst = false,
+  browserPatient = false,
   onApprove,
   consent,
 }: ApprovalSheetProps) {
@@ -59,7 +63,7 @@ export function ApprovalSheet({
           tabIndex={-1}
           className="font-semibold text-sm leading-5 outline-none"
         >
-          {isCall ? "What we'll say" : "What we'll send"}
+          {isCall ? "What we'll discuss" : "What we'll send"}
         </h3>
         <textarea
           readOnly
@@ -81,7 +85,13 @@ export function ApprovalSheet({
       <p className="text-muted-foreground text-xs leading-4">
         Nothing is sent until you tap Approve. We save your approval with the
         time.
-        {isCall ? ` The call starts with: "${CALL_OPENING}"` : null}
+        {isCall
+          ? patientFirst
+            ? browserPatient
+              ? " You'll join in this browser. Billing connects after the introduction. If you leave, the call ends for everyone."
+              : " Your phone is called first. Billing connects after the introduction. If you hang up, the call ends for everyone."
+            : ` The call starts with: "${CALL_OPENING}"`
+          : null}
       </p>
 
       {consent ? (
@@ -94,7 +104,7 @@ export function ApprovalSheet({
               consent.onCheckedChange(checked === true)
             }
           />
-          The person at this number agreed to take a test call.
+          Everyone listed in the script agreed to take this test call.
         </label>
       ) : null}
 
@@ -121,6 +131,7 @@ export function ApprovalSheet({
         </Button>
         <Button
           variant="secondary"
+          disabled={pending}
           className="w-full lg:w-auto"
           onClick={() => onOpenChange(false)}
         >

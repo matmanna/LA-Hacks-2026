@@ -1,6 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
+import { rememberDeviceCase } from "@/lib/device-cases";
 import { client } from "@/utils/orpc";
 
 const SAMPLE_ID = "SB-01";
@@ -15,6 +16,7 @@ export function useStartSample() {
     setError(null);
     try {
       const created = await client.case.create({ sample: SAMPLE_ID });
+      rememberDeviceCase(created.id);
       await navigate({ to: "/case/$id/confirm", params: { id: created.id } });
     } catch {
       setError("Something went wrong on our side. Try again in a moment.");

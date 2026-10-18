@@ -22,6 +22,7 @@
     "@polar-sh/sdk": "^0.47.0",
     "@sentry/core": "11.4.0",
     "drizzle-orm": "catalog:",
+    "livekit-server-sdk": "^2.19.1",
     "zod": "catalog:"
   },
   "devDependencies": {

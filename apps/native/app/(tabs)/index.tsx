@@ -1,4 +1,4 @@
-import { useQueries } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { router, useFocusEffect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useState } from "react";
@@ -22,10 +22,23 @@ import { orpc } from "@/utils/orpc";
 // phone. Amounts come from each case's audit; nothing is added up here.
 export default function Home() {
   const insets = useSafeAreaInsets();
-  const [saved, setSaved] = useState<SavedCase[]>([]);
+  const [local, setLocal] = useState<SavedCase[]>([]);
   const [tip, setTip] = useState(true);
+  // Bills saved to the signed-in account, so the web's bills show here too.
+  const account = useQuery(orpc.case.list.queryOptions({ input: {} }));
+  const known = new Set(local.map((c) => c.id));
+  const saved = [
+    ...local,
+    ...(account.data ?? [])
+      .filter((c) => !known.has(c.id))
+      .map((c) => ({
+        id: c.id,
+        createdAt: c.createdAt,
+        label: c.hospitalName ?? "Bill",
+      })),
+  ];
 
-  const reload = useCallback(async () => setSaved(await loadCases()), []);
+  const reload = useCallback(async () => setLocal(await loadCases()), []);
   useFocusEffect(
     useCallback(() => {
       void reload();
@@ -54,15 +67,19 @@ export default function Home() {
             refreshing={false}
             onRefresh={() => {
               void reload();
+              void account.refetch();
               for (const q of cases) void q.refetch();
             }}
           />
         }
       >
         <View className="flex-row items-center justify-between">
-          <T weight="serif" className="text-[30px] leading-[34px]">
-            BetterBill
-          </T>
+          <View className="flex-row items-baseline gap-1">
+            <T weight="serif" className="text-[30px] leading-[34px]">
+              BetterBill
+            </T>
+            <Icon name="check" size={18} color="#0F9D76" stroke={2} />
+          </View>
           <AccountButton />
         </View>
 

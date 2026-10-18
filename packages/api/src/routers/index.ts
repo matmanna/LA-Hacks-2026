@@ -7,6 +7,7 @@ import { auditRouter } from "./audit";
 import { billRouter } from "./bill";
 import { callRouter } from "./call";
 import { caseRouter } from "./case";
+import { contactRouter } from "./contact";
 import { evalRouter } from "./eval";
 import { eventRouter } from "./event";
 import { hospitalRouter } from "./hospital";
@@ -24,6 +25,7 @@ export const appRouter = {
     };
   }),
   case: caseRouter,
+  contact: contactRouter,
   bill: billRouter,
   audit: auditRouter,
   assistance: assistanceRouter,

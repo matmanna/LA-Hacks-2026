@@ -8,17 +8,23 @@ import {
   type CallOutcome,
   CallOutcomeSchema,
   type CallState,
-  isAllowedNumber,
+  isConferenceScript,
+  isDialableNumber,
+  isPatientFirstConferenceScript,
+  isSyntheticSampleCase,
   mapConversationStatus,
+  type PatientConnection,
   renderCallScript,
+  renderConferenceScript,
   sha256Hex,
   transcriptText,
+  withConferenceParticipation,
 } from "@betterbill/core";
 import type { Database } from "@betterbill/db";
 import { action as actionTable, caseEvent } from "@betterbill/db/schema/index";
 import { ORPCError } from "@orpc/server";
 import { and, eq, gt, isNull, notLike } from "drizzle-orm";
-
+import { SAMPLES } from "../data";
 import { RECORDED_CALL } from "../recorded-call";
 import { addEvent, getCaseRow, listEvents, setStatus } from "../repo/cases";
 import {
@@ -28,6 +34,13 @@ import {
   saveDraft,
 } from "./actions";
 import { buildOutcome } from "./call-outcome";
+import {
+  conferenceDestinations,
+  conferenceProgress,
+  expireConference,
+  startConferenceCall,
+} from "./conference";
+import { allowUserNumbers, resolveCallNumbers } from "./contact";
 import { getConversation, startOutboundCall } from "./elevenlabs";
 
 const MAX_CALLS_PER_10_MIN = 3;
@@ -44,19 +57,9 @@ const startedFor =
     e.type === "call.started" &&
     (e.artifactRef?.startsWith(`action:${actionId}#`) ?? false);
 
-// The first number on CALL_ALLOWLIST is the "billing office" test phone.
-function billingTestPhone(): string | null {
-  return (
-    (process.env.CALL_ALLOWLIST ?? "")
-      .split(",")
-      .map((n) => n.trim())
-      .find(Boolean) ?? null
-  );
-}
-
 export async function draftCall(
   db: Database,
-  input: { caseId: string },
+  input: { caseId: string; patientConnection?: PatientConnection },
 ): Promise<{
   action: Action;
   draftHash: string;
@@ -64,12 +67,20 @@ export async function draftCall(
   usedFallback: boolean;
 }> {
   const audited = await loadAuditedCase(db, input.caseId);
+  if (
+    input.patientConnection === "browser" &&
+    process.env.CALL_MODE !== "conference"
+  )
+    throw new ORPCError("PRECONDITION_FAILED", {
+      message: "Browser calls require the advocate conference service.",
+    });
   if (audited.flags.length === 0) {
     throw new ORPCError("PRECONDITION_FAILED", {
       message: "Nothing on this bill needs a call.",
     });
   }
-  const to = billingTestPhone();
+  const numbers = await resolveCallNumbers(db, input.caseId);
+  const to = numbers.billing;
   if (!to) {
     throw new ORPCError("PRECONDITION_FAILED", {
       message: "Calls are not set up yet.",
@@ -80,10 +91,27 @@ export async function draftCall(
     "action.drafted",
     "This case is not ready for a call yet.",
   );
+  const vars = buildCallVars(
+    audited.bill,
+    audited.flags,
+    isSyntheticSampleCase(
+      await listEvents(db, input.caseId),
+      SAMPLES.map((sample) => sample.id),
+    ),
+  );
   const { action, draftHash } = await saveDraft(db, {
     caseId: input.caseId,
     kind: "call",
-    draft: renderCallScript(buildCallVars(audited.bill, audited.flags)),
+    draft:
+      process.env.CALL_MODE === "conference"
+        ? renderConferenceScript(
+            vars,
+            to,
+            conferenceDestinations(to, input.patientConnection, numbers.patient)
+              .patientNumber,
+            input.patientConnection,
+          )
+        : renderCallScript(vars),
     recipient: to,
     status,
     summary: "Call script ready for you",
@@ -95,11 +123,22 @@ export async function startCall(
   db: Database,
   input: { actionId: string },
   start: typeof startOutboundCall = startOutboundCall,
-): Promise<{ callId: string; status: string }> {
+): Promise<{
+  callId: string;
+  status: string;
+  browserSession?: { serverUrl: string; token: string };
+}> {
   const action = await getAction(db, input.actionId);
   if (action.kind !== "call") {
     throw new ORPCError("BAD_REQUEST", {
       message: "Use action.send for letters.",
+    });
+  }
+  if (isConferenceScript(action.draft))
+    return startConferenceCall(db, action.id);
+  if (process.env.CALL_MODE === "conference") {
+    throw new ORPCError("FORBIDDEN", {
+      message: "Review a new call script to approve the patient connection.",
     });
   }
   const callId = `call-${action.id}`;
@@ -114,7 +153,13 @@ export async function startCall(
       message: "Please approve the call first.",
     });
   }
-  if (!isAllowedNumber(action.recipient, process.env.CALL_ALLOWLIST ?? "")) {
+  if (
+    !isDialableNumber(
+      action.recipient,
+      process.env.CALL_ALLOWLIST ?? "",
+      allowUserNumbers(),
+    )
+  ) {
     throw new ORPCError("FORBIDDEN", {
       message: "This demo only calls numbers on the test list.",
     });
@@ -122,7 +167,14 @@ export async function startCall(
   // The agent speaks from variables, so rebuild them and make sure they still
   // produce the exact script the user approved.
   const audited = await loadAuditedCase(db, action.caseId);
-  const vars = buildCallVars(audited.bill, audited.flags);
+  const vars = buildCallVars(
+    audited.bill,
+    audited.flags,
+    isSyntheticSampleCase(
+      events,
+      SAMPLES.map((sample) => sample.id),
+    ),
+  );
   if (renderCallScript(vars) !== action.draft) {
     throw new ORPCError("FORBIDDEN", {
       message: "This call script changed. Please review it again.",
@@ -178,10 +230,13 @@ export async function startCall(
   return { callId, status: "ringing" };
 }
 
-function present(outcome: CallOutcome): CallStatusResult {
+function present(outcome: CallOutcome, conference = false): CallStatusResult {
   return {
     status: outcome.status,
-    transcript: transcriptText(outcome.transcript),
+    transcript: transcriptText(
+      outcome.transcript,
+      conference ? "participant" : "billing",
+    ),
     outcome: JSON.stringify(outcome),
   };
 }
@@ -219,13 +274,72 @@ export async function callStatus(
   fetchConversation: typeof getConversation = getConversation,
 ): Promise<CallStatusResult> {
   const action = await getAction(db, input.callId.replace(/^call-/, ""));
+  const conference = isConferenceScript(action.draft);
   if (action.outcome) {
-    return present(CallOutcomeSchema.parse(JSON.parse(action.outcome)));
+    return present(
+      CallOutcomeSchema.parse(JSON.parse(action.outcome)),
+      conference,
+    );
   }
-  const events = await listEvents(db, action.caseId);
+  let events = await listEvents(db, action.caseId);
   const started = events.filter(startedFor(action.id)).at(-1);
   if (!started)
     return { status: "not_started", transcript: null, outcome: null };
+
+  if (conference) {
+    if (await expireConference(db, action, events))
+      events = await listEvents(db, action.caseId);
+    const progress = conferenceProgress(action.id, events);
+    if (!progress.ended)
+      return { status: progress.status, transcript: null, outcome: null };
+    let conversation: Awaited<ReturnType<typeof getConversation>> | null = null;
+    if (progress.conversationId) {
+      try {
+        const result = await fetchConversation(progress.conversationId);
+        if (["done", "failed"].includes(result.status)) conversation = result;
+      } catch {
+        // Provider analysis can lag the phone hangup; polling has a fixed deadline.
+      }
+      if (
+        !conversation &&
+        Date.now() - Date.parse(progress.endedAt ?? started.at) < 60_000
+      )
+        return { status: "in_progress", transcript: null, outcome: null };
+    }
+    const outcome = withConferenceParticipation(
+      conversation
+        ? buildOutcome(conversation)
+        : {
+            status: progress.failed ? "failed" : "done",
+            summary: progress.billingConnected
+              ? `${progress.failed ? "The call ended early" : "The call ended"} after the billing phone connected. The conversation transcript is unavailable.`
+              : "The billing phone did not connect. No hospital conversation was recorded.",
+            referenceNumber: null,
+            billingResponse: null,
+            nextStep: null,
+            followUpDate: null,
+            durationSecs: null,
+            transcript: [],
+            recorded: false,
+            source: "live",
+          },
+      progress.patientJoined,
+    );
+    if (progress.failed || conversation?.status === "failed")
+      outcome.status = "failed";
+    // A mixed first reply cannot establish which human refused consent.
+    else if (isPatientFirstConferenceScript(action.draft))
+      outcome.status = "done";
+    await saveOutcome(
+      db,
+      action,
+      outcome,
+      progress.failed
+        ? "Call ended early; result saved."
+        : "Call ended; result saved.",
+    );
+    return present(outcome, true);
+  }
 
   const conversationId = /elevenlabs:([\w-]+)/.exec(started.summary)?.[1];
   let state: CallState = "failed";

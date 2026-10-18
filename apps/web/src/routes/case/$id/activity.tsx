@@ -2,6 +2,7 @@ import { ActivityTimeline } from "@betterbill/ui/components/bb/activity-timeline
 import { CallTranscriptCard } from "@betterbill/ui/components/bb/call-transcript-card";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import { AppBar } from "@/components/app-bar";
 import { orpc } from "@/utils/orpc";
@@ -16,16 +17,18 @@ export const Route = createFileRoute("/case/$id/activity")({
   component: ActivityPage,
 });
 
-// call.status returns the transcript as "agent:" / "billing:" lines and the
-// outcome as a CallOutcome JSON string.
+// Conference audio cannot reliably distinguish the two human speakers.
 function parseTurns(transcript: string | null) {
   if (!transcript) return [];
   return transcript.split("\n").flatMap((line) => {
-    const match = /^(agent|billing):\s*(.+)$/i.exec(line.trim());
+    const match = /^(agent|billing|participant):\s*(.+)$/i.exec(line.trim());
     return match
       ? [
           {
-            speaker: match[1].toLowerCase() as "agent" | "billing",
+            speaker: match[1].toLowerCase() as
+              | "agent"
+              | "billing"
+              | "participant",
             text: match[2],
           },
         ]
@@ -60,9 +63,6 @@ const LIVE_CALL = new Set(["ringing", "in_progress"]);
 
 function ActivityPage() {
   const { id } = Route.useParams();
-  const events = useQuery(
-    orpc.event.list.queryOptions({ input: { caseId: id } }),
-  );
   const detail = useQuery(
     orpc.case.get.queryOptions({ input: { caseId: id } }),
   );
@@ -77,14 +77,34 @@ function ActivityPage() {
     refetchInterval: (query) =>
       LIVE_CALL.has(query.state.data?.status ?? "") ? 3000 : false,
   });
+  const events = useQuery({
+    ...orpc.event.list.queryOptions({ input: { caseId: id } }),
+    refetchInterval: LIVE_CALL.has(call.data?.status ?? "") ? 3000 : false,
+  });
+  useEffect(() => {
+    if (
+      events.isFetchedAfterMount &&
+      ["done", "failed", "no_consent"].includes(call.data?.status ?? "")
+    ) {
+      // The last call poll may finish before the corresponding event poll.
+      void events.refetch();
+    }
+  }, [call.data?.status, events.isFetchedAfterMount, events.refetch]);
 
   const pending = detail.data?.actions.find(
     (a) => a.approvedAt !== null && a.outcome === null && a.kind !== "call",
   );
   const turns = parseTurns(call.data?.transcript ?? null);
   const outcome = parseOutcome(call.data?.outcome ?? null);
+  const billingConnected = (events.data ?? []).some(
+    (event) =>
+      event.id === `voice:${callAction?.id}:billing_connected` ||
+      event.id === `voice:${callAction?.id}:ready`,
+  );
   const cardStatus =
-    CARD_STATUS[call.data?.status as keyof typeof CARD_STATUS] ?? null;
+    call.data?.status === "failed" && billingConnected
+      ? "interrupted"
+      : (CARD_STATUS[call.data?.status as keyof typeof CARD_STATUS] ?? null);
   const recorded = outcome?.source === "recorded_fallback";
 
   return (
@@ -113,7 +133,10 @@ function ActivityPage() {
             events={(events.data ?? []).map((e) => ({
               id: e.id,
               at: e.at,
-              summary: e.summary,
+              summary: e.summary.replace(
+                /\s+\((?:patient-first-v1; )?(?:livekit|elevenlabs|reason):[\w-]+\)$/,
+                "",
+              ),
               actor: e.actor,
               done: true,
             }))}
