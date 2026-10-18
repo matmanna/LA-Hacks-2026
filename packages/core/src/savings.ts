@@ -69,10 +69,19 @@ export function computeSavings(
     );
   }
 
+  // Patient-reported: billing may or may not agree, so it widens the
+  // potential range (from nothing up to the full charge) and is never confirmed.
+  const notReceivedCents = sum(of("not_received"));
+  if (notReceivedCents > 0) {
+    method.push(
+      `Potential: services you told us you did not receive (up to ${formatMoney(notReceivedCents)}).`,
+    );
+  }
+
   return {
     confirmedCents,
     potentialLowCents: unitCents + priceLow,
-    potentialHighCents: unitCents + priceHigh,
+    potentialHighCents: unitCents + priceHigh + notReceivedCents,
     assistance,
     method,
   };

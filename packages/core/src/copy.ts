@@ -29,6 +29,11 @@ export const copy = {
     explanation: (chargeCents: number, cashCents: number) =>
       `This hospital publishes a cash price of ${formatMoney(cashCents)} for this service. You were billed ${formatMoney(chargeCents)}.`,
   },
+  notReceived: {
+    title: () => "You said you didn't get this",
+    explanation: () =>
+      "You told us you did not receive this service. Ask billing to show it in your medical record.",
+  },
   missingItemization: {
     title: () => "Ask for an itemized bill",
     explanation: () =>

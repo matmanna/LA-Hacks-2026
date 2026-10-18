@@ -25,6 +25,9 @@ export const Line = z.object({
   }),
   confidence: unit,
   userEdited: z.boolean(),
+  // The patient says they did not receive this service. Patient-reported, not
+  // read from the bill, so it never changes userEdited.
+  notReceived: z.boolean().optional(),
 });
 export type Line = z.infer<typeof Line>;
 
@@ -72,10 +75,18 @@ export const Lever = z.enum([
   "published_price",
   "assistance",
   "missing_itemization",
+  "not_received",
 ]);
 export type Lever = z.infer<typeof Lever>;
 
-export const Tier = z.enum(["confirmed", "rule", "published", "estimate"]);
+// reported: the patient told us (e.g. a service they did not receive).
+export const Tier = z.enum([
+  "confirmed",
+  "rule",
+  "published",
+  "estimate",
+  "reported",
+]);
 export type Tier = z.infer<typeof Tier>;
 
 export const Flag = z.object({
@@ -87,7 +98,7 @@ export const Flag = z.object({
   explanation: z.string(),
   amountCents: cents,
   evidence: z.object({
-    kind: z.enum(["arithmetic", "rule", "quote", "price_file"]),
+    kind: z.enum(["arithmetic", "rule", "quote", "price_file", "patient"]),
     detail: z.string(),
     quote: z.string().optional(),
     sourceUrl: z.string().optional(),

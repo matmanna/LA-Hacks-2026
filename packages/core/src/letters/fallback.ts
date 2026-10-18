@@ -35,6 +35,8 @@ function sentenceFor(flag: Flag, lines: Line[]): string {
       return "Based on your published financial assistance policy, I may qualify. This is an estimate. Please send me the application.";
     case "missing_itemization":
       return "My statement does not list each charge. Please send a complete itemized bill.";
+    case "not_received":
+      return `I do not recall receiving ${description} (${code}) for ${amount}. Please show where it is in my medical record, or remove it.`;
   }
 }
 

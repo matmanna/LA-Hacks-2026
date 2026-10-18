@@ -14,6 +14,7 @@ const EVIDENCE: Record<string, string> = {
   rule: "Billing rule",
   quote: "Quoted source",
   price_file: "Hospital price file",
+  patient: "You told us",
 };
 
 // W4 Flag detail: what we found, the lines it is about, and the source.

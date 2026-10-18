@@ -6,6 +6,7 @@ const TIER_LABEL: Record<Tier, string> = {
   rule: "Billing rule",
   published: "Hospital's published price",
   estimate: "Estimate",
+  reported: "Reported by the patient",
 };
 
 export function renderLetter(input: {

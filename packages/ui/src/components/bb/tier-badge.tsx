@@ -1,7 +1,13 @@
 import { cn } from "@betterbill/ui/lib/utils";
-import { BadgeCheck, BookOpen, CircleDashed, Landmark } from "lucide-react";
+import {
+  BadgeCheck,
+  BookOpen,
+  CircleDashed,
+  Landmark,
+  MessageSquareQuote,
+} from "lucide-react";
 
-export type Tier = "confirmed" | "rule" | "published" | "estimate";
+export type Tier = "confirmed" | "rule" | "published" | "estimate" | "reported";
 
 type TierBadgeProps = {
   tier: Tier;
@@ -14,6 +20,7 @@ export const TIER_LABELS: Record<Tier, string> = {
   rule: "Billing rule",
   published: "Hospital's published price",
   estimate: "Estimate",
+  reported: "You told us",
 };
 
 const TIERS = {
@@ -24,6 +31,10 @@ const TIERS = {
     Icon: Landmark,
   },
   estimate: { className: "bg-amber-soft text-amber-ink", Icon: CircleDashed },
+  reported: {
+    className: "bg-slate-soft text-slate-ink",
+    Icon: MessageSquareQuote,
+  },
 } as const;
 
 export function TierBadge({ tier, size = "md", className }: TierBadgeProps) {
