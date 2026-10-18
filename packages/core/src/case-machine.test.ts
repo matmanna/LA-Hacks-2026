@@ -48,6 +48,19 @@ describe("deriveStatus", () => {
     expect(deriveStatus(events)).toBe("called");
   });
 
+  it("allows a call to start after its companion email is sent", () => {
+    const events: CaseEvent[] = [
+      ev({ type: "case.created", at: "t0" }),
+      ev({ type: "lines.confirmed", at: "t1" }),
+      ev({ type: "audit.completed", at: "t2" }),
+      ev({ type: "action.drafted", at: "t3" }),
+      ev({ type: "action.approved", at: "t4" }),
+      ev({ type: "action.sent", at: "t5" }),
+      ev({ type: "call.started", at: "t6" }),
+    ];
+    expect(deriveStatus(events)).toBe("sent");
+  });
+
   it("allows re-confirming lines after an audit", () => {
     const events: CaseEvent[] = [
       ev({ type: "case.created", at: "t0" }),

@@ -18,7 +18,9 @@ const TRANSITIONS: Record<EventTypeName, TransitionRule> = {
   "action.cancelled": { from: ["action_pending"], to: "same" },
   "action.send_failed": { from: ["action_pending"], to: "same" },
   "action.sent": { from: ["action_pending"], to: "sent" },
-  "call.started": { from: ["action_pending"], to: "same" },
+  // Approve-and-start sends the companion email before opening the call, so
+  // the case may already be sent when the dial begins.
+  "call.started": { from: ["action_pending", "sent"], to: "same" },
   "call.completed": { from: ["action_pending"], to: "called" },
   "call.failed": { from: ["action_pending"], to: "same" },
   "call.dispatching": { from: "any", to: "same" },
