@@ -31,7 +31,7 @@ export function PriceMap({
   const [shown, setShown] = useState(0);
   const key = rows.map((r) => r.hospitalKey).join();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: refit and replay when the hospitals change
+  // biome-ignore lint/correctness/useExhaustiveDependencies: refit when the hospitals or the free area change
   useEffect(() => {
     if (rows.length === 0) return;
     map.current?.fitToCoordinates(
@@ -49,6 +49,11 @@ export function PriceMap({
         animated: !reduced,
       },
     );
+  }, [key, insets.top, insets.bottom, reduced]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: replay when the hospitals change
+  useEffect(() => {
+    if (rows.length === 0) return;
     if (reduced) {
       setShown(rows.length);
       return;

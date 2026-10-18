@@ -6,7 +6,6 @@ import { cn } from "heroui-native";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Platform,
   Pressable,
   ScrollView,
   useWindowDimensions,
@@ -50,8 +49,8 @@ const openHospital = (hospitalKey: string, code: string) =>
   });
 
 // Price A: the hospitals near you on a map with their published cash price,
-// then a sheet with the range and the lowest three. Phones only for the map;
-// the web shows the ranked list.
+// then a sheet with the range and the lowest three. Phones draw a real map;
+// the web places the same pins by location on a plain background.
 export default function PriceMapScreen() {
   const { code = "" } = useLocalSearchParams<{ code: string }>();
   const service = SERVICES.find((s) => s.code === code);
@@ -59,13 +58,15 @@ export default function PriceMapScreen() {
   const { height } = useWindowDimensions();
   const nearby = useNearby(code);
   const { origin, data } = nearby;
-  const [all, setAll] = useState(Platform.OS === "web");
+  const [all, setAll] = useState(false);
+  // The collapsed sheet's height, so the map keeps every pin above it.
+  const [sheetH, setSheetH] = useState(420);
   const reduced = useReducedMotion();
   const shown = useSharedValue(reduced ? 1 : 0);
   useEffect(() => {
     if (!data) return;
-    // On phones the sheet rises once the last pin has popped in.
-    const pins = Platform.OS === "web" ? 0 : data.rows.length * PIN_STEP_MS;
+    // The sheet rises once the last pin has popped in.
+    const pins = data.rows.length * PIN_STEP_MS;
     shown.value = reduced
       ? 1
       : withDelay(
@@ -165,23 +166,6 @@ export default function PriceMapScreen() {
     />
   ) : null;
 
-  if (Platform.OS === "web") {
-    return (
-      <View className="flex-1 bg-wash">
-        <StatusBar style="dark" />
-        <ScrollView
-          contentContainerClassName="gap-4 px-4 pb-8"
-          contentContainerStyle={{ paddingTop: insets.top + 14 }}
-        >
-          {header}
-          <View className="rounded-[28px] bg-white px-5 pt-4 pb-5">
-            {body ?? <ActivityIndicator className="py-10" color="#1E4ED8" />}
-          </View>
-        </ScrollView>
-      </View>
-    );
-  }
-
   return (
     <View className="flex-1 bg-[#EEF1F5]">
       <StatusBar style="dark" />
@@ -192,7 +176,7 @@ export default function PriceMapScreen() {
             origin={origin}
             here={origin.here}
             onSelect={(key) => openHospital(key, code)}
-            insets={{ top: insets.top + 150, bottom: 400 }}
+            insets={{ top: insets.top + 150, bottom: sheetH + 24 }}
           />
         ) : null}
       </View>
@@ -201,6 +185,9 @@ export default function PriceMapScreen() {
       </View>
       <Animated.View
         className="absolute inset-x-0 bottom-0 rounded-t-[28px] bg-white px-5 pt-2.5"
+        onLayout={(e) => {
+          if (!all && data) setSheetH(e.nativeEvent.layout.height);
+        }}
         style={[
           sheetStyle,
           {
@@ -326,7 +313,7 @@ function PriceRow({
         )}
       />
       <View className="flex-1 gap-0.5">
-        <T weight="semibold" className="text-[15px]">
+        <T weight="semibold" className="text-[15px]" numberOfLines={1}>
           {row.hospitalName}
         </T>
         <T className="text-muted text-xs">
