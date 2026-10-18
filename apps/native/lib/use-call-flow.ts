@@ -15,10 +15,11 @@ export type CallStage =
   | "failed";
 
 // Hold-and-join (on hold, then ring the patient when a rep answers) only
-// exists in the scripted sample call. Live calls either dial billing alone,
-// or (CALL_MODE=conference) ring the patient first, then billing. Set to false
-// to show live call states only. A scripted call places no call and writes nothing.
-export const DEMO_CALL_SCRIPT = true;
+// exists in the scripted sample call. Samples must exercise the real dial
+// path in production; otherwise the UI advances through status copy without
+// ever issuing call.start. Live calls dial billing alone unless the server is
+// configured for CALL_MODE=conference.
+export const DEMO_CALL_SCRIPT = false;
 
 const SCRIPT: { stage: CallStage; ms: number }[] = [
   { stage: "on_hold", ms: 4000 },
