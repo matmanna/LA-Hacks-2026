@@ -1,14 +1,20 @@
+import Constants, { ExecutionEnvironment } from "expo-constants";
 import { Platform } from "react-native";
 
 import { loadMyInfo } from "./my-info";
 
 type NotificationsModule = typeof import("expo-notifications");
 
-// Loaded on first use. In Expo Go on Android the module's import throws
-// (missing native module), which would otherwise crash every route.
+// Loaded on first use, and never in Expo Go: there the module's native part
+// is missing, so importing it logs errors on every launch. Development and
+// release builds have it.
 let loaded: NotificationsModule | null | undefined;
 function notifications(): NotificationsModule | null {
   if (loaded !== undefined) return loaded;
+  if (Constants.executionEnvironment === ExecutionEnvironment.StoreClient) {
+    loaded = null;
+    return loaded;
+  }
   try {
     loaded = require("expo-notifications") as NotificationsModule;
   } catch {
