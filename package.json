@@ -56,6 +56,7 @@
     "measure:letters": "bun --env-file=apps/web/.env packages/api/scripts/measure-letters.ts",
     "e2e": "playwright test",
     "data:gen": "bun scripts/gen-api-data.ts",
+    "eval:assistance": "bun scripts/eval/assistance.ts",
     "data:check": "bun scripts/gen-api-data.ts --check",
     "eval": "bun scripts/eval/run.ts",
     "eval:photos": "bun scripts/eval/run.ts --photos",
