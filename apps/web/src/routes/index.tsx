@@ -35,15 +35,12 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "BetterBill: check your hospital bill, line by line" },
       {
-<<<<<<< HEAD
         property: "og:title",
         content: "BetterBill: check your hospital bill, line by line",
       },
       { property: "og:image", content: "/og/consumer.png" },
       { name: "twitter:card", content: "summary_large_image" },
       {
-=======
->>>>>>> origin/main
         name: "description",
         content:
           "Snap or paste a hospital bill. See what looks wrong with the proof, and approve every letter before it's sent. Free to check.",
