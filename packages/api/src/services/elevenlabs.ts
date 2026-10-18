@@ -33,7 +33,7 @@ const FAKE_CONVERSATION: Conversation = {
     },
     {
       role: "user",
-      message: "This is a fake test call. No phone call was placed.",
+      message: "Fake test reply. This call never reached a real phone.",
       time_in_call_secs: 4,
     },
   ],
