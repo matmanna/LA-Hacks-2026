@@ -46,9 +46,7 @@
       {
         "lever": "missing_itemization",
         "tier": "rule",
-        "lineIds": [
-          "sb12-l01"
-        ],
+        "lineIds": ["sb12-l01"],
         "amountCents": 0
       }
     ],
