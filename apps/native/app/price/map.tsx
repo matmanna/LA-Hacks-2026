@@ -253,6 +253,7 @@ export default function PriceMapScreen() {
                     size={26}
                     weight="semibold"
                     label="Lowest"
+                    whole
                   />
                   <T weight="semibold" className="text-[26px] leading-[30px]">
                     –
@@ -262,6 +263,7 @@ export default function PriceMapScreen() {
                     size={26}
                     weight="semibold"
                     label="Highest"
+                    whole
                   />
                 </View>
                 <T className="text-[13px] text-muted">
@@ -412,6 +414,7 @@ function PriceRow({
           cents={row.discountedCashCents}
           size={16}
           weight="semibold"
+          whole
           className={lowest ? "text-mint-ink" : "text-foreground"}
           label={`${row.hospitalName}, hospital's published price`}
         />

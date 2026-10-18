@@ -128,6 +128,7 @@ export function PriceMap({
                     cents={r.discountedCashCents}
                     size={14}
                     weight="semibold"
+                    whole
                     className={
                       lowest
                         ? "text-white"

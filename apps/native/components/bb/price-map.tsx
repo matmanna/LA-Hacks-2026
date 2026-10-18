@@ -168,6 +168,7 @@ function Pin({
               cents={row.discountedCashCents}
               size={14}
               weight="semibold"
+              whole
               className={
                 lowest
                   ? "text-white"
