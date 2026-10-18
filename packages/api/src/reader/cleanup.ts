@@ -18,10 +18,13 @@ export async function cleanupText(
   chat: typeof stepfunChat = stepfunChat,
 ): Promise<ReaderOutput | null> {
   try {
-    const content = await chat([
-      { role: "system", content: READER_INSTRUCTIONS },
-      { role: "user", content: text },
-    ]);
+    const content = await chat(
+      [
+        { role: "system", content: READER_INSTRUCTIONS },
+        { role: "user", content: text },
+      ],
+      { agent: "bill-reader" },
+    );
     const parsed = ReaderOutput.safeParse(JSON.parse(content));
     return parsed.success ? parsed.data : null;
   } catch {

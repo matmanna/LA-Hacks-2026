@@ -51,7 +51,7 @@ export async function readPhoto(
           ],
         },
       ],
-      { timeoutMs: 85_000 },
+      { timeoutMs: 85_000, agent: "bill-reader" },
     );
   } catch (e) {
     // Status only; never log the image or bill content.
