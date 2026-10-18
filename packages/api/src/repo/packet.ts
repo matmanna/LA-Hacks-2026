@@ -70,7 +70,13 @@ export function redactPacket(p: Packet): Packet {
   const actions = p.actions
     .filter((a) => a.approvedAt !== null)
     .map((a) => ({ ...a, recipient: maskRecipient(a.recipient) }));
-  let json = JSON.stringify({ ...p, actions });
+  // Screener and lookup records stay with the owner; the page doesn't need them.
+  const events = p.events.map((e) =>
+    /^(assistance|lookup)\./.test(e.type)
+      ? (({ artifactRef: _ref, ...rest }) => rest)(e)
+      : e,
+  );
+  let json = JSON.stringify({ ...p, actions, events });
   const swaps: [string, string][] = [
     [p.case.id, "shared"],
     ...p.actions.map((a, i): [string, string] => [a.id, `action-${i + 1}`]),

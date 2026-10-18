@@ -1,3 +1,4 @@
+import { sharedStatusOf } from "@betterbill/core";
 import { ActivityTimeline } from "@betterbill/ui/components/bb/activity-timeline";
 import { Money } from "@betterbill/ui/components/bb/money";
 import { TierBadge } from "@betterbill/ui/components/bb/tier-badge";
@@ -6,7 +7,7 @@ import { Button } from "@betterbill/ui/components/button";
 import { Skeleton } from "@betterbill/ui/components/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Link2, Printer } from "lucide-react";
+import { CircleDashed, Link2, Printer } from "lucide-react";
 import { toast } from "sonner";
 
 import { orpc } from "@/utils/orpc";
@@ -30,8 +31,18 @@ const dateTime = new Intl.DateTimeFormat("en-US", {
   hour: "numeric",
   minute: "2-digit",
 });
+const day = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+});
+// A date-only value ("2026-10-18") is a calendar day, not midnight UTC.
 const when = (iso: string | null | undefined) =>
-  iso ? dateTime.format(new Date(iso)) : "not recorded";
+  !iso
+    ? "not recorded"
+    : /^\d{4}-\d{2}-\d{2}$/.test(iso)
+      ? day.format(new Date(`${iso}T12:00:00`))
+      : dateTime.format(new Date(iso));
 
 const ACTION_LABEL = {
   letter: "Dispute letter",
@@ -84,6 +95,18 @@ function PacketPage() {
   }
 
   const { bill, flags, savings, balance, sources, actions, events } = data;
+  const now = sharedStatusOf(data.case.status);
+  const updated = events.at(-1)?.at ?? data.generatedAt;
+  const help = savings.assistance;
+  const helping =
+    help.status === "likely" || help.status === "possible"
+      ? (help.checks ?? []).filter(
+          (c) =>
+            (c.id === "policy" || c.id.startsWith("state:")) &&
+            c.outcome === "may_help" &&
+            c.source?.quote,
+        )
+      : [];
   const flagged = new Set(flags.flatMap((f) => f.lineIds));
   const copyLink = async () => {
     try {
@@ -100,9 +123,9 @@ function PacketPage() {
       className="mx-auto min-w-0 max-w-3xl space-y-8 overflow-x-hidden px-5 py-8 md:px-8 print:max-w-none print:px-0 print:py-0"
     >
       <header className="space-y-4">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <Wordmark />
-          <div className="flex gap-2 print:hidden">
+          <div className="flex flex-wrap gap-2 print:hidden">
             <Button variant="secondary" onClick={copyLink}>
               <Link2 aria-hidden="true" /> Copy link
             </Button>
@@ -129,6 +152,18 @@ function PacketPage() {
         </div>
       </header>
 
+      <section
+        aria-label="Where things stand"
+        className="space-y-1.5 rounded-3xl bg-ink p-6 text-white print:border print:bg-card print:text-foreground"
+      >
+        <p className="flex items-center gap-2 text-sm text-white/70 print:text-muted-foreground">
+          <span className="size-2 rounded-full bg-mint" aria-hidden="true" />
+          Now · updated {when(updated)}
+        </p>
+        <p className="font-semibold text-2xl leading-8">{now.title}</p>
+        <p className="text-white/80 print:text-muted-foreground">{now.next}</p>
+      </section>
+
       <section className="grid gap-4 rounded-2xl border bg-card p-5 sm:grid-cols-3">
         <div>
           <p className="text-muted-foreground text-sm">Billed</p>
@@ -153,6 +188,18 @@ function PacketPage() {
             className="text-2xl text-mint-ink tabular-nums"
           />
         </div>
+        {help.freeCare &&
+        balance.fairBalanceLowCents < balance.fairBalanceCents ? (
+          <div className="sm:col-span-3">
+            <p className="text-muted-foreground text-sm">
+              Could be, if the patient qualifies for free care (estimate)
+            </p>
+            <Money
+              cents={balance.fairBalanceLowCents}
+              className="text-2xl text-mint-ink tabular-nums"
+            />
+          </div>
+        ) : null}
         <ul className="list-disc space-y-1 pl-5 text-sm sm:col-span-3">
           {savings.method.map((m) => (
             <li key={m}>{m}</li>
@@ -205,6 +252,61 @@ function PacketPage() {
           </ol>
         )}
       </Section>
+
+      {helping.length > 0 ? (
+        <Section title="Help paying">
+          <div className="space-y-4 rounded-2xl border p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="font-semibold text-lg leading-6">
+                {help.status === "likely"
+                  ? "The patient may qualify for free care"
+                  : "The patient may qualify for a discount"}
+              </p>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-soft px-2.5 py-1 font-medium text-amber-ink text-xs">
+                <CircleDashed className="size-3.5" aria-hidden="true" />
+                Estimate
+              </span>
+            </div>
+            <p className="text-muted-foreground text-sm">
+              {bill.hospital.name} makes the final call. The patient's income
+              and answers are not shown here.
+            </p>
+            {helping.map((c) => (
+              <div key={c.id} className="space-y-1.5">
+                <p className="font-medium text-muted-foreground text-sm">
+                  {c.title}
+                </p>
+                <blockquote className="border-l-2 pl-3">
+                  “{c.source?.quote}”
+                </blockquote>
+                <p className="break-all text-muted-foreground text-xs">
+                  {c.source?.label}
+                  {c.source?.capturedAt
+                    ? `, captured ${when(c.source.capturedAt)}`
+                    : ""}
+                  {c.source?.url ? (
+                    <>
+                      {" · "}
+                      <a className="text-primary underline" href={c.source.url}>
+                        Source
+                      </a>
+                    </>
+                  ) : null}
+                </p>
+              </div>
+            ))}
+            {(help.rights ?? []).length > 0 ? (
+              <ul className="list-disc space-y-1 pl-5 text-sm">
+                {(help.rights ?? []).map((r) => (
+                  <li key={r.text}>
+                    {r.text} ({r.citation})
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+        </Section>
+      ) : null}
 
       <Section title="Bill lines">
         <div className="overflow-x-auto">
