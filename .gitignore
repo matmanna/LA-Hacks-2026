@@ -64,3 +64,6 @@ playwright-report/
 # Python
 __pycache__/
 *.pyc
+
+# Local demo settings (scripts/demo.sh)
+.env.demo
