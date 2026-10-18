@@ -50,7 +50,10 @@
     "copy:check": "bun scripts/copy/check-wording.ts",
     "e2e": "playwright test",
     "data:gen": "bun scripts/gen-api-data.ts",
-    "data:check": "bun scripts/gen-api-data.ts --check"
+    "data:check": "bun scripts/gen-api-data.ts --check",
+    "eval": "bun scripts/eval/run.ts",
+    "eval:photos": "bun scripts/eval/run.ts --photos",
+    "eval:all": "bun scripts/eval/run.ts --photos --botm"
   },
   "dependencies": {
     "zod": "catalog:"

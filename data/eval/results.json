@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "runAt": "2026-10-17T23:31:39Z",
+  "gitSha": "1a5220b",
+  "coreVersion": "0.0.0",
+  "datasets": {
+    "synthetic": {
+      "fixtures": 10,
+      "cleanFixtures": 3,
+      "expectedFlags": 12,
+      "skippedRequiresCapture": 0
+    },
+    "photos": {
+      "photos": 0,
+      "conditions": [],
+      "model": null
+    },
+    "botm": {
+      "cases": 0,
+      "reporterFindings": 0,
+      "inScopeFindings": 0
+    }
+  },
+  "metrics": {
+    "seededRecall": {
+      "caught": 12,
+      "expected": 12,
+      "rate": 1,
+      "byLever": {
+        "duplicate": {
+          "caught": 3,
+          "expected": 3
+        },
+        "units": {
+          "caught": 4,
+          "expected": 4
+        },
+        "eob_mismatch": {
+          "caught": 2,
+          "expected": 2
+        },
+        "published_price": {
+          "caught": 2,
+          "expected": 2
+        },
+        "missing_itemization": {
+          "caught": 1,
+          "expected": 1
+        }
+      }
+    },
+    "seededRecallFromPhotos": {
+      "caught": 0,
+      "expected": 0,
+      "rate": null
+    },
+    "falseFlagsOnClean": {
+      "count": 0,
+      "cleanFixtures": 3,
+      "items": []
+    },
+    "precision": {
+      "matched": 12,
+      "produced": 12,
+      "rate": 1
+    },
+    "confirmedAmountExact": {
+      "exact": 5,
+      "caughtConfirmed": 5
+    },
+    "evidenceCompleteness": {
+      "complete": 11,
+      "produced": 12,
+      "rate": 0.917
+    },
+    "auditTimeMs": {
+      "p50": 0.01,
+      "p95": 0.048,
+      "runsPerFixture": 20
+    },
+    "photoToLinesSec": {
+      "p50": null,
+      "p95": null,
+      "n": 0
+    },
+    "lineExtraction": {
+      "recall": null,
+      "precision": null,
+      "exactLineRate": null,
+      "totalsMatchRate": null,
+      "byCondition": {},
+      "fieldAccuracy": {
+        "code": null,
+        "serviceDate": null,
+        "units": null,
+        "chargeCents": null
+      }
+    },
+    "botmRecall": {
+      "inScope": {
+        "caught": 0,
+        "total": 0,
+        "rate": null
+      },
+      "all": {
+        "caught": 0,
+        "total": 0,
+        "rate": null
+      },
+      "extraFlags": 0
+    }
+  },
+  "misses": [],
+  "extras": [],
+  "notes": [
+    "Synthetic errors were planted by the team; seededRecall shows the rules work as designed, not real-world accuracy. See botmRecall for published cases.",
+    "Published prices: outpatient rows of each captured price file (data/hospitals/*/capture.json).",
+    "Bill of the Month not run (null = not measured)."
+  ]
+}
