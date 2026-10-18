@@ -60,7 +60,7 @@ export function FlowDemo({
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
 
   const count = STAGES.length;
-  const stage = STAGES[index]!;
+  const stage = STAGES[index] ?? STAGES[0];
   const auto = playing && !reduced && seen;
 
   function go(next: number, userPicked = true) {

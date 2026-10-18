@@ -17,7 +17,7 @@ const COLUMNS = [
 
 export function Integration() {
   return (
-    <Section id="integration" band>
+    <Section id="integration">
       <SectionTitle>Built to plug in.</SectionTitle>
       <div className="mt-10 grid gap-8 lg:grid-cols-3">
         {COLUMNS.map(([title, body]) => (

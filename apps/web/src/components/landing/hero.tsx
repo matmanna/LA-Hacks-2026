@@ -14,10 +14,10 @@ import {
   type DemoFlag,
   FALLBACK_BALANCE,
   FALLBACK_FLAGS,
-  PhoneFrame,
 } from "./demo-phone";
 import { PortedEdge } from "./edge";
-import { useMediaQuery } from "./motion";
+import { useMediaQuery, usePrefersReducedMotion } from "./motion";
+import { Phone3D } from "./phone-3d";
 
 export type HeroSample = {
   hospitalName: string;
@@ -60,6 +60,18 @@ export function Hero({ sample }: { sample: HeroSample | null }) {
     : FALLBACK_BALANCE;
   const flags = sample ? sample.flags.slice(0, 3) : FALLBACK_FLAGS;
   const [openId, setOpenId] = useState<string | null>(flags[0]?.id ?? null);
+  const reduced = usePrefersReducedMotion();
+  const [spinning, setSpinning] = useState(false);
+  // Snappy full turn back to flat, then go to the sample case.
+  function handleIt() {
+    if (spinning || start.pending) return;
+    if (reduced) {
+      start.start();
+      return;
+    }
+    setSpinning(true);
+    window.setTimeout(() => start.start(), 750);
+  }
   const openFlag = flags.find((f) => f.id === openId) ?? null;
 
   return (
@@ -103,21 +115,6 @@ export function Hero({ sample }: { sample: HeroSample | null }) {
           <p className="mt-4 text-muted-foreground text-xs leading-4">
             Free. No account needed to see your results.
           </p>
-          <ul className="mt-8 grid gap-3 border-t pt-6 sm:grid-cols-3 lg:max-w-md">
-            {TRUST.map(([Icon, label]) => (
-              <li
-                key={label}
-                className="flex items-start gap-2 text-sm leading-5"
-              >
-                <Icon
-                  className="mt-0.5 size-4 shrink-0 text-primary"
-                  strokeWidth={1.75}
-                  aria-hidden="true"
-                />
-                {label}
-              </li>
-            ))}
-          </ul>
         </div>
 
         <div className="mt-14 lg:col-span-6 lg:mt-0">
@@ -154,17 +151,18 @@ export function Hero({ sample }: { sample: HeroSample | null }) {
               </div>
             </div>
 
-            <PhoneFrame
+            <Phone3D
               scale={wide ? 0.82 : 0.76}
-              label="BetterBill results on a sample bill"
+              spinning={spinning}
+              onSpinEnd={() => setSpinning(false)}
             >
               <CheckScreen
-                onNext={() => start.start()}
+                onNext={handleIt}
                 balance={balance}
                 flags={flags}
                 onOpenChange={setOpenId}
               />
-            </PhoneFrame>
+            </Phone3D>
 
             {/* Evidence node, right. Follows the open flag. */}
             <div
@@ -201,6 +199,18 @@ export function Hero({ sample }: { sample: HeroSample | null }) {
           </p>
         </div>
       </div>
+      <ul className="mx-auto mt-12 flex max-w-6xl flex-col gap-3 border-t pt-6 sm:flex-row sm:flex-wrap sm:gap-x-10 lg:mt-16">
+        {TRUST.map(([Icon, label]) => (
+          <li key={label} className="flex items-start gap-2 text-sm leading-5">
+            <Icon
+              className="mt-0.5 size-4 shrink-0 text-primary"
+              strokeWidth={1.75}
+              aria-hidden="true"
+            />
+            {label}
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

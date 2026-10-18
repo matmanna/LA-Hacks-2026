@@ -177,3 +177,51 @@
     transform: none;
   }
 }
+
+/* Hero phone: a slow float with a slight turn about the vertical axis, and a
+   fast full turn back to flat on "Handle it for me". */
+.lp-tilt {
+  animation: lp-tilt 7s ease-in-out infinite alternate;
+}
+@keyframes lp-tilt {
+  from {
+    transform: perspective(1600px) translateY(0) rotateX(1.5deg) rotateY(-7deg);
+  }
+  to {
+    transform: perspective(1600px) translateY(-9px) rotateX(-1.5deg)
+      rotateY(7deg);
+  }
+}
+.lp-spin {
+  animation: lp-spin 760ms cubic-bezier(0.65, 0, 0.2, 1) both;
+}
+@keyframes lp-spin {
+  from {
+    transform: translateY(-4px) rotateY(-7deg);
+  }
+  to {
+    transform: translateY(0) rotateY(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-tilt,
+  .lp-spin {
+    animation: none;
+  }
+}
+
+.lp-progress-y {
+  transform-origin: top;
+  animation: lp-progress-y var(--dur, 5s) linear forwards;
+}
+.lp-progress-y[data-paused="true"] {
+  animation-play-state: paused;
+}
+@keyframes lp-progress-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}

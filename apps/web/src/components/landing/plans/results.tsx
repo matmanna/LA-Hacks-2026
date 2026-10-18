@@ -1,84 +1,16 @@
 import { Card } from "@betterbill/ui/components/card";
 
+import { useSeenOnce } from "../motion";
 import { Section, SectionTitle } from "../section";
+import type { EvalView } from "./eval-data";
 
-type Results = Record<string, unknown> | null;
-
-const dateFormat = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-});
-
-function isNum(value: unknown): value is number {
-  return typeof value === "number" && Number.isFinite(value);
-}
-
-function dateOf(results: Record<string, unknown>) {
-  const raw = results.generatedAt;
-  if (typeof raw !== "string") return null;
-  const date = new Date(raw);
-  // The API stub reports 1970. Never show that as a measurement date.
-  if (Number.isNaN(date.getTime()) || date.getFullYear() < 2020) return null;
-  return dateFormat.format(date);
-}
-
-type Stat = { value: string; label: string; caption: string };
-
-function statsFrom(results: Results): Stat[] {
-  if (!results) return [];
-  const date = dateOf(results);
-  if (!date) return [];
-  const seeded = results.seeded as Record<string, unknown> | undefined;
-  const stats: Stat[] = [];
-  if (seeded && isNum(seeded.recall) && isNum(seeded.bills)) {
-    stats.push({
-      value: `${seeded.recall}%`,
-      label: "of seeded errors found",
-      caption: `Measured on ${seeded.bills} synthetic bills, ${date}.`,
-    });
-  }
-  if (seeded && isNum(seeded.falseFlagsOnClean) && isNum(seeded.cleanBills)) {
-    stats.push({
-      value: String(seeded.falseFlagsOnClean),
-      label: "false flags on clean bills",
-      caption: `Measured on ${seeded.cleanBills} clean synthetic bills, ${date}.`,
-    });
-  }
-  const benchmark = results.benchmark as Record<string, unknown> | undefined;
-  if (benchmark && isNum(benchmark.matched) && isNum(benchmark.total)) {
-    stats.push({
-      value: `${benchmark.matched} of ${benchmark.total}`,
-      label: "reporter findings matched",
-      caption: `Recreated KFF Health News "Bill of the Month" cases, ${date}.`,
-    });
-  }
-  return stats;
-}
-
-export function PlansResults({ results }: { results: Results }) {
-  const stats = statsFrom(results);
-  return (
-    <Section id="results">
-      <SectionTitle>Measured, not promised.</SectionTitle>
-      {stats.length > 0 ? (
-        <dl className="mt-10 grid gap-8 lg:grid-cols-3">
-          {stats.map((stat) => (
-            <div key={stat.label} className="border-t pt-4">
-              <dt className="sr-only">{stat.label}</dt>
-              <dd>
-                <span className="block font-serif text-[40px] tabular-nums leading-[44px]">
-                  {stat.value}
-                </span>
-                <span className="block text-base leading-6">{stat.label}</span>
-                <span className="block text-muted-foreground text-sm leading-5">
-                  {stat.caption}
-                </span>
-              </dd>
-            </div>
-          ))}
-        </dl>
-      ) : (
+// Recall by lever as animated bars, plus the benchmark result as it stands.
+export function PlansResults({ data }: { data: EvalView | null }) {
+  const [ref, seen] = useSeenOnce<HTMLDivElement>(0.25);
+  if (!data) {
+    return (
+      <Section id="results">
+        <SectionTitle>Measured, not promised.</SectionTitle>
         <Card className="mt-10 max-w-xl">
           <h3 className="font-semibold text-lg leading-6">
             Measured results coming.
@@ -88,7 +20,68 @@ export function PlansResults({ results }: { results: Results }) {
             We never show targets as results.
           </p>
         </Card>
-      )}
+      </Section>
+    );
+  }
+  return (
+    <Section id="results">
+      <SectionTitle>Measured, not promised.</SectionTitle>
+      <div ref={ref} className="mt-10 lg:grid lg:grid-cols-12 lg:gap-12">
+        <div className="lg:col-span-7">
+          <h3 className="font-semibold text-lg leading-6">
+            Seeded errors found, by check
+          </h3>
+          <ul className="mt-5 space-y-4">
+            {data.levers.map((lever, i) => {
+              const pct = lever.expected ? lever.caught / lever.expected : 0;
+              return (
+                <li key={lever.key}>
+                  <div className="flex items-baseline justify-between text-sm">
+                    <span className="font-medium">{lever.label}</span>
+                    <span className="text-muted-foreground tabular-nums">
+                      {lever.caught} of {lever.expected}
+                    </span>
+                  </div>
+                  <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted">
+                    <div
+                      className="h-full origin-left rounded-full bg-primary transition-transform duration-700 ease-out"
+                      style={{
+                        transform: `scaleX(${seen ? pct : 0})`,
+                        transitionDelay: `${i * 90}ms`,
+                      }}
+                    />
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+          <p className="mt-5 max-w-[60ch] text-muted-foreground text-sm leading-5">
+            The team planted these errors on synthetic bills. This shows the
+            rules work as designed. It is not a claim about real-world accuracy.
+          </p>
+        </div>
+        {data.botm ? (
+          <div className="mt-10 lg:col-span-5 lg:mt-0">
+            <Card className="gap-3">
+              <h3 className="font-semibold text-lg leading-6">
+                Against published cases
+              </h3>
+              <p className="font-serif text-[44px] tabular-nums leading-[48px]">
+                {data.botm.caught} of {data.botm.inScope}
+              </p>
+              <p className="text-base leading-6">
+                in-scope reporter findings matched, across {data.botm.cases}{" "}
+                recreated Bill of the Month cases.
+              </p>
+              <p className="text-muted-foreground text-sm leading-5">
+                We also raised {data.botm.extraFlags} extra flags. We report the
+                misses with the hits, because a result you can't check isn't
+                one.
+              </p>
+            </Card>
+          </div>
+        ) : null}
+      </div>
     </Section>
   );
 }
