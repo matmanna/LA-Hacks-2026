@@ -217,3 +217,25 @@ export const CaseSummary = z.object({
   savings: Savings.nullable(),
 });
 export type CaseSummary = z.infer<typeof CaseSummary>;
+
+// B2 evidence packet: everything a patient needs to send or keep, read-only.
+export const PacketSource = z.object({
+  label: z.string(),
+  url: z.string(),
+  capturedAt: z.string().nullable(),
+  sha256: z.string().nullable(),
+});
+export type PacketSource = z.infer<typeof PacketSource>;
+
+export const Packet = z.object({
+  case: CaseSummary,
+  bill: Bill,
+  flags: z.array(Flag),
+  savings: Savings,
+  balance: BalanceSummary,
+  actions: z.array(Action),
+  events: z.array(CaseEvent),
+  sources: z.array(PacketSource),
+  generatedAt: isoTime,
+});
+export type Packet = z.infer<typeof Packet>;
