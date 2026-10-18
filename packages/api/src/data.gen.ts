@@ -6076,14 +6076,14 @@ export const DATA = {
   },
   "evalResults": {
     "schemaVersion": 1,
-    "runAt": "2026-10-17T23:32:42Z",
-    "gitSha": "eca94ef+botm-fixtures",
+    "runAt": "2026-10-18T03:35:49Z",
+    "gitSha": "6eadc58",
     "coreVersion": "0.0.0",
     "datasets": {
       "synthetic": {
-        "fixtures": 10,
+        "fixtures": 11,
         "cleanFixtures": 3,
-        "expectedFlags": 12,
+        "expectedFlags": 22,
         "skippedRequiresCapture": 0
       },
       "photos": {
@@ -6099,25 +6099,25 @@ export const DATA = {
     },
     "metrics": {
       "seededRecall": {
-        "caught": 12,
-        "expected": 12,
+        "caught": 22,
+        "expected": 22,
         "rate": 1,
         "byLever": {
           "duplicate": {
-            "caught": 3,
-            "expected": 3
-          },
-          "units": {
             "caught": 4,
             "expected": 4
+          },
+          "units": {
+            "caught": 5,
+            "expected": 5
           },
           "eob_mismatch": {
             "caught": 2,
             "expected": 2
           },
           "published_price": {
-            "caught": 2,
-            "expected": 2
+            "caught": 10,
+            "expected": 10
           },
           "missing_itemization": {
             "caught": 1,
@@ -6136,22 +6136,22 @@ export const DATA = {
         "items": []
       },
       "precision": {
-        "matched": 12,
-        "produced": 12,
+        "matched": 22,
+        "produced": 22,
         "rate": 1
       },
       "confirmedAmountExact": {
-        "exact": 5,
-        "caughtConfirmed": 5
+        "exact": 6,
+        "caughtConfirmed": 6
       },
       "evidenceCompleteness": {
-        "complete": 11,
-        "produced": 12,
-        "rate": 0.917
+        "complete": 21,
+        "produced": 22,
+        "rate": 0.955
       },
       "auditTimeMs": {
-        "p50": 0.009,
-        "p95": 0.04,
+        "p50": 0.012,
+        "p95": 0.068,
         "runsPerFixture": 20
       },
       "photoToLinesSec": {
@@ -6234,7 +6234,6 @@ export const DATA = {
       }
     ],
     "notes": [
-      "Run on main 4725b9a + eval harness (eca94ef) + the BotM fixtures and run.ts change in this commit.",
       "Synthetic errors were planted by the team; seededRecall shows the rules work as designed, not real-world accuracy. See botmRecall for published cases.",
       "Published prices: outpatient rows of each captured price file (data/hospitals/*/capture.json)."
     ]
