@@ -1,11 +1,11 @@
 {
   "jurisdiction": "IL",
   "title": "Illinois Hospital Uninsured Patient Discount Act (210 ILCS 89)",
+  "asOf": "As described by the Illinois Hospital Report Card (state site); statute text on ilga.gov was unreachable on 2026-10-18",
   "rules": [
     {
       "id": "il-uninsured-discount",
-      "title": "Uninsured discounts up to 600% FPL (UNVERIFIED)",
-      "verified": false,
+      "title": "Uninsured discounts up to 600% FPL",
       "appliesWhen": {
         "state": "IL",
         "insured": false,
@@ -14,11 +14,76 @@
       "effect": {
         "kind": "charity_care"
       },
-      "plain": "Illinois hospitals must discount bills for uninsured residents up to 600% of the poverty line, and give free care up to 200%. Not yet checked against the official text.",
+      "screen": {
+        "help": {
+          "pct": 600,
+          "inclusive": true
+        },
+        "insured": "uninsured",
+        "helpKind": "discount"
+      },
+      "plain": "Illinois hospitals must discount bills for uninsured Illinois residents with family income up to 600% of the poverty line (300% at rural and critical access hospitals).",
+      "citation": "210 ILCS 89/10 (Hospital Uninsured Patient Discount Act)",
+      "sourceUrl": "https://healthcarereportcard.illinois.gov/hospital-uninsured-patient-discount-act",
+      "quote": "You must have a family income and assets of not more than 600 percent of the federal poverty level",
+      "notes": "Source is the Illinois Hospital Report Card's description of Public Act 95-0965; its dollar examples use an older poverty guideline, and later amendments may change details such as the $300 service minimum. ilga.gov returned 503 and failed TLS verification on 2026-10-18, so the statute itself was not read.",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "il-charge-cap",
+      "title": "Charges capped at cost plus 35%",
+      "appliesWhen": {
+        "state": "IL",
+        "insured": false
+      },
+      "effect": {
+        "kind": "charge_cap"
+      },
+      "short": "If you qualify, charges can't be more than the hospital's cost plus 35%",
+      "plain": "If you qualify, the hospital can't charge you more than its costs plus 35%.",
       "citation": "210 ILCS 89/10",
-      "sourceUrl": "https://ilga.gov/legislation/ilcs/documents/021000890K10.htm",
-      "quote": null,
-      "notes": "ilga.gov was down (503, then connection refused) on 2026-10-18. Figures from secondary summaries only: 600% FPL non-rural, 300% rural/critical access, 100% at 200% (125% rural), apply within 60 days. Do not use in the audit until verified.",
+      "sourceUrl": "https://healthcarereportcard.illinois.gov/hospital-uninsured-patient-discount-act",
+      "quote": "hospital charges to eligible uninsured cannot exceed the costs of the services plus 35 percent",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "il-annual-cap",
+      "title": "Yearly collections capped at 25% of income",
+      "appliesWhen": {
+        "state": "IL",
+        "insured": false
+      },
+      "effect": {
+        "kind": "collections_limit",
+        "maxYearlyPctOfIncome": 25
+      },
+      "short": "What a hospital collects in a year is capped at 25% of your family income",
+      "plain": "If you qualify, a hospital can collect at most 25% of your family income in a year.",
+      "citation": "210 ILCS 89/10",
+      "sourceUrl": "https://healthcarereportcard.illinois.gov/hospital-uninsured-patient-discount-act",
+      "quote": "no more than 25 percent of a patient's family income",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "il-apply-60",
+      "title": "Apply within 60 days",
+      "appliesWhen": {
+        "state": "IL",
+        "insured": false
+      },
+      "effect": {
+        "kind": "application_rules",
+        "deadlineDays": 60
+      },
+      "short": "Apply within 60 days of your hospital stay or visit",
+      "plain": "You must apply for the uninsured discount within 60 days of leaving the hospital or getting the service.",
+      "citation": "210 ILCS 89/10",
+      "sourceUrl": "https://healthcarereportcard.illinois.gov/hospital-uninsured-patient-discount-act",
+      "quote": "You must apply for a discount within 60 days of the date of hospital discharge or service.",
+      "verified": true,
       "capturedAt": "2026-10-18"
     }
   ]

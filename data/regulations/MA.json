@@ -1,0 +1,36 @@
+{
+  "jurisdiction": "MA",
+  "title": "Massachusetts Health Safety Net (101 CMR 613.00)",
+  "asOf": "As described by MassHealth (mass.gov)",
+  "rules": [
+    {
+      "id": "ma-hsn",
+      "title": "Health Safety Net: free to 150% FPL, with a deductible to 300%",
+      "appliesWhen": {
+        "state": "MA",
+        "incomeFplMaxPct": 300
+      },
+      "effect": {
+        "kind": "charity_care"
+      },
+      "screen": {
+        "free": {
+          "pct": 150,
+          "inclusive": true
+        },
+        "help": {
+          "pct": 300,
+          "inclusive": true
+        },
+        "insured": "any"
+      },
+      "plain": "Massachusetts residents with income up to 150% of the poverty line may get hospital bills paid by the Health Safety Net with no deductible, and up to 300% with a deductible. It can also pay after other insurance.",
+      "citation": "Health Safety Net (101 CMR 613.00)",
+      "sourceUrl": "https://www.mass.gov/info-details/health-safety-net-for-patients",
+      "quote": "Massachusetts residents with income between 0-150% of the FPL may be eligible for the Health Safety Net.",
+      "notes": "A state program (apply through MassHealth), not a hospital policy. It pays acute hospital and community health center facility charges; doctors who bill separately may not be covered.",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    }
+  ]
+}

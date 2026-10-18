@@ -5922,17 +5922,140 @@ export const DATA = {
       "verified": true
     },
     {
+      "id": "co-hdc",
+      "jurisdiction": "CO",
+      "title": "Hospital Discounted Care at or under 250% FPL",
+      "lawName": "Colorado Hospital Discounted Care",
+      "effectKind": "charity_care",
+      "plain": "Colorado hospitals must screen you and limit your hospital and doctor bills if your household income is at or below 250% of the poverty line, even if you have insurance.",
+      "citation": "HB 21-1198 (Colorado Hospital Discounted Care)",
+      "sourceUrl": "https://hcpf.colorado.gov/colorado-hospital-discounted-care",
+      "quote": "Patients who are at or below 250% of the Federal Poverty Guidelines (FPG) are eligible for Hospital Discounted Care.",
+      "capturedAt": "2026-10-18",
+      "verified": true,
+      "screen": {
+        "help": {
+          "pct": 250,
+          "inclusive": true
+        },
+        "insured": "any",
+        "helpKind": "discount"
+      }
+    },
+    {
+      "id": "co-payment-cap",
+      "jurisdiction": "CO",
+      "title": "Monthly payments capped by income",
+      "lawName": "Colorado Hospital Discounted Care",
+      "effectKind": "payment_plan",
+      "plain": "If you qualify, monthly hospital payments can't be more than 4% of your monthly household income (2% for each doctor's bill), and you owe nothing more after 36 monthly payments.",
+      "short": "If you qualify, monthly payments are capped at 4% of your income for hospital bills, and you owe nothing after 36 payments",
+      "citation": "HB 21-1198, as amended (SB 24-116)",
+      "sourceUrl": "https://hcpf.colorado.gov/colorado-hospital-discounted-care",
+      "quote": "Monthly payments for hospital bills can’t be more than 4% of your monthly household income.",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "co-collections",
+      "jurisdiction": "CO",
+      "title": "Written notice before collections",
+      "lawName": "Colorado Hospital Discounted Care",
+      "effectKind": "collections_limit",
+      "plain": "Before sending your bill to collections, the biller must explain the charges, bill your insurance first, and tell you in writing 30 days ahead.",
+      "short": "30 days' written notice before collections, and your insurance must be billed first",
+      "citation": "HB 21-1198 (Colorado Hospital Discounted Care)",
+      "sourceUrl": "https://hcpf.colorado.gov/colorado-hospital-discounted-care",
+      "quote": "Tell you in writing 30 days before they send you to collections.",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
       "id": "il-uninsured-discount",
       "jurisdiction": "IL",
-      "title": "Uninsured discounts up to 600% FPL (UNVERIFIED)",
+      "title": "Uninsured discounts up to 600% FPL",
       "lawName": "Illinois Hospital Uninsured Patient Discount Act",
       "effectKind": "charity_care",
-      "plain": "Illinois hospitals must discount bills for uninsured residents up to 600% of the poverty line, and give free care up to 200%. Not yet checked against the official text.",
-      "citation": "210 ILCS 89/10",
-      "sourceUrl": "https://ilga.gov/legislation/ilcs/documents/021000890K10.htm",
-      "quote": null,
+      "plain": "Illinois hospitals must discount bills for uninsured Illinois residents with family income up to 600% of the poverty line (300% at rural and critical access hospitals).",
+      "citation": "210 ILCS 89/10 (Hospital Uninsured Patient Discount Act)",
+      "sourceUrl": "https://healthcarereportcard.illinois.gov/hospital-uninsured-patient-discount-act",
+      "quote": "You must have a family income and assets of not more than 600 percent of the federal poverty level",
       "capturedAt": "2026-10-18",
-      "verified": false
+      "verified": true,
+      "screen": {
+        "help": {
+          "pct": 600,
+          "inclusive": true
+        },
+        "insured": "uninsured",
+        "helpKind": "discount"
+      }
+    },
+    {
+      "id": "il-charge-cap",
+      "jurisdiction": "IL",
+      "title": "Charges capped at cost plus 35%",
+      "lawName": "Illinois Hospital Uninsured Patient Discount Act",
+      "effectKind": "charge_cap",
+      "plain": "If you qualify, the hospital can't charge you more than its costs plus 35%.",
+      "short": "If you qualify, charges can't be more than the hospital's cost plus 35%",
+      "citation": "210 ILCS 89/10",
+      "sourceUrl": "https://healthcarereportcard.illinois.gov/hospital-uninsured-patient-discount-act",
+      "quote": "hospital charges to eligible uninsured cannot exceed the costs of the services plus 35 percent",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "il-annual-cap",
+      "jurisdiction": "IL",
+      "title": "Yearly collections capped at 25% of income",
+      "lawName": "Illinois Hospital Uninsured Patient Discount Act",
+      "effectKind": "collections_limit",
+      "plain": "If you qualify, a hospital can collect at most 25% of your family income in a year.",
+      "short": "What a hospital collects in a year is capped at 25% of your family income",
+      "citation": "210 ILCS 89/10",
+      "sourceUrl": "https://healthcarereportcard.illinois.gov/hospital-uninsured-patient-discount-act",
+      "quote": "no more than 25 percent of a patient's family income",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "il-apply-60",
+      "jurisdiction": "IL",
+      "title": "Apply within 60 days",
+      "lawName": "Illinois Hospital Uninsured Patient Discount Act",
+      "effectKind": "application_rules",
+      "plain": "You must apply for the uninsured discount within 60 days of leaving the hospital or getting the service.",
+      "short": "Apply within 60 days of your hospital stay or visit",
+      "citation": "210 ILCS 89/10",
+      "sourceUrl": "https://healthcarereportcard.illinois.gov/hospital-uninsured-patient-discount-act",
+      "quote": "You must apply for a discount within 60 days of the date of hospital discharge or service.",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "ma-hsn",
+      "jurisdiction": "MA",
+      "title": "Health Safety Net: free to 150% FPL, with a deductible to 300%",
+      "lawName": "Massachusetts Health Safety Net",
+      "effectKind": "charity_care",
+      "plain": "Massachusetts residents with income up to 150% of the poverty line may get hospital bills paid by the Health Safety Net with no deductible, and up to 300% with a deductible. It can also pay after other insurance.",
+      "citation": "Health Safety Net (101 CMR 613.00)",
+      "sourceUrl": "https://www.mass.gov/info-details/health-safety-net-for-patients",
+      "quote": "Massachusetts residents with income between 0-150% of the FPL may be eligible for the Health Safety Net.",
+      "capturedAt": "2026-10-18",
+      "verified": true,
+      "screen": {
+        "free": {
+          "pct": 150,
+          "inclusive": true
+        },
+        "help": {
+          "pct": 300,
+          "inclusive": true
+        },
+        "insured": "any"
+      }
     },
     {
       "id": "md-free",
@@ -6023,6 +6146,72 @@ export const DATA = {
       "citation": "N.Y. Pub. Health Law 2807-k(9-a)(d), (h), (l)",
       "sourceUrl": "https://www.nysenate.gov/legislation/laws/PBH/2807-K",
       "quote": "shall not exceed five percent of the gross monthly income of the patient",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "or-fap",
+      "jurisdiction": "OR",
+      "title": "Nonprofit hospitals: free to 200% FPL, discounts to 400%",
+      "lawName": "Oregon nonprofit hospital financial assistance",
+      "effectKind": "charity_care",
+      "plain": "Oregon nonprofit hospitals must cut your costs 100% if your household income is at or under 200% of the poverty line, and by at least 75%, 50% or 25% up to 400%.",
+      "citation": "ORS 442.614(1)(a)",
+      "sourceUrl": "https://www.oregonlegislature.gov/bills_laws/ors/ors442.html",
+      "quote": "For a patient whose household income is not more than 200 percent of the federal poverty guidelines, by 100 percent",
+      "capturedAt": "2026-10-18",
+      "verified": true,
+      "screen": {
+        "free": {
+          "pct": 200,
+          "inclusive": true
+        },
+        "help": {
+          "pct": 400,
+          "inclusive": true
+        },
+        "insured": "any"
+      }
+    },
+    {
+      "id": "or-screening",
+      "jurisdiction": "OR",
+      "title": "Hospitals must screen some patients",
+      "lawName": "Oregon nonprofit hospital financial assistance",
+      "effectKind": "application_rules",
+      "plain": "Oregon hospitals must screen you for financial assistance if you're uninsured, on the state Medicaid program, or owe the hospital more than $500.",
+      "short": "The hospital must screen you for help if you're uninsured, on Medicaid, or owe more than $500",
+      "citation": "ORS 442.615(2)",
+      "sourceUrl": "https://www.oregonlegislature.gov/bills_laws/ors/ors442.html",
+      "quote": "shall screen a patient for presumptive eligibility for financial assistance if the patient",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "or-nine-months",
+      "jurisdiction": "OR",
+      "title": "Approval lasts nine months",
+      "lawName": "Oregon nonprofit hospital financial assistance",
+      "effectKind": "application_rules",
+      "plain": "Once a hospital approves you based on your documents, you stay eligible for nine months without reapplying.",
+      "short": "Once approved, you stay eligible for nine months",
+      "citation": "ORS 442.615(7)",
+      "sourceUrl": "https://www.oregonlegislature.gov/bills_laws/ors/ors442.html",
+      "quote": "the patient’s eligibility for financial assistance continues for nine months following the hospital’s determination",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "or-appeal-collections",
+      "jurisdiction": "OR",
+      "title": "Collections pause during an appeal",
+      "lawName": "Oregon nonprofit hospital financial assistance",
+      "effectKind": "collections_limit",
+      "plain": "If you appeal a denial of financial assistance, the hospital must suspend collections while the appeal is pending.",
+      "short": "Collections stop while you appeal a denial",
+      "citation": "ORS 442.615(9)",
+      "sourceUrl": "https://www.oregonlegislature.gov/bills_laws/ors/ors442.html",
+      "quote": "the hospital must suspend all collection activities",
       "capturedAt": "2026-10-18",
       "verified": true
     },

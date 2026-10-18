@@ -44,6 +44,10 @@ export const STATE_NAMES: Record<string, string> = {
   NY: "New York",
   WA: "Washington",
   MD: "Maryland",
+  IL: "Illinois",
+  CO: "Colorado",
+  OR: "Oregon",
+  MA: "Massachusetts",
 };
 
 export function insuranceOptions(state: string | null | undefined) {
