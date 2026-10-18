@@ -13,7 +13,10 @@ This is research for the rules engine and the agent, not legal advice. Never pre
 | `NY.json` | Free under 200% FPL, sliding scale to 400% capped at 10% to 20% of Medicaid, 5% of income plans at 2% interest, no lawsuits under 400% | Yes |
 | `WA.json` | Free care to 300% FPL at large systems (200% elsewhere), 75% and 50% discounts above, insured or not | Yes |
 | `MD.json` | Free to 200% FPL, 75% and 60% off to 300%, hardship discounts to 500% | Yes |
-| `IL.json` | Uninsured discount to 600% FPL | **No.** ilga.gov was down; do not use until checked |
+| `IL.json` | Uninsured discount to 600% FPL (300% rural), charges capped at cost plus 35%, yearly collections capped at 25% of income, apply within 60 days | Yes, from the state's Hospital Report Card (ilga.gov was down; notes say so) |
+| `CO.json` | Hospital Discounted Care at or under 250% FPL (insured too), monthly payments capped at 4% of income for 36 months, 30 days' notice before collections | Yes, from HCPF |
+| `OR.json` | Nonprofit hospitals: free to 200% FPL, at least 75%, 50% or 25% off to 400%; screening; nine-month approval; collections pause during appeal | Yes, ORS 442.614 and 442.615 |
+| `MA.json` | Health Safety Net: free to 150% FPL, with a deductible to 300% | Yes, from MassHealth |
 
 ## Rule shape
 
@@ -43,4 +46,4 @@ This is research for the rules engine and the agent, not legal advice. Never pre
 
 ## Not covered yet
 
-Illinois (verify 210 ILCS 89/10), Colorado (HB 21-1198), Oregon (HB 3076), Massachusetts (Health Safety Net). Hospital-specific policies can be more generous than the law; the hospital's own policy (for example `data/hospitals/cedars-sinai/policy.json`) wins when it's better for the patient.
+Other states. Illinois and Colorado were read from official state agency pages (the Illinois Hospital Report Card and HCPF) rather than the statute text; re-check them against the statutes when ilga.gov and the Colorado statutes are reachable. Hospital-specific policies can be more generous than the law; the hospital's own policy (for example `data/hospitals/cedars-sinai/policy.json`) wins when it's better for the patient.

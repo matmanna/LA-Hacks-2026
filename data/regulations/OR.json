@@ -1,0 +1,105 @@
+{
+  "jurisdiction": "OR",
+  "title": "Oregon nonprofit hospital financial assistance (ORS 442.614, 442.615)",
+  "rules": [
+    {
+      "id": "or-fap",
+      "title": "Nonprofit hospitals: free to 200% FPL, discounts to 400%",
+      "appliesWhen": {
+        "state": "OR",
+        "hospitalType": "nonprofit"
+      },
+      "effect": {
+        "kind": "charity_care",
+        "bands": [
+          {
+            "fpl": [0, 200],
+            "discountPct": 100
+          },
+          {
+            "fpl": [201, 300],
+            "minDiscountPct": 75
+          },
+          {
+            "fpl": [301, 350],
+            "minDiscountPct": 50
+          },
+          {
+            "fpl": [351, 400],
+            "minDiscountPct": 25
+          }
+        ]
+      },
+      "screen": {
+        "free": {
+          "pct": 200,
+          "inclusive": true
+        },
+        "help": {
+          "pct": 400,
+          "inclusive": true
+        },
+        "insured": "any"
+      },
+      "plain": "Oregon nonprofit hospitals must cut your costs 100% if your household income is at or under 200% of the poverty line, and by at least 75%, 50% or 25% up to 400%.",
+      "citation": "ORS 442.614(1)(a)",
+      "sourceUrl": "https://www.oregonlegislature.gov/bills_laws/ors/ors442.html",
+      "quote": "For a patient whose household income is not more than 200 percent of the federal poverty guidelines, by 100 percent",
+      "notes": "Applies to nonprofit hospitals and their nonprofit affiliated clinics, for medically necessary services. The policy may not require applying for Medicaid first (442.614(2)).",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "or-screening",
+      "title": "Hospitals must screen some patients",
+      "appliesWhen": {
+        "state": "OR"
+      },
+      "effect": {
+        "kind": "application_rules"
+      },
+      "short": "The hospital must screen you for help if you're uninsured, on Medicaid, or owe more than $500",
+      "plain": "Oregon hospitals must screen you for financial assistance if you're uninsured, on the state Medicaid program, or owe the hospital more than $500.",
+      "citation": "ORS 442.615(2)",
+      "sourceUrl": "https://www.oregonlegislature.gov/bills_laws/ors/ors442.html",
+      "quote": "shall screen a patient for presumptive eligibility for financial assistance if the patient",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "or-nine-months",
+      "title": "Approval lasts nine months",
+      "appliesWhen": {
+        "state": "OR"
+      },
+      "effect": {
+        "kind": "application_rules",
+        "months": 9
+      },
+      "short": "Once approved, you stay eligible for nine months",
+      "plain": "Once a hospital approves you based on your documents, you stay eligible for nine months without reapplying.",
+      "citation": "ORS 442.615(7)",
+      "sourceUrl": "https://www.oregonlegislature.gov/bills_laws/ors/ors442.html",
+      "quote": "the patient’s eligibility for financial assistance continues for nine months following the hospital’s determination",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    },
+    {
+      "id": "or-appeal-collections",
+      "title": "Collections pause during an appeal",
+      "appliesWhen": {
+        "state": "OR"
+      },
+      "effect": {
+        "kind": "collections_limit"
+      },
+      "short": "Collections stop while you appeal a denial",
+      "plain": "If you appeal a denial of financial assistance, the hospital must suspend collections while the appeal is pending.",
+      "citation": "ORS 442.615(9)",
+      "sourceUrl": "https://www.oregonlegislature.gov/bills_laws/ors/ors442.html",
+      "quote": "the hospital must suspend all collection activities",
+      "verified": true,
+      "capturedAt": "2026-10-18"
+    }
+  ]
+}
