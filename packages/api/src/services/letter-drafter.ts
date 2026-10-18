@@ -132,6 +132,16 @@ export async function draftLetter(
 }> {
   const { caseId, kind } = input;
   const audited = await loadAuditedCase(db, caseId);
+  if (kind === "itemized_request" && audited.bill.kind !== "summary") {
+    throw new ORPCError("PRECONDITION_FAILED", {
+      message: "This bill is already itemized.",
+    });
+  }
+  if (kind === "letter" && audited.bill.kind === "summary") {
+    throw new ORPCError("PRECONDITION_FAILED", {
+      message: "Request an itemized bill before reviewing charges.",
+    });
+  }
   // A likely or possible assistance result adds the application request
   // (with its sources) to the dispute letter and the call script.
   const help =

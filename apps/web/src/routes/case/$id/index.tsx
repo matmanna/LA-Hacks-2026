@@ -22,6 +22,7 @@ import { toast } from "sonner";
 
 import { AppBar } from "@/components/app-bar";
 import { AssistanceCard } from "@/components/assistance-card";
+import { BillingChecklist } from "@/components/billing-checklist";
 import { PayCard } from "@/components/pay-card";
 import { SharePacketButton } from "@/components/share-packet-button";
 import { useActionFlow } from "@/features/actions/use-action-flow";
@@ -79,6 +80,7 @@ function CasePage() {
   const [showAll, setShowAll] = useState(false);
   const [openFlagId, setOpenFlagId] = useState<string | null>(null);
   const letter = useActionFlow(id, "letter");
+  const itemizedRequest = useActionFlow(id, "itemized_request");
   const call = useActionFlow(id, "call");
 
   if (isLoading) return <CaseSkeleton />;
@@ -158,6 +160,15 @@ function CasePage() {
       savingsCents: flag?.amountCents,
     };
   });
+  const itemizedRequested = data.actions.some(
+    (action) => action.kind === "itemized_request" && action.sentAt !== null,
+  );
+  const reviewSent = data.actions.some(
+    (action) => action.kind === "letter" && action.sentAt !== null,
+  );
+  const callStarted = data.actions.some(
+    (action) => action.kind === "call" && action.approvedAt !== null,
+  );
 
   return (
     <>
@@ -245,6 +256,16 @@ function CasePage() {
             onCheck={comingSoon}
           />
 
+          <BillingChecklist
+            billKind={bill.kind}
+            flagsCount={flags.length}
+            itemizedRequested={itemizedRequested}
+            reviewSent={reviewSent}
+            callStarted={callStarted}
+            requestBusy={itemizedRequest.busy}
+            onRequestItemized={itemizedRequest.start}
+          />
+
           {audit.savings.method.length > 0 ? (
             <Accordion>
               <AccordionItem value="method">
@@ -260,14 +281,16 @@ function CasePage() {
             </Accordion>
           ) : null}
 
-          <Button
-            variant="secondary"
-            className="w-full lg:hidden"
-            onClick={call.start}
-            disabled={call.busy}
-          >
-            Call for me
-          </Button>
+          {bill.kind === "itemized" ? (
+            <Button
+              variant="secondary"
+              className="w-full lg:hidden"
+              onClick={call.start}
+              disabled={call.busy}
+            >
+              Call for me
+            </Button>
+          ) : null}
 
           {data.audit ? (
             <SharePacketButton caseId={id} className="w-full lg:hidden" />
@@ -343,21 +366,30 @@ function CasePage() {
             </p>
           </Card>
           <Card>
-            <Button
-              className="w-full"
-              onClick={letter.start}
-              disabled={letter.busy}
-            >
-              Send the letter
-            </Button>
-            <Button
-              variant="secondary"
-              className="w-full"
-              onClick={call.start}
-              disabled={call.busy}
-            >
-              Call for me
-            </Button>
+            {bill.kind === "itemized" ? (
+              <>
+                <Button
+                  className="w-full"
+                  onClick={letter.start}
+                  disabled={letter.busy}
+                >
+                  Send the letter
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="w-full"
+                  onClick={call.start}
+                  disabled={call.busy}
+                >
+                  Call for me
+                </Button>
+              </>
+            ) : (
+              <p className="text-muted-foreground text-sm leading-5">
+                Request the itemized bill before sending a review letter or
+                calling billing.
+              </p>
+            )}
           </Card>
           {data.audit ? (
             <SharePacketButton caseId={id} className="w-full" />
@@ -391,14 +423,17 @@ function CasePage() {
         whatToSay={whatToSay(openFlag?.lever ?? "", openLine)}
         compare={compare}
       />
-      <SavingsBar
-        confirmedCents={audit.savings.confirmedCents}
-        potentialLowCents={audit.savings.potentialLowCents}
-        potentialHighCents={audit.savings.potentialHighCents}
-        actionLabel="Send the letter"
-        onAction={letter.start}
-        actionDisabled={letter.busy}
-      />
+      {bill.kind === "itemized" ? (
+        <SavingsBar
+          confirmedCents={audit.savings.confirmedCents}
+          potentialLowCents={audit.savings.potentialLowCents}
+          potentialHighCents={audit.savings.potentialHighCents}
+          actionLabel="Send the letter"
+          onAction={letter.start}
+          actionDisabled={letter.busy}
+        />
+      ) : null}
+      {itemizedRequest.sheet}
       {letter.sheet}
       {call.sheet}
     </>
