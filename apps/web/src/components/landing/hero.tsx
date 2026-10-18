@@ -6,7 +6,7 @@ import { Button } from "@betterbill/ui/components/button";
 import { cn } from "@betterbill/ui/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { BadgeCheck, FileCheck2, ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { type CSSProperties, useRef, useState } from "react";
 
 import { useStartSample } from "@/hooks/use-start-sample";
 import { ArrowSlide } from "./arrow-slide";
@@ -17,6 +17,7 @@ import {
   FALLBACK_FLAGS,
 } from "./demo-phone";
 import { PortedEdge } from "./edge";
+import { HeroVideo, VIDEO_W_DEFAULT } from "./hero-video";
 import { useMediaQuery, usePrefersReducedMotion } from "./motion";
 import { Phone3D } from "./phone-3d";
 
@@ -55,6 +56,8 @@ const TRUST = [
 
 export function Hero({ sample }: { sample: HeroSample | null }) {
   const start = useStartSample();
+  const [videoW, setVideoW] = useState(0);
+  const freeRef = useRef<HTMLParagraphElement>(null);
   const wide = useMediaQuery("(min-width: 1024px)");
   const balance = sample
     ? { hospitalName: sample.hospitalName, ...sample.balance }
@@ -114,7 +117,10 @@ export function Hero({ sample }: { sample: HeroSample | null }) {
               Try a sample bill
             </Button>
           </div>
-          <p className="mt-4 text-muted-foreground text-xs leading-4">
+          <p
+            ref={freeRef}
+            className="mt-4 text-muted-foreground text-xs leading-4"
+          >
             Free. No account needed to see your results.
           </p>
         </div>
@@ -201,18 +207,32 @@ export function Hero({ sample }: { sample: HeroSample | null }) {
           </p>
         </div>
       </div>
-      <ul className="mx-auto mt-12 flex max-w-6xl flex-col gap-3 border-t pt-6 sm:flex-row sm:flex-wrap sm:gap-x-10 lg:mt-16">
-        {TRUST.map(([Icon, label]) => (
-          <li key={label} className="flex items-start gap-2 text-sm leading-5">
-            <Icon
-              className="mt-0.5 size-4 shrink-0 text-primary"
-              strokeWidth={1.75}
-              aria-hidden="true"
-            />
-            {label}
-          </li>
-        ))}
-      </ul>
+      <div
+        className="relative mx-auto mt-12 max-w-6xl border-t pt-6 lg:mt-16"
+        style={
+          { "--vw": videoW ? `${videoW}px` : VIDEO_W_DEFAULT } as CSSProperties
+        }
+      >
+        <HeroVideo anchor={freeRef} onWidth={setVideoW} />
+        <ul
+          className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-10 lg:flex-nowrap"
+          style={wide ? { paddingLeft: "calc(var(--vw) + 40px)" } : undefined}
+        >
+          {TRUST.map(([Icon, label]) => (
+            <li
+              key={label}
+              className="flex items-start gap-2 text-sm leading-5 lg:whitespace-nowrap"
+            >
+              <Icon
+                className="mt-0.5 size-4 shrink-0 text-primary"
+                strokeWidth={1.75}
+                aria-hidden="true"
+              />
+              {label}
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }
