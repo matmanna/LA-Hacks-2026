@@ -18,7 +18,22 @@
       "sourceUrl": "https://mgaleg.maryland.gov/2026RS/Statute_Web/ghg/19-214.1.pdf",
       "quote": "Free medically necessary care to patients with family income at or below 200% of the federal poverty level",
       "verified": true,
-      "capturedAt": "2026-10-18"
+      "capturedAt": "2026-10-18",
+      "screen": {
+        "free": {
+          "pct": 200,
+          "inclusive": true
+        },
+        "help": {
+          "pct": 300,
+          "inclusive": true
+        },
+        "hardship": {
+          "pct": 500,
+          "inclusive": true
+        },
+        "insured": "any"
+      }
     },
     {
       "id": "md-reduced",

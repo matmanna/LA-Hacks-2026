@@ -19,7 +19,18 @@
       "sourceUrl": "https://www.nysenate.gov/legislation/laws/PBH/2807-K",
       "quote": "the hospital shall waive all charges",
       "verified": true,
-      "capturedAt": "2026-10-18"
+      "capturedAt": "2026-10-18",
+      "screen": {
+        "free": {
+          "pct": 200,
+          "inclusive": false
+        },
+        "help": {
+          "pct": 400,
+          "inclusive": true
+        },
+        "insured": "underinsured"
+      }
     },
     {
       "id": "ny-sliding",
@@ -70,7 +81,8 @@
       "quote": "shall not exceed five percent of the gross monthly income of the patient",
       "verified": true,
       "capturedAt": "2026-10-18",
-      "notes": "Hospitals must also give at least 30 days' notice before sending a debt to collections (9-a(h))."
+      "notes": "Hospitals must also give at least 30 days' notice before sending a debt to collections (9-a(h)).",
+      "short": "Payment plans capped at 5% of income, and no lawsuits under 400% of the poverty line"
     }
   ]
 }

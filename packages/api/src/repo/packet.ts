@@ -4,6 +4,7 @@ import type { Database } from "@betterbill/db";
 
 import { DATA } from "../data.gen";
 import { auditResult } from "../routers/audit";
+import { loadAssistance } from "../services/assistance";
 import {
   getCaseRow,
   latestAudit,
@@ -69,7 +70,13 @@ export function redactPacket(p: Packet): Packet {
   const actions = p.actions
     .filter((a) => a.approvedAt !== null)
     .map((a) => ({ ...a, recipient: maskRecipient(a.recipient) }));
-  let json = JSON.stringify({ ...p, actions });
+  // Screener and lookup records stay with the owner; the page doesn't need them.
+  const events = p.events.map((e) =>
+    /^(assistance|lookup)\./.test(e.type)
+      ? (({ artifactRef: _ref, ...rest }) => rest)(e)
+      : e,
+  );
+  let json = JSON.stringify({ ...p, actions, events });
   const swaps: [string, string][] = [
     [p.case.id, "shared"],
     ...p.actions.map((a, i): [string, string] => [a.id, `action-${i + 1}`]),
@@ -86,7 +93,13 @@ export async function buildPacket(
   const loaded = row ? await loadBill(db, caseId) : null;
   if (!row || !loaded) return null;
   const run = await latestAudit(db, caseId);
-  const audit = auditResult(caseId, loaded.bill, run?.flags ?? [], 0);
+  const audit = auditResult(
+    caseId,
+    loaded.bill,
+    run?.flags ?? [],
+    0,
+    await loadAssistance(db, caseId, loaded.bill),
+  );
   return redactPacket({
     case: toSummary(row, run ? audit.savings : null),
     bill: loaded.bill,

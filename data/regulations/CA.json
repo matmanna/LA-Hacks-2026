@@ -20,7 +20,14 @@
       "quote": "A patient who has a family income that does not exceed 400 percent of the federal poverty level.",
       "notes": "High medical costs: out-of-pocket costs at the hospital over 10% of family income (127400(g)). Rural hospitals may set lower limits (127405(a)(2)).",
       "verified": true,
-      "capturedAt": "2026-10-18"
+      "capturedAt": "2026-10-18",
+      "screen": {
+        "help": {
+          "pct": 400,
+          "inclusive": true
+        },
+        "insured": "high_costs"
+      }
     },
     {
       "id": "ca-cap",
@@ -39,7 +46,8 @@
       "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127405",
       "quote": "from Medicare or Medi-Cal, whichever is greater",
       "verified": true,
-      "capturedAt": "2026-10-18"
+      "capturedAt": "2026-10-18",
+      "short": "If you get a discount, the most they can expect is what Medicare or Medi-Cal would pay"
     },
     {
       "id": "ca-no-deadline",
@@ -58,7 +66,8 @@
       "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127405",
       "quote": "A hospital shall not impose time limits for applying for charity care or discounted payments",
       "verified": true,
-      "capturedAt": "2026-10-18"
+      "capturedAt": "2026-10-18",
+      "short": "No deadline to apply, and your savings don't count"
     },
     {
       "id": "ca-payment-plan",
@@ -77,7 +86,8 @@
       "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127425",
       "quote": "shall be interest free",
       "verified": true,
-      "capturedAt": "2026-10-18"
+      "capturedAt": "2026-10-18",
+      "short": "If you qualify, payment plans are interest-free"
     },
     {
       "id": "ca-collections",
@@ -96,7 +106,8 @@
       "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127425",
       "quote": "Report adverse information to a consumer credit reporting agency.",
       "verified": true,
-      "capturedAt": "2026-10-18"
+      "capturedAt": "2026-10-18",
+      "short": "No credit reporting, and no lawsuit for 180 days"
     }
   ]
 }

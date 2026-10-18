@@ -1,4 +1,3 @@
-import { Assistance } from "@betterbill/core";
 import { createRouterClient } from "@orpc/server";
 import { describe, expect, it } from "vitest";
 
@@ -30,6 +29,8 @@ describe("procedure stubs", () => {
         "audit.run",
         "audit.get",
         "assistance.check",
+        "hospital.lookup",
+        "hospital.lookupStatus",
         "action.draftLetter",
         "action.approve",
         "action.send",
@@ -46,16 +47,6 @@ describe("procedure stubs", () => {
 
   // case, bill, audit, event, eval, action and call routes are real and
   // covered by the *.int.test.ts and reader tests.
-  it("assistance stub returns its declared shape", async () => {
-    Assistance.parse(
-      await client.assistance.check({
-        caseId,
-        householdSize: 2,
-        annualIncomeCents: 3_000_000,
-      }),
-    );
-  });
-
   it("rejects invalid input", async () => {
     await expect(
       client.action.draftLetter({ caseId, kind: "fax" as never }),

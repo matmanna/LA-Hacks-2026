@@ -1,0 +1,42 @@
+{
+  "runId": "85b382eb-263a-45a9-9846-93f6a4aeb7b5",
+  "status": "completed",
+  "task": "policyLookupTask (packages/core/src/assistance/lookup.ts)",
+  "output": {
+    "policy_url": "https://www.uclahealth.org/patient-resources/billing-insurance/financial-assistance-program/hospital-services-help-paying-your-bill",
+    "policy_title": "Hospital Services: Patient Financial Assistance | UCLA Health",
+    "pdf_urls": [
+      "https://www.uclahealth.org/sites/default/files/documents/financial-assistance-policy-hs5310.pdf?f=1b1b90f9",
+      "https://www.uclahealth.org/sites/default/files/documents/financial-assistance-policy-hs5310-spanish.pdf",
+      "https://www.uclahealth.org/sites/default/files/documents/financial-assistance-policy-hs5310-farsi.pdf",
+      "https://www.uclahealth.org/sites/default/files/documents/financial-assistance-policy-hs5310-chinese.pdf",
+      "https://www.uclahealth.org/sites/default/files/documents/financial-assistance-policy-hs5310-arabic.pdf"
+    ],
+    "quotes": [
+      "UCLA Health\u2019s commitment to our mission and vision includes providing full financial assistance (100% discount) or partial discounts to eligible patients who are low income, uninsured or under-insured.",
+      "Generally, patients with family income at or below 400% of the Federal Poverty Level will be eligible for a discount of 100%.",
+      "Patients with family income between 401% and 450% of the Federal Poverty Level may be eligible for a partial discount based on income level.",
+      "\"Financial Assistance\" includes both full Charity Care (100% discount) and partial Charity Care discounts.",
+      "A Financially Qualified patient is defined as any patient with Patient's Family income that does not exceed 450% of the Federal Poverty Level and is:",
+      "Patients or other individuals responsible for payment on patients' behalf with demonstrated financial need may be eligible for Financial Assistance if they complete an application and meet the eligibility requirements for a full (100%) or partial Charity Care discount as defined in the Eligibility Procedures below.",
+      "A patient who is presumptively determined to be eligible for Financial Assistance shall be eligible for the most generous available discount, a full Charity Care discount (100%).",
+      "Self-Pay Patients with Patient's Family incomes not exceeding 400% of the FPL and who reside in the Hospital's primary service area as defined in Appendix 1 may be eligible for a 100% Charity Care discount on services rendered and billed by the Hospital for emergency and Medically Necessary Care.",
+      "High Medical Cost Patients with Patient's Family incomes not exceeding 400% of the FPL, who reside in the Hospital's primary service area as defined in Appendix 1, may be extended a 100% Charity Care discount on services rendered and billed by the Hospital for emergency and Medically Necessary Care.",
+      "The Revenue Cycle Director or Chief Financial Officer may \u2013 under unusual circumstances \u2013 extend a full Charity Care discount to individuals who would not otherwise qualify for Charity Care under this policy.",
+      "Self-Pay Patients with Patient's Family incomes between 401% and 450% of FPL and who reside in the Hospital's primary service area as defined in Appendix 1, may be eligible for a partial Charity Care discount on services rendered and billed by the Hospital for emergency and Medically Necessary Care.",
+      "High Medical Cost Patients also may be eligible for a partial Charity Care Discount as set forth in the section below.",
+      "High Medical Cost Patients with Patient's Family incomes between 401% and 450% of FPL with third party coverage may be eligible for a partial Charity Care discount for emergency and Medically Necessary Care, if they reside in the Hospital's primary service area as defined in Appendix 1.",
+      "For patients with no third-party coverage whose incomes exceed 450% of FPL, please refer to the Cash Discount Policy.",
+      "When this electronic enrollment is used as the basis for presumptive eligibility, the most generous discount, a full Charity Care discount of 100%, will be granted for any emergency care or medically necessary care for retrospective dates of service."
+    ],
+    "free_care_max_fpl_pct": 400,
+    "discount_max_fpl_pct": 450,
+    "references_501r_quote": "This Financial Assistance Policy is intended to comply with Section 501(r) of the Internal Revenue Code (IRC) as enacted by the Affordable Care Act, and the implementing regulations, effective for tax years beginning after December 29, 2015 as well California Health & Safety Code section 127400 et seq. (AB 774), Hospital Fair Pricing Policies, effective January 1, 2007, and Emergency Physician Fair Pricing Policies, effective January 1, 2011, and Office of Inspector General, Department of Health and Human Services (OIG) guidance regarding financial assistance to uninsured and under-insured patients.",
+    "billing_phone": "310-825-8021"
+  },
+  "error": null,
+  "createdAt": "2026-10-18T09:39:44.519890Z",
+  "updatedAt": "2026-10-18T09:42:09.291926Z",
+  "totalCostUsd": "0.033176",
+  "seconds": 145
+}

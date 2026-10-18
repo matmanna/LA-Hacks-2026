@@ -1,3 +1,4 @@
+export * from "./assistance/index";
 export * from "./balance";
 export * from "./call";
 export * from "./case-machine";
@@ -12,3 +13,4 @@ export * from "./payments";
 export * from "./rules";
 export * from "./savings";
 export * from "./schemas";
+export * from "./status-copy";

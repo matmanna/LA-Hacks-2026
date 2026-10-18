@@ -78,10 +78,24 @@ export function computeSavings(
     );
   }
 
+  // Free care under the hospital's policy or state law would cover what is
+  // left, so the potential range reaches the full balance. Estimate only:
+  // the hospital decides, so it never adds to the confirmed amount.
+  let potentialHighCents = unitCents + priceHigh + notReceivedCents;
+  if (assistance.status === "likely" && assistance.freeCare) {
+    const rest = Math.max(0, bill.totals.dueCents - confirmedCents);
+    if (rest > potentialHighCents) {
+      potentialHighCents = rest;
+      method.push(
+        "Estimate: if you qualify for free care under the hospital's assistance policy or state law, you may owe nothing. The hospital decides.",
+      );
+    }
+  }
+
   return {
     confirmedCents,
     potentialLowCents: unitCents + priceLow,
-    potentialHighCents: unitCents + priceHigh + notReceivedCents,
+    potentialHighCents,
     assistance,
     method,
   };

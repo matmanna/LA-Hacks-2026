@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { cn } from "heroui-native";
 import { ActivityIndicator, Pressable, View } from "react-native";
@@ -7,9 +7,11 @@ import {
   Button,
   Disclaimer,
   Icon,
+  LookupCard,
   Money,
   Progress,
   Screen,
+  ShareButton,
   T,
   TierBadge,
 } from "@/components/bb";
@@ -17,7 +19,7 @@ import { useIsSample } from "@/lib/cases";
 import { errorMessage } from "@/lib/errors";
 import { serviceDay } from "@/lib/format";
 import { caseStatus, itemizedPending } from "@/lib/status";
-import { orpc } from "@/utils/orpc";
+import { client, orpc, queryClient } from "@/utils/orpc";
 
 const time = new Intl.DateTimeFormat("en-US", {
   hour: "numeric",
@@ -55,6 +57,11 @@ export default function BillDetail() {
   const status = caseStatus(data);
   const waiting = itemizedPending(data);
   const log = [...(events.data ?? [])].reverse();
+  // Shared while the latest share event is case.shared (case.share and
+  // case.revokeShare each log one).
+  const shared =
+    log.find((e) => e.type === "case.shared" || e.type === "case.unshared")
+      ?.type === "case.shared";
   const next = waiting
     ? null
     : !audit
@@ -68,6 +75,7 @@ export default function BillDetail() {
       tone="wash"
       onNav={() => router.replace("/")}
       aside={isSample ? "Sample" : undefined}
+      action={audit ? <ShareButton id={id} pill tone="wash" /> : null}
       footer={
         next ? (
           <Button
@@ -131,6 +139,19 @@ export default function BillDetail() {
           ) : null}
         </View>
       )}
+
+      {shared ? <SharedRow id={id} /> : null}
+
+      {audit ? (
+        <LookupCard
+          id={id}
+          offer={
+            audit.savings.assistance.checks
+              ?.find((c) => c.id === "policy")
+              ?.finding.startsWith("Not on file") ?? false
+          }
+        />
+      ) : null}
 
       {audit && audit.flags.length > 0 ? (
         <View className="mt-4 rounded-[20px] bg-white px-[18px] py-1.5">
@@ -208,6 +229,38 @@ const TRACK = ["Asked", "On its way", "We check it"];
 
 // W3 V2: the itemized request went out; the bill comes by email or mail and
 // gets added to this same case.
+// "Shared with a link · Stop sharing" (W3 V3). Stopping revokes the token,
+// so the old link stops working.
+function SharedRow({ id }: { id: string }) {
+  const stop = useMutation({
+    mutationFn: () => client.case.revokeShare({ caseId: id }),
+    onSuccess: () => void queryClient.invalidateQueries(),
+  });
+  return (
+    <View className="mt-4 flex-row items-center gap-3 rounded-[20px] bg-white px-[18px] py-3.5">
+      <Icon name="link" size={18} color="#1E4ED8" />
+      <View className="flex-1">
+        <T weight="semibold" className="text-[15px]">
+          Shared with a link
+        </T>
+        <T className="text-[13px] text-muted leading-[18px]">
+          Anyone with it can see this bill's progress
+        </T>
+      </View>
+      <Pressable
+        accessibilityRole="button"
+        onPress={() => stop.mutate()}
+        disabled={stop.isPending}
+        className="h-11 justify-center px-1"
+      >
+        <T weight="semibold" className="text-coral-ink text-sm">
+          {stop.isPending ? "Stopping…" : "Stop sharing"}
+        </T>
+      </Pressable>
+    </View>
+  );
+}
+
 function ItemizedWaiting({ id }: { id: string }) {
   return (
     <View className="mt-4 gap-5">

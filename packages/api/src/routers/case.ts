@@ -27,6 +27,7 @@ import {
   toSummary,
 } from "../repo/cases";
 import { buildPacket } from "../repo/packet";
+import { loadAssistance } from "../services/assistance";
 import { logStep } from "../telemetry";
 import { auditResult } from "./audit";
 
@@ -81,7 +82,13 @@ export const caseRouter = {
       const run = await latestAudit(context.db, input.caseId);
       const audit =
         run && loaded
-          ? auditResult(input.caseId, loaded.bill, run.flags, 0)
+          ? auditResult(
+              input.caseId,
+              loaded.bill,
+              run.flags,
+              0,
+              await loadAssistance(context.db, input.caseId, loaded.bill),
+            )
           : null;
       return {
         case: toSummary(row, audit?.savings ?? null),
@@ -111,7 +118,12 @@ export const caseRouter = {
           return toSummary(
             r,
             run && loaded
-              ? computeSavings(run.flags, loaded.bill, PRICES)
+              ? computeSavings(
+                  run.flags,
+                  loaded.bill,
+                  PRICES,
+                  await loadAssistance(context.db, r.id, loaded.bill),
+                )
               : null,
           );
         }),
