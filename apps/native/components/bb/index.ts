@@ -8,6 +8,7 @@ export { Button } from "./button";
 export { EditLineSheet } from "./edit-line-sheet";
 export { Icon, type IconName } from "./icon";
 export { Money } from "./money";
+export { Progress } from "./progress";
 export { Row } from "./row";
 export { Disclaimer, Screen } from "./screen";
 export { FONTS, T, type Weight } from "./t";

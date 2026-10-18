@@ -16,16 +16,13 @@ import { queryClient } from "@/utils/orpc";
 Uniwind.setTheme("light");
 void SplashScreen.preventAutoHideAsync();
 
-// Screens draw their own top bar from the Paper frames; the older screens
-// keep the native header until they are rebuilt.
+// Screens draw their own top bar from the Paper frames; Account keeps the
+// native header.
 function StackLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
-      <Stack.Screen
-        name="case/[id]/index"
-        options={{ headerShown: true, title: "Your bill" }}
-      />
+      <Stack.Screen name="case/[id]/index" />
       <Stack.Screen
         name="case/[id]/join"
         options={{ presentation: "transparentModal", animation: "fade" }}
