@@ -1,9 +1,40 @@
 import asyncio
 import base64
 import json
+import math
+import os
 from uuid import uuid4
 
 import aiohttp
+
+# Background noise: quiet audio (TV, other voices in the room) reaches Scribe as
+# silence, and Scribe's own voice detection is stricter than its default.
+# ponytail: one fixed level per call; tune these per phone and room.
+GATE_DBFS = float(os.environ.get("BB_NOISE_GATE_DBFS", "-40"))
+GATE_HOLD_FRAMES = 15  # 300 ms of 20 ms frames, so word endings are not clipped
+VAD_THRESHOLD = os.environ.get("BB_STT_VAD_THRESHOLD", "0.6")
+MIN_SPEECH_MS = os.environ.get("BB_STT_MIN_SPEECH_MS", "300")
+SILENT_FRAME = bytes(640)
+
+
+def frame_dbfs(pcm: bytes) -> float:
+    samples = memoryview(pcm).cast("h")
+    rms = math.sqrt(sum(s * s for s in samples) / len(samples)) if len(samples) else 0
+    return 20 * math.log10(rms / 32768) if rms else -120.0
+
+
+class NoiseGate:
+    def __init__(self, threshold_dbfs: float = GATE_DBFS, hold_frames: int = GATE_HOLD_FRAMES):
+        self.threshold, self.hold, self.open_for = threshold_dbfs, hold_frames, 0
+
+    def __call__(self, pcm: bytes) -> bytes:
+        if frame_dbfs(pcm) >= self.threshold:
+            self.open_for = self.hold
+        elif self.open_for:
+            self.open_for -= 1
+        else:
+            return SILENT_FRAME[: len(pcm)]
+        return pcm
 
 
 async def transcribe_participant(http, api_key, role, frames, on_transcript, *, on_ready=None):
@@ -22,6 +53,8 @@ async def transcribe_participant(http, api_key, role, frames, on_transcript, *, 
                 "commit_strategy": "vad",
                 "language_code": "en",
                 "filter_background_audio": "true",
+                "vad_threshold": VAD_THRESHOLD,
+                "min_speech_duration_ms": MIN_SPEECH_MS,
             },
             heartbeat=20,
             receive_timeout=None,
@@ -33,6 +66,7 @@ async def transcribe_participant(http, api_key, role, frames, on_transcript, *, 
                 async with asyncio.timeout(10):
                     await ready.wait()
                 chunk = bytearray()
+                gate = NoiseGate()
                 async for frame in frames:
                     if (
                         frame.sample_rate != 16000
@@ -41,7 +75,7 @@ async def transcribe_participant(http, api_key, role, frames, on_transcript, *, 
                         or len(frame.data) * frame.data.itemsize != 640
                     ):
                         raise ValueError("Invalid participant audio format")
-                    chunk.extend(bytes(frame.data))
+                    chunk.extend(gate(bytes(frame.data)))
                     if len(chunk) == 3200:
                         await ws.send_json(
                             {

@@ -9,7 +9,7 @@ import { errorMessage } from "@/lib/errors";
 import { client, orpc } from "@/utils/orpc";
 
 const STEPS = [
-  "We email billing to ask for it. You're CC'd.",
+  "We email billing to ask for it.",
   "Your advocate calls to make sure they send it.",
   "Add it here when it comes. We check every line.",
 ];

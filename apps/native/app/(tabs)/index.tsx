@@ -287,7 +287,7 @@ export default function Home() {
               <View className="flex-row items-center gap-2.5 rounded-2xl bg-white px-3.5 py-3">
                 <Icon name="bell" color="#5B6B7C" />
                 <T className="flex-1 text-[13px] text-muted leading-[18px]">
-                  You can close the app. We'll text you when billing replies.
+                  You can close the app. Your case is saved here.
                 </T>
                 <Pressable
                   accessibilityRole="button"

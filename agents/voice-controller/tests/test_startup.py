@@ -24,7 +24,7 @@ def agent_config():
             "asr": {"user_input_audio_format": "pcm_16000"},
             "tts": {"agent_output_audio_format": "pcm_16000", "voice_id": "voice"},
             "vad": {"background_voice_detection": True},
-            "conversation": {"client_events": ["agent_response_complete"]},
+            "conversation": {"client_events": ["agent_response_complete", "agent_tool_response"]},
             "agent": {
                 "prompt": {
                     "prompt": "Advocate with the patient present. Pause for direct spoken answers.",
@@ -47,6 +47,13 @@ def agent_config():
 
 
 class StartupTests(unittest.IsolatedAsyncioTestCase):
+    async def test_both_response_and_silent_tool_completion_events_are_required(self):
+        for missing in ("agent_response_complete", "agent_tool_response"):
+            config = agent_config()
+            config["conversation_config"]["conversation"]["client_events"].remove(missing)
+            with self.assertRaises(ValueError):
+                CallController.validate_hosted_agent(config)
+
     def controller(self, config_status=200, tts_status=200, signed_status=200):
         config, config_body = response(config_status, agent_config())
         tts, tts_body = response(tts_status)

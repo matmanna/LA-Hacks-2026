@@ -1,4 +1,5 @@
 import asyncio
+import base64
 import json
 import logging
 import os
@@ -90,10 +91,10 @@ class CallController:
         self.ai_disabled = False
         self.hosted_busy = True
         self.response_requested = True  # The approved opening message.
-        self.response_pcm = bytearray()
         self.response_serial = 0
+        self.response_activity = time.monotonic()
         self.last_response_complete = -1
-        self.pending_request = None
+        self.pending_turns: list[tuple[str, str]] = []
         self.transcript_lock = asyncio.Lock()
         self.transcription_ready = {role: asyncio.Event() for role in ("patient", "hospital")}
         self.pending_context = []
@@ -212,8 +213,6 @@ class CallController:
 
     def clear_audio(self) -> None:
         self.generation += 1
-        self.response_pcm.clear()
-        self.pending_request = None
         if self.source:
             self.source.clear_queue()
         while not self.audio_queue.empty():
@@ -362,10 +361,9 @@ class CallController:
 
     @staticmethod
     def validate_hosted_agent(agent: dict) -> None:
-        if "agent_response_complete" not in (
-            agent["conversation_config"].get("conversation", {}).get("client_events", [])
-        ):
-            raise ValueError("Conference branch requires response completion events")
+        events = agent["conversation_config"].get("conversation", {}).get("client_events", [])
+        if not {"agent_response_complete", "agent_tool_response"}.issubset(events):
+            raise ValueError("Conference branch requires response and tool completion events")
         prompt = agent["conversation_config"]["agent"]["prompt"]
         tools = prompt.get("tools", [])
         client_tools = [tool for tool in tools if tool.get("type") == "client"]
@@ -628,49 +626,33 @@ class CallController:
             self.lifecycle(
                 "hosted_interruption_received", event_id=event["interruption_event"].get("event_id")
             )
-            self.interrupted_before = max(
-                self.interrupted_before, event["interruption_event"]["event_id"]
-            )
+            # The interruption ID can be the NEXT reply's ID; only discard older audio.
+            self.interrupted_before = max(self.interrupted_before, self.last_audio_event)
             self.clear_audio()
         elif kind == "audio":
+            self.response_activity = time.monotonic()
             event_id = event["audio_event"].get("event_id", -1)
             if type(event_id) is int:
                 self.last_audio_event = max(self.last_audio_event, event_id)
-            self.hosted_busy = True
             enabled = (
                 self.state.can_output
-                and self.response_requested
                 and not self.ai_disabled
                 and all(event.is_set() for event in self.transcription_ready.values())
             )
-            reason = "response_buffered" if enabled else "unrequested_response"
-            if self.state.quiet:
-                reason = "patient_handoff"
-            if self.state.can_output and event_id <= self.interrupted_before:
-                reason = "interrupted_audio"
-            # Audio event IDs may change per chunk. Log first output after a user
-            # transcript, or an output-gate transition, without logging every chunk.
+            pcm = pcm_event(event, enabled=enabled, interrupted_before=self.interrupted_before)
+            reason = "streaming" if pcm else "speech_paused"
             if reason != self.last_audio_diagnostic:
                 self.lifecycle("hosted_audio_turn", event_id=event_id, reason=reason)
                 self.last_audio_diagnostic = reason
-            pcm = pcm_event(event, enabled=enabled, interrupted_before=self.interrupted_before)
             if pcm:
-                self.response_pcm.extend(pcm)
-                if len(self.response_pcm) > RATE * 2 * 45:
-                    raise ValueError("Advocate response exceeded the output limit")
+                await self.audio_queue.put((pcm, self.generation))
         elif kind == "client_tool_call":
             self.spawn(self.handle_tool(event["client_tool_call"]), ai=True)
         elif kind == "agent_response":
-            response = event.get("agent_response_event", {})
-            event_id = response.get("event_id")
-            self.lifecycle("hosted_agent_response_received", event_id=event_id)
-            decision = (
-                self.floor.observe_agent(response.get("agent_response", ""))
-                if not self.floor.protected
-                else None
+            self.lifecycle(
+                "hosted_agent_response_received",
+                event_id=event.get("agent_response_event", {}).get("event_id"),
             )
-            if decision and decision.action == "yield":
-                self.yield_advocate(decision.source)
         elif kind == "agent_response_complete":
             event_id = event.get("agent_response_complete_event", {}).get("event_id")
             if type(event_id) is not int:
@@ -678,31 +660,53 @@ class CallController:
             if event_id <= self.last_response_complete:
                 return
             self.last_response_complete = event_id
-            # Admit only the requested, completed answer; tools cannot leak later turns.
-            if self.response_requested and self.state.can_output and self.response_pcm:
-                self.audio_queue.put_nowait((bytes(self.response_pcm), self.generation))
-            self.response_pcm.clear()
-            self.response_requested = self.hosted_busy = False
-            self.response_serial += 1
-            self.floor.complete_response()
-            self.state.quiet = self.floor.quiet
-            self.lifecycle("advocate_response_completed", event_id=event_id)
-            pending, self.pending_request = self.pending_request, None
-            if (
-                pending
-                and pending[1] == self.generation
-                and not self.ai_disabled
-                and self.state.phase == "active"
-                and all(event.is_set() for event in self.transcription_ready.values())
-                and self.floor.begin_response()
-            ):
-                await self.request_response("patient", pending[0])
+            self.spawn(self.finish_response(event_id, self.response_serial), ai=True)
+        elif kind == "agent_tool_response":
+            tool = event.get("agent_tool_response", {})
+            if tool.get("tool_name") == "skip_turn" and not tool.get("is_error"):
+                self.spawn(self.finish_response("skip_turn", self.response_serial), ai=True)
         elif kind == "user_transcript":
             transcription = event.get("user_transcription_event", {})
             event_id = transcription.get("event_id")
             # Hosted transcripts lack a trusted human role and never grant permission.
             self.lifecycle("hosted_user_transcript_received", event_id=event_id)
             self.last_audio_diagnostic = None
+
+    async def finish_response(self, event_id, serial: int) -> None:
+        await self.audio_queue.join()
+        await self.source.wait_for_playout()
+        async with self.transcript_lock:
+            if serial != self.response_serial or self.ai_disabled or self.done.is_set():
+                return
+            self.response_requested = self.hosted_busy = False
+            self.response_serial += 1
+            self.floor.complete_response()
+            self.state.quiet = self.floor.quiet
+            self.lifecycle("advocate_response_played", event_id=event_id)
+            await self.send_pending_turns()
+
+    async def send_pending_turns(self) -> None:
+        if (
+            self.hosted_busy
+            or not self.pending_turns
+            or self.ai_disabled
+            or self.state.phase != "active"
+            or not all(event.is_set() for event in self.transcription_ready.values())
+            or not self.floor.begin_response()
+        ):
+            return
+        turns, self.pending_turns = self.pending_turns, []
+        self.state.quiet = False
+        self.response_requested = self.hosted_busy = True
+        self.response_activity = time.monotonic()
+        self.watch_response()
+        self.lifecycle("advocate_response_requested", role=turns[-1][0])
+        await self.ws.send_json(
+            {
+                "type": "user_message",
+                "text": "\n".join(f"{role}: {text}" for role, text in turns),
+            }
+        )
 
     def yield_advocate(self, reason: str) -> None:
         self.floor.yield_floor(reason)
@@ -742,86 +746,61 @@ class CallController:
             ):
                 return
             decision = self.floor.observe(role, text, final=final, utterance_id=utterance_id)
+            if not final:
+                return  # Partial/background speech must never erase an audible answer.
             self.lifecycle("participant_transcript_received", role=role, reason=decision.source)
-            if decision.source in {
-                "duplicate_commit",
-                "empty_transcript",
-                "inactive_or_unknown_role",
-            }:
-                return
             if decision.action == "withdraw":
                 self.yield_advocate(decision.source)
                 self.spawn(self.disable_advocate())
                 return
-            if decision.action in {"yield", "grant"}:
-                # Observe before forwarding input: no model tool is needed to mute speech.
-                self.state.quiet = True
-                self.response_requested = False
-                self.clear_audio()
-                self.lifecycle("advocate_paused", role=role, reason=decision.source)
-            if (
-                role == "patient"
-                and re.fullmatch(
-                    r"(?:please )?(?:(?:end|stop) (?:the |this )?call|hang up)"
-                    r"(?: now)?(?: please)?[.!]*",
-                    text.lower().strip(),
-                )
-                and final
+            if decision.action != "grant":
+                return
+            if role == "patient" and re.fullmatch(
+                r"(?:please )?(?:(?:end|stop) (?:the |this )?call|hang up)"
+                r"(?: now)?(?: please)?[.!]*",
+                text.lower().strip(),
             ):
                 self.stop("completed", reason="finished")
                 return
-            context = {"type": "contextual_update", "text": f"{role}: {text}"}
             if self.state.phase != "active":
-                if decision.action == "grant":
-                    self.yield_advocate("patient_request_before_advocate_ready")
-                if final:
-                    if len(self.pending_context) >= 20:
-                        raise ValueError("Too much speech before advocate readiness")
-                    self.pending_context.append(context)
+                if len(self.pending_context) >= 20:
+                    raise ValueError("Too much speech before advocate readiness")
+                self.pending_context.append(
+                    {"type": "contextual_update", "text": f"{role}: {text}"}
+                )
                 return
-            if not final:
-                await self.ws.send_json({"type": "user_activity"})
-                return
-            request = decision.action == "grant" or (
-                role == "hospital" and not self.floor.protected
-            )
-            if (
-                request
-                and not self.hosted_busy
-                and (all(event.is_set() for event in self.transcription_ready.values()))
-                and self.floor.begin_response()
-            ):
-                await self.request_response(role, text)
-            else:
-                if decision.action == "grant" and self.hosted_busy:
-                    # Keep the fresh invitation behind the old response boundary.
-                    self.pending_request = (text, self.generation)
-                    self.lifecycle("advocate_request_waiting_for_boundary", role=role)
-                await self.ws.send_json(context)
-
-    async def request_response(self, role: str, text: str) -> None:
-        self.state.quiet = False
-        self.response_requested = self.hosted_busy = True
-        self.watch_response()
-        self.lifecycle("advocate_response_requested", role=role)
-        await self.ws.send_json({"type": "user_message", "text": f"{role}: {text}"})
+            if len(self.pending_turns) >= 20:
+                raise ValueError("Too many pending human turns")
+            self.pending_turns.append((role, text))
+            await self.send_pending_turns()
 
     def watch_response(self) -> None:
         serial = self.response_serial
 
         async def deadline():
-            await asyncio.sleep(45)
-            if serial == self.response_serial and self.hosted_busy:
-                raise TimeoutError("Hosted response boundary was not received")
+            while serial == self.response_serial and self.hosted_busy:
+                await asyncio.sleep(45)
+                if (
+                    serial == self.response_serial
+                    and self.hosted_busy
+                    and time.monotonic() - self.response_activity >= 45
+                ):
+                    self.lifecycle("response_boundary_missing")
+                    raise TimeoutError("Advocate response stalled")
 
         self.spawn(deadline(), ai=True)
 
     async def keep_listening(self) -> None:
         await asyncio.wait_for(self.ready.wait(), 20)
+        silence = base64.b64encode(bytes(3200)).decode("ascii")
+        ticks = 0
         while True:
-            if not self.hosted_busy:
+            # Hosted playback completion uses the input audio clock, even with external STT.
+            await self.ws.send_json({"user_audio_chunk": silence})
+            if not self.hosted_busy and ticks % 50 == 0:
                 await self.ws.send_json({"type": "user_activity"})
-            await asyncio.sleep(5)
+            ticks += 1
+            await asyncio.sleep(0.1)
 
     async def disable_advocate(self) -> None:
         if self.ai_disabled or self.done.is_set():
@@ -874,25 +853,21 @@ class CallController:
                 await self.ws.send_json(tool_result(call_id, "The call is not active.", error=True))
                 return
             if name == "resume_advocate":
-                allowed = self.response_requested and self.floor.can_output and not self.ai_disabled
-                self.lifecycle(
-                    "advocate_resume_acknowledged" if allowed else "advocate_resume_blocked"
-                )
+                if not self.ai_disabled and not self.floor.ended:
+                    self.floor.protected = self.state.quiet = False
                 await self.ws.send_json(
                     tool_result(
                         call_id,
-                        "Answer only the patient's current request, then remain silent."
-                        if allowed
-                        else "Only a fresh patient request permits one answer.",
-                        error=not allowed,
+                        "Continue helping with billing; leave personal decisions to the patient.",
                     )
                 )
             else:
-                # A post-speech pause must not discard the single authorized answer.
-                if not (self.floor.protected and self.response_requested):
-                    self.yield_advocate("pause_tool")
+                self.yield_advocate("pause_tool")
                 await self.ws.send_json(
-                    tool_result(call_id, "Remain silent after the current authorized answer.")
+                    tool_result(
+                        call_id,
+                        "Wait for the humans. The next human turn will be provided for context.",
+                    )
                 )
             return
         if name == "finish_call":

@@ -16,7 +16,9 @@ class PatientFloorTests(unittest.IsolatedAsyncioTestCase):
         )
         c = CallController(SimpleNamespace(room=room), Mock(), Mock(), "action", "room")
         c.state.phase = "active"
-        c.source = SimpleNamespace(clear_queue=Mock(), wait_for_playout=AsyncMock())
+        c.source = SimpleNamespace(
+            clear_queue=Mock(), wait_for_playout=AsyncMock(), capture_frame=AsyncMock()
+        )
         c.ws = SimpleNamespace(send_json=AsyncMock(), close=AsyncMock())
         c.status = AsyncMock()
         for event in c.transcription_ready.values():
@@ -41,68 +43,103 @@ class PatientFloorTests(unittest.IsolatedAsyncioTestCase):
                 "agent_response_complete_event": {"event_id": event_id},
             }
         )
+        for _ in range(3):
+            await asyncio.sleep(0)
 
-    async def test_verification_yields_without_model_tool_and_patient_answers_stay_silent(self):
+    async def play_queued(self, c):
+        playback = asyncio.create_task(c.play_audio())
+        try:
+            await asyncio.wait_for(c.audio_queue.join(), timeout=1)
+        finally:
+            playback.cancel()
+            await asyncio.gather(playback, return_exceptions=True)
+
+    async def test_opening_audio_streams_before_the_completion_event(self):
         c = self.controller()
-        await self.complete(c)
-        await c.on_transcript("hospital", "What is your date of birth?", final=False)
-        self.assertFalse(c.state.can_output)
-        await c.on_transcript("patient", "My birthday is April 15", final=True, utterance_id="p1")
         await self.audio(c)
+        self.assertEqual(c.audio_queue.qsize(), 1)
+        await self.play_queued(c)
+        self.assertTrue(c.hosted_busy)
         await self.complete(c)
-        self.assertTrue(c.audio_queue.empty())
-        self.assertEqual(c.ws.send_json.call_args.args[0]["type"], "contextual_update")
+        self.assertFalse(c.hosted_busy)
+        c.source.capture_frame.assert_awaited_once()
 
-    async def test_staff_and_mixed_transcript_cannot_authorize_a_reply(self):
+    async def test_partial_background_speech_never_discards_or_interrupts_a_reply(self):
+        c = self.controller()
+        await self.audio(c)
+        generation = c.generation
+        for role in ("patient", "hospital"):
+            await c.on_transcript(role, "What is your date of birth?", final=False)
+        self.assertEqual(c.generation, generation)
+        self.assertEqual(c.audio_queue.qsize(), 1)
+        self.assertTrue(c.state.can_output)
+        c.ws.send_json.assert_not_awaited()
+
+    async def test_patient_and_staff_turns_allow_continued_advocacy_without_wake_words(self):
         c = self.controller()
         await self.complete(c)
-        await c.on_transcript("patient", "Yes", final=True)
-        await c.on_transcript("hospital", "Advocate, can you explain that?", final=True)
+        for index, (role, text) in enumerate(
+            (
+                ("hospital", "Yes, you may continue."),
+                ("patient", "Could you explain that?"),
+                ("hospital", "I will send the itemized bill tomorrow."),
+            ),
+            start=2,
+        ):
+            await c.on_transcript(role, text, final=True, utterance_id=str(index))
+            self.assertEqual(
+                c.ws.send_json.call_args.args[0],
+                {"type": "user_message", "text": f"{role}: {text}"},
+            )
+            await self.audio(c, index)
+            self.assertEqual(c.audio_queue.qsize(), 1)
+            await self.play_queued(c)
+            await self.complete(c, index)
+            self.assertTrue(c.state.can_output)
+            self.assertFalse(c.hosted_busy)
+
+    async def test_verification_is_attributed_context_for_the_model_without_regex_muting(self):
+        c = self.controller()
+        await self.complete(c)
+        await c.on_transcript("hospital", "What is the patient's date of birth?", final=True)
+        self.assertTrue(c.state.can_output)
+        self.assertEqual(
+            c.ws.send_json.call_args.args[0],
+            {
+                "type": "user_message",
+                "text": "hospital: What is the patient's date of birth?",
+            },
+        )
+        await c.on_transcript("patient", "April fifteenth", final=True)
+        await c.on_transcript("hospital", "Thanks, you are verified.", final=True)
+        await self.complete(c, 2)
+        self.assertEqual(
+            c.ws.send_json.call_args.args[0],
+            {
+                "type": "user_message",
+                "text": "patient: April fifteenth\nhospital: Thanks, you are verified.",
+            },
+        )
+
+    async def test_untrusted_mixed_hosted_transcript_does_not_create_a_human_turn(self):
+        c = self.controller()
+        await self.complete(c)
         await c.handle_event(
             {
                 "type": "user_transcript",
                 "user_transcription_event": {
-                    "user_transcript": "Advocate, help me",
+                    "user_transcript": "Please end the call",
                     "event_id": 2,
                 },
             }
         )
-        await c.handle_tool({"tool_name": "resume_advocate", "tool_call_id": "r", "parameters": {}})
-        await self.audio(c, 3)
-        await self.complete(c, 3)
-        self.assertTrue(c.audio_queue.empty())
-        self.assertFalse(c.state.can_output)
+        self.assertFalse(c.done.is_set())
+        self.assertFalse(c.pending_turns)
+        c.ws.send_json.assert_not_awaited()
+        await c.on_transcript("mixed", "Please end the call", final=True)
+        c.ws.send_json.assert_not_awaited()
 
-    async def test_patient_request_allows_one_complete_answer_then_requiets(self):
-        c = self.controller()
-        await self.complete(c)
-        await c.on_transcript(
-            "patient", "Advocate, could you explain that?", final=True, utterance_id="p1"
-        )
-        self.assertEqual(c.ws.send_json.call_args.args[0]["type"], "user_message")
-        await self.audio(c, 2)
-        self.assertTrue(c.audio_queue.empty(), "Unvalidated response streamed before its boundary")
-        await self.complete(c, 2)
-        self.assertEqual(c.audio_queue.qsize(), 1)
-        self.assertFalse(c.state.can_output)
-        admitted = c.audio_queue.get_nowait()
-        c.audio_queue.task_done()
-        await self.audio(c, 3)
-        await self.complete(c, 3)
-        self.assertTrue(c.audio_queue.empty(), "A second answer escaped the one-answer grant")
-        self.assertEqual(admitted[0], b"\0\0")
-
-    async def test_patient_partial_revokes_an_answer_before_audio_playback(self):
-        c = self.controller()
-        await self.complete(c)
-        await c.on_transcript("patient", "Advocate, explain that", final=True)
-        await self.audio(c, 2)
-        await c.on_transcript("patient", "Wait", final=False)
-        await self.complete(c, 2)
-        self.assertTrue(c.audio_queue.empty())
-        self.assertFalse(c.state.can_output)
-
-    async def test_hospital_cannot_end_call_and_patient_can(self):
+    async def test_hospital_cannot_end_human_call_but_explicit_final_patient_request_can(self):
         c = self.controller()
         await self.complete(c)
         await c.on_transcript("hospital", "Please end the call", final=True)
@@ -113,7 +150,7 @@ class PatientFloorTests(unittest.IsolatedAsyncioTestCase):
         await c.on_transcript("patient", "Please end the call", final=True)
         self.assertTrue(c.done.is_set())
 
-    async def test_ai_failure_mutes_advocate_and_preserves_humans(self):
+    async def test_ai_failure_stops_processing_and_preserves_humans(self):
         c = self.controller()
         await c.disable_advocate()
         self.assertFalse(c.done.is_set())
@@ -121,7 +158,7 @@ class PatientFloorTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(c.accepting_input)
         c.lk.room.delete_room.assert_not_called()
         c.status.assert_awaited_once_with("ai_unavailable")
-        await c.on_transcript("patient", "Advocate, help me", final=True)
+        await c.on_transcript("patient", "Please help me", final=True)
         await self.audio(c)
         self.assertTrue(c.audio_queue.empty())
         c.on_participant_left(SimpleNamespace(identity="patient"))
@@ -141,23 +178,24 @@ class PatientFloorTests(unittest.IsolatedAsyncioTestCase):
                     },
                 }
             )
-            await asyncio.gather(*list(c.tasks), return_exceptions=True)
-            await asyncio.sleep(0)
-        self.assertFalse(c.done.is_set(), "Hosted tool failure disconnected both humans")
-        await asyncio.gather(*list(c.tasks), return_exceptions=True)
+            for _ in range(6):
+                await asyncio.sleep(0)
+        self.assertFalse(c.done.is_set())
         self.assertTrue(c.ai_disabled)
+        c.lk.room.delete_room.assert_not_called()
 
-    async def test_patient_or_staff_refusal_withdraws_processing_while_quiet(self):
+    async def test_either_human_refusal_stops_ai_processing_while_preserving_the_call(self):
         for role in ("patient", "hospital"):
             c = self.controller()
             c.yield_advocate("verification")
             await c.on_transcript(role, "Please stop recording", final=True)
-            await asyncio.gather(*list(c.tasks))
+            for _ in range(4):
+                await asyncio.sleep(0)
             self.assertTrue(c.ai_disabled)
             self.assertFalse(c.done.is_set())
             c.ws.send_json.assert_not_awaited()
 
-    async def test_missing_patient_transcription_blocks_opening_and_hospital_reply(self):
+    async def test_missing_patient_transcription_blocks_audio_and_keeps_human_turn_pending(self):
         c = self.controller()
         c.transcription_ready["patient"].clear()
         await self.audio(c)
@@ -165,7 +203,8 @@ class PatientFloorTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(c.audio_queue.empty())
         await c.on_transcript("hospital", "Yes, go ahead", final=True)
         self.assertFalse(c.response_requested)
-        self.assertEqual(c.ws.send_json.call_args.args[0]["type"], "contextual_update")
+        self.assertEqual(c.pending_turns, [("hospital", "Yes, go ahead")])
+        c.ws.send_json.assert_not_awaited()
 
     async def test_hosted_session_waits_until_both_transcriptions_are_ready(self):
         c = self.controller()
@@ -175,67 +214,46 @@ class PatientFloorTests(unittest.IsolatedAsyncioTestCase):
         await asyncio.sleep(0)
         c.signed_url.assert_not_awaited()
         await c.on_transcript("patient", "I'm ready to verify", final=True)
-        self.assertTrue(c.state.quiet)
+        c.ws.send_json.assert_not_awaited()
         await c.on_transcription_ready("patient")
         with self.assertRaisesRegex(RuntimeError, "network boundary"):
             await task
         c.signed_url.assert_awaited_once()
 
-    async def test_early_human_conversation_mutes_the_opening_and_retains_context(self):
+    async def test_early_human_conversation_is_retained_before_hosted_readiness(self):
         c = self.controller()
         c.state.phase = "billing_connected"
         c.accepting_input = True
         await c.on_transcript("hospital", "What is your date of birth?", final=True)
         await c.on_transcript("patient", "April fifteenth", final=True)
-        self.assertFalse(c.state.can_output)
-        self.assertEqual(len(c.pending_context), 2)
+        self.assertEqual(
+            c.pending_context,
+            [
+                {"type": "contextual_update", "text": "hospital: What is your date of birth?"},
+                {"type": "contextual_update", "text": "patient: April fifteenth"},
+            ],
+        )
         c.ws.send_json.assert_not_awaited()
 
-    async def test_direct_human_exchange_never_plays_identity_correction(self):
-        c = self.controller()
-        await self.complete(c)
-        for role, text in (
-            ("hospital", "I need to verify the patient"),
-            ("hospital", "What is your birthday?"),
-            ("patient", "April fifteenth"),
-            ("hospital", "Thank you. Give me a moment"),
-            ("hospital", "Advocate, explain the bill"),
-        ):
-            await c.on_transcript(role, text, final=True)
-        await c.handle_event(
-            {
-                "type": "agent_response",
-                "agent_response_event": {
-                    "agent_response": "That date does not match our records",
-                },
-            }
-        )
-        await self.audio(c, 2)
-        await self.complete(c, 2)
-        self.assertTrue(c.audio_queue.empty())
-        self.assertFalse(c.done.is_set())
-
-    async def test_patient_request_during_previous_response_waits_for_its_boundary(self):
+    async def test_queued_turn_waits_for_playback_and_ignores_duplicate_completion(self):
         c = self.controller()
         await self.audio(c, 1)
-        await c.on_transcript(
-            "patient", "Advocate, can you help?", final=True, utterance_id="fresh"
-        )
-        self.assertEqual(c.ws.send_json.call_args.args[0]["type"], "contextual_update")
+        await c.on_transcript("patient", "Could you explain that?", final=True)
+        c.ws.send_json.assert_not_awaited()
         await self.complete(c, 1)
-        self.assertTrue(c.audio_queue.empty(), "The interrupted old answer played")
-        self.assertEqual(c.ws.send_json.call_args.args[0]["type"], "user_message")
-        await self.complete(c, 1)  # Duplicate old boundary cannot close the new reply.
+        self.assertTrue(c.hosted_busy)
+        c.ws.send_json.assert_not_awaited()
+        await self.play_queued(c)
+        for _ in range(3):
+            await asyncio.sleep(0)
+        self.assertEqual(
+            c.ws.send_json.call_args.args[0],
+            {"type": "user_message", "text": "patient: Could you explain that?"},
+        )
+        await self.complete(c, 1)
+        self.assertTrue(c.hosted_busy)
         await self.audio(c, 2)
+        await self.play_queued(c)
         await self.complete(c, 2)
-        self.assertEqual(c.audio_queue.qsize(), 1)
-        self.assertFalse(c.state.can_output)
-
-    async def test_human_speech_revokes_a_patient_request_waiting_for_old_boundary(self):
-        c = self.controller()
-        await c.on_transcript("patient", "Advocate, help me", final=True)
-        await c.on_transcript("hospital", "One moment please", final=False)
-        await self.complete(c, 1)
-        self.assertNotIn(
-            "user_message", [call.args[0]["type"] for call in c.ws.send_json.await_args_list]
-        )
+        self.assertFalse(c.hosted_busy)
+        self.assertFalse(c.done.is_set())

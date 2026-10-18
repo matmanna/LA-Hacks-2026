@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  agreedText,
   buildCallVars,
   CallOutcomeSchema,
   type CallTurn,
   checkDisclosure,
   DISCLOSURE,
+  HOLD_ASK,
+  ITEMIZED_ASK,
   isAllowedNumber,
   isSyntheticSampleCase,
   mapConversationStatus,
@@ -125,6 +128,14 @@ describe("buildCallVars", () => {
     expect(vars.case_context).toContain("$5,143.15");
     expect(vars.case_context).toContain("https://example.org/prices.csv");
     expect(vars.case_context).not.toContain("Excluded fourth item");
+    // Spoken parts ask for records by name and date, never amounts.
+    expect(vars.disputed_items).toBe("MRI lumbar spine on September 14, 2026");
+    expect(vars.ask).toContain(HOLD_ASK);
+    expect(vars.ask).toContain(ITEMIZED_ASK);
+    expect(vars.ask).toContain(
+      "medical records for MRI lumbar spine on September 14, 2026",
+    );
+    expect(`${vars.disputed_items} ${vars.ask}`).not.toMatch(/\$|look wrong/);
   });
 
   it("adds fictional identity only with trusted synthetic sample provenance", () => {
@@ -139,18 +150,47 @@ describe("buildCallVars", () => {
     expect(sample.case_context).toContain("1990-04-12");
   });
 
-  it("names at most 3 items, largest first, with formatted amounts", () => {
-    const vars = buildCallVars(bill, [
-      flag("a", "Small", 100),
-      flag("b", "Big", 175685),
-      flag("c", "Mid", 8400),
-      flag("d", "Tiny", 50),
+  it("names the services of at most 3 flags, largest first", () => {
+    const lined = {
+      ...bill,
+      lines: ["a", "b", "c", "d"].map((id) => ({
+        id,
+        description: `Line ${id}`,
+        serviceDate: null,
+      })),
+    } as Bill;
+    const vars = buildCallVars(lined, [
+      { ...flag("a", "Small", 100), lineIds: ["a"] },
+      { ...flag("b", "Big", 175685), lineIds: ["b"] },
+      { ...flag("c", "Mid", 8400), lineIds: ["c"] },
+      { ...flag("d", "Tiny", 50), lineIds: ["d"] },
     ]);
-    expect(vars.disputed_items).toBe(
-      "Big, $1,756.85; Mid, $84.00; Small, $1.00",
-    );
+    expect(vars.disputed_items).toBe("Line b; Line c; Line a");
     expect(vars.account_last4).toBe("4321");
     expect(vars.hospital_name).toBe("Example Hospital");
+  });
+
+  it("names the bill line for line flags, not for whole-bill flags", () => {
+    const withLines = {
+      ...bill,
+      lines: [
+        { id: "l1", description: "CBC W/AUTO DIFF" },
+        { id: "l2", description: "XR CHEST 2 VIEWS" },
+      ],
+    } as Bill;
+    const dup = { ...flag("a", "Listed twice", 8400), lineIds: ["l1"] };
+    const eob = {
+      ...flag("b", "Bill asks more than your EOB says", 5000),
+      lever: "eob_mismatch" as const,
+      lineIds: ["l1", "l2"],
+    };
+    expect(buildCallVars(withLines, [dup, eob]).disputed_items).toBe(
+      "CBC W/AUTO DIFF",
+    );
+    // With no line to name, the records ask covers the visit.
+    expect(buildCallVars(withLines, [eob]).ask).toContain(
+      "medical records for this visit",
+    );
   });
 
   it("says 'not available' without a 4-digit account suffix", () => {
@@ -172,13 +212,15 @@ describe("renderCallScript", () => {
       renderCallScript({ ...vars, case_context: "A changed fact" }),
     ).not.toBe(before);
   });
-  it("opens with the disclosure and says only the call variables", () => {
+  it("opens with the disclosure and asks without a patient on the line", () => {
     const vars = buildCallVars(bill, [flag("b", "Big", 175685)]);
     const script = renderCallScript(vars);
     expect(script.startsWith(DISCLOSURE)).toBe(true);
     expect(script).toContain("account ending in 4321 at Example Hospital");
-    expect(script).toContain("Big, $1,756.85");
-    expect(script).toContain("It will not agree to payments.");
+    expect(script).toContain("The patient is not on this call.");
+    expect(script).toContain(HOLD_ASK);
+    expect(script).not.toContain("directly with the patient");
+    expect(script).toContain("will not agree to payments.");
   });
 });
 
@@ -197,9 +239,26 @@ describe("CallOutcomeSchema", () => {
       source: "live",
     };
     expect(CallOutcomeSchema.safeParse(outcome).success).toBe(true);
+    // Outcomes saved before the hold and records fields still parse.
+    expect(CallOutcomeSchema.parse(outcome)).toMatchObject({
+      holdAgreed: null,
+      itemizedPromised: null,
+      recordsProcess: null,
+    });
+    expect(
+      CallOutcomeSchema.parse({ ...outcome, holdAgreed: true }).holdAgreed,
+    ).toBe(true);
     expect(
       CallOutcomeSchema.safeParse({ ...outcome, source: "made_up" }).success,
     ).toBe(false);
+  });
+});
+
+describe("agreedText", () => {
+  it("says yes, no, or nothing", () => {
+    expect(agreedText(true, "Billing agreed")).toBe("Billing agreed");
+    expect(agreedText(false, "Billing agreed")).toBe("Billing said no");
+    expect(agreedText(null, "Billing agreed")).toBeUndefined();
   });
 });
 

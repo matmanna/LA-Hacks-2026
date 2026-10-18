@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { transcriptText } from "./call";
 import {
   buildConferenceIntroduction,
-  CONFERENCE_INTRODUCTION_TEXT,
+  CONFERENCE_OPENING,
   type ConferenceStatus,
   canReportConferenceStatus,
   isConferenceScript,
@@ -26,12 +26,22 @@ const vars = {
 };
 
 describe("conference approval", () => {
-  it("briefs the patient about the specific hospital and items before connecting billing", () => {
+  it("briefs the patient about the hospital and the asks before connecting billing", () => {
     const introduction = buildConferenceIntroduction(vars);
     expect(introduction).toContain("Alex Morgan");
     expect(introduction).toContain("Example");
-    expect(introduction).toContain("Duplicate test");
-    expect(introduction).toContain("Advocate, can you help?");
+    expect(introduction).toContain("hold your account");
+    expect(introduction).toContain("I'll handle the billing questions");
+    // The controller refuses over 45 s of audio. 114 words measured 46.7 s,
+    // so stay well under with a long hospital name and long service names.
+    const long = buildConferenceIntroduction({
+      ...vars,
+      hospital_name: "Cedars-Sinai Medical Center",
+      review_topics:
+        "MRI LUMBAR SPINE W/O CONTRAST on September 14, 2026; ".repeat(3),
+    });
+    // 72 words measured 26.6 s; 90 words is about 33 s.
+    expect(long.split(" ").length).toBeLessThan(90);
     expect(
       renderConferenceScript(vars, "+13105550100", "+13105550101"),
     ).toContain(introduction);
@@ -54,7 +64,17 @@ describe("conference approval", () => {
     expect(script).not.toMatch(
       /press 1|keypad|hang up when|stays connected and silent/i,
     );
-    expect(CONFERENCE_INTRODUCTION_TEXT).toContain("answer them directly");
+    // Billing hears the request, then handles verification with the patient.
+    expect(script).toContain(CONFERENCE_OPENING);
+    expect(script).toContain(
+      "account ending in 1234 at Example. Please review.",
+    );
+    expect(script).toContain("continues naturally");
+    expect(script).toContain("Approved case facts");
+    expect(script).not.toMatch(/says once:|only if the patient asks/);
+    expect(script).toContain("does not argue charges");
+    expect(buildConferenceIntroduction(vars)).toContain("itemized bill");
+    expect(buildConferenceIntroduction(vars)).toContain("answer them yourself");
     expect(isPatientFirstConferenceScript(script)).toBe(true);
     expect(isPatientFirstConferenceScript("Patient connection approval:")).toBe(
       false,
@@ -104,6 +124,9 @@ describe("conference approval", () => {
         summary: "The call ended.",
         referenceNumber: null,
         billingResponse: "Yes",
+        holdAgreed: null,
+        itemizedPromised: null,
+        recordsProcess: null,
         nextStep: null,
         followUpDate: null,
         durationSecs: 40,

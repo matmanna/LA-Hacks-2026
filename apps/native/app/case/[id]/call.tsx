@@ -1,9 +1,9 @@
+import { agreedText } from "@betterbill/core";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { cn } from "heroui-native";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
 import { Button, Icon, type IconName, Row, Screen, T } from "@/components/bb";
 import { type CallStage, useCallFlow } from "@/lib/use-call-flow";
 
@@ -15,16 +15,27 @@ const COPY: Record<string, { title: string; sub: string }> = {
   joined: { title: "On the call", sub: "" },
   done: {
     title: "Call done",
-    sub: "Sending the email with the details. You're CC'd.",
+    sub: "Sending the email with the details.",
   },
   waiting: {
     title: "Waiting on billing",
-    sub: "They'll send your itemized bill to your email. We'll text you.",
+    sub: "They'll send your itemized bill to your email.",
   },
   failed: {
     title: "The call didn't go through",
     sub: "Nothing was said and nothing changed on your bill. You can try again.",
   },
+};
+
+// Live calls have no phone menu, no hold, and no join prompt. A direct call
+// dials billing alone; a conference call rings the patient first.
+const DIALING = {
+  title: "Calling billing",
+  sub: "Our assistant says it's automated and sticks to the script you approved.",
+};
+const CONFERENCE_DIALING = {
+  title: "Calling you first",
+  sub: "We ring the test patient phone and explain the call, then dial billing. Stay on the line.",
 };
 
 // L7 call tracking, with A2 Incoming call and A3 Missed. ?script=1 replays
@@ -55,10 +66,18 @@ export default function Call() {
     return <Missed id={id} onRetry={flow.retry} />;
   }
 
-  const copy = COPY[stage] ?? COPY.on_hold;
+  const { conference } = flow;
+  const copy =
+    !scripted && stage === "on_hold"
+      ? conference
+        ? CONFERENCE_DIALING
+        : DIALING
+      : (COPY[stage] ?? COPY.on_hold);
   const eyebrow = {
-    on_hold: "on hold",
-    joined: "3 on the call",
+    on_hold: scripted ? "on hold" : conference ? "connecting" : "dialing",
+    // ponytail: ai_unavailable also reads as in_progress, so a conference
+    // whose advocate dropped still says 3. Split the status if that matters.
+    joined: scripted || conference ? "3 on the call" : "on the call",
     done: `account ending ${bill?.accountRefMasked ?? ""}`,
     waiting: `account ending ${bill?.accountRefMasked ?? ""}`,
     failed: "call ended",
@@ -67,7 +86,13 @@ export default function Call() {
   return (
     <Screen
       onNav={() => router.replace("/")}
-      aside={scripted ? "Sample call" : undefined}
+      aside={
+        scripted
+          ? "Sample call"
+          : flow.outcome?.source === "recorded_fallback"
+            ? "Recorded test call"
+            : undefined
+      }
       footer={
         stage === "joined" && scripted ? (
           <View className="flex-row gap-2.5">
@@ -119,15 +144,17 @@ export default function Call() {
           {copy.title}
         </T>
         <T className="text-base text-muted leading-6">
-          {stage === "joined"
-            ? `Your advocate is asking about the ${flags} item${flags === 1 ? "" : "s"}.`
-            : copy.sub}
+          {stage !== "joined"
+            ? copy.sub
+            : conference
+              ? "Your advocate is talking to billing for you. Jump in any time; it waits for you."
+              : "Your advocate is asking for a hold, your itemized bill, and how to get your records."}
         </T>
       </View>
 
       <Track stage={stage} />
 
-      {stage === "on_hold" ? (
+      {stage === "on_hold" && scripted ? (
         <View className="flex-row items-center gap-3.5 rounded-2xl bg-wash p-4">
           <Bars />
           <View className="gap-0.5">
@@ -141,7 +168,17 @@ export default function Call() {
         </View>
       ) : null}
 
-      {stage === "joined" ? (
+      {conference && stage === "joined" ? (
+        <View className="rounded-[14px] border border-hairline px-3.5 py-3">
+          <T className="text-[13px] text-slate-ink leading-[19px]">
+            When billing asks to verify you, answer them yourself. Your advocate
+            handles the rest. Hanging up ends the call.
+          </T>
+        </View>
+      ) : null}
+
+      {/* The live transcript only arrives after the call ends. */}
+      {stage === "joined" && scripted ? (
         <View className="gap-3">
           <View className="flex-row gap-2">
             <Person icon="landmark" label="Billing rep" />
@@ -149,13 +186,10 @@ export default function Call() {
             <Person you label="On the line" />
           </View>
           <View className="gap-2">
-            {(scripted
-              ? [
-                  "Billing rep: I'll need to verify the patient before we continue.",
-                  "Your advocate: The patient is on the line with us and can confirm.",
-                ]
-              : (flow.transcript ?? "").split("\n").filter(Boolean).slice(-2)
-            ).map((line) => (
+            {[
+              "Billing rep: I'll need to verify the patient before we continue.",
+              "Your advocate: The patient is on the line with us and can confirm.",
+            ].map((line) => (
               <T key={line} className="text-sm leading-5">
                 {line}
               </T>
@@ -177,20 +211,41 @@ export default function Call() {
             <Row
               label="They said"
               value={
-                scripted ? `Will review all ${flags}` : (flow.outcome ?? "")
+                scripted
+                  ? `Will review all ${flags}`
+                  : (flow.outcome?.billingResponse ??
+                    flow.outcome?.summary ??
+                    "")
               }
             />
           ) : null}
+          {flow.outcome?.referenceNumber ? (
+            <Row label="Reference" value={flow.outcome.referenceNumber} />
+          ) : null}
+          {(
+            [
+              [
+                "Account hold",
+                agreedText(flow.outcome?.holdAgreed, "Billing agreed"),
+              ],
+              [
+                "Itemized bill",
+                agreedText(
+                  flow.outcome?.itemizedPromised,
+                  "Billing will send it",
+                ),
+              ],
+              ["Your records", flow.outcome?.recordsProcess ?? undefined],
+            ] as [string, string | undefined][]
+          ).map(([label, value]) =>
+            value ? <Row key={label} label={label} value={value} /> : null,
+          )}
           {scripted ? (
             <Row label="Itemized bill" value="Sent to your email" />
           ) : null}
           <Row
             label="Email to billing"
-            value={
-              email?.sentAt || stage === "waiting"
-                ? "Sent, you're CC'd"
-                : "Sending…"
-            }
+            value={email?.sentAt || stage === "waiting" ? "Sent" : "Sending…"}
             last
           />
         </View>
@@ -447,9 +502,8 @@ function Missed({ id, onRetry }: { id: string; onRetry: () => void }) {
         </T>
       </View>
       <View className="pt-[22px]">
-        <Row label="Email to billing" value="Sent, you're CC'd" />
-        <Row label="Call" value="Not done yet" />
-        <Row label="We texted you" value="To pick a new time" last />
+        <Row label="Email to billing" value="Sent" />
+        <Row label="Call" value="Not done yet" last />
       </View>
     </Screen>
   );

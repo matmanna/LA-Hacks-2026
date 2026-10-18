@@ -26,7 +26,13 @@ import { ORPCError } from "@orpc/server";
 import { and, eq, gt, isNull, notLike } from "drizzle-orm";
 import { SAMPLES } from "../data";
 import { RECORDED_CALL } from "../recorded-call";
-import { addEvent, getCaseRow, listEvents, setStatus } from "../repo/cases";
+import {
+  addEvent,
+  getCaseRow,
+  listActions,
+  listEvents,
+  setStatus,
+} from "../repo/cases";
 import {
   checkTransition,
   getAction,
@@ -244,6 +250,8 @@ function present(outcome: CallOutcome, conference = false): CallStatusResult {
 // Saves the outcome once; later polls find it already stored. The status only
 // moves to "called" when the state machine allows it (a letter sent during
 // the call leaves the case at "sent"), but the result is never dropped.
+// A failed call leaves the status alone: nobody was called, and a retry the
+// user already drafted must stay approvable.
 async function saveOutcome(
   db: Database,
   action: Action,
@@ -258,14 +266,30 @@ async function saveOutcome(
       .returning({ id: actionTable.id });
     if (updated.length === 0) return;
     const row = await getCaseRow(tx, action.caseId);
-    try {
-      const status = checkTransition(row?.status ?? "", "call.completed", "");
-      await setStatus(tx, action.caseId, status);
-    } catch {
-      // see comment above
+    if (outcome.status !== "failed") {
+      try {
+        const status = checkTransition(row?.status ?? "", "call.completed", "");
+        await setStatus(tx, action.caseId, status);
+      } catch {
+        // see comment above
+      }
     }
     await addEvent(tx, action.caseId, "call.completed", summary);
   });
+}
+
+// call.status saves the outcome, but only runs while a screen polls it.
+// Opening the case settles a call nobody watched to the end.
+export async function settleCalls(db: Database, caseId: string) {
+  const pending = (await listActions(db, caseId)).filter(
+    (a) => a.kind === "call" && a.approvedAt && !a.outcome,
+  );
+  await Promise.all(
+    // A provider error leaves the call to the next poll or visit.
+    pending.map((a) =>
+      callStatus(db, { callId: `call-${a.id}` }).catch(() => null),
+    ),
+  );
 }
 
 export async function callStatus(
@@ -318,6 +342,9 @@ export async function callStatus(
             billingResponse: null,
             nextStep: null,
             followUpDate: null,
+            holdAgreed: null,
+            itemizedPromised: null,
+            recordsProcess: null,
             durationSecs: null,
             transcript: [],
             recorded: false,

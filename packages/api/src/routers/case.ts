@@ -38,6 +38,7 @@ import {
 } from "../repo/cases";
 import { buildPacket } from "../repo/packet";
 import { loadAssistance } from "../services/assistance";
+import { settleCalls } from "../services/call";
 import { logStep } from "../telemetry";
 import { auditResult } from "./audit";
 
@@ -84,6 +85,7 @@ export const caseRouter = {
     .input(CaseIdInput)
     .output(CaseDetail)
     .handler(async ({ input, context }) => {
+      await settleCalls(context.db, input.caseId);
       const row = await getCaseRow(context.db, input.caseId);
       if (!row)
         throw new ORPCError("NOT_FOUND", { message: "Case not found." });

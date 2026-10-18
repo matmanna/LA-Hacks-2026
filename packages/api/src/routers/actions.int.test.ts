@@ -329,5 +329,20 @@ describe.skipIf(!url)("action routes (integration)", () => {
       expect(approvalCoverage(events).ratio).toBe(1);
       expect(await status(caseId)).toBe("called");
     });
+
+    it("saves the outcome when the case is opened, even if nobody polled", async () => {
+      const { caseId, action, draftHash } = await draftedCall();
+      await client.action.approve({
+        actionId: action.id,
+        draftHash,
+        consent: true,
+      });
+      await client.call.start({ actionId: action.id });
+
+      const detail = await client.case.get({ caseId });
+      const call = detail.actions.find((a) => a.id === action.id);
+      expect(call?.outcome).toBeTruthy();
+      expect(detail.case.status).toBe("called");
+    });
   });
 });

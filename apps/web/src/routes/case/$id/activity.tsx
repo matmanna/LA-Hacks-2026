@@ -1,3 +1,4 @@
+import { agreedText } from "@betterbill/core";
 import { ActivityTimeline } from "@betterbill/ui/components/bb/activity-timeline";
 import { CallTranscriptCard } from "@betterbill/ui/components/bb/call-transcript-card";
 import { useQuery } from "@tanstack/react-query";
@@ -43,6 +44,9 @@ function parseOutcome(outcome: string | null) {
       referenceNumber: string | null;
       nextStep: string | null;
       followUpDate: string | null;
+      holdAgreed?: boolean | null;
+      itemizedPromised?: boolean | null;
+      recordsProcess?: string | null;
       source: "live" | "recorded_fallback";
       recordedAt?: string;
     };
@@ -154,6 +158,12 @@ function ActivityPage() {
                       referenceNumber: outcome.referenceNumber ?? undefined,
                       nextStep: outcome.nextStep ?? undefined,
                       followUpBy: outcome.followUpDate ?? undefined,
+                      hold: agreedText(outcome.holdAgreed, "Billing agreed"),
+                      itemized: agreedText(
+                        outcome.itemizedPromised,
+                        "Billing will send it",
+                      ),
+                      records: outcome.recordsProcess ?? undefined,
                     }
                   : undefined
               }

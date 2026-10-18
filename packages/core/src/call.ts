@@ -9,10 +9,11 @@ export const DISCLOSURE =
   "Hi, this is an automated assistant calling on behalf of a patient.";
 
 // Every available fact is included in the approval; identity is fictional demo data only.
+// Key names are the agent's dynamic variables, so they stay as they are.
 export type CallVars = {
   hospital_name: string;
   account_last4: string;
-  disputed_items: string;
+  disputed_items: string; // the services whose records the patient wants
   ask: string;
   review_topics: string;
   case_context: string;
@@ -20,8 +21,25 @@ export type CallVars = {
   patient_dob: string;
 };
 
-const ASK =
-  "Please review these items and tell me the next step and a reference number.";
+// The call asks only for what billing can do now. Disputes go in the letter,
+// which carries the evidence.
+export const HOLD_ASK =
+  "Please put the account on hold while the patient reviews it, with no collections or late fees.";
+export const ITEMIZED_ASK =
+  "Please email the itemized bill, with billing codes, to the patient.";
+
+// "2026-09-14" -> "September 14, 2026", so the agent says a date, not digits.
+function spokenDate(iso: string): string {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+// These flags are about the whole bill, so there is no one line to name.
+const WHOLE_BILL: Flag["lever"][] = ["eob_mismatch", "missing_itemization"];
 
 export function isSyntheticSampleCase(
   events: Pick<CaseEvent, "type" | "actor" | "at" | "summary">[],
@@ -46,11 +64,26 @@ export function buildCallVars(
   const selected = [...flags]
     .sort((a, b) => b.amountCents - a.amountCents)
     .slice(0, 3);
+  // Billing finds a service by its printed name and date.
+  const services = [
+    ...new Set(
+      selected.flatMap((f) => {
+        const line = WHOLE_BILL.includes(f.lever)
+          ? undefined
+          : bill.lines.find((l) => l.id === f.lineIds[0]);
+        if (!line) return [];
+        return line.serviceDate
+          ? `${line.description} on ${spokenDate(line.serviceDate)}`
+          : line.description;
+      }),
+    ),
+  ].join("; ");
   const last4 = (bill.accountRefMasked ?? "").replace(/\D/g, "").slice(-4);
   // Only the server's sample provenance may enable this; never infer it from a hospital name.
   const patientName = syntheticSample ? "Alex Morgan" : "";
   const patientDob = syntheticSample ? "1990-04-12" : "";
   const context = [
+    "Why the patient wants these records. Use only when the patient asks you to explain; do not argue charges with billing.",
     syntheticSample
       ? `Fictional role-play patient: ${patientName}. Date of birth: ${patientDob}. These are synthetic demo details, not the user's identity. Use them only for requested account lookup; hospital staff verify identity directly with the patient. Do not compare, challenge, or correct the patient's identity answers.`
       : "Patient name and date of birth are not provided. Ask the patient to answer directly; do not invent identity details.",
@@ -77,24 +110,30 @@ export function buildCallVars(
   return {
     hospital_name: bill.hospital.name,
     account_last4: last4.length === 4 ? last4 : "not available",
-    disputed_items: selected
-      .map((f) => `${f.title}, ${formatMoney(f.amountCents)}`)
-      .join("; "),
-    ask: ASK,
-    review_topics: selected.map((f) => f.title).join("; "),
+    disputed_items: services,
+    ask: [
+      HOLD_ASK,
+      ITEMIZED_ASK,
+      `Please tell us how the patient can get the medical records for ${services || "this visit"}.`,
+      "May I have a reference number for this call?",
+    ].join(" "),
+    review_topics: services,
     case_context: context.join("\n\n"),
     patient_name: patientName,
     patient_dob: patientDob,
   };
 }
 
+// Direct call: billing only, no patient on the line. Billing won't release
+// anything without the patient, so the agent asks how the patient can get it.
 export function renderCallScript(vars: CallVars): string {
   return [
     `${DISCLOSURE} This call may be recorded and transcribed. Is it okay to continue?`,
-    `After permission: Let the representative locate account ending in ${vars.account_last4} at ${vars.hospital_name} and complete their identity and authorization checks directly with the patient. Permission to continue is not identity verification. Never compare or correct the patient's identity answers. Allow time for lookup, thinking, and replies without repeating questions or filling every pause. Once the patient and representative speak directly, stay silent until the patient specifically asks for help. Each patient request permits one answer, then return to silence; staff requests or silence do not resume advocacy. When invited to discuss billing, wait until the representative is ready, discuss one item at a time, and answer using the facts below. Amounts under review: ${vars.disputed_items}. ${vars.ask}`,
-    `Approved facts for discussion:\n${vars.case_context}`,
-    "If no: Thank you. I will stop participating now.",
-    "The assistant may explain these approved facts in its own words. It will not agree to payments.",
+    `If yes: I'm calling about account ending in ${vars.account_last4} at ${vars.hospital_name}. The patient is not on this call. ${vars.ask}`,
+    "If they need the patient to verify or approve anything: ask what the patient should do to get each of these, and share nothing else.",
+    `Approved facts, only if asked:\n${vars.case_context}`,
+    "If no: Thank you. I will end the call now.",
+    "The assistant will not agree to payments.",
   ].join("\n\n");
 }
 
@@ -112,6 +151,11 @@ export const CallOutcomeSchema = z.object({
   billingResponse: z.string().nullable(),
   nextStep: z.string().nullable(),
   followUpDate: z.string().nullable(),
+  // What billing agreed to on the call. Null when they didn't say; defaults
+  // keep outcomes saved before these fields existed valid.
+  holdAgreed: z.boolean().nullable().default(null),
+  itemizedPromised: z.boolean().nullable().default(null),
+  recordsProcess: z.string().nullable().default(null),
   durationSecs: z.number().nullable(),
   transcript: z.array(CallTurnSchema),
   recorded: z.boolean(),
@@ -119,6 +163,14 @@ export const CallOutcomeSchema = z.object({
   recordedAt: z.string().optional(),
 });
 export type CallOutcome = z.infer<typeof CallOutcomeSchema>;
+
+// Plain words for a yes/no billing gave on the call; nothing when they didn't say.
+export function agreedText(
+  value: boolean | null | undefined,
+  yes: string,
+): string | undefined {
+  return value === true ? yes : value === false ? "Billing said no" : undefined;
+}
 
 export function checkDisclosure(transcript: CallTurn[]): boolean {
   const first = transcript.find((t) => t.role === "agent");

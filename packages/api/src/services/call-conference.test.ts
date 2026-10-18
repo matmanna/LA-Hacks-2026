@@ -34,6 +34,7 @@ vi.mock("./elevenlabs", () => ({
   startOutboundCall: vi.fn(),
 }));
 
+import { setStatus } from "../repo/cases";
 import { callStatus } from "./call";
 
 function add(status: string, summary = status, at = new Date().toISOString()) {
@@ -100,6 +101,8 @@ it("persists a failed attempt without a hosted conversation and never fetches a 
     summary: expect.stringContaining("did not connect"),
   });
   expect(fixture.getConversation).not.toHaveBeenCalled();
+  // Nobody was called, so a retry drafted meanwhile stays approvable.
+  expect(setStatus).not.toHaveBeenCalled();
 });
 it("stores an interrupted call as connected to billing even if hosted startup failed", async () => {
   add("patient_joined");

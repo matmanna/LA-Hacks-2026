@@ -55,6 +55,31 @@ describe("buildOutcome", () => {
     expect(checkDisclosure(outcome.transcript)).toBe(true);
   });
 
+  it("reads what billing agreed to, as yes, no, or not said", () => {
+    const outcome = buildOutcome({
+      ...conversation,
+      analysis: {
+        data_collection_results: {
+          hold_agreed: { value: true },
+          itemized_promised: { value: "false" },
+          records_process: {
+            value: "Fax the release form to medical records.",
+          },
+        },
+      },
+    });
+    expect(outcome).toMatchObject({
+      holdAgreed: true,
+      itemizedPromised: false,
+      recordsProcess: "Fax the release form to medical records.",
+    });
+    expect(buildOutcome(conversation)).toMatchObject({
+      holdAgreed: null,
+      itemizedPromised: null,
+      recordsProcess: null,
+    });
+  });
+
   it("leaves facts empty when the analysis is missing", () => {
     const outcome = buildOutcome({ status: "done", transcript: [] });
     expect(outcome).toMatchObject({

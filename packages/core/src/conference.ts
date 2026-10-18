@@ -3,7 +3,6 @@ import {
   type CallVars,
   DISCLOSURE,
   isDialableNumber,
-  renderCallScript,
 } from "./call";
 
 const LEGACY_APPROVAL_MARKER = "Patient connection approval:";
@@ -15,18 +14,22 @@ export type PatientConnection = "phone" | "browser";
 export function patientConnectionForScript(script: string): PatientConnection {
   return script.startsWith(BROWSER_MARKER) ? "browser" : "phone";
 }
-export const CONFERENCE_INTRODUCTION_TEXT =
-  "This is BetterBill's automated advocate. I'll connect the billing office next and discuss the bill with you on the call. Please stay on the line. When they need your approval or confirmation, answer them directly. The call may be recorded and transcribed. If you hang up, we'll end the call. I'm connecting billing now.";
+// The agent's first message to billing. The live agent config uses this same
+// text, so the approved script and the spoken opening match.
+export const CONFERENCE_OPENING = `${DISCLOSURE} The patient is here with us and can answer you directly. This call may be recorded and transcribed. Is it okay to continue?`;
 
+// The controller refuses a briefing over 45 seconds of audio. Billing hears
+// the services by name, so the briefing doesn't list them.
 export function buildConferenceIntroduction(vars: CallVars): string {
   return [
     "This is BetterBill's automated advocate.",
     ...(vars.patient_name
       ? [`For this demo, you're ${vars.patient_name}.`]
       : []),
-    `I'll call ${vars.hospital_name} billing about ${vars.review_topics || "the bill"}.`,
-    "Answer their identity and approval questions directly. Once you and billing start talking, I'll stay quiet unless you ask for help. Say 'Advocate, can you help?' I'll answer, then listen again.",
-    "This call may be recorded and transcribed. Hanging up ends everyone's call. Connecting billing now.",
+    `I'll ask ${vars.hospital_name} billing to hold your account, email your itemized bill, and explain how to get your medical records.`,
+    "They'll need to verify you, so answer them yourself.",
+    "I'll handle the billing questions and wait while you answer verification questions or make decisions.",
+    "This call may be recorded and transcribed. Hanging up ends the call for everyone. Connecting billing now.",
   ].join(" ");
 }
 
@@ -44,8 +47,10 @@ export function renderConferenceScript(
     patientConnection === "browser"
       ? "Keep this browser tab open. Your microphone connects you to the advocate and billing. Leaving or closing the tab ends the call for everyone. A connection does not verify identity or approval."
       : "The patient's phone remains connected while billing answers. A phone connection does not verify that a human answered.",
-    `The advocate tells billing:\n${renderCallScript(vars).replace(DISCLOSURE, `${DISCLOSURE} I've connected the patient's line so they can answer you directly.`)}`,
-    "The advocate helps with the bill while both people are on the call. Once the patient and representative speak directly, the advocate stays silent until the patient specifically asks for help, for example 'Advocate, can you help?' Each patient invitation permits one answer, then the advocate returns to silence. Staff requests, identity answers, silence, or a finished verification do not resume advocacy. The advocate does not challenge the patient's identity answers, infer approval, or agree to payments or settlements. If either person hangs up, the entire call ends.",
+    `The advocate tells billing:\n${CONFERENCE_OPENING}`,
+    `After permission: I'm calling about account ending in ${vars.account_last4} at ${vars.hospital_name}. ${vars.ask}`,
+    "The advocate helps with billing questions, waits through the hospital's verification and the patient's decisions, and continues naturally when billing resumes. It does not argue charges, answer identity questions for the patient, infer approval, or agree to payments or settlements. If the patient asks it to stay quiet, it waits for their invitation to help again. If either person hangs up, the entire call ends.",
+    `Approved case facts:\n${vars.case_context}`,
   ].join("\n\n");
 }
 

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  ADVOCATE_PROMPT,
   assertConferenceBranch,
   buildDemoAdvocatePatch,
   demoTools,
@@ -45,6 +46,22 @@ const ids = {
 };
 
 describe("demo advocate configuration", () => {
+  it("uses ordinary conversation after verification without an addressed one-answer gate", () => {
+    expect(ADVOCATE_PROMPT).toContain("continue naturally");
+    expect(ADVOCATE_PROMPT).toContain("one question at a time");
+    expect(ADVOCATE_PROMPT).toContain("leave decisions to the patient");
+    for (const text of [
+      ADVOCATE_PROMPT,
+      ...demoTools("conference").map((tool) => tool.description),
+      buildDemoAdvocatePatch(current, ids).conversation_config.agent.prompt
+        .built_in_tools.skip_turn.description,
+    ]) {
+      expect(text).not.toMatch(
+        /one answer|fresh patient invitation|protected patient handoff|say only this/i,
+      );
+    }
+  });
+
   it("removes the forced stages and alternative tools without changing audio or model settings", () => {
     const patch = buildDemoAdvocatePatch(current, ids);
     expect(patch.workflow).toEqual({
@@ -75,6 +92,7 @@ describe("demo advocate configuration", () => {
         "interruption",
         "agent_response",
         "agent_response_complete",
+        "agent_tool_response",
       ],
     });
     expect(patch.conversation_config.turn).toEqual({
@@ -88,6 +106,48 @@ describe("demo advocate configuration", () => {
     expect(current.conversation_config.agent.prompt.tool_ids).toEqual([
       "old-tool",
     ]);
+  });
+
+  it("adds the hold, itemized and records fields next to existing data fields", () => {
+    const withFields = {
+      ...current,
+      platform_settings: {
+        data_collection: { reference_number: { type: "string" } },
+      },
+    };
+    const patch = buildDemoAdvocatePatch(withFields, ids);
+    expect(Object.keys(patch.platform_settings.data_collection)).toEqual([
+      "reference_number",
+      "hold_agreed",
+      "itemized_promised",
+      "records_process",
+    ]);
+    const updated = {
+      ...withFields,
+      ...patch,
+      conversation_config: {
+        ...current.conversation_config,
+        ...patch.conversation_config,
+        agent: {
+          ...current.conversation_config.agent,
+          ...patch.conversation_config.agent,
+          prompt: {
+            ...current.conversation_config.agent.prompt,
+            ...patch.conversation_config.agent.prompt,
+          },
+        },
+      },
+    };
+    expect(() => verifyDemoAdvocate(withFields, updated, ids)).not.toThrow();
+    const { reference_number: _, ...dropped } =
+      patch.platform_settings.data_collection;
+    expect(() =>
+      verifyDemoAdvocate(
+        withFields,
+        { ...updated, platform_settings: { data_collection: dropped } },
+        ids,
+      ),
+    ).toThrow("Existing data fields were removed");
   });
 
   it("enables completion once without dropping existing events or conversation settings", () => {
@@ -105,6 +165,7 @@ describe("demo advocate configuration", () => {
         "interruption",
         "agent_response",
         "agent_response_complete",
+        "agent_tool_response",
       ],
     });
   });

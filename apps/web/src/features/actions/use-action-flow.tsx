@@ -36,9 +36,8 @@ const FLOW = {
     dataShared: [
       "Hospital name",
       "Account number, last 4 digits only",
-      "Up to 3 items and their amounts",
-      "Related service dates, billing codes, units, and billed charges",
-      "Evidence, published prices, and their sources",
+      "Up to 3 bill lines: their names and service dates",
+      "Only if asked: billing codes, units, amounts, evidence, and sources",
     ],
     recipient: (to: string) =>
       `Billing office test phone, ending ${to.slice(-4)}`,
@@ -81,7 +80,6 @@ export function useActionFlow(caseId: string, kind: Kind) {
   async function draftAction(patientConnection?: PatientConnection) {
     setBusy(true);
     setConsent(false);
-    setPaidPlanAgreement(false);
     const toastId = toast.loading(flow.drafting);
     try {
       const res = await client.action.draftLetter({
@@ -276,8 +274,7 @@ export function useActionFlow(caseId: string, kind: Kind) {
             Call my phone
           </Button>
           <p className="text-muted-foreground text-sm">
-            Receive a call on the phone number you entered, or the demo patient
-            phone if you skipped it.
+            Receive a call on your configured patient test phone.
           </p>
         </ResponsiveOverlay>
         {browser.panel}
