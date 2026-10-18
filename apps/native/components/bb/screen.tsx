@@ -15,10 +15,14 @@ type Props = {
   onNav?: () => void;
   // Small label on the right of the top bar, e.g. "Sample bill".
   aside?: string;
+  // An extra control on the right of the top bar, e.g. Share.
+  action?: ReactNode;
   // Pinned under the content: the screen's one primary action.
   footer?: ReactNode;
   scroll?: boolean;
   tone?: "white" | "wash" | "ink";
+  // False under a navigator header (the tabs), which already pads the top.
+  insetTop?: boolean;
   className?: string;
 };
 
@@ -29,18 +33,23 @@ export function Screen({
   nav = "back",
   onNav,
   aside,
+  action,
   footer,
   scroll = true,
   tone = "white",
+  insetTop = true,
   className,
 }: Props) {
   const insets = useSafeAreaInsets();
   const dark = tone === "ink";
   const body = cn("px-5", className);
   return (
-    <View className={cn("flex-1", BG[tone])} style={{ paddingTop: insets.top }}>
+    <View
+      className={cn("flex-1", BG[tone])}
+      style={{ paddingTop: insetTop ? insets.top : 0 }}
+    >
       <StatusBar style={dark ? "light" : "dark"} />
-      {nav || aside ? (
+      {nav || aside || action ? (
         <View className="h-14 flex-row items-center justify-between px-5">
           {nav ? (
             <Pressable
@@ -57,16 +66,19 @@ export function Screen({
           ) : (
             <View />
           )}
-          {aside ? (
-            <T
-              className={cn(
-                "text-[13px]",
-                dark ? "text-ink-muted" : "text-muted",
-              )}
-            >
-              {aside}
-            </T>
-          ) : null}
+          <View className="flex-row items-center gap-2">
+            {aside ? (
+              <T
+                className={cn(
+                  "text-[13px]",
+                  dark ? "text-ink-muted" : "text-muted",
+                )}
+              >
+                {aside}
+              </T>
+            ) : null}
+            {action}
+          </View>
         </View>
       ) : null}
       {scroll ? (
