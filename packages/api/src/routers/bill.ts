@@ -1,9 +1,9 @@
 import { type Line, ParseResult } from "@betterbill/core";
 import { ORPCError } from "@orpc/server";
-import { fixtureParseResult } from "../fixtures";
 import { publicProcedure } from "../index";
 import { ConfirmLinesInput, ParsePhotoInput, ParseTextInput } from "../inputs";
 import { ConfirmLinesOutput } from "../outputs";
+import { PhotoReadError, readPhoto } from "../reader/parsePhoto";
 import { readText } from "../reader/parseText";
 import { saveParsedBill } from "../repo/bills";
 import {
@@ -39,10 +39,29 @@ export const billRouter = {
       return result;
     }),
   // STUB: replaced in B-13 (step-5-preview)
+  // B-13: StepFun step-5-preview reads the photo; core converts and checks.
   parsePhoto: publicProcedure
     .input(ParsePhotoInput)
     .output(ParseResult)
-    .handler(({ input }) => fixtureParseResult(input.caseId)),
+    .handler(async ({ input, context }) => {
+      let result: ParseResult;
+      try {
+        result = await readPhoto(input.caseId, input.pages);
+      } catch (e) {
+        if (e instanceof PhotoReadError) {
+          throw new ORPCError("UNPROCESSABLE_CONTENT", { message: e.message });
+        }
+        throw e;
+      }
+      const n = result.bill.lines.length;
+      await saveParsedBill(
+        context.db,
+        input.caseId,
+        result.bill,
+        `Read ${n} line${n === 1 ? "" : "s"} from ${input.pages.length} photo${input.pages.length === 1 ? "" : "s"} (step-5-preview, ${result.reader.latencyMs} ms)`,
+      );
+      return result;
+    }),
   // Saves the lines the user confirmed. Lines that differ from what was
   // read are marked userEdited. Ids are kept unless they belong elsewhere.
   confirmLines: publicProcedure
