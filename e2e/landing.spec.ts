@@ -72,3 +72,22 @@ test("plans landing: H1, honest results card, labelled form, axe", async ({
     fullPage: true,
   });
 });
+
+test("head has icons, manifest, and og images on both landings", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator('link[rel="manifest"]')).toHaveAttribute(
+    "href",
+    "/manifest.webmanifest",
+  );
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+    "content",
+    "/og/consumer.png",
+  );
+  await page.goto("/for-plans");
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+    "content",
+    "/og/plans.png",
+  );
+});
