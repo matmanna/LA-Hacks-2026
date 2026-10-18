@@ -165,8 +165,8 @@ export default function PriceHospital() {
           </Covers>
           {service ? <Covers>{service.notCovered}</Covers> : null}
           <Covers>
-            With insurance, your plan's rate applies instead. Ask for it when
-            you book.
+            With insurance, your plan's rate applies. Ask your insurer what
+            you'd owe. Paying cash may not count toward your deductible.
           </Covers>
           {row.grossChargeCents !== null ? (
             <View className="flex-row items-center justify-between border-[#EEF0F3] border-t pt-2.5">

@@ -332,6 +332,13 @@ function SheetList({
   const shown = expanded ? rows : rows.slice(0, 3);
   return (
     <View>
+      <View className="mt-1 flex-row gap-2 rounded-xl bg-wash px-3 py-2.5">
+        <Icon name="info" size={16} color="#5B6B7C" />
+        <T className="flex-1 text-[13px] text-muted leading-[18px]">
+          Cash price, if you pay without insurance. Have insurance? Ask your
+          plan what you'd owe. It can be more or less than this.
+        </T>
+      </View>
       <View className="mt-1">
         {shown.map((r, i) => (
           <PriceRow
