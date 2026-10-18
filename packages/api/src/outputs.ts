@@ -82,3 +82,31 @@ export const CheckoutResult = z.object({
   url: z.string(),
   checkoutId: z.string(),
 });
+
+// hospital.lookup / hospital.lookupStatus: the background Browser Use lookup
+// of a hospital's assistance policy. liveViewUrl goes only to the app.
+export const LookupState = z.enum([
+  "none",
+  "on_file",
+  "unavailable",
+  "running",
+  "done",
+  "failed",
+]);
+export const LookupStatus = z.object({
+  state: LookupState,
+  hospitalName: z.string().nullable(),
+  startedAt: z.string().nullable(),
+  steps: z.array(z.object({ at: z.string(), text: z.string() })),
+  liveViewUrl: z.string().nullable(),
+  policy: z
+    .object({
+      policyTitle: z.string(),
+      policyUrl: z.string(),
+      freeCareMaxFplPct: z.number().nullable(),
+      discountMaxFplPct: z.number().nullable(),
+      billingPhone: z.string().nullable(),
+    })
+    .nullable(),
+});
+export type LookupStatus = z.infer<typeof LookupStatus>;

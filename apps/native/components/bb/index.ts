@@ -8,6 +8,7 @@ export { Button } from "./button";
 export { Choice } from "./choice";
 export { EditLineSheet } from "./edit-line-sheet";
 export { Icon, type IconName } from "./icon";
+export { LookupCard } from "./lookup-card";
 export { Money } from "./money";
 export { Progress } from "./progress";
 export { Row } from "./row";

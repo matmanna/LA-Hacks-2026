@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  lookupSteps,
   type PolicyLookupOutput,
   policyFromLookup,
   policyLookupTask,
@@ -86,6 +87,66 @@ describe("policyFromLookup", () => {
       }),
     ).toMatch(
       /^Find the financial assistance \(charity care\) policy for Valley General in Los Angeles, CA\..*verbatim/,
+    );
+  });
+});
+
+describe("lookupSteps", () => {
+  // Shapes copied from a real run's events; text and pages are made up.
+  const ev = (id: number, type: string, data: Record<string, unknown>) => ({
+    id,
+    ts: `2026-10-18T10:00:${String(id).padStart(2, "0")}Z`,
+    type,
+    data,
+  });
+  const events = [
+    ev(1, "run.created", { model: "m" }),
+    ev(2, "core.event", {
+      type: "text",
+      part: "{'id': 'p1', 'text': 'I’ll find the policy on the hospital’s site. Then I’ll check the PDF.', 'type': 'text'}",
+    }),
+    ev(3, "search.performed", { num_results: 8 }),
+    ev(4, "core.event", {
+      type: "tool_use",
+      part: "{'tool': 'browser_execute', 'state': {'input': {'code': \"await session.Page.navigate({url:\\\\'https://www.example.test/billing/help\\\\'});\"}}}",
+    }),
+    ev(5, "core.event", {
+      type: "tool_use",
+      part: "{'tool': 'browser_execute', 'state': {'input': {'code': \"await session.Page.navigate({url:'https://www.example.test/docs/fap.pdf?f=1'});\"}}}",
+    }),
+    ev(6, "search.performed", { num_results: 8 }),
+    ev(7, "core.event", { type: "tool_use", part: "{'tool': 'bash'}" }),
+  ];
+
+  it("turns events into plain steps, once each", () => {
+    expect(lookupSteps(events).map((s) => s.text)).toEqual([
+      "I’ll find the policy on the hospital’s site.",
+      "Searched the web for the policy",
+      "Opened example.test",
+      "Opened the policy PDF",
+    ]);
+  });
+
+  it("keeps only the latest steps", () => {
+    expect(lookupSteps(events, 2).map((s) => s.id)).toEqual([4, 5]);
+  });
+});
+
+describe("lookupSteps narration", () => {
+  it("drops code ticks from the agent's words", () => {
+    const steps = lookupSteps([
+      {
+        id: 1,
+        ts: "2026-10-18T10:00:00Z",
+        type: "core.event",
+        data: {
+          type: "text",
+          part: "{'text': 'The page is `Help Paying Your Bill`; it links to the PDF.'}",
+        },
+      },
+    ]);
+    expect(steps[0]?.text).toBe(
+      "The page is Help Paying Your Bill; it links to the PDF.",
     );
   });
 });

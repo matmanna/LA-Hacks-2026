@@ -118,3 +118,69 @@ export function policyFromLookup(
     dropped,
   };
 }
+
+// One Browser Use run event (GET /api/v4/runs/{id}/events).
+export type LookupEvent = {
+  id: number;
+  ts: string;
+  type: string;
+  data: Record<string, unknown>;
+};
+
+export type LookupStep = { id: number; at: string; text: string };
+
+const firstSentence = (s: string, max = 140) => {
+  const one = s.split(/(?<=[.!?])\s+/)[0]?.trim() ?? "";
+  return one.length > max ? `${one.slice(0, max - 1).trimEnd()}…` : one;
+};
+
+// The agent's own words: the text of a "text" part, quoted either way.
+function narration(part: string): string | null {
+  const m =
+    part.match(/'text': '((?:[^'\\]|\\.)*)'/) ??
+    part.match(/'text': "((?:[^"\\]|\\.)*)"/) ??
+    part.match(/"text":\s*"((?:[^"\\]|\\.)*)"/);
+  const text = m?.[1]?.replace(/\\(.)/g, "$1").replace(/`/g, "").trim();
+  return text ? firstSentence(text) : null;
+}
+
+// A page the agent's browser navigated to.
+function opened(part: string): string | null {
+  const m = part.match(/navigate\(\{\s*url:\s*\\*['"](https?:\/\/[^'"\\\s]+)/);
+  if (!m?.[1]) return null;
+  try {
+    const u = new URL(m[1]);
+    // Warm-up and local pages aren't part of the search.
+    if (/^(www\.)?example\.(com|org|net)$|^localhost$|^127\./.test(u.hostname))
+      return null;
+    if (/\.pdf$/i.test(u.pathname)) return "Opened the policy PDF";
+    return `Opened ${u.hostname.replace(/^www\./, "")}`;
+  } catch {
+    return null;
+  }
+}
+
+// Plain progress steps from a run's events: what the agent said it was doing,
+// the pages it opened and its web searches. Repeats are dropped; the latest
+// steps are kept.
+export function lookupSteps(events: LookupEvent[], keep = 6): LookupStep[] {
+  const steps: LookupStep[] = [];
+  const seen = new Set<string>();
+  for (const e of events) {
+    let text: string | null = null;
+    if (e.type === "search.performed") text = "Searched the web for the policy";
+    else if (e.type === "core.event") {
+      const part =
+        typeof e.data.part === "string"
+          ? e.data.part
+          : JSON.stringify(e.data.part ?? "");
+      if (e.data.type === "text") text = narration(part);
+      else if (e.data.type === "tool_use" && part.includes("browser_execute"))
+        text = opened(part);
+    }
+    if (!text || seen.has(text)) continue;
+    seen.add(text);
+    steps.push({ id: e.id, at: e.ts, text });
+  }
+  return steps.slice(-keep);
+}

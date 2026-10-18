@@ -5,6 +5,7 @@ import { publicProcedure } from "../index";
 import { AssistanceCheckInput } from "../inputs";
 import { loadBill } from "../repo/cases";
 import { saveAssistance, screenBill } from "../services/assistance";
+import { caseLookupPolicy } from "../services/lookup";
 
 export const assistanceRouter = {
   // Runs every check for the case's bill. With an income range it is the
@@ -18,7 +19,11 @@ export const assistanceRouter = {
         throw new ORPCError("NOT_FOUND", { message: "Add a bill first." });
       }
       const { caseId: _caseId, ...answers } = input;
-      const result = screenBill(loaded.bill, answers);
+      const result = screenBill(
+        loaded.bill,
+        answers,
+        await caseLookupPolicy(context.db, input.caseId),
+      );
       if (input.annualIncomeCents !== undefined && input.householdSize) {
         await saveAssistance(context.db, input.caseId, result);
       }

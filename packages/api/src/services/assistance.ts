@@ -6,6 +6,7 @@ import {
   type AssistanceAnswers,
   type Bill,
   findPolicy,
+  type HospitalPolicy,
   screenAssistance,
 } from "@betterbill/core";
 import type { Database } from "@betterbill/db";
@@ -14,16 +15,23 @@ import { and, desc, eq } from "drizzle-orm";
 
 import { FPL, POLICIES, RULES } from "../data";
 import { addEvent } from "../repo/cases";
+import { caseLookupPolicy } from "./lookup";
 
 type Db = Database | Parameters<Parameters<Database["transaction"]>[0]>[0];
 
 export const ASSISTANCE_EVENT = "assistance.checked";
 
-export function screenBill(bill: Bill, answers?: AssistanceAnswers) {
+// lookedUp: a policy the case's Browser Use lookup found, used when we have
+// none on file for this hospital.
+export function screenBill(
+  bill: Bill,
+  answers?: AssistanceAnswers,
+  lookedUp?: HospitalPolicy | null,
+) {
   return screenAssistance({
     state: bill.hospital.state,
     hospitalName: bill.hospital.name,
-    policy: findPolicy(POLICIES, bill.hospital.name),
+    policy: findPolicy(POLICIES, bill.hospital.name) ?? lookedUp ?? null,
     rules: RULES,
     fpl: FPL,
     totals: bill.totals,
@@ -77,5 +85,5 @@ export async function loadAssistance(
       // A bad record falls back to the unanswered screen.
     }
   }
-  return screenBill(bill);
+  return screenBill(bill, undefined, await caseLookupPolicy(db, caseId));
 }

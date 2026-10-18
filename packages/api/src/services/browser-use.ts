@@ -99,6 +99,21 @@ export function getRunEvents(
   );
 }
 
+// The live view of a running browser session (null once it stops). Anyone
+// with this URL can control that browser, so it is never stored or shared.
+export async function getLiveUrl(
+  key: string,
+  browserSessionId: string,
+  f: Fetch = fetch,
+): Promise<string | null> {
+  const b = await call<{ liveUrl: string | null }>(
+    f,
+    key,
+    `/browsers/${encodeURIComponent(browserSessionId)}`,
+  );
+  return b.liveUrl ?? null;
+}
+
 export const isDone = (s: RunStatus) =>
   s === "completed" || s === "failed" || s === "cancelled";
 
