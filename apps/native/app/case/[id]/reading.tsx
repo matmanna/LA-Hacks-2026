@@ -66,9 +66,12 @@ export default function Reading() {
   }, [ready, step]);
 
   const done = ready && shown > Math.min(SHOWN, lines.length);
+  const summary = detail.data?.bill?.kind === "summary";
   useEffect(() => {
-    if (done) next(id);
-  }, [done, id]);
+    if (summary)
+      router.replace({ pathname: "/case/[id]/summary", params: { id } });
+    else if (done) next(id);
+  }, [summary, done, id]);
 
   const scan = useSharedValue(0);
   useEffect(() => {

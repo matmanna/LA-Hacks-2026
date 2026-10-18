@@ -52,7 +52,7 @@ export default function Results() {
             <Button
               label="Handle it for me"
               onPress={() =>
-                router.push({ pathname: "/case/[id]", params: { id } })
+                router.push({ pathname: "/case/[id]/plan", params: { id } })
               }
             />
           ) : null}
