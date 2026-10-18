@@ -14,24 +14,68 @@ import json
 import sys
 from pathlib import Path
 
-# Hospital item chosen per code: the hospital's own chargemaster line with its revenue code.
+# Hospital item chosen per code: the hospital's own chargemaster line (with its revenue code when the file has one).
 TARGETS = {
-    "72148": {
-        "description": "HB MRI L-SPINE WO CONTRAST",
-        "rc": "612",
-        "why": "Item described 'HB MRI L-SPINE WO CONTRAST' (RC 612), the hospital's own chargemaster line for this code. "
-        "Outpatient is the setting the demo bill uses (SB-01, SB-06). Other items with the same code (category rows "
-        "such as 'MRI', 'MRI/MRA', 'PET Scan') carry the same gross and cash amounts and are listed in allMatches.",
+    "cedars-sinai": {
+        "72148": {
+            "description": "HB MRI L-SPINE WO CONTRAST",
+            "rc": "612",
+            "why": "Item described 'HB MRI L-SPINE WO CONTRAST' (RC 612), the hospital's own chargemaster line for this code. "
+            "Outpatient is the setting the demo bill uses (SB-01, SB-06). Other items with the same code (category rows "
+            "such as 'MRI', 'MRI/MRA', 'PET Scan') carry the same gross and cash amounts and are listed in allMatches.",
+        },
+        "85025": {
+            "description": "HB CBC WITH AUTO DIFF",
+            "rc": "305",
+            "why": "Item described 'HB CBC WITH AUTO DIFF' (RC 305), the hospital's own chargemaster line for this code. "
+            "Gross and cash amounts are the same on every matching row; see allMatches.",
+        },
     },
-    "85025": {
-        "description": "HB CBC WITH AUTO DIFF",
-        "rc": "305",
-        "why": "Item described 'HB CBC WITH AUTO DIFF' (RC 305), the hospital's own chargemaster line for this code. "
-        "Gross and cash amounts are the same on every matching row; see allMatches.",
+    "ucla-ronald-reagan": {
+        "99284": {
+            "description": "HB ER DEPT VISIT ACUITY 4",
+            "codeSource": "parsed_from_cdm",
+            "why": "Ronald Reagan UCLA's own chargemaster line 'HB ER DEPT VISIT ACUITY 4'. The file does not tag this line with a CPT code; the code is the third segment of its CDM item number (e.g. RRUCLA-...-99284-...), which matches the description. A separate CPT-tagged item for this code lists payer rates only, with no gross or cash amount.",
+        },
+        "72148": {
+            "description": "HB MRI L-SPINE WO CONTRAST",
+            "codeSource": "parsed_from_cdm",
+            "why": "Ronald Reagan UCLA's own chargemaster line 'HB MRI L-SPINE WO CONTRAST'. The file does not tag this line with a CPT code; the code is the third segment of its CDM item number (e.g. RRUCLA-...-72148-...), which matches the description. A separate CPT-tagged item for this code lists payer rates only, with no gross or cash amount.",
+        },
+        "72100": {
+            "description": "HB  L-SPINE 2-3 VIEWS",
+            "codeSource": "parsed_from_cdm",
+            "why": "Ronald Reagan UCLA's own chargemaster line 'HB  L-SPINE 2-3 VIEWS'. The file does not tag this line with a CPT code; the code is the third segment of its CDM item number (e.g. RRUCLA-...-72100-...), which matches the description. A separate CPT-tagged item for this code lists payer rates only, with no gross or cash amount.",
+        },
+        "85025": {
+            "description": "HB CBC & PLATELET CT & DIFF",
+            "codeSource": "parsed_from_cdm",
+            "why": "Ronald Reagan UCLA's own chargemaster line 'HB CBC & PLATELET CT & DIFF'. The file does not tag this line with a CPT code; the code is the third segment of its CDM item number (e.g. RRUCLA-...-85025-...), which matches the description. A separate CPT-tagged item for this code lists payer rates only, with no gross or cash amount.",
+        },
+        "80053": {
+            "description": "HB METABOLIC PANEL COMPREHENSV",
+            "codeSource": "parsed_from_cdm",
+            "why": "Ronald Reagan UCLA's own chargemaster line 'HB METABOLIC PANEL COMPREHENSV'. The file does not tag this line with a CPT code; the code is the third segment of its CDM item number (e.g. RRUCLA-...-80053-...), which matches the description. A separate CPT-tagged item for this code lists payer rates only, with no gross or cash amount.",
+        },
+        "36415": {
+            "description": "HB  VENIPUNCTURE BLOOD DRAW",
+            "codeSource": "parsed_from_cdm",
+            "why": "Ronald Reagan UCLA's own chargemaster line 'HB  VENIPUNCTURE BLOOD DRAW'. The file does not tag this line with a CPT code; the code is the third segment of its CDM item number (e.g. RRUCLA-...-36415-...), which matches the description. A separate CPT-tagged item for this code lists payer rates only, with no gross or cash amount.",
+        },
+        "96374": {
+            "description": "HB NONCHEMO IV PUSH SINGLE INITIAL",
+            "codeSource": "parsed_from_cdm",
+            "why": "Ronald Reagan UCLA's own chargemaster line 'HB NONCHEMO IV PUSH SINGLE INITIAL'. The file does not tag this line with a CPT code; the code is the third segment of its CDM item number (e.g. RRUCLA-...-96374-...), which matches the description. A separate CPT-tagged item for this code lists payer rates only, with no gross or cash amount.",
+        },
+        "81003": {
+            "description": "HB URINALYSIS DIPSTICK AUTO",
+            "codeSource": "parsed_from_cdm",
+            "why": "Ronald Reagan UCLA's own chargemaster line 'HB URINALYSIS DIPSTICK AUTO'. The file does not tag this line with a CPT code; the code is the third segment of its CDM item number (e.g. RRUCLA-...-81003-...), which matches the description. A separate CPT-tagged item for this code lists payer rates only, with no gross or cash amount.",
+        },
     },
 }
 REDACTED = "[CPT descriptor text omitted]"
-ROW_KEYS = ("code", "codeType", "hospitalDescription", "otherCodes", "setting", "grossChargeCents",
+ROW_KEYS = ("code", "codeType", "codeSource", "hospitalDescription", "otherCodes", "setting", "grossChargeCents",
             "discountedCashCents", "minNegotiatedCents", "maxNegotiatedCents")
 
 
@@ -60,11 +104,12 @@ def main() -> None:
     )
 
     prices, selection = [], {}
-    for code, t in TARGETS.items():
+    for code, t in TARGETS[cap["hospitalKey"]].items():
         picked = [
             r for r in all_matches
             if r["code"] == code and r["hospitalDescription"] == t["description"]
-            and {"code": t["rc"], "type": "RC"} in r["otherCodes"]
+            and ("rc" not in t or {"code": t["rc"], "type": "RC"} in r["otherCodes"])
+            and (r.get("codeSource") or "tagged") == t.get("codeSource", "tagged")
         ]
         if not picked:
             sys.exit(f"no row for {code} {t['description']}")
@@ -79,6 +124,7 @@ def main() -> None:
             prices.append({
                 "code": code,
                 "codeType": same[0]["codeType"],
+                "codeSource": same[0].get("codeSource") or "tagged",
                 "hospitalDescription": t["description"],
                 "otherCodes": same[0]["otherCodes"],
                 "setting": setting,

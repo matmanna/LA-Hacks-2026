@@ -1,0 +1,128 @@
+{
+  "fixtureVersion": 1,
+  "id": "BOTM-03",
+  "title": "Critical care codes for a short ER stay",
+  "synthetic": false,
+  "scenario": "botm",
+  "source": {
+    "publisher": "KFF Health News",
+    "series": "Bill of the Month",
+    "url": "https://kffhealthnews.org/health-industry/er-monitoring-anaphylactic-shock-allergic-reaction-bill-of-the-month-april-2026/",
+    "published": "2026-04-28",
+    "accessedAt": "2026-10-17T23:19:00Z"
+  },
+  "bill": {
+    "id": "bill_botm03",
+    "hospital": {
+      "name": "Atrium Health Lake Norman",
+      "city": null,
+      "state": "NC"
+    },
+    "statementDate": null,
+    "accountRefMasked": null,
+    "kind": "itemized",
+    "sourceKind": "text",
+    "lines": [
+      {
+        "id": "botm03-l01",
+        "serviceDate": null,
+        "description": "CRITICAL CARE, FIRST 30-74 MIN",
+        "code": "99291",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 561785,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "botm03-l02",
+        "serviceDate": null,
+        "description": "CRITICAL CARE, EACH ADDL 30 MIN",
+        "code": "99292",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 82775,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "botm03-l03",
+        "serviceDate": null,
+        "description": "FAMOTIDINE",
+        "code": null,
+        "codeType": null,
+        "units": 1,
+        "chargeCents": 2060,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "botm03-l04",
+        "serviceDate": null,
+        "description": "OTHER CHARGES NOT ITEMIZED IN ARTICLE",
+        "code": null,
+        "codeType": null,
+        "units": 1,
+        "chargeCents": 28030,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 674650,
+      "adjustmentsCents": 349626,
+      "paidCents": 0,
+      "dueCents": 325024
+    }
+  },
+  "eob": {
+    "payer": "Blue Cross Blue Shield of North Carolina",
+    "claimRefMasked": null,
+    "patientResponsibilityCents": 325024
+  },
+  "lineSources": {
+    "botm03-l01": "reported",
+    "botm03-l02": "reported",
+    "botm03-l03": "reported",
+    "botm03-l04": "reconstructed"
+  },
+  "reporterFindings": [
+    {
+      "id": "RF1",
+      "summary": "Critical care codes were used although the patient had improved and saw the doctor briefly.",
+      "lever": null,
+      "inScope": false,
+      "lineIds": ["botm03-l01", "botm03-l02"],
+      "outcome": "Hospital audit team upheld the charges."
+    },
+    {
+      "id": "RF2",
+      "summary": "Experts said insurers should push back on critical care charges.",
+      "lever": null,
+      "inScope": false,
+      "lineIds": [],
+      "outcome": "Insurer said the claim was processed under plan terms."
+    }
+  ],
+  "expected": {
+    "clean": false,
+    "flags": [],
+    "notes": "Reported: total $6,746.50; 99291 $5,617.85; 99292 $827.75 (units not stated, default 1); famotidine $20.60; patient owes $150 copay + $3,100.24. Line l04 ($280.30) is reconstructed as the total minus the reported lines. Adjustments and insurer payment are not stated separately, so their combined amount is shown as adjustments. No in-scope finding: BetterBill has no coding-level lever."
+  }
+}
