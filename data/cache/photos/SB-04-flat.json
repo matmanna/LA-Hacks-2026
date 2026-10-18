@@ -26,12 +26,7 @@
         "chargeCents": 485000,
         "source": {
           "page": 1,
-          "bbox": [
-            0.185,
-            0.3,
-            0.805,
-            0.318
-          ]
+          "bbox": [0.185, 0.3, 0.805, 0.318]
         },
         "confidence": 0.99,
         "userEdited": false
@@ -46,12 +41,7 @@
         "chargeCents": 312000,
         "source": {
           "page": 1,
-          "bbox": [
-            0.185,
-            0.33,
-            0.805,
-            0.348
-          ]
+          "bbox": [0.185, 0.33, 0.805, 0.348]
         },
         "confidence": 0.99,
         "userEdited": false
@@ -66,12 +56,7 @@
         "chargeCents": 52000,
         "source": {
           "page": 1,
-          "bbox": [
-            0.185,
-            0.36,
-            0.805,
-            0.378
-          ]
+          "bbox": [0.185, 0.36, 0.805, 0.378]
         },
         "confidence": 0.99,
         "userEdited": false
@@ -86,12 +71,7 @@
         "chargeCents": 3800,
         "source": {
           "page": 1,
-          "bbox": [
-            0.185,
-            0.39,
-            0.805,
-            0.408
-          ]
+          "bbox": [0.185, 0.39, 0.805, 0.408]
         },
         "confidence": 0.99,
         "userEdited": false
@@ -106,12 +86,7 @@
         "chargeCents": 21200,
         "source": {
           "page": 1,
-          "bbox": [
-            0.185,
-            0.42,
-            0.805,
-            0.438
-          ]
+          "bbox": [0.185, 0.42, 0.805, 0.438]
         },
         "confidence": 0.99,
         "userEdited": false
