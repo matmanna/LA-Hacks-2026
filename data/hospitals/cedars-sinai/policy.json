@@ -61,7 +61,7 @@
       "foundIn": "evidence/full-fap-english.pdf"
     },
     {
-      "text": "Patients whose income ranges between 401%–600% of the FPL also qualify for a Discount Payment, using a sliding scale based on family size, income level and insurance status.",
+      "text": "Patients whose income ranges between 401%\u2013600% of the FPL also qualify for a Discount Payment, using a sliding scale based on family size, income level and insurance status.",
       "purpose": "discount_threshold",
       "foundIn": "evidence/full-fap-english.pdf"
     },
@@ -86,12 +86,12 @@
       "foundIn": "evidence/full-fap-english.pdf"
     },
     {
-      "text": "• Uninsured discount at 90% - for patients with no insurance plan",
+      "text": "\u2022 Uninsured discount at 90% - for patients with no insurance plan",
       "purpose": "eligibility",
       "foundIn": "evidence/full-fap-english.pdf"
     },
     {
-      "text": "• Underinsured discount at 80% - for patients who have health insurance but are unable to meet their share of costs due to high premiums or out-of-pocket costs.",
+      "text": "\u2022 Underinsured discount at 80% - for patients who have health insurance but are unable to meet their share of costs due to high premiums or out-of-pocket costs.",
       "purpose": "eligibility",
       "foundIn": "evidence/full-fap-english.pdf"
     },
@@ -111,12 +111,12 @@
       "foundIn": "evidence/full-fap-english.pdf"
     },
     {
-      "text": "Charity Care, without charge is available to patients receiving medically necessary services and whose income is at or below 400% of the Federal Poverty Level (“FPL”).",
+      "text": "Charity Care, without charge is available to patients receiving medically necessary services and whose income is at or below 400% of the Federal Poverty Level (\u201cFPL\u201d).",
       "purpose": "free_care_threshold",
       "foundIn": "evidence/assistance_page.txt"
     },
     {
-      "text": "Patients whose income ranges between 401%‑600% of the FPL also qualify for a Discount Payment.",
+      "text": "Patients whose income ranges between 401%\u2011600% of the FPL also qualify for a Discount Payment.",
       "purpose": "discount_threshold",
       "foundIn": "evidence/assistance_page.txt"
     },
@@ -143,5 +143,9 @@
     "discountMaxFplPct": 600,
     "discountQuote": "Patients whose income ranges between 401% to 600% of FPL qualify for a Discount Payment."
   },
-  "notes": "Charity care is for medically necessary services. Discount size follows the policy's sliding-scale table by FPL % and insurance status (see the quoted table). A discounted patient is not charged more than expected reimbursement under Medicare or Medi-Cal, whichever is greater. Eligibility is decided by the hospital's application; BetterBill only estimates. Quotes not found verbatim were dropped: 0."
+  "notes": "Charity care is for medically necessary services. Discount size follows the policy's sliding-scale table by FPL % and insurance status (see the quoted table). A discounted patient is not charged more than expected reimbursement under Medicare or Medi-Cal, whichever is greater. Eligibility is decided by the hospital's application; BetterBill only estimates. Quotes not found verbatim were dropped: 0.",
+  "references501r": {
+    "quote": "U.S. Internal Revenue Code Section 501(r)(3).",
+    "foundIn": "evidence/full-fap-english.pdf"
+  }
 }
