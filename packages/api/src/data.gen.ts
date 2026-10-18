@@ -1347,6 +1347,4463 @@ export const DATA = {
       "eob": null
     }
   ],
+  "photoCache": [
+    {
+      "sha256": "3322c6a84bb22f9e1f4871b7f137e458915c07202cd618f86275983bf0c852c9",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:47:51.062Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Cedars-Sinai Medical Center",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-10-01",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-09-14",
+            "description": "ED VISIT LEVEL 4",
+            "code": "99284",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 295000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-09-14",
+            "description": "MRI LUMBAR SPINE W/O CONTRAST",
+            "code": "72148",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 690000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-09-14",
+            "description": "XR LUMBAR SPINE 2-3 VIEWS",
+            "code": "72100",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 64000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-09-14",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-09-14",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-09-14",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l07",
+            "serviceDate": "2026-09-14",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 15200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l08",
+            "serviceDate": "2026-09-14",
+            "description": "IV PUSH SINGLE DRUG",
+            "code": "96374",
+            "codeType": "CPT",
+            "units": 4,
+            "chargeCents": 15200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l09",
+            "serviceDate": "2026-09-14",
+            "description": "KETOROLAC INJ 15 MG",
+            "code": "J1885",
+            "codeType": "HCPCS",
+            "units": 1,
+            "chargeCents": 48600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l10",
+            "serviceDate": "2026-09-14",
+            "description": "NORMAL SALINE 1000 CC",
+            "code": "J7030",
+            "codeType": "HCPCS",
+            "units": 1,
+            "chargeCents": 9600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l11",
+            "serviceDate": "2026-09-14",
+            "description": "URINALYSIS AUTO W/O SCOPE",
+            "code": "81003",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 18600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 1200000,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 1200000
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 1194200,
+        "statedChargesCents": 1200000,
+        "diffCents": 5800,
+        "ok": false
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "52ba590e41278e9a275c9614e7b43daeb0fb7e34250dabaf8f18101de60b54e6",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:47:11.784Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Cedars-Sinai Medical Center",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-10-01",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-09-14",
+            "description": "ED VISIT LEVEL 4",
+            "code": "99284",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 295000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-09-14",
+            "description": "MRI LUMBAR SPINE W/O CONTRAST",
+            "code": "72148",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 690000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-09-14",
+            "description": "XR LUMBAR SPINE 2-3 VIEWS",
+            "code": "72100",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 64000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-09-14",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-09-14",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-09-14",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l07",
+            "serviceDate": "2026-09-14",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 4,
+            "chargeCents": 15200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l08",
+            "serviceDate": "2026-09-14",
+            "description": "IV PUSH SINGLE DRUG",
+            "code": "96374",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 48600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l09",
+            "serviceDate": "2026-09-14",
+            "description": "KETOROLAC INJ 15 MG",
+            "code": "J1885",
+            "codeType": "HCPCS",
+            "units": 1,
+            "chargeCents": 9600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l10",
+            "serviceDate": "2026-09-14",
+            "description": "NORMAL SALINE 1000 CC",
+            "code": "J7030",
+            "codeType": "HCPCS",
+            "units": 1,
+            "chargeCents": 18600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l11",
+            "serviceDate": "2026-09-14",
+            "description": "URINALYSIS AUTO W/O SCOPE",
+            "code": "81003",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 1200000,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 1200000
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 1200000,
+        "statedChargesCents": 1200000,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "c6dc3ab722ea2704ae2d449b80c16bf092340676a40ff5d66eb22ef2a1503d13",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:47:22.768Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Cedars-Sinai Medical Center",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-10-01",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-09-14",
+            "description": "ED VISIT LEVEL 4",
+            "code": "99284",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 295000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-09-14",
+            "description": "MRI LUMBAR SPINE W/O CONTRAST",
+            "code": "72148",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 690000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-09-14",
+            "description": "XR LUMBAR SPINE 2-3 VIEWS",
+            "code": "72100",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 64000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-09-14",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-09-14",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-09-14",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l07",
+            "serviceDate": "2026-09-14",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 4,
+            "chargeCents": 15200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l08",
+            "serviceDate": "2026-09-14",
+            "description": "IV PUSH SINGLE DRUG",
+            "code": "96374",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 48600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l09",
+            "serviceDate": "2026-09-14",
+            "description": "KETOROLAC INJ 15 MG",
+            "code": "J1885",
+            "codeType": "HCPCS",
+            "units": 1,
+            "chargeCents": 9600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l10",
+            "serviceDate": "2026-09-14",
+            "description": "NORMAL SALINE 1000 CC",
+            "code": "J7030",
+            "codeType": "HCPCS",
+            "units": 1,
+            "chargeCents": 18600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l11",
+            "serviceDate": "2026-09-14",
+            "description": "URINALYSIS AUTO W/O SCOPE",
+            "code": "81003",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 1200000,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 1200000
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 1200000,
+        "statedChargesCents": 1200000,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "6482e91d7f11d01df0f6422ef09dd0280abd09a214abc425fc39528bcb4de94c",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:47:14.183Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Cedars-Sinai Medical Center",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-10-01",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-09-14",
+            "description": "ED VISIT LEVEL 4",
+            "code": "99284",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 295000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-09-14",
+            "description": "MRI LUMBAR SPINE W/O CONTRAST",
+            "code": "72148",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 690000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-09-14",
+            "description": "XR LUMBAR SPINE 2-3 VIEWS",
+            "code": "72100",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 64000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-09-14",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-09-14",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-09-14",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l07",
+            "serviceDate": "2026-09-14",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 4,
+            "chargeCents": 15200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l08",
+            "serviceDate": "2026-09-14",
+            "description": "IV PUSH SINGLE DRUG",
+            "code": "96374",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 48600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l09",
+            "serviceDate": "2026-09-14",
+            "description": "KETOROLAC INJ 15 MG",
+            "code": "J1885",
+            "codeType": "HCPCS",
+            "units": 1,
+            "chargeCents": 9600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l10",
+            "serviceDate": "2026-09-14",
+            "description": "NORMAL SALINE 1000 CC",
+            "code": "J7030",
+            "codeType": "HCPCS",
+            "units": 1,
+            "chargeCents": 18600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l11",
+            "serviceDate": "2026-09-14",
+            "description": "URINALYSIS AUTO W/O SCOPE",
+            "code": "81003",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 1200000,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 1200000
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 1200000,
+        "statedChargesCents": 1200000,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "186acae6b92c6730001a1c08526776374ca88ab379cf5f95b325a5ad8e5810f4",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:48:04.170Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Cedars-Sinai Medical Center",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-10-01",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-09-14",
+            "description": "ED VISIT LEVEL 4",
+            "code": "99284",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 295000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-09-14",
+            "description": "MRI LUMBAR SPINE W/O CONTRAST",
+            "code": "72148",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 690000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-09-14",
+            "description": "XR LUMBAR SPINE 2-3 VIEWS",
+            "code": "72100",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 64000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-09-14",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-09-14",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-09-14",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l07",
+            "serviceDate": "2026-09-14",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 4,
+            "chargeCents": 15200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l08",
+            "serviceDate": "2026-09-14",
+            "description": "IV PUSH SINGLE DRUG",
+            "code": "96374",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 48600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l09",
+            "serviceDate": "2026-09-14",
+            "description": "KETOROLAC INJ 15 MG",
+            "code": "J1885",
+            "codeType": "HCPCS",
+            "units": 1,
+            "chargeCents": 9600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l10",
+            "serviceDate": "2026-09-14",
+            "description": "NORMAL SALINE 1000 CC",
+            "code": "J7030",
+            "codeType": "HCPCS",
+            "units": 1,
+            "chargeCents": 18600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l11",
+            "serviceDate": "2026-09-14",
+            "description": "URINALYSIS AUTO W/O SCOPE",
+            "code": "81003",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 1200000,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 1200000
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 1200000,
+        "statedChargesCents": 1200000,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "9c7589e57bd07ab2f8ba2854ecd1c2e42d7e7e8ac9d98d20e82162fa0ee8ed71",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:47:34.160Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-08-20",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-08-03",
+            "description": "ED VISIT LEVEL 5",
+            "code": "99285",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 380000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-08-03",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-08-03",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-08-03",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-08-03",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 3,
+            "chargeCents": 11400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-08-03",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l07",
+            "serviceDate": "2026-08-03",
+            "description": "ECG TRACING ONLY",
+            "code": "93005",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 31000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 525200,
+          "adjustmentsCents": 360000,
+          "paidCents": 120000,
+          "dueCents": 45200
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 525200,
+        "statedChargesCents": 525200,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "06e3a610247116fada72af9252f453d27c5602d88b96d5e344a5abbe6b0dab07",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:47:41.457Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-08-20",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-08-03",
+            "description": "ED VISIT LEVEL 5",
+            "code": "99285",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 380000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-08-03",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-08-03",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-08-03",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-08-03",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 3,
+            "chargeCents": 11400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-08-03",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l07",
+            "serviceDate": "2026-08-03",
+            "description": "ECG TRACING ONLY",
+            "code": "93005",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 31000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 525200,
+          "adjustmentsCents": 360000,
+          "paidCents": 120000,
+          "dueCents": 45200
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 525200,
+        "statedChargesCents": 525200,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "773e1c50f4469af4f0c3ac5869199a4c6ce623b4aae2e332ba603e088fe3ddc2",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:47:58.184Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-08-20",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-08-03",
+            "description": "ED VISIT LEVEL 5",
+            "code": "99285",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 380000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-08-03",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-08-03",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-08-03",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-08-03",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 3,
+            "chargeCents": 11400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-08-03",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l07",
+            "serviceDate": "2026-08-03",
+            "description": "ECG TRACING ONLY",
+            "code": "93005",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 31000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 525200,
+          "adjustmentsCents": 360000,
+          "paidCents": 120000,
+          "dueCents": 45200
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 525200,
+        "statedChargesCents": 525200,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "02f95c82d132c72b959d078ac2a5bbde3823312bda8dc1a4a971140c87e2a79e",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:47:56.355Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-08-20",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-08-03",
+            "description": "ED VISIT LEVEL 5",
+            "code": "99285",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 380000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-08-03",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-08-03",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-08-03",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-08-03",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 3,
+            "chargeCents": 11400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-08-03",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l07",
+            "serviceDate": "2026-08-03",
+            "description": "ECG TRACING ONLY",
+            "code": "93005",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 31000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 525200,
+          "adjustmentsCents": 360000,
+          "paidCents": 120000,
+          "dueCents": 45200
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 525200,
+        "statedChargesCents": 525200,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "dc5fd6c14c75fea7a63ae3eb9345a357e531ff00f7844761121271f4ed9ef806",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:48:16.676Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-08-20",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-08-03",
+            "description": "ED VISIT LEVEL 5",
+            "code": "99285",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 380000,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.17,
+                0.365,
+                0.855,
+                0.395
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-08-03",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.17,
+                0.395,
+                0.855,
+                0.425
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-08-03",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.17,
+                0.425,
+                0.855,
+                0.455
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-08-03",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.17,
+                0.455,
+                0.855,
+                0.485
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-08-03",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 3,
+            "chargeCents": 11400,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.17,
+                0.485,
+                0.855,
+                0.515
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-08-03",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.17,
+                0.515,
+                0.855,
+                0.545
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l07",
+            "serviceDate": "2026-08-03",
+            "description": "ECG TRACING ONLY",
+            "code": "93005",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 31000,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.17,
+                0.545,
+                0.855,
+                0.575
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 525200,
+          "adjustmentsCents": 360000,
+          "paidCents": 120000,
+          "dueCents": 45200
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 525200,
+        "statedChargesCents": 525200,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "77a276a06b4e9e0f4a3cf237cdd780b6714b351752875b97b02196fb5b38cba2",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:48:06.584Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-08-05",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-07-22",
+            "description": "IV HYDRATION INITIAL HOUR",
+            "code": "96360",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 62000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-07-22",
+            "description": "IV HYDRATION EACH ADDL HOUR",
+            "code": "96361",
+            "codeType": "CPT",
+            "units": 2,
+            "chargeCents": 42000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-07-22",
+            "description": "IV PUSH SINGLE DRUG",
+            "code": "96374",
+            "codeType": "CPT",
+            "units": 2,
+            "chargeCents": 97200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-07-22",
+            "description": "KETOROLAC INJ 15 MG",
+            "code": "J1885",
+            "codeType": "HCPCS",
+            "units": 12,
+            "chargeCents": 115200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-07-22",
+            "description": "NORMAL SALINE 1000 CC",
+            "code": "J7030",
+            "codeType": "HCPCS",
+            "units": 2,
+            "chargeCents": 37200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-07-22",
+            "description": "ONDANSETRON INJ 1 MG",
+            "code": "J2405",
+            "codeType": "HCPCS",
+            "units": 4,
+            "chargeCents": 10000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 363600,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 363600
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 363600,
+        "statedChargesCents": 363600,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "e3fbf04bea4374ef8e3fbb5f42e3c85921a8ba56e298c8f7297209548e513b3e",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:55:01.821Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-08-05",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-07-22",
+            "description": "IV HYDRATION INITIAL HOUR",
+            "code": "96360",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 62000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.98,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-07-22",
+            "description": "IV HYDRATION EACH ADDL HOUR",
+            "code": "96361",
+            "codeType": "CPT",
+            "units": 2,
+            "chargeCents": 42000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.98,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-07-22",
+            "description": "IV PUSH SINGLE DRUG",
+            "code": "96374",
+            "codeType": "CPT",
+            "units": 2,
+            "chargeCents": 97200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.98,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-07-22",
+            "description": "KETOROLAC INJ 15 MG",
+            "code": "J1885",
+            "codeType": "HCPCS",
+            "units": 12,
+            "chargeCents": 37200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.98,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-07-22",
+            "description": "NORMAL SALINE 1000 CC",
+            "code": "J7030",
+            "codeType": "HCPCS",
+            "units": 2,
+            "chargeCents": 10000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.98,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-07-22",
+            "description": "ONDANSETRON INJ 1 MG",
+            "code": "J2405",
+            "codeType": "HCPCS",
+            "units": 4,
+            "chargeCents": 10000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.98,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 363600,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 363600
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 258400,
+        "statedChargesCents": 363600,
+        "diffCents": 105200,
+        "ok": false
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "658017c701d52613f6c761566d074f2baccdc42a98bb8ec0a6af5655da53bccf",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:48:25.366Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-08-05",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-07-22",
+            "description": "IV HYDRATION INITIAL HOUR",
+            "code": "96360",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 62000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-07-22",
+            "description": "IV HYDRATION EACH ADDL HOUR",
+            "code": "96361",
+            "codeType": "CPT",
+            "units": 2,
+            "chargeCents": 42000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-07-22",
+            "description": "IV PUSH SINGLE DRUG",
+            "code": "96374",
+            "codeType": "CPT",
+            "units": 2,
+            "chargeCents": 97200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-07-22",
+            "description": "KETOROLAC INJ 15 MG",
+            "code": "J1885",
+            "codeType": "HCPCS",
+            "units": 12,
+            "chargeCents": 115200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-07-22",
+            "description": "NORMAL SALINE 1000 CC",
+            "code": "J7030",
+            "codeType": "HCPCS",
+            "units": 2,
+            "chargeCents": 37200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-07-22",
+            "description": "ONDANSETRON INJ 1 MG",
+            "code": "J2405",
+            "codeType": "HCPCS",
+            "units": 4,
+            "chargeCents": 10000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 363600,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 363600
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 363600,
+        "statedChargesCents": 363600,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "e115102ae0b617a2e2a54f4bfa15bc41167f4f493e04cae1944236aee3e0f05d",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:48:24.767Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-08-05",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-07-22",
+            "description": "IV HYDRATION INITIAL HOUR",
+            "code": "96360",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 62000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-07-22",
+            "description": "IV HYDRATION EACH ADDL HOUR",
+            "code": "96361",
+            "codeType": "CPT",
+            "units": 2,
+            "chargeCents": 42000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-07-22",
+            "description": "IV PUSH SINGLE DRUG",
+            "code": "96374",
+            "codeType": "CPT",
+            "units": 2,
+            "chargeCents": 97200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-07-22",
+            "description": "KETOROLAC INJ 15 MG",
+            "code": "J1885",
+            "codeType": "HCPCS",
+            "units": 12,
+            "chargeCents": 115200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-07-22",
+            "description": "NORMAL SALINE 1000 CC",
+            "code": "J7030",
+            "codeType": "HCPCS",
+            "units": 2,
+            "chargeCents": 37200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-07-22",
+            "description": "ONDANSETRON INJ 1 MG",
+            "code": "J2405",
+            "codeType": "HCPCS",
+            "units": 4,
+            "chargeCents": 10000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 363600,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 363600
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 363600,
+        "statedChargesCents": 363600,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "a477e511963265cd6520d1f9c467aa328e997375f857809a6e725ee8d922e537",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:48:37.473Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-08-05",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-07-22",
+            "description": "IV HYDRATION INITIAL HOUR",
+            "code": "96360",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 62000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-07-22",
+            "description": "IV HYDRATION EACH ADDL HOUR",
+            "code": "96361",
+            "codeType": "CPT",
+            "units": 2,
+            "chargeCents": 42000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-07-22",
+            "description": "IV PUSH SINGLE DRUG",
+            "code": "96374",
+            "codeType": "CPT",
+            "units": 2,
+            "chargeCents": 97200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-07-22",
+            "description": "KETOROLAC INJ 15 MG",
+            "code": "J1885",
+            "codeType": "HCPCS",
+            "units": 12,
+            "chargeCents": 115200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-07-22",
+            "description": "NORMAL SALINE 1000 CC",
+            "code": "J7030",
+            "codeType": "HCPCS",
+            "units": 2,
+            "chargeCents": 37200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-07-22",
+            "description": "ONDANSETRON INJ 1 MG",
+            "code": "J2405",
+            "codeType": "HCPCS",
+            "units": 4,
+            "chargeCents": 10000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 363600,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 363600
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 363600,
+        "statedChargesCents": 363600,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "6c640360cb6c7c2848e37ac16930857a5754fcdfbd279b7b1a6c40f12678ec8a",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:48:56.135Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-07-01",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-06-10",
+            "description": "CT ABD/PELVIS W/ CONTRAST",
+            "code": "74177",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 485000,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.2,
+                0.385,
+                0.82,
+                0.405
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-06-10",
+            "description": "CT HEAD W/O CONTRAST",
+            "code": "70450",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 312000,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.2,
+                0.405,
+                0.82,
+                0.425
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-06-10",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.2,
+                0.425,
+                0.82,
+                0.445
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-06-10",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 3800,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.2,
+                0.445,
+                0.82,
+                0.465
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-06-10",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.2,
+                0.465,
+                0.82,
+                0.485
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 874000,
+          "adjustmentsCents": 450000,
+          "paidCents": 112000,
+          "dueCents": 312000
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 874000,
+        "statedChargesCents": 874000,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "3517c1e538fc2403c29c6af5e77196e1117573b860c8abb28efd323d0240cff6",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:49:14.516Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-07-01",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-05-10",
+            "description": "CT ABD/PELVIS W/ CONTRAST",
+            "code": "74177",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 485000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.95,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-05-10",
+            "description": "CT HEAD W/O CONTRAST",
+            "code": "70450",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 312000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.95,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-05-10",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.95,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-05-10",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 3800,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.95,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-05-10",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.95,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 674000,
+          "adjustmentsCents": 450000,
+          "paidCents": 112000,
+          "dueCents": 312000
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 874000,
+        "statedChargesCents": 674000,
+        "diffCents": -200000,
+        "ok": false
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "3fbf3e1b98d7e2a2b065d0edccc995c2adee2a3f469da35a7917fbaaeb187630",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:49:11.587Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-07-11",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-06-10",
+            "description": "CT ABD/PELVIS W/ CONTRAST",
+            "code": "74177",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 485000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.93,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-06-10",
+            "description": "CT HEAD W/O CONTRAST",
+            "code": "70450",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 312000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.93,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-06-10",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 62000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.93,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-06-10",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 3600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.93,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-06-10",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.93,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 874000,
+          "adjustmentsCents": 450000,
+          "paidCents": 112000,
+          "dueCents": 312000
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 883800,
+        "statedChargesCents": 874000,
+        "diffCents": -9800,
+        "ok": false
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "c2e532dd33e5b56f790afccc7cafa9b61d85eedff164f016e8c1ac856e5bf231",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:49:22.220Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-07-01",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-06-10",
+            "description": "CT ABD/PELVIS W/ CONTRAST",
+            "code": "74177",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 485000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-06-10",
+            "description": "CT HEAD W/O CONTRAST",
+            "code": "70450",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 312000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-06-10",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-06-10",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 3800,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-06-10",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 874000,
+          "adjustmentsCents": 450000,
+          "paidCents": 112000,
+          "dueCents": 312000
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 874000,
+        "statedChargesCents": 874000,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "e45666587cf0718f5acb11786db4a60eca171cf109fbe525fa2c98f2d800b39a",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:49:45.438Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-07-01",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-06-10",
+            "description": "CT ABD/PELVIS W/ CONTRAST",
+            "code": "74177",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 485000,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.185,
+                0.3,
+                0.805,
+                0.318
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-06-10",
+            "description": "CT HEAD W/O CONTRAST",
+            "code": "70450",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 312000,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.185,
+                0.33,
+                0.805,
+                0.348
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-06-10",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.185,
+                0.36,
+                0.805,
+                0.378
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-06-10",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 3800,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.185,
+                0.39,
+                0.805,
+                0.408
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-06-10",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.185,
+                0.42,
+                0.805,
+                0.438
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 874000,
+          "adjustmentsCents": 450000,
+          "paidCents": 112000,
+          "dueCents": 312000
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 874000,
+        "statedChargesCents": 874000,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "d55b78783924186615113b5cba24b9e5fe58214b386a5ba28b7d53e16a8ec6c0",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:49:51.892Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-06-02",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-05-19",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-05-19",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-05-19",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-05-19",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 3800,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-05-19",
+            "description": "GLUCOSE BLOOD TEST",
+            "code": "8292",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 2400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 44200,
+          "adjustmentsCents": 19600,
+          "paidCents": 5000,
+          "dueCents": 19600
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 44200,
+        "statedChargesCents": 44200,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "18a30e173327ab450ac13177cb609f48edb368b6390e87ffedae8ba56dc16657",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:50:04.998Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-06-02",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-05-19",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.185,
+                0.36,
+                0.82,
+                0.38
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-05-19",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.185,
+                0.39,
+                0.82,
+                0.41
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-05-19",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.185,
+                0.42,
+                0.82,
+                0.44
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-05-19",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 3800,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.185,
+                0.45,
+                0.82,
+                0.47
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-05-19",
+            "description": "GLUCOSE BLOOD TEST",
+            "code": "82962",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 2400,
+            "source": {
+              "page": 1,
+              "bbox": [
+                0.185,
+                0.48,
+                0.82,
+                0.5
+              ]
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 44200,
+          "adjustmentsCents": 19600,
+          "paidCents": 5000,
+          "dueCents": 19600
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 44200,
+        "statedChargesCents": 44200,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "1c866df421efc1742bdfb433eae70015c4603aa0bdee00a1328fbc3ff15c0e66",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:49:52.185Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-06-02",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-05-19",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-05-19",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-05-19",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-05-19",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 3800,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-05-19",
+            "description": "GLUCOSE BLOOD TEST",
+            "code": "82962",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 2400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 44200,
+          "adjustmentsCents": 19600,
+          "paidCents": 5000,
+          "dueCents": 19600
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 44200,
+        "statedChargesCents": 44200,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "cdfa1355b269de8d66797d970690eeabaf8fd3a6aa0cd4e6f80af71ed093d0cf",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:50:22.845Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-06-02",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-05-19",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-05-19",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-05-19",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-05-19",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 3800,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-05-19",
+            "description": "GLUCOSE BLOOD TEST",
+            "code": "82962",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 2400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 44200,
+          "adjustmentsCents": 19600,
+          "paidCents": 5000,
+          "dueCents": 19600
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 44200,
+        "statedChargesCents": 44200,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "76c0bc9d29baf6e1f1ae4085b6b06798a7df6b69cffb6ea5dcfe36d0239978a1",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:50:06.105Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-06-02",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-05-19",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-05-19",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-05-19",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-05-19",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 3800,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-05-19",
+            "description": "GLUCOSE BLOOD TEST",
+            "code": "82962",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 2400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 44200,
+          "adjustmentsCents": 19600,
+          "paidCents": 5000,
+          "dueCents": 19600
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 44200,
+        "statedChargesCents": 44200,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "7ef91d8c9453cbaa15b5bbfa926b597603d7f93e05988fdff8fd375a1115a837",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:50:17.701Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Cedars-Sinai Medical Center",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-09-16",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-09-02",
+            "description": "MRI LUMBAR SPINE W/O CONTRAST",
+            "code": "72148",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 690000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-09-02",
+            "description": "XR LUMBAR SPINE 2-3 VIEWS",
+            "code": "72100",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 64000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-09-02",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 806000,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 806000
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 806000,
+        "statedChargesCents": 806000,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "3d5634732b23446a84ff37aad2b23c29ff717747ccc5f6ca2f719563317e62eb",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:50:34.018Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Cedars-Sinai Medical Center",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-09-16",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-09-02",
+            "description": "MRI LUMBAR SPINE W/O CONTRAST",
+            "code": "72148",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 690000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-09-02",
+            "description": "XR LUMBAR SPINE 2-3 VIEWS",
+            "code": "72100",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 64000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-09-02",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 806000,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 806000
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 806000,
+        "statedChargesCents": 806000,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "db1a3331eba168ef849302d223e0728069270d5106b749b220a8c1580dde2887",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:50:23.988Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Cedars-Sinai Medical Center",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-09-16",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-09-02",
+            "description": "MRI LUMBAR SPINE W/O CONTRAST",
+            "code": "72148",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 690000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-09-02",
+            "description": "XR LUMBAR SPINE 2-3 VIEWS",
+            "code": "72100",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 64000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-09-02",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 806000,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 806000
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 806000,
+        "statedChargesCents": 806000,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "51e8d873aa6fd60fc45d59ddec60de30a58cab7197d0d8dddfbb9a4b5d613b37",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:56:00.129Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Cedars-Sinai Medical Center",
+          "city": null,
+          "state": null
+        },
+        "statementDate": "2020-09-18",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2020-09-03",
+            "description": "MRI LUMBAR SPINE W/O CONTRAST",
+            "code": "72148",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 200000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.78,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2020-09-03",
+            "description": "MRI LUMBAR SPINE 2-3 VIEWS",
+            "code": "72192",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 84000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.85,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2020-09-03",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 22000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.92,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 306000,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 306000
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 306000,
+        "statedChargesCents": 306000,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "0e7a08a4d6d7f6c10e28f7e74519d887dfacf9c3333a3b6e491a0250d2be2320",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:50:46.724Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Cedars-Sinai Medical Center",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-09-16",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-09-02",
+            "description": "MRI LUMBAR SPINE W/O CONTRAST",
+            "code": "72148",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 690000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-09-02",
+            "description": "XR LUMBAR SPINE 2-3 VIEWS",
+            "code": "72100",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 64000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-09-02",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 806000,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 806000
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 806000,
+        "statedChargesCents": 806000,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "2a9cad9d7815b1b04671af880c0263ba63d9d4f89ff567352d911cd1d9a251a2",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:50:56.153Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-03-20",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-03-08",
+            "description": "ED VISIT LEVEL 3",
+            "code": "99283",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 185000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.98,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-03-08",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.98,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-03-08",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.98,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-03-08",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.98,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-03-08",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 3800,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.98,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-03-08",
+            "description": "ECG TRACING ONLY",
+            "code": "93005",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 31000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.98,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 301400,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 301400
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 301400,
+        "statedChargesCents": 301400,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "735195ddc9c4b10852d64d10b430781a406de24b7607b1bbad33a6b032d65954",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:50:49.224Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-03-20",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-03-08",
+            "description": "ED VISIT LEVEL 3",
+            "code": "99283",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 185000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-03-08",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-03-08",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-03-08",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-03-08",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 3800,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-03-08",
+            "description": "ECG TRACING ONLY",
+            "code": "93005",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 31000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 301400,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 301400
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 301400,
+        "statedChargesCents": 301400,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "b594e87d892b3069f8c9974ac28f885c21050c565184c2baaede79f2cf858193",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:57:05.773Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2025-03-08",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2025-03-08",
+            "description": "ED VISIT LEVEL 5",
+            "code": "99283",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 244300,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.7,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2025-03-08",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 22000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.85,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2025-03-08",
+            "description": "CBC W/AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 4400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.85,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2025-03-08",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 7100,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.85,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2025-03-08",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 2600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.85,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2025-03-08",
+            "description": "ECG TRACING ONLY",
+            "code": "93000",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.85,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 301400,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 301400
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 301400,
+        "statedChargesCents": 301400,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "2087a4040c51ccb8fd50f4a459cd1f5bf588af181c4a01f3ee4247036c58a115",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:51:07.053Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-03-20",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-03-08",
+            "description": "ED VISIT LEVEL 3",
+            "code": "99283",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 185000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-03-08",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-03-08",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-03-08",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-03-08",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 3800,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-03-08",
+            "description": "ECG TRACING ONLY",
+            "code": "93005",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 31000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 301400,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 301400
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 301400,
+        "statedChargesCents": 301400,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    },
+    {
+      "sha256": "9be809005149fa7d910d1dcc24fbc493f8d4ebbff2fe5e18b648329b8c53297a",
+      "model": "step-5-preview",
+      "readAt": "2026-10-18T02:57:20.067Z",
+      "bill": {
+        "id": "cache-bill",
+        "hospital": {
+          "name": "Sample Medical Center (synthetic)",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-03-20",
+        "accountRefMasked": null,
+        "kind": "itemized",
+        "sourceKind": "photo",
+        "lines": [
+          {
+            "id": "cache-l01",
+            "serviceDate": "2026-03-08",
+            "description": "ED VISIT LEVEL 3",
+            "code": "99283",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 185000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l02",
+            "serviceDate": "2026-03-08",
+            "description": "XR CHEST 2 VIEWS",
+            "code": "71046",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 52000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l03",
+            "serviceDate": "2026-03-08",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l04",
+            "serviceDate": "2026-03-08",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l05",
+            "serviceDate": "2026-03-08",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 3800,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          },
+          {
+            "id": "cache-l06",
+            "serviceDate": "2026-03-08",
+            "description": "ECG TRACING ONLY",
+            "code": "93005",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 31000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 0.99,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 301400,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 301400
+        }
+      },
+      "reconciliation": {
+        "linesSumCents": 301400,
+        "statedChargesCents": 301400,
+        "diffCents": 0,
+        "ok": true
+      },
+      "warnings": []
+    }
+  ],
   "captures": [
     {
       "hospitalName": "Ronald Reagan UCLA Medical Center",
