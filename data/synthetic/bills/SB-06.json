@@ -77,11 +77,11 @@
         "lever": "published_price",
         "tier": "published",
         "lineIds": ["sb06-l01"],
-        "amountCents": null,
+        "amountCents": 175685,
         "requiresCapture": "cedars-sinai:72148:outpatient"
       }
     ],
-    "notes": "Only the MRI should flag. Amount is filled after the C-05 capture. Synthetic bill, not issued by Cedars-Sinai."
+    "notes": "Only the MRI should flag. Amount = 690000 - 514315 (Cedars-Sinai outpatient discounted cash for 72148, data/hospitals/cedars-sinai/capture.json, captured 2026-10-17). Synthetic bill, not issued by Cedars-Sinai."
   },
   "context": {
     "hospitalKey": "cedars-sinai",

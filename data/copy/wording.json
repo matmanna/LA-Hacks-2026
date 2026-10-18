@@ -117,6 +117,13 @@
       "note": "{capturedAt} is filled from the C-06 capture. Policy PDF details are unverified; cite the web page only.",
       "sourceUrl": "https://dhs.lacounty.gov/patient-information/get-coverage/financial-services/",
       "verifiedOn": "2026-10-17"
+    },
+    {
+      "id": "N8",
+      "text": "Cedars-Sinai's own published cash price for this MRI is $5,143.15 (its price file, last updated 2025-11-26, captured Oct 17, 2026).",
+      "note": "CPT 72148, item HB MRI L-SPINE WO CONTRAST, outpatient discounted cash. See data/hospitals/cedars-sinai/capture.json for the file hash.",
+      "sourceUrl": "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/documents/951644600_CEDARS-SINAI-MEDICAL-CENTER_standardcharges.json",
+      "verifiedOn": "2026-10-17"
     }
   ]
 }

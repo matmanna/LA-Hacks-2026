@@ -1,13 +1,14 @@
 import { CaseEvent } from "@betterbill/core";
 import { z } from "zod";
-import { fixtureEvents } from "../fixtures";
+
 import { publicProcedure } from "../index";
 import { CaseIdInput } from "../inputs";
+import { listEvents } from "../repo/cases";
 
 export const eventRouter = {
-  // STUB: replaced in B-10 (ordered by at)
+  // Append-only case history, oldest first.
   list: publicProcedure
     .input(CaseIdInput)
     .output(z.array(CaseEvent))
-    .handler(({ input }) => fixtureEvents(input.caseId)),
+    .handler(({ input, context }) => listEvents(context.db, input.caseId)),
 };
