@@ -30,8 +30,17 @@ export function buildData() {
     .map((d) => tryRead(`data/hospitals/${d.name}/capture.json`))
     .filter(Boolean)
     .map((c) => ({
+      hospitalKey: c.hospitalKey,
       hospitalName: c.hospitalName,
       capturedAt: c.capturedAt,
+      // Address from the price file's header, geocoded (finish_capture.py).
+      location: c.location
+        ? {
+            address: c.location.address,
+            lat: c.location.lat,
+            lng: c.location.lng,
+          }
+        : null,
       sources: c.sources.map(
         (s: { kind: string; url: string; sha256?: string }) => ({
           kind: s.kind,
@@ -44,10 +53,12 @@ export function buildData() {
           code: string;
           setting: string;
           discountedCashCents: number | null;
+          grossChargeCents?: number | null;
         }) => ({
           code: p.code,
           setting: p.setting,
           discountedCashCents: p.discountedCashCents,
+          grossChargeCents: p.grossChargeCents ?? null,
         }),
       ),
     }));
