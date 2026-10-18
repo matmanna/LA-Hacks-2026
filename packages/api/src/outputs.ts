@@ -158,3 +158,38 @@ export const NearbyPrices = z.object({
     middleShareOfHighest: z.number().nullable(),
   }),
 });
+
+// A hospital across every service: counts of lowest and below-middle prices
+// near the patient (core prices/hospitals). Never an average.
+export const HospitalSummary = z.object({
+  hospitalKey: z.string(),
+  hospitalName: z.string(),
+  address: z.string(),
+  distanceMiles: z.number(),
+  lat: z.number(),
+  lng: z.number(),
+  services: z.number().int(),
+  lowestOn: z.number().int(),
+  belowMiddleOn: z.number().int(),
+});
+export const HospitalDetail = HospitalSummary.extend({
+  prices: z.array(
+    z.object({
+      code: z.string(),
+      name: z.string(),
+      short: z.string(),
+      discountedCashCents: z.number().int().nullable(),
+      grossChargeCents: z.number().int().nullable(),
+      rank: z.number().int().nullable(),
+      priced: z.number().int(),
+      lowest: z.boolean(),
+      belowMiddle: z.boolean(),
+    }),
+  ),
+  capturedAt: z.string(),
+  sourceUrl: z.string(),
+  sourceSha256: z.string().nullable(),
+  pageUrl: z.string().nullable(),
+  fileUpdatedOn: z.string().nullable(),
+  policy: NearbyPrice.shape.policy,
+});

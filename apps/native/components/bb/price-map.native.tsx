@@ -12,8 +12,10 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { HospitalPin } from "./hospital-pin";
 import { Money } from "./money";
 import { PIN_STEP_MS, type PriceMapProps } from "./price-map-shared";
+import { shortHospitalName } from "./short-name";
 import { T } from "./t";
 
 // Phone only (Price A): the patient's spot pulses while we check, then a
@@ -25,6 +27,7 @@ export function PriceMap({
   here,
   onSelect,
   insets = { top: 56, bottom: 32 },
+  kind = "price",
 }: PriceMapProps) {
   const map = useRef<MapView>(null);
   const reduced = useReducedMotion();
@@ -93,6 +96,19 @@ export function PriceMap({
         <Here checking={rows.length === 0} />
       </Marker>
       {rows.slice(0, shown).map((r) => {
+        if (kind === "hospital") {
+          return (
+            <Marker
+              key={r.hospitalKey}
+              coordinate={{ latitude: r.lat, longitude: r.lng }}
+              anchor={{ x: 0.5, y: 0.29 }}
+              onPress={() => onSelect?.(r.hospitalKey)}
+              accessibilityLabel={`${r.hospitalName}, ${r.distanceMiles.toFixed(1)} miles`}
+            >
+              <HospitalPin name={shortHospitalName(r.hospitalName)} />
+            </Marker>
+          );
+        }
         const lowest = r.rank === 1;
         const highest = !lowest && r.shareOfHighest === 1;
         const bg = lowest ? "bg-mint" : highest ? "bg-coral-soft" : "bg-white";
@@ -121,7 +137,7 @@ export function PriceMap({
                   shadowOffset: { width: 0, height: 2 },
                 }}
               >
-                {r.discountedCashCents === null ? (
+                {r.discountedCashCents == null ? (
                   <T className="text-muted text-xs">No cash price</T>
                 ) : (
                   <Money

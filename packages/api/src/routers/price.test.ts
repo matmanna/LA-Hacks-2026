@@ -82,4 +82,40 @@ describe("price routes", () => {
       client.price.nearby({ code: "72148", lat: 120, lng: 0 }),
     ).rejects.toThrow();
   });
+
+  it("lists every located hospital nearest first, with counts", async () => {
+    const list = await client.price.hospitals(downtownLA);
+    const located = DATA.captures.filter((c) => c.location).length;
+    expect(list).toHaveLength(located);
+    const miles = list.map((h) => h.distanceMiles);
+    expect(miles).toEqual([...miles].sort((a, b) => a - b));
+    for (const h of list) {
+      expect(h.lowestOn).toBeLessThanOrEqual(h.services);
+      expect(h.belowMiddleOn).toBeLessThanOrEqual(h.services);
+    }
+  });
+
+  it("gives one hospital's prices, each matching its capture", async () => {
+    const d = await client.price.hospital({
+      hospitalKey: "providence-tarzana",
+      ...downtownLA,
+    });
+    const capture = DATA.captures.find(
+      (c) => c.hospitalKey === "providence-tarzana",
+    );
+    expect(d.prices.length).toBe(d.services);
+    for (const p of d.prices) {
+      expect(
+        capture?.prices.some(
+          (c) =>
+            c.code === p.code &&
+            c.discountedCashCents === p.discountedCashCents,
+        ),
+      ).toBe(true);
+    }
+    expect(d.lowestOn).toBe(d.prices.filter((p) => p.lowest).length);
+    await expect(
+      client.price.hospital({ hospitalKey: "nope", ...downtownLA }),
+    ).rejects.toThrow();
+  });
 });

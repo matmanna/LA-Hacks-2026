@@ -80,3 +80,13 @@ export const NearbyPricesInput = z.object({
   lat: z.number().min(-90).max(90),
   lng: z.number().min(-180).max(180),
 });
+
+// Where the patient is, for the hospitals list on the Prices map.
+export const OriginInput = z.object({
+  lat: z.number().min(-90).max(90),
+  lng: z.number().min(-180).max(180),
+});
+
+export const HospitalPricesInput = OriginInput.extend({
+  hospitalKey: z.string().min(1).max(80),
+});

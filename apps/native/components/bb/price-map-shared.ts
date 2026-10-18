@@ -8,9 +8,10 @@ export type PriceMapProps = {
     hospitalKey: string;
     hospitalName: string;
     distanceMiles: number;
-    discountedCashCents: number | null;
-    rank: number | null;
-    shareOfHighest: number | null;
+    // Price pins only; hospital pins leave these out.
+    discountedCashCents?: number | null;
+    rank?: number | null;
+    shareOfHighest?: number | null;
     lat: number;
     lng: number;
   }[];
@@ -18,6 +19,9 @@ export type PriceMapProps = {
   // True when distances are from the phone's own location.
   here: boolean;
   onSelect?: (hospitalKey: string) => void;
+  // "price": a price tag per hospital (default). "hospital": a hospital
+  // marker with its short name, for the map before a service is picked.
+  kind?: "price" | "hospital";
   // Room the floating controls cover, so the pins stay visible.
   insets?: { top: number; bottom: number };
 };
