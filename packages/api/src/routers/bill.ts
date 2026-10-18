@@ -1,9 +1,17 @@
 import { type Line, ParseResult } from "@betterbill/core";
 import { ORPCError } from "@orpc/server";
+import { PHOTO_CACHE } from "../data";
 import { publicProcedure } from "../index";
 import { ConfirmLinesInput, ParsePhotoInput, ParseTextInput } from "../inputs";
 import { ConfirmLinesOutput } from "../outputs";
-import { PhotoReadError, readPhoto } from "../reader/parsePhoto";
+import { PhotoReadError } from "../reader/parsePhoto";
+import { type ReaderMode, readPhotoWithCache } from "../reader/photoCache";
+
+const readerMode = (): ReaderMode => {
+  const m = process.env.BB_READER_MODE;
+  return m === "cache_first" || m === "cache_only" ? m : "live";
+};
+
 import { readText } from "../reader/parseText";
 import { saveParsedBill } from "../repo/bills";
 import {
@@ -46,7 +54,12 @@ export const billRouter = {
     .handler(async ({ input, context }) => {
       let result: ParseResult;
       try {
-        result = await readPhoto(input.caseId, input.pages);
+        result = await readPhotoWithCache(
+          input.caseId,
+          input.pages,
+          PHOTO_CACHE,
+          readerMode(),
+        );
       } catch (e) {
         if (e instanceof PhotoReadError) {
           throw new ORPCError("UNPROCESSABLE_CONTENT", { message: e.message });
@@ -58,7 +71,7 @@ export const billRouter = {
         context.db,
         input.caseId,
         result.bill,
-        `Read ${n} line${n === 1 ? "" : "s"} from ${input.pages.length} photo${input.pages.length === 1 ? "" : "s"} (step-5-preview, ${result.reader.latencyMs} ms)`,
+        `Read ${n} line${n === 1 ? "" : "s"} from ${input.pages.length} photo${input.pages.length === 1 ? "" : "s"} (${result.reader.mode === "cache" ? `saved reading from ${result.reader.cachedAt}` : `step-5-preview, ${result.reader.latencyMs} ms`})`,
       );
       return result;
     }),
