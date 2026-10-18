@@ -193,3 +193,16 @@ export const HospitalDetail = HospitalSummary.extend({
   fileUpdatedOn: z.string().nullable(),
   policy: NearbyPrice.shape.policy,
 });
+
+// A lab's own online self-pay price for a service (core prices/labs).
+export const LabPrice = z.object({
+  labKey: z.string(),
+  labName: z.string(),
+  productName: z.string(),
+  cashCents: z.number().int(),
+  detail: z.string().nullable(),
+  quote: z.string(),
+  sourceUrl: z.string(),
+  sourceSha256: z.string().nullable(),
+  capturedAt: z.string(),
+});

@@ -4,6 +4,7 @@ import {
   Eob,
   type FplTable,
   type HospitalPolicy,
+  type LabCapture,
   type NearbyCapture,
   type PublishedPrice,
   pricesFromCapture,
@@ -42,6 +43,15 @@ export const PRICE_CAPTURES: NearbyCapture[] = DATA.captures.map((c) => ({
   location: c.location,
   policy: c.policy,
   prices: c.prices,
+}));
+
+// Labs' own online self-pay prices (data/labs).
+export const LAB_CAPTURES: LabCapture[] = DATA.labs.map((l) => ({
+  labKey: l.labKey,
+  labName: l.labName,
+  capturedAt: l.capturedAt,
+  sources: l.sources,
+  prices: l.prices,
 }));
 
 export const EVAL_RESULTS: unknown = DATA.evalResults;

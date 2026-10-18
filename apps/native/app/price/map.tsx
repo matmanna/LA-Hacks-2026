@@ -1,7 +1,9 @@
 import type { NearbyPrice } from "@betterbill/core";
 import { SERVICES } from "@betterbill/core/prices/services";
+import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import * as WebBrowser from "expo-web-browser";
 import { cn } from "heroui-native";
 import { useEffect, useState } from "react";
 import {
@@ -34,8 +36,9 @@ import {
   TierBadge,
 } from "@/components/bb";
 import { errorMessage } from "@/lib/errors";
-import { monthYear } from "@/lib/format";
+import { capturedDay, monthYear } from "@/lib/format";
 import { useNearby } from "@/lib/prices";
+import { orpc } from "@/utils/orpc";
 
 const SHADOW = {
   shadowColor: "#0B1B2B",
@@ -362,6 +365,7 @@ function SheetList({
           </T>
         </Pressable>
       ) : null}
+      <LabPrices code={code} />
       <View className="gap-1.5 pt-2">
         <T className="text-center text-[11px] text-muted leading-[15px]">
           Published cash prices are the hospital's own fee, an estimate of what
@@ -420,5 +424,74 @@ function PriceRow({
         />
       )}
     </Pressable>
+  );
+}
+
+// Labs' own online prices (order online, blood drawn at the lab). Shown only
+// for services a lab publishes, under the hospitals and never ranked with
+// them: a different source with its own label.
+function LabPrices({ code }: { code: string }) {
+  const labs = useQuery(orpc.price.labs.queryOptions({ input: { code } }));
+  const rows = labs.data ?? [];
+  if (rows.length === 0) return null;
+  return (
+    <View className="mt-3 gap-2.5 rounded-[18px] border border-hairline px-4 py-3.5">
+      <View className="flex-row items-center justify-between gap-2">
+        <View className="flex-row items-center gap-2">
+          <Icon name="flask" size={18} color="#1E3A8A" />
+          <T weight="semibold" className="text-[15px]">
+            Lab prices
+          </T>
+        </View>
+        <View className="h-6 flex-row items-center gap-1 rounded-full bg-secondary px-2">
+          <Icon name="landmark" size={12} color="#1E3A8A" stroke={2} />
+          <T className="text-secondary-ink text-xs">Lab's published price</T>
+        </View>
+      </View>
+      <T className="text-[13px] text-muted leading-[18px]">
+        Order the test online, then get your blood drawn at one of the lab's
+        locations.
+      </T>
+      <View>
+        {rows.map((r, i) => (
+          <Pressable
+            key={r.labKey}
+            accessibilityRole="link"
+            accessibilityLabel={`${r.labName}, opens its test page`}
+            onPress={() => void WebBrowser.openBrowserAsync(r.sourceUrl)}
+            className={cn(
+              "min-h-11 flex-row items-center gap-3 py-2.5",
+              i < rows.length - 1 && "border-[#EEF0F3] border-b",
+            )}
+          >
+            <View className="flex-1 gap-0.5">
+              <T weight="semibold" className="text-[15px]">
+                {r.labName}
+              </T>
+              {r.detail ? (
+                <T className="text-muted text-xs leading-4" numberOfLines={2}>
+                  {r.detail}
+                </T>
+              ) : null}
+            </View>
+            <Money
+              cents={r.cashCents}
+              size={16}
+              weight="semibold"
+              whole
+              label={`${r.labName}, lab's published price`}
+            />
+            <Icon name="chevron" size={16} color="#8A97A6" stroke={2} />
+          </Pressable>
+        ))}
+      </View>
+      <T className="text-[13px] text-muted leading-[18px]">
+        If your doctor ordered this test, ask if you can have it done at an
+        outside lab. With insurance, check what your plan covers there.
+      </T>
+      <T className="text-[11px] text-muted">
+        {`From each lab's website, captured ${capturedDay(rows[0]?.capturedAt ?? "")}.`}
+      </T>
+    </View>
   );
 }

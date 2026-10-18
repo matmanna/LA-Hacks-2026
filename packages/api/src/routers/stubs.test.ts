@@ -45,6 +45,7 @@ describe("procedure stubs", () => {
         "price.nearby",
         "price.hospitals",
         "price.hospital",
+        "price.labs",
       ].sort(),
     );
   });

@@ -118,4 +118,19 @@ describe("price routes", () => {
       client.price.hospital({ hospitalKey: "nope", ...downtownLA }),
     ).rejects.toThrow();
   });
+
+  it("gives labs' online prices for blood tests, each from its capture", async () => {
+    for (const code of ["85025", "80053"]) {
+      const rows = await client.price.labs({ code });
+      expect(rows.length).toBeGreaterThan(0);
+      for (const r of rows) {
+        const lab = DATA.labs.find((l) => l.labKey === r.labKey);
+        const p = lab?.prices.find((x) => x.code === code);
+        expect(p?.cashCents).toBe(r.cashCents);
+        expect(p?.sourceUrl).toBe(r.sourceUrl);
+        expect(r.sourceSha256).toMatch(/^[0-9a-f]{64}$/);
+      }
+    }
+    expect(await client.price.labs({ code: "72148" })).toEqual([]);
+  });
 });

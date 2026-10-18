@@ -1,5 +1,6 @@
 import {
   hospitalDetail,
+  labPrices,
   nearbyHospitals,
   nearbyPrices,
   SERVICES,
@@ -8,17 +9,19 @@ import {
 import { ORPCError } from "@orpc/server";
 import { z } from "zod";
 
-import { PRICE_CAPTURES } from "../data";
+import { LAB_CAPTURES, PRICE_CAPTURES } from "../data";
 import { publicProcedure } from "../index";
 import {
   EmptyInput,
   HospitalPricesInput,
+  LabPricesInput,
   NearbyPricesInput,
   OriginInput,
 } from "../inputs";
 import {
   HospitalDetail,
   HospitalSummary,
+  LabPrice,
   NearbyPrices,
   PriceService,
 } from "../outputs";
@@ -72,4 +75,13 @@ export const priceRouter = {
       }
       return detail;
     }),
+
+  // Labs' own online prices for a service (ordered online, drawn at the
+  // lab), lowest first. A separate source, never ranked with hospitals.
+  labs: publicProcedure
+    .input(LabPricesInput)
+    .output(z.array(LabPrice))
+    .handler(({ input }) =>
+      labPrices({ labs: LAB_CAPTURES, code: input.code }),
+    ),
 };

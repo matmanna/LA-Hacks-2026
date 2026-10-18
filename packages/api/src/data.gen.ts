@@ -7277,6 +7277,121 @@ export const DATA = {
       ]
     }
   ],
+  "labs": [
+    {
+      "labKey": "labcorp-ondemand",
+      "labName": "Labcorp OnDemand",
+      "capturedAt": "2026-10-18T16:32:25Z",
+      "sources": [
+        {
+          "kind": "help_article_json",
+          "url": "https://support.ondemand.labcorp.com/api/v2/help_center/en-us/articles/360043703614.json",
+          "sha256": "a895825bd808751a7a9e54f53f44c5d4457e0604810bc8382d1bb508a0f3e564"
+        },
+        {
+          "kind": "help_article_json",
+          "url": "https://support.ondemand.labcorp.com/api/v2/help_center/en-us/articles/360044203813.json",
+          "sha256": "a030679ad3449358c4bbdd918bdcdf18bf4adcf455258c3ae85a5fadc4ea0ac6"
+        },
+        {
+          "kind": "help_article_json",
+          "url": "https://support.ondemand.labcorp.com/api/v2/help_center/en-us/articles/33271893091859.json",
+          "sha256": "49588b5ce0b1bb3e655bee7dc22703be65264a20ab582f82384bb7ab2e7a105c"
+        },
+        {
+          "kind": "product_page",
+          "url": "https://www.ondemand.labcorp.com/lab-tests/complete-blood-count",
+          "sha256": "cc4cf59d871ffd491aa703bb02661e657fee5ea43f3f98980784e816da7a12ee"
+        },
+        {
+          "kind": "test_directory",
+          "url": "https://www.labcorp.com/tests/005009",
+          "sha256": "a049b5b89fe07d7fdd19aa103e62354ac89772bed5d807550673e05d228592a1"
+        },
+        {
+          "kind": "product_page",
+          "url": "https://www.ondemand.labcorp.com/lab-tests/comprehensive-metabolic-panel",
+          "sha256": "b91666babfbd804b2307a18c780cfc4d35301482d250d0dae72e825e53bcb0d5"
+        },
+        {
+          "kind": "test_directory",
+          "url": "https://www.labcorp.com/tests/322000",
+          "sha256": "4d826395630ee3b6bce22399c85df60a47f641785f881614d9fe6eae1bf56eed"
+        }
+      ],
+      "prices": [
+        {
+          "code": "85025",
+          "productName": "Complete Blood Count (CBC) Test",
+          "cashCents": 2900,
+          "listedPriceCents": 2900,
+          "addedFees": [],
+          "includes": "The price of each test includes the fee for the ordering provider’s services.",
+          "sourceUrl": "https://www.ondemand.labcorp.com/lab-tests/complete-blood-count",
+          "quote": "$29"
+        },
+        {
+          "code": "80053",
+          "productName": "Comprehensive Metabolic Panel (CMP) Test",
+          "cashCents": 4900,
+          "listedPriceCents": 4900,
+          "addedFees": [],
+          "includes": "The price of each test includes the fee for the ordering provider’s services.",
+          "sourceUrl": "https://www.ondemand.labcorp.com/lab-tests/comprehensive-metabolic-panel",
+          "quote": "$36.75 25% off $49"
+        }
+      ]
+    },
+    {
+      "labKey": "quest-health",
+      "labName": "Quest Diagnostics (questhealth.com)",
+      "capturedAt": "2026-10-18T16:32:25Z",
+      "sources": [
+        {
+          "kind": "product_page",
+          "url": "https://www.questhealth.com/product/complete-blood-count-cbc/6399M.html",
+          "sha256": "16524fa4f65ea22a892d461c35cdf65353e1218d8f46a89def970a23189f65b9"
+        },
+        {
+          "kind": "product_page",
+          "url": "https://www.questhealth.com/product/comprehensive-metabolic-panel-cmp/10231M.html",
+          "sha256": "9e3766cc72e6b9b98751cd0caba2311ad3ae26b3d85c47a5485b85ef19c86eed"
+        }
+      ],
+      "prices": [
+        {
+          "code": "85025",
+          "productName": "Complete Blood Count (CBC) Test",
+          "cashCents": 3500,
+          "listedPriceCents": 2900,
+          "addedFees": [
+            {
+              "name": "Physician Service Fee",
+              "cents": 600
+            }
+          ],
+          "includes": "questhealth.com is designed for purchasing tests directly—no doctor’s visit is needed and physician oversight of testing is included with your order from questhealth.com.",
+          "sourceUrl": "https://www.questhealth.com/product/complete-blood-count-cbc/6399M.html",
+          "quote": "$29.00 + $6.00 Physician Service Fee"
+        },
+        {
+          "code": "80053",
+          "productName": "Comprehensive Metabolic Panel (CMP) Test",
+          "cashCents": 5500,
+          "listedPriceCents": 4900,
+          "addedFees": [
+            {
+              "name": "Physician Service Fee",
+              "cents": 600
+            }
+          ],
+          "includes": "questhealth.com is designed for purchasing tests directly—no doctor’s visit is needed and physician oversight of testing is included with your order from questhealth.com.",
+          "sourceUrl": "https://www.questhealth.com/product/comprehensive-metabolic-panel-cmp/10231M.html",
+          "quote": "$49.00 + $6.00 Physician Service Fee"
+        }
+      ]
+    }
+  ],
   "mue": {
     "table": "CMS NCCI MUE, Facility Outpatient Hospital Services",
     "sourcePage": "https://www.cms.gov/medicare/coding-billing/national-correct-coding-initiative-ncci-edits/medicare-ncci-medically-unlikely-edits",

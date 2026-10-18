@@ -90,3 +90,5 @@ export const OriginInput = z.object({
 export const HospitalPricesInput = OriginInput.extend({
   hospitalKey: z.string().min(1).max(80),
 });
+
+export const LabPricesInput = z.object({ code: z.string().min(1).max(10) });

@@ -153,6 +153,55 @@ export function buildData() {
       };
     })
     .filter(Boolean);
+  // Labs' own online self-pay prices (data/labs/*/capture.json), sorted so
+  // the generated file is the same on every OS.
+  const labs = (() => {
+    try {
+      return readdirSync(join(ROOT, "data/labs"), { withFileTypes: true })
+        .filter((d) => d.isDirectory())
+        .sort(byName)
+        .map((d) => tryRead(`data/labs/${d.name}/capture.json`))
+        .filter(Boolean)
+        .map((c) => ({
+          labKey: c.labKey,
+          labName: c.labName,
+          capturedAt: c.capturedAt,
+          sources: c.sources.map(
+            (s: { kind: string; url: string; sha256?: string }) => ({
+              kind: s.kind,
+              url: s.url,
+              sha256: s.sha256 ?? null,
+            }),
+          ),
+          prices: c.prices.map(
+            (q: {
+              code: string;
+              productName: string;
+              cashCents: number | null;
+              listedPriceCents?: number | null;
+              addedFees?: { name: string; cents: number }[];
+              includes?: string | null;
+              sourceUrl: string;
+              quote: string;
+            }) => ({
+              code: q.code,
+              productName: q.productName,
+              cashCents: q.cashCents,
+              listedPriceCents: q.listedPriceCents ?? null,
+              addedFees: (q.addedFees ?? []).map((f) => ({
+                name: f.name,
+                cents: f.cents,
+              })),
+              includes: q.includes ?? null,
+              sourceUrl: q.sourceUrl,
+              quote: q.quote,
+            }),
+          ),
+        }));
+    } catch {
+      return [];
+    }
+  })();
   const fpl = read("data/hospitals/fpl-2026.json");
   return {
     samples,
@@ -167,6 +216,7 @@ export function buildData() {
       hawaii: fpl.hawaii,
     },
     captures: hospitals,
+    labs,
     mue: tryRead("data/rules/mue-subset.json"),
     evalResults: tryRead("data/eval/results.json"),
   };
