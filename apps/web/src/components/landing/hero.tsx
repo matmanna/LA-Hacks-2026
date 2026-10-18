@@ -91,7 +91,7 @@ export function Hero({ sample }: { sample: HeroSample | null }) {
   return (
     <section className="overflow-hidden px-5 pt-10 pb-16 md:px-8 lg:flex lg:min-h-[calc(100svh-104px)] lg:flex-col lg:pt-6 lg:pb-6">
       <div className="mx-auto w-full max-w-6xl lg:grid lg:flex-1 lg:grid-cols-12 lg:gap-6">
-        <div className="lg:col-span-6 lg:self-start lg:pt-10">
+        <div className="lg:col-span-6 lg:self-start lg:pt-10 xl:max-w-[470px]">
           <h1 className="text-balance font-serif text-[40px] leading-[44px] tracking-[-0.01em] lg:text-[64px] lg:leading-[68px]">
             Your hospital bill, checked{" "}
             <span className="relative inline-block">
