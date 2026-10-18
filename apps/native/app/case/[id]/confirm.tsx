@@ -1,7 +1,6 @@
 import type { Line } from "@betterbill/core";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
-import { cn } from "heroui-native";
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
 
@@ -12,11 +11,13 @@ import {
   Money,
   printedLine,
   Screen,
+  StepBar,
   T,
 } from "@/components/bb";
+import { holdLines } from "@/lib/draft-lines";
 import { errorMessage } from "@/lib/errors";
 import { lineName, serviceDay } from "@/lib/format";
-import { client, orpc } from "@/utils/orpc";
+import { orpc } from "@/utils/orpc";
 
 const FIRST = 5;
 
@@ -26,8 +27,9 @@ function needsLook(line: Line) {
   return line.confidence < 0.8 || line.units > 1;
 }
 
-// L3 Confirm lines: one card for the line that needs a look, then every line
-// with a pencil. "Looks right" confirms exactly what is on screen.
+// L3 Confirm V2, step 1 of 2: did we read the bill right? One card for the
+// line that needs a look, then every line with a pencil. Nothing is sent
+// here; the care step sends the lines.
 export default function Confirm() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const detail = useQuery(
@@ -55,16 +57,11 @@ export default function Confirm() {
   const sum = (lines ?? []).reduce((s, l) => s + l.chargeCents, 0);
   const matches = bill ? sum === bill.totals.chargesCents : false;
 
-  const confirm = useMutation({
-    mutationFn: () =>
-      client.bill.confirmLines({
-        caseId: id,
-        lines: lines ?? [],
-        eob: detail.data?.eob ?? null,
-      }),
-    onSuccess: () =>
-      router.replace({ pathname: "/case/[id]/checking", params: { id } }),
-  });
+  // Step 1 only checks our reading; step 2 (care) sends the lines.
+  function next() {
+    holdLines(id, lines ?? []);
+    router.push({ pathname: "/case/[id]/care", params: { id } });
+  }
 
   function mark(lineId: string) {
     setChecked((s) => new Set(s).add(lineId));
@@ -88,35 +85,27 @@ export default function Confirm() {
       footer={
         pending.length > 0 ? (
           <>
-            <Button
-              variant="disabled"
-              label={`Check ${pending.length} line${pending.length === 1 ? "" : "s"} first`}
-            />
+            <Button variant="disabled" label="Answer the one above first" />
             <Button
               variant="quiet"
               label="Skip, I'll check it later"
-              onPress={() => confirm.mutate()}
+              onPress={next}
             />
           </>
         ) : (
-          <Button
-            label="Looks right"
-            busy={confirm.isPending}
-            onPress={() => confirm.mutate()}
-          />
+          <Button label="Next: what you got" onPress={next} />
         )
       }
     >
+      <StepBar step={1} />
       <T
         weight="semibold"
-        className="text-[28px] leading-[34px] tracking-tight"
+        className="mt-3 text-[28px] leading-[34px] tracking-tight"
       >
-        Does this look right?
+        Did we read your bill right?
       </T>
       <T className="mt-1.5 text-base text-muted leading-6">
-        {pending.length > 0
-          ? `We read ${lines.length} lines. ${pending.length === 1 ? "One needs" : `${pending.length} need`} a quick look.`
-          : `All ${lines.length} lines checked. Tap any line to fix it.`}
+        We copied these lines from your photo. Fix anything we misread.
       </T>
 
       {look ? (
@@ -132,7 +121,7 @@ export default function Confirm() {
           <View className="flex-row items-center gap-1.5">
             <Icon name="alert" size={16} color="#92400E" stroke={2} />
             <T weight="semibold" className="text-[13px] text-amber-ink">
-              Please check this one
+              Did we read this one right?
             </T>
           </View>
           <View className="gap-1">
@@ -161,22 +150,26 @@ export default function Confirm() {
               </T>
               <T className="text-[13px] text-muted">
                 {look.units > 1
-                  ? `We read ${look.units} units. Is that right?`
-                  : "We weren't sure we read this right."}
+                  ? `We read ${look.units} units. Does your paper bill say ${look.units}?`
+                  : "We weren't sure we read this right. Does it match your paper bill?"}
               </T>
             </View>
             <Money cents={look.chargeCents} weight="semibold" />
           </View>
           <View className="flex-row gap-2.5">
             <Button
-              label="Fix it"
+              label="No, fix it"
               variant="outline"
               className="flex-1"
               icon={<Icon name="pencil" size={16} />}
               onPress={() => setEditing(look)}
             />
             <Button
-              label="That's right"
+              label={
+                look.units > 1
+                  ? `Yes, it says ${look.units}`
+                  : "Yes, it matches"
+              }
               variant="secondary"
               className="flex-1"
               icon={
@@ -191,13 +184,13 @@ export default function Confirm() {
       <View className="mt-[22px] flex-row items-center gap-2 border-foreground border-b pb-2.5">
         <T weight="semibold" className="flex-1 text-[13px]">
           {pending.length > 0
-            ? `${rest.length} lines we read clearly`
+            ? "Everything else we read"
             : `All ${lines.length} lines`}
         </T>
         {matches ? (
           <>
             <Icon name="check" size={14} color="#0F9D76" stroke={2.5} />
-            <T className="text-[13px] text-muted">Total matches</T>
+            <T className="text-[13px] text-muted">Adds up to</T>
           </>
         ) : (
           <T className="text-[13px] text-amber-ink">Bill total</T>
@@ -233,7 +226,7 @@ export default function Confirm() {
                 .join(" · ")}
               {checked.has(line.id) ? (
                 <T weight="semibold" className="text-[13px] text-mint-ink">
-                  {" · You checked it"}
+                  {" · Read right"}
                 </T>
               ) : null}
             </T>
@@ -255,12 +248,6 @@ export default function Confirm() {
             {all ? "Show fewer" : `Show ${rest.length - FIRST} more lines`}
           </T>
         </Pressable>
-      ) : null}
-
-      {confirm.isError ? (
-        <T className={cn("mt-3 text-coral-ink text-sm")}>
-          {errorMessage(confirm.error)}
-        </T>
       ) : null}
 
       <EditLineSheet

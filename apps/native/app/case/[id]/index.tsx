@@ -16,7 +16,7 @@ import {
 import { useIsSample } from "@/lib/cases";
 import { errorMessage } from "@/lib/errors";
 import { serviceDay } from "@/lib/format";
-import { statusOf } from "@/lib/status";
+import { caseStatus, itemizedPending } from "@/lib/status";
 import { orpc } from "@/utils/orpc";
 
 const time = new Intl.DateTimeFormat("en-US", {
@@ -52,13 +52,16 @@ export default function BillDetail() {
   }
 
   const { bill, audit } = data;
-  const status = statusOf(data.case.status);
+  const status = caseStatus(data);
+  const waiting = itemizedPending(data);
   const log = [...(events.data ?? [])].reverse();
-  const next = !audit
-    ? { label: "Confirm your lines", path: "/case/[id]/confirm" as const }
-    : data.case.status === "audited" || data.case.status === "action_pending"
-      ? { label: "See the plan", path: "/case/[id]/plan" as const }
-      : null;
+  const next = waiting
+    ? null
+    : !audit
+      ? { label: "Confirm your lines", path: "/case/[id]/confirm" as const }
+      : data.case.status === "audited" || data.case.status === "action_pending"
+        ? { label: "See the plan", path: "/case/[id]/plan" as const }
+        : null;
 
   return (
     <Screen
@@ -89,41 +92,45 @@ export default function BillDetail() {
         </T>
       </View>
 
-      <View className="mt-4 gap-3.5 rounded-3xl bg-ink p-5">
-        <View className="gap-1">
-          <View className="flex-row items-center gap-2">
-            <View className="size-2 rounded-full bg-mint" />
-            <T className="text-[13px] text-ink-muted">Now</T>
-          </View>
-          <T weight="semibold" className="text-[22px] text-white leading-7">
-            {status.title}
-          </T>
-          <T className="text-[#D5DCE4] text-sm leading-5">{status.next}</T>
-        </View>
-        <Progress step={status.step} label={status.title} />
-        {audit ? (
-          <View className="flex-row items-center justify-between border-white/10 border-t pt-3">
-            <T className="text-ink-muted text-sm">Asking to remove</T>
-            <View className="flex-row items-center gap-1">
-              <Money
-                cents={audit.balance.lessThanBilledCents}
-                size={14}
-                weight="semibold"
-                className="text-mint-soft"
-              />
-              <T weight="semibold" className="text-mint-soft text-sm">
-                of
-              </T>
-              <Money
-                cents={audit.balance.billedCents}
-                size={14}
-                weight="semibold"
-                className="text-mint-soft"
-              />
+      {waiting ? (
+        <ItemizedWaiting id={id} />
+      ) : (
+        <View className="mt-4 gap-3.5 rounded-3xl bg-ink p-5">
+          <View className="gap-1">
+            <View className="flex-row items-center gap-2">
+              <View className="size-2 rounded-full bg-mint" />
+              <T className="text-[13px] text-ink-muted">Now</T>
             </View>
+            <T weight="semibold" className="text-[22px] text-white leading-7">
+              {status.title}
+            </T>
+            <T className="text-[#D5DCE4] text-sm leading-5">{status.next}</T>
           </View>
-        ) : null}
-      </View>
+          <Progress step={status.step} label={status.title} />
+          {audit ? (
+            <View className="flex-row items-center justify-between border-white/10 border-t pt-3">
+              <T className="text-ink-muted text-sm">Asking to remove</T>
+              <View className="flex-row items-center gap-1">
+                <Money
+                  cents={audit.balance.lessThanBilledCents}
+                  size={14}
+                  weight="semibold"
+                  className="text-mint-soft"
+                />
+                <T weight="semibold" className="text-mint-soft text-sm">
+                  of
+                </T>
+                <Money
+                  cents={audit.balance.billedCents}
+                  size={14}
+                  weight="semibold"
+                  className="text-mint-soft"
+                />
+              </View>
+            </View>
+          ) : null}
+        </View>
+      )}
 
       {audit && audit.flags.length > 0 ? (
         <View className="mt-4 rounded-[20px] bg-white px-[18px] py-1.5">
@@ -194,5 +201,84 @@ export default function BillDetail() {
         <Disclaimer />
       </View>
     </Screen>
+  );
+}
+
+const TRACK = ["Asked", "On its way", "We check it"];
+
+// W3 V2: the itemized request went out; the bill comes by email or mail and
+// gets added to this same case.
+function ItemizedWaiting({ id }: { id: string }) {
+  return (
+    <View className="mt-4 gap-5">
+      <View
+        accessibilityRole="progressbar"
+        accessibilityLabel="Asked, on its way, then we check it"
+        className="flex-row items-start"
+      >
+        {TRACK.map((label, i) => (
+          <View key={label} className="flex-1 flex-row items-start">
+            {i > 0 ? (
+              <View
+                className={cn(
+                  "mt-[13px] h-0.5 flex-1",
+                  i === 1 ? "bg-ink" : "bg-hairline",
+                )}
+              />
+            ) : null}
+            <View className="w-20 items-center gap-1.5">
+              <View
+                className={cn(
+                  "size-7 items-center justify-center rounded-full",
+                  i === 0 ? "bg-ink" : i === 1 ? "bg-accent" : "bg-slate-soft",
+                )}
+              >
+                {i === 0 ? (
+                  <Icon name="check" size={14} color="#FFFFFF" stroke={2.5} />
+                ) : (
+                  <T
+                    weight="semibold"
+                    className={cn(
+                      "text-[13px]",
+                      i === 1 ? "text-white" : "text-muted",
+                    )}
+                  >
+                    {i + 1}
+                  </T>
+                )}
+              </View>
+              <T
+                weight={i === 1 ? "semibold" : "regular"}
+                className={cn("text-center text-xs", i === 2 && "text-muted")}
+              >
+                {label}
+              </T>
+            </View>
+          </View>
+        ))}
+      </View>
+
+      <Pressable
+        accessibilityRole="button"
+        onPress={() =>
+          router.push({ pathname: "/scan", params: { caseId: id } })
+        }
+        className="items-center gap-2 rounded-2xl border-[#C8D1DC] border-[1.5px] border-dashed bg-white px-4 py-[22px]"
+      >
+        <Icon name="doc" size={28} color="#1E4ED8" />
+        <T weight="semibold" className="text-base">
+          Got it? Add it here
+        </T>
+        <T className="text-center text-[13px] text-muted leading-[18px]">
+          Snap the paper copy, upload the PDF, or paste the text. It goes on
+          this same bill.
+        </T>
+        <View className="mt-1.5 h-11 flex-row items-center rounded-full bg-ink px-[22px]">
+          <T weight="semibold" className="text-[15px] text-white">
+            Add my itemized bill
+          </T>
+        </View>
+      </Pressable>
+    </View>
   );
 }

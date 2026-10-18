@@ -11,7 +11,8 @@ import { client, orpc } from "@/utils/orpc";
 type Kind = "letter" | "itemized_request" | "call";
 
 // L6 Plan + approve: the exact call script and email, one approval for both.
-// With ?kind=itemized (from E3) there is no call, only the itemized request.
+// With ?kind=itemized (from E3) the email asks for the itemized bill, and the
+// call follows it up when calls are set up (the call is optional there).
 export default function Plan() {
   const { id, kind } = useLocalSearchParams<{ id: string; kind?: string }>();
   const itemized = kind === "itemized";
@@ -26,7 +27,6 @@ export default function Plan() {
   const call = useQuery({
     queryKey: ["draft", id, "call"],
     queryFn: () => client.action.draftLetter({ caseId: id, kind: "call" }),
-    enabled: !itemized,
     retry: false,
     staleTime: Number.POSITIVE_INFINITY,
   });
@@ -40,7 +40,7 @@ export default function Plan() {
   const approve = useMutation({
     mutationFn: async () => {
       // The draft hashes prove the user approved this exact text.
-      const drafts = [email.data, itemized ? undefined : call.data];
+      const drafts = [email.data, call.data];
       for (const d of drafts) {
         if (!d) continue;
         await client.action.approve({
@@ -53,13 +53,16 @@ export default function Plan() {
         await client.action.send({ actionId: email.data.action.id });
     },
     onSuccess: () =>
-      itemized
-        ? router.replace({ pathname: "/case/[id]", params: { id } })
-        : router.push({ pathname: "/case/[id]/join", params: { id } }),
+      call.data
+        ? router.push({ pathname: "/case/[id]/join", params: { id } })
+        : router.replace({ pathname: "/case/[id]", params: { id } }),
   });
 
-  const ready = Boolean(email.data) && (itemized || Boolean(call.data));
-  const loading = email.isLoading || (!itemized && call.isLoading);
+  // Itemized requests go out by email even when a call can't be drafted.
+  const withCall = !itemized || Boolean(call.data);
+  const ready =
+    Boolean(email.data) && (itemized ? !call.isLoading : Boolean(call.data));
+  const loading = email.isLoading || call.isLoading;
   const failed = email.error ?? (itemized ? null : call.error);
 
   return (
@@ -94,7 +97,7 @@ export default function Plan() {
             </View>
           </Pressable>
           <T className="pt-1 text-center text-muted text-xs leading-4">
-            Approving covers{itemized ? "" : " the call script,"} the email, and
+            Approving covers{withCall ? " the call script," : ""} the email, and
             your signed form. We save your approval with the time.
           </T>
           <Button
@@ -127,11 +130,15 @@ export default function Plan() {
       ) : null}
 
       <View className="gap-5 pt-5">
-        {itemized ? null : (
+        {withCall ? (
           <Step
             n={1}
             title="Your advocate calls billing"
-            body="It waits on hold for you. When a person answers, we bring you on. Your advocate leads; you're there if they need you."
+            body={
+              itemized
+                ? "To make sure they send your itemized bill. When a person answers, we bring you on."
+                : "It waits on hold for you. When a person answers, we bring you on. Your advocate leads; you're there if they need you."
+            }
             toggle={
               open === "call" ? "Hide the call script" : "See what we'll say"
             }
@@ -141,9 +148,9 @@ export default function Plan() {
               <Draft text={call.data.action.draft} />
             ) : null}
           </Step>
-        )}
+        ) : null}
         <Step
-          n={itemized ? 1 : 2}
+          n={withCall ? 2 : 1}
           title={
             itemized ? "We ask for your itemized bill" : "We email the details"
           }
@@ -163,7 +170,7 @@ export default function Plan() {
           ) : null}
         </Step>
         <Step
-          n={itemized ? 2 : 3}
+          n={withCall ? 3 : 2}
           muted
           title="We text you updates"
           body={

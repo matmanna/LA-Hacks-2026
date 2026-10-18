@@ -1,21 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { cn } from "heroui-native";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 
-import { Button, Icon, Money, Screen, T } from "@/components/bb";
+import { Button, Icon, Screen, T } from "@/components/bb";
 import { useIsSample } from "@/lib/cases";
-import { serviceDay } from "@/lib/format";
-import { orpc } from "@/utils/orpc";
+import { errorMessage } from "@/lib/errors";
+import { client, orpc } from "@/utils/orpc";
 
 const STEPS = [
-  "Your advocate calls billing and brings you on the line",
-  "We email the request, CC you, and ask them to send it to you",
-  "When it reaches your inbox, forward or scan it and we check every line",
+  "We email billing to ask for it. You're CC'd.",
+  "Your advocate calls to make sure they send it.",
+  "Add it here when it comes. We check every line.",
 ];
 
-// E3 Summary bill: totals only, so nothing can be checked yet. Asks for the
-// itemized bill instead.
+// E3 Summary bill V2: one total, no line items. Asking for the itemized bill
+// is the first step, not a dead end.
 export default function SummaryBill() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const isSample = useIsSample(id);
@@ -23,6 +23,23 @@ export default function SummaryBill() {
     orpc.case.get.queryOptions({ input: { caseId: id } }),
   );
   const bill = detail.data?.bill;
+
+  // Drafting needs an audited case, so confirm the summary as read and run the
+  // audit (it returns the "ask for an itemized bill" flag) before the plan.
+  const request = useMutation({
+    mutationFn: async () => {
+      if (!bill) return;
+      if (detail.data?.case.status === "new") {
+        await client.bill.confirmLines({ caseId: id, lines: bill.lines });
+      }
+      if (!detail.data?.audit) await client.audit.run({ caseId: id });
+    },
+    onSuccess: () =>
+      router.push({
+        pathname: "/case/[id]/plan",
+        params: { id, kind: "itemized" },
+      }),
+  });
 
   return (
     <Screen
@@ -32,70 +49,50 @@ export default function SummaryBill() {
         <>
           <Button
             label="Request my itemized bill"
-            onPress={() =>
-              router.push({
-                pathname: "/case/[id]/plan",
-                params: { id, kind: "itemized" },
-              })
-            }
+            busy={request.isPending}
+            onPress={() => request.mutate()}
           />
           <Button
-            label="I have another page"
+            label="It's in my patient portal"
             variant="quiet"
-            onPress={() => router.replace("/scan")}
+            onPress={() =>
+              router.push({ pathname: "/scan", params: { caseId: id } })
+            }
           />
         </>
       }
     >
-      <View className="mt-1 gap-1 rounded-3xl bg-ink p-[22px]">
-        <T className="text-ink-muted text-sm">
-          {[bill?.hospital.name, serviceDay(bill?.statementDate ?? null)]
-            .filter(Boolean)
-            .join(" · ")}
-        </T>
-        <T weight="serif" className="pt-1.5 text-[30px] text-white leading-9">
-          Amount due
-        </T>
-        {bill ? (
-          <Money
-            cents={bill.totals.dueCents}
-            size={44}
-            weight="semibold"
-            className="text-white"
-            label="Amount due"
-          />
-        ) : null}
-        <View className="mt-2 flex-row self-start rounded-full bg-white/10 px-2.5 py-1">
-          <Icon name="alert" size={14} color="#FFFFFF" stroke={2} />
-          <T className="pl-1.5 text-[13px] text-white">
-            Totals only, no line items
-          </T>
-        </View>
+      <T className="pt-2 text-[15px] text-muted">
+        {bill?.hospital.name ?? "Your bill"}
+      </T>
+      <T
+        weight="semibold"
+        className="mt-1.5 text-[28px] leading-[34px] tracking-tight"
+      >
+        First, ask for your itemized bill
+      </T>
+      <T className="mt-1.5 text-[15px] text-muted leading-[22px]">
+        This bill shows one total. An itemized bill lists every charge, so you,
+        and the hospital, can check each one.
+      </T>
+
+      <View
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+        className="mt-6 flex-row items-center justify-center gap-3.5"
+      >
+        <Paper label="What you have" total />
+        <Icon name="chevron" size={22} color="#C3CAD3" stroke={2} />
+        <Paper label="What you need" />
       </View>
 
-      <View className="gap-1.5 pt-[18px]">
-        <T weight="semibold" className="text-2xl leading-[30px] tracking-tight">
-          We can't check this yet
-        </T>
-        <T className="text-[15px] text-muted leading-[22px]">
-          This bill shows a total, not each service. We need the itemized bill
-          to find mistakes.
-        </T>
-      </View>
-
-      <View className="pt-1.5">
+      <View className="mt-5 border-hairline border-t pt-1.5">
         {STEPS.map((step, i) => (
-          <View
-            key={step}
-            className={cn(
-              "flex-row items-center gap-3 py-[13px]",
-              i < STEPS.length - 1 && "border-hairline border-b",
-            )}
-          >
+          <View key={step} className="flex-row items-start gap-3 py-2.5">
             <View
               className={cn(
-                "size-[26px] items-center justify-center rounded-full",
-                i < 2 ? "bg-ink" : "bg-wash",
+                "size-[22px] items-center justify-center rounded-full",
+                i < 2 ? "bg-ink" : "bg-slate-soft",
               )}
             >
               <T
@@ -105,28 +102,63 @@ export default function SummaryBill() {
                 {i + 1}
               </T>
             </View>
-            <T className="flex-1 text-[15px]">{step}</T>
+            <T className="flex-1 text-[15px] leading-[21px]">{step}</T>
           </View>
         ))}
       </View>
 
-      <Pressable
-        accessibilityRole="button"
-        onPress={() => router.replace("/scan")}
-        className="mt-2 flex-row items-center gap-3 rounded-2xl bg-wash p-3.5"
-      >
-        <Icon name="monitor" color="#1E4ED8" />
-        <View className="flex-1 gap-0.5">
-          <T weight="semibold" className="text-[15px]">
-            Check your patient portal first
-          </T>
-          <T className="text-[13px] text-muted leading-[18px]">
-            Your itemized bill may already be there. Download it and upload it
-            here.
-          </T>
-        </View>
-        <Icon name="chevron" size={16} color="#5B6B7C" />
-      </Pressable>
+      {request.isError ? (
+        <T className="mt-3 text-coral-ink text-sm">
+          {errorMessage(request.error)}
+        </T>
+      ) : null}
     </Screen>
+  );
+}
+
+// The two little bills: one total line vs every charge.
+function Paper({ label, total = false }: { label: string; total?: boolean }) {
+  const widths = total ? [] : [100, 85, 100, 60, 100, 75, 100, 90];
+  return (
+    <View className="items-center gap-2">
+      <View
+        className="h-[150px] w-[126px] gap-1.5 rounded-md bg-paper px-[11px] py-3"
+        style={{
+          shadowColor: "#0B1B2B",
+          shadowOpacity: 0.08,
+          shadowRadius: 10,
+          shadowOffset: { width: 0, height: 8 },
+        }}
+      >
+        <View className="h-1 w-[70%] rounded-sm bg-[#2A3440]" />
+        {total ? (
+          <>
+            <View className="flex-1" />
+            <View className="h-1 w-1/2 self-end rounded-sm bg-[#2A3440]" />
+            <T
+              weight="semibold"
+              className="self-end text-[#2A3440] text-[10px]"
+            >
+              Total due
+            </T>
+          </>
+        ) : (
+          widths.map((w, i) => (
+            <View
+              // biome-ignore lint/suspicious/noArrayIndexKey: static shape
+              key={i}
+              className="h-1 rounded-sm bg-[#C8D1DC]"
+              style={{ width: `${w}%` }}
+            />
+          ))
+        )}
+      </View>
+      <T
+        weight={total ? "regular" : "semibold"}
+        className={cn("text-xs", total && "text-muted")}
+      >
+        {label}
+      </T>
+    </View>
   );
 }
