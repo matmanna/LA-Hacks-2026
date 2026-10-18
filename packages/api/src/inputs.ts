@@ -58,3 +58,13 @@ export const ApproveInput = z.object({
 export const CallIdInput = z.object({ callId: z.string() });
 
 export const ShareTokenInput = z.object({ token: z.string().min(20).max(100) });
+
+// Optional dev promo code. Only the sandbox honours it (see core payments).
+const PromoCode = z.string().trim().max(64).optional();
+
+export const PaymentQuoteInput = z.object({ caseId: z.string() });
+export const PaymentCheckoutInput = z.object({
+  caseId: z.string(),
+  promoCode: PromoCode,
+});
+export const BulkCheckoutInput = z.object({ promoCode: PromoCode });

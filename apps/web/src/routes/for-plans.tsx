@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { BulkPlan } from "@/components/landing/plans/bulk-plan";
 import { PlansEvidence } from "@/components/landing/plans/evidence";
 import { Fit } from "@/components/landing/plans/fit";
 import { PlansHero, type PlansSample } from "@/components/landing/plans/hero";
@@ -79,6 +80,7 @@ function ForPlans() {
         <PlansResults results={results} />
         <Integration />
         <Security />
+        <BulkPlan />
         <PilotForm />
       </main>
       <SiteFooter audience="plans" />

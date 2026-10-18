@@ -37,6 +37,9 @@ describe("procedure stubs", () => {
         "call.status",
         "event.list",
         "eval.results",
+        "payment.quote",
+        "payment.checkout",
+        "payment.bulkCheckout",
       ].sort(),
     );
   });
