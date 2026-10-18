@@ -5,13 +5,14 @@ import { checkout, polar, portal } from "@polar-sh/better-auth";
 import { betterAuth } from "better-auth";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 
-import { createPolarClient } from "./lib/payments";
+import { createPolarClient, type PolarServer } from "./lib/payments";
 
 export type AuthConfig = {
   BETTER_AUTH_URL: string;
   BETTER_AUTH_SECRET: string;
   POLAR_ACCESS_TOKEN?: string;
   POLAR_SUCCESS_URL?: string;
+  POLAR_SERVER?: PolarServer;
 };
 
 // Polar is optional: the plugin is only enabled when both values are set.
@@ -19,7 +20,10 @@ function polarPlugins(env: AuthConfig) {
   if (!env.POLAR_ACCESS_TOKEN || !env.POLAR_SUCCESS_URL) return [];
   return [
     polar({
-      client: createPolarClient({ POLAR_ACCESS_TOKEN: env.POLAR_ACCESS_TOKEN }),
+      client: createPolarClient({
+        POLAR_ACCESS_TOKEN: env.POLAR_ACCESS_TOKEN,
+        POLAR_SERVER: env.POLAR_SERVER,
+      }),
       createCustomerOnSignUp: true,
       use: [
         checkout({

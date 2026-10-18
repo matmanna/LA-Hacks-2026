@@ -1,8 +1,13 @@
 import { Polar } from "@polar-sh/sdk";
 
-export function createPolarClient(config: { POLAR_ACCESS_TOKEN: string }) {
+export type PolarServer = "sandbox" | "production";
+
+export function createPolarClient(config: {
+  POLAR_ACCESS_TOKEN: string;
+  POLAR_SERVER?: PolarServer;
+}) {
   return new Polar({
     accessToken: config.POLAR_ACCESS_TOKEN,
-    server: "sandbox",
+    server: config.POLAR_SERVER ?? "sandbox",
   });
 }
