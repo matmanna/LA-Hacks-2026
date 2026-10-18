@@ -4,8 +4,7 @@ import { useState } from "react";
 import { Alert, View } from "react-native";
 
 import { Button, Icon, Screen, T } from "@/components/bb";
-import { SignIn } from "@/components/sign-in";
-import { SignUp } from "@/components/sign-up";
+import { PhoneSignIn } from "@/components/phone-sign-in";
 import { authClient } from "@/lib/auth-client";
 
 import { ENV } from "../../src/env";
@@ -79,6 +78,34 @@ export default function Billing() {
 
       {session?.user ? (
         <View className="gap-4">
+          <View className="gap-3">
+            <T weight="semibold" className="text-lg">
+              Plans
+            </T>
+            <T className="text-muted text-sm leading-5">
+              Start with a free bill check. If confirmed savings result,
+              BetterBill’s paid plan is 10% of those savings, capped at $1,000.
+            </T>
+          </View>
+          <View className="gap-3 rounded-[20px] bg-white p-[18px]">
+            <T weight="semibold" className="text-base">
+              Bill check · Free
+            </T>
+            <T className="text-muted text-sm leading-5">
+              Read every line, see the evidence, estimate savings, and draft a
+              letter you can review.
+            </T>
+          </View>
+          <View className="gap-3 rounded-[20px] border-2 border-mint-ink bg-white p-[16px]">
+            <T weight="semibold" className="text-base">
+              When we save you money · 10%
+            </T>
+            <T className="text-muted text-sm leading-5">
+              Charged only on confirmed savings. Estimates never count, and
+              there is no fee when nothing is confirmed. You approve the exact
+              email or call script first.
+            </T>
+          </View>
           <View className="gap-4 rounded-[20px] bg-white p-[18px]">
             <View className="size-11 items-center justify-center rounded-full bg-secondary">
               <Icon name="card" color="#1E3A8A" />
@@ -120,8 +147,7 @@ export default function Billing() {
               Your plan and payment details stay connected to your account.
             </T>
           </View>
-          <SignIn />
-          <SignUp />
+          <PhoneSignIn />
         </View>
       )}
     </Screen>

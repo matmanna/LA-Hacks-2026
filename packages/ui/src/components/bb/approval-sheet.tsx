@@ -19,6 +19,10 @@ type ApprovalSheetProps = {
   onApprove: () => void;
   // Calls only: Approve stays disabled until the person's consent is confirmed.
   consent?: { checked: boolean; onCheckedChange: (checked: boolean) => void };
+  paidPlanAgreement: {
+    checked: boolean;
+    onCheckedChange: (checked: boolean) => void;
+  };
 };
 
 const CALL_OPENING =
@@ -37,6 +41,7 @@ export function ApprovalSheet({
   browserPatient = false,
   onApprove,
   consent,
+  paidPlanAgreement,
 }: ApprovalSheetProps) {
   const isCall = kind === "call";
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -108,10 +113,28 @@ export function ApprovalSheet({
         </label>
       ) : null}
 
+      {/* biome-ignore lint/a11y/noLabelWithoutControl: Checkbox renders the input */}
+      <label className="flex min-h-11 items-start gap-3 text-sm leading-5">
+        <Checkbox
+          className="mt-0.5"
+          checked={paidPlanAgreement.checked}
+          onCheckedChange={(checked) =>
+            paidPlanAgreement.onCheckedChange(checked === true)
+          }
+        />
+        I agree to BetterBill’s paid plan: 10% of confirmed savings, capped at
+        $1,000. Estimates never count, and there is no fee when nothing is
+        confirmed.
+      </label>
+
       <div className="flex flex-col gap-2 lg:flex-row-reverse lg:justify-start">
         <Button
           className="w-full lg:w-auto"
-          disabled={pending || (consent !== undefined && !consent.checked)}
+          disabled={
+            pending ||
+            !paidPlanAgreement.checked ||
+            (consent !== undefined && !consent.checked)
+          }
           onClick={onApprove}
         >
           {pending ? (

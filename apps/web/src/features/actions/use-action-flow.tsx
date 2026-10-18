@@ -64,6 +64,7 @@ export function useActionFlow(caseId: string, kind: Kind) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [consent, setConsent] = useState(false);
+  const [paidPlanAgreement, setPaidPlanAgreement] = useState(false);
   const [choosing, setChoosing] = useState(false);
   const browser = useBrowserCall();
 
@@ -80,6 +81,7 @@ export function useActionFlow(caseId: string, kind: Kind) {
   async function draftAction(patientConnection?: PatientConnection) {
     setBusy(true);
     setConsent(false);
+    setPaidPlanAgreement(false);
     const toastId = toast.loading(flow.drafting);
     try {
       const res = await client.action.draftLetter({
@@ -234,6 +236,10 @@ export function useActionFlow(caseId: string, kind: Kind) {
           ? { checked: consent, onCheckedChange: setConsent }
           : undefined
       }
+      paidPlanAgreement={{
+        checked: paidPlanAgreement,
+        onCheckedChange: setPaidPlanAgreement,
+      }}
     />
   ) : null;
 
