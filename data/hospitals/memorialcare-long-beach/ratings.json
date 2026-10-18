@@ -1,0 +1,72 @@
+{
+  "hospitalKey": "memorialcare-long-beach",
+  "ourName": "Long Beach Memorial Medical Center",
+  "ourAddress": "2801 Atlantic Ave, Long Beach, CA 90806",
+  "ccn": "050485",
+  "matchedName": "MEMORIALCARE LONG BEACH MEDICAL CENTER",
+  "matchedAddress": "2801 ATLANTIC AVE, LONG BEACH, CA 90806",
+  "matchNote": "Matched on state, city, street number and street name; name similarity 0.67 (token overlap with capture.json hospitalName). Miller Children's & Women's Hospital Long Beach shares this street address but has its own CCN and is a children's hospital, so it is listed as a candidate and not used.",
+  "overallStars": 2,
+  "overallRaw": "2",
+  "overallFootnote": null,
+  "patientSurveyStars": 3,
+  "patientSurveyRaw": "3",
+  "patientSurveyFootnote": null,
+  "surveysCompleted": 2188,
+  "responseRatePct": 18,
+  "surveyPeriod": {
+    "start": "2024-10-01",
+    "end": "2025-09-30"
+  },
+  "candidates": [
+    {
+      "ccn": "050485",
+      "name": "MEMORIALCARE LONG BEACH MEDICAL CENTER",
+      "address": "2801 ATLANTIC AVE, LONG BEACH, CA 90806",
+      "hospitalType": "Acute Care Hospitals",
+      "nameSimilarity": 0.67
+    },
+    {
+      "ccn": "053309",
+      "name": "MEMORIAL CARE MILLER CHILDREN'S &  WOMEN'S HOSP LB",
+      "address": "2801 ATLANTIC AVENUE, LONG BEACH, CA 90806",
+      "hospitalType": "Childrens",
+      "nameSimilarity": 0.09
+    }
+  ],
+  "capturedAt": "2026-10-18T17:01:34Z",
+  "sources": [
+    {
+      "dataset": "Hospital General Information",
+      "id": "xubh-q36u",
+      "landingPage": "https://data.cms.gov/provider-data/dataset/xubh-q36u",
+      "modified": "2026-07-22",
+      "released": "2026-08-13",
+      "url": "https://data.cms.gov/provider-data/api/1/datastore/query/xubh-q36u/0?conditions%5B0%5D%5Bproperty%5D=state&conditions%5B0%5D%5Bvalue%5D=CA&conditions%5B0%5D%5Boperator%5D=%3D&conditions%5B1%5D%5Bproperty%5D=citytown&conditions%5B1%5D%5Bvalue%5D=LONG+BEACH&conditions%5B1%5D%5Boperator%5D=%3D&conditions%5B2%5D%5Bproperty%5D=address&conditions%5B2%5D%5Bvalue%5D=2801+%25&conditions%5B2%5D%5Boperator%5D=like&schema=false",
+      "sha256": "2e826c5ede630c8c1bf7c18917d4c23424d98173f54a320ddee36f459dd7332e",
+      "fetchedAt": "2026-10-18T17:01:34Z",
+      "evidence": "evidence/care-compare-general-information.json",
+      "metastore": {
+        "url": "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/xubh-q36u",
+        "sha256": "31eea397b8bfe8207168cefda23256eb9cb3d5e49158d221eda8465a2d8e5f8c",
+        "evidence": "evidence/care-compare-metastore-xubh-q36u.json"
+      }
+    },
+    {
+      "dataset": "Patient survey (HCAHPS) - Hospital",
+      "id": "dgck-syfz",
+      "landingPage": "https://data.cms.gov/provider-data/dataset/dgck-syfz",
+      "modified": "2026-07-22",
+      "released": "2026-08-13",
+      "url": "https://data.cms.gov/provider-data/api/1/datastore/query/dgck-syfz/0?conditions%5B0%5D%5Bproperty%5D=facility_id&conditions%5B0%5D%5Bvalue%5D=050485&conditions%5B0%5D%5Boperator%5D=%3D&conditions%5B1%5D%5Bproperty%5D=hcahps_measure_id&conditions%5B1%5D%5Bvalue%5D=H_STAR_RATING&conditions%5B1%5D%5Boperator%5D=%3D&schema=false",
+      "sha256": "0cf817faed7748915f15224c3b754277f7c7a5a9a8c251cbdccf45b91f03f93a",
+      "fetchedAt": "2026-10-18T17:01:35Z",
+      "evidence": "evidence/care-compare-hcahps-summary-star.json",
+      "metastore": {
+        "url": "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/dgck-syfz",
+        "sha256": "070a02b7e2fcff0cef07a3ffd5d099f6f27fd3b0050139723cdbc9ecd220b042",
+        "evidence": "evidence/care-compare-metastore-dgck-syfz.json"
+      }
+    }
+  ]
+}
