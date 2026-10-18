@@ -1,5 +1,5 @@
 import { Play, X } from "lucide-react";
-import { type RefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 const VIMEO_BASE =
@@ -13,9 +13,10 @@ const MAX_W = 250;
 // Share of the room below the anchor that the video may fill (a bit under 3/5).
 const HEIGHT_SHARE = 0.5;
 
-// CSS version of the same sum, so the card has its size from the first paint.
-// 686 px is where the anchor sits on desktop once the page has settled.
-export const VIDEO_W_DEFAULT = `clamp(${MIN_W}px, calc((100svh - 686px) * ${(HEIGHT_SHARE * 16) / 9}), ${MAX_W}px)`;
+// Card width from the screen height: bigger on tall screens, never below 150 px
+// or above 250 px. About 640 px of the screen goes to the bars, the copy and
+// the buttons above it; half of what is left (at 16:9) is the card.
+export const VIDEO_W_DEFAULT = `clamp(${MIN_W}px, calc((100svh - 640px) * ${(HEIGHT_SHARE * 16) / 9}), ${MAX_W}px)`;
 
 function Lightbox({ onClose }: { onClose: () => void }) {
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -71,39 +72,11 @@ function Lightbox({ onClose }: { onClose: () => void }) {
   );
 }
 
-// Small poster card, bottom left of the hero on desktop. Its height is at most
-// half the space between the bottom of the anchor label and the bottom of the
-// screen. A click opens the video large, over a dark backdrop.
-export function HeroVideo({
-  anchor,
-  onWidth,
-}: {
-  anchor: RefObject<HTMLElement | null>;
-  onWidth: (width: number) => void;
-}) {
+// Small poster card, floating bottom left of the hero on desktop. It sizes from
+// the screen height in CSS, so it never changes size after the first paint. A
+// click opens the video large, over a dark backdrop.
+export function HeroVideo() {
   const [open, setOpen] = useState(false);
-
-  // Only on resize. The CSS default covers the first paint, and measuring while
-  // the page is still settling would make the card jump.
-  useEffect(() => {
-    let timer = 0;
-    function measure() {
-      const el = anchor.current;
-      if (!el) return;
-      const bottom = el.getBoundingClientRect().bottom + window.scrollY;
-      const h = Math.max(0, window.innerHeight - bottom) * HEIGHT_SHARE;
-      onWidth(Math.round(Math.min(MAX_W, Math.max(MIN_W, (h * 16) / 9))));
-    }
-    function onResize() {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(measure, 150);
-    }
-    window.addEventListener("resize", onResize);
-    return () => {
-      window.clearTimeout(timer);
-      window.removeEventListener("resize", onResize);
-    };
-  }, [anchor, onWidth]);
 
   return (
     <>
