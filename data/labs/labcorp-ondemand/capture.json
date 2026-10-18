@@ -1,0 +1,197 @@
+{
+  "labKey": "labcorp-ondemand",
+  "labName": "Labcorp OnDemand",
+  "capturedAt": "2026-10-18T16:32:25Z",
+  "capturedBy": "scripts/labs/capture_lab_prices.py (plain HTTPS GETs; no Browser Use, login or checkout)",
+  "sources": [
+    {
+      "kind": "help_article_json",
+      "url": "https://support.ondemand.labcorp.com/api/v2/help_center/en-us/articles/360043703614.json",
+      "sha256": "a895825bd808751a7a9e54f53f44c5d4457e0604810bc8382d1bb508a0f3e564",
+      "bytes": 964,
+      "evidenceFile": "evidence/help-fees-at-lab.json",
+      "fetchedAt": "2026-10-18T16:32:26Z",
+      "httpStatus": 200,
+      "contentType": "application/json; charset=utf-8",
+      "title": "Are there any additional fees at the lab?",
+      "htmlUrl": "https://support.ondemand.labcorp.com/hc/en-us/articles/360043703614-Are-there-any-additional-fees-at-the-lab",
+      "articleUpdatedAt": "2023-04-05T21:18:14Z"
+    },
+    {
+      "kind": "help_article_json",
+      "url": "https://support.ondemand.labcorp.com/api/v2/help_center/en-us/articles/360044203813.json",
+      "sha256": "a030679ad3449358c4bbdd918bdcdf18bf4adcf455258c3ae85a5fadc4ea0ac6",
+      "bytes": 1476,
+      "evidenceFile": "evidence/help-physician-order.json",
+      "fetchedAt": "2026-10-18T16:32:26Z",
+      "httpStatus": 200,
+      "contentType": "application/json; charset=utf-8",
+      "title": "How do I get a physician order for testing?",
+      "htmlUrl": "https://support.ondemand.labcorp.com/hc/en-us/articles/360044203813-How-do-I-get-a-physician-order-for-testing",
+      "articleUpdatedAt": "2024-11-20T16:21:49Z"
+    },
+    {
+      "kind": "help_article_json",
+      "url": "https://support.ondemand.labcorp.com/api/v2/help_center/en-us/articles/33271893091859.json",
+      "sha256": "49588b5ce0b1bb3e655bee7dc22703be65264a20ab582f82384bb7ab2e7a105c",
+      "bytes": 12909,
+      "evidenceFile": "evidence/help-promotions.json",
+      "fetchedAt": "2026-10-18T16:32:27Z",
+      "httpStatus": 200,
+      "contentType": "application/json; charset=utf-8",
+      "title": "Promotions",
+      "htmlUrl": "https://support.ondemand.labcorp.com/hc/en-us/articles/33271893091859-Promotions",
+      "articleUpdatedAt": "2026-10-05T15:10:09Z"
+    },
+    {
+      "kind": "product_page",
+      "url": "https://www.ondemand.labcorp.com/lab-tests/complete-blood-count",
+      "sha256": "cc4cf59d871ffd491aa703bb02661e657fee5ea43f3f98980784e816da7a12ee",
+      "bytes": 174036,
+      "evidenceFile": "evidence/cbc-product-page.html",
+      "fetchedAt": "2026-10-18T16:32:27Z",
+      "httpStatus": 200,
+      "contentType": "text/html;charset=utf-8"
+    },
+    {
+      "kind": "test_directory",
+      "url": "https://www.labcorp.com/tests/005009",
+      "sha256": "a049b5b89fe07d7fdd19aa103e62354ac89772bed5d807550673e05d228592a1",
+      "bytes": 182105,
+      "evidenceFile": "evidence/labcorp-test-005009.html",
+      "fetchedAt": "2026-10-18T16:32:28Z",
+      "httpStatus": 200,
+      "contentType": "text/html;charset=utf-8",
+      "finalUrl": "https://www.labcorp.com/tests/005009/complete-blood-count-cbc-with-differential-reflex-to-peripheral-smear-review",
+      "redacted": {
+        "note": "sha256 and bytes are of the original response. The committed copy replaces public client-side key values (Stripe publishable key, Algolia search key) with [redacted].",
+        "evidenceSha256": "20f3fef87e7a6a9860bcf81753858aaba01013c675b21e5661c37fd144711e40",
+        "evidenceBytes": 182083
+      },
+      "title": "Complete Blood Count (CBC) With Differential, Reflex to Peripheral Smear Review | Labcorp Test 005009, CPT 85025 | Labcorp"
+    },
+    {
+      "kind": "product_page",
+      "url": "https://www.ondemand.labcorp.com/lab-tests/comprehensive-metabolic-panel",
+      "sha256": "b91666babfbd804b2307a18c780cfc4d35301482d250d0dae72e825e53bcb0d5",
+      "bytes": 174634,
+      "evidenceFile": "evidence/cmp-product-page.html",
+      "fetchedAt": "2026-10-18T16:32:28Z",
+      "httpStatus": 200,
+      "contentType": "text/html;charset=utf-8"
+    },
+    {
+      "kind": "test_directory",
+      "url": "https://www.labcorp.com/tests/322000",
+      "sha256": "4d826395630ee3b6bce22399c85df60a47f641785f881614d9fe6eae1bf56eed",
+      "bytes": 157503,
+      "evidenceFile": "evidence/labcorp-test-322000.html",
+      "fetchedAt": "2026-10-18T16:32:29Z",
+      "httpStatus": 200,
+      "contentType": "text/html;charset=utf-8",
+      "finalUrl": "https://www.labcorp.com/tests/322000/metabolic-panel-14-comprehensive",
+      "redacted": {
+        "note": "sha256 and bytes are of the original response. The committed copy replaces public client-side key values (Stripe publishable key, Algolia search key) with [redacted].",
+        "evidenceSha256": "2c3cab974cf15559ca1965c3524d5b8ab44d19ca3be51fea3686145923ff3762",
+        "evidenceBytes": 157481
+      },
+      "title": "Comprehensive Metabolic Panel (14) | Labcorp Test 322000, CPT 80053 | Labcorp"
+    }
+  ],
+  "prices": [
+    {
+      "code": "85025",
+      "test": "Blood count (CBC with differential)",
+      "productName": "Complete Blood Count (CBC) Test",
+      "productId": "005009",
+      "cashCents": 2900,
+      "cashCentsBasis": "Regular listed price on the product page. The help center says the ordering provider's fee and sample collection are included.",
+      "listedPriceCents": 2900,
+      "addedFees": [],
+      "includes": "The price of each test includes the fee for the ordering provider’s services.",
+      "includesSourceUrl": "https://support.ondemand.labcorp.com/hc/en-us/articles/360044203813-How-do-I-get-a-physician-order-for-testing",
+      "sourceUrl": "https://www.ondemand.labcorp.com/lab-tests/complete-blood-count",
+      "quote": "$29",
+      "sale": null,
+      "codeEvidence": {
+        "verified": true,
+        "kind": "test_directory",
+        "url": "https://www.labcorp.com/tests/005009/complete-blood-count-cbc-with-differential-reflex-to-peripheral-smear-review",
+        "quote": "Labcorp Test 005009, CPT 85025",
+        "testName": "Complete Blood Count (CBC) With Differential, Reflex to Peripheral Smear Review"
+      },
+      "otherQuotes": [
+        {
+          "quote": "No additional payment is due at the lab.",
+          "sourceUrl": "https://support.ondemand.labcorp.com/hc/en-us/articles/360043703614-Are-there-any-additional-fees-at-the-lab"
+        },
+        {
+          "quote": "The cost of sample collection is included in your purchase price.",
+          "sourceUrl": "https://support.ondemand.labcorp.com/hc/en-us/articles/360043703614-Are-there-any-additional-fees-at-the-lab"
+        },
+        {
+          "quote": "A healthcare provider will review and approve your test requests; no healthcare provider visit is required.",
+          "sourceUrl": "https://www.ondemand.labcorp.com/lab-tests/complete-blood-count"
+        }
+      ]
+    },
+    {
+      "code": "80053",
+      "test": "Metabolic panel (comprehensive metabolic panel, CMP)",
+      "productName": "Comprehensive Metabolic Panel (CMP) Test",
+      "productId": "322000",
+      "cashCents": 4900,
+      "cashCentsBasis": "Regular listed price on the product page. The help center says the ordering provider's fee and sample collection are included.",
+      "listedPriceCents": 4900,
+      "addedFees": [],
+      "includes": "The price of each test includes the fee for the ordering provider’s services.",
+      "includesSourceUrl": "https://support.ondemand.labcorp.com/hc/en-us/articles/360044203813-How-do-I-get-a-physician-order-for-testing",
+      "sourceUrl": "https://www.ondemand.labcorp.com/lab-tests/comprehensive-metabolic-panel",
+      "quote": "$36.75 25% off $49",
+      "sale": {
+        "cents": 3675,
+        "percentOff": 25,
+        "quote": "$36.75 25% off $49",
+        "sourceUrl": "https://www.ondemand.labcorp.com/lab-tests/comprehensive-metabolic-panel",
+        "terms": [
+          {
+            "quote": "Enjoy up to 25% off select tests for a limited time beginning October 1, 2026, at 10:00 AM EST.",
+            "sourceUrl": "https://support.ondemand.labcorp.com/hc/en-us/articles/33271893091859-Promotions"
+          },
+          {
+            "quote": "Discounts do not apply to the Physician Fee.",
+            "sourceUrl": "https://support.ondemand.labcorp.com/hc/en-us/articles/33271893091859-Promotions"
+          }
+        ]
+      },
+      "codeEvidence": {
+        "verified": true,
+        "kind": "test_directory",
+        "url": "https://www.labcorp.com/tests/322000/metabolic-panel-14-comprehensive",
+        "quote": "Labcorp Test 322000, CPT 80053",
+        "testName": "Comprehensive Metabolic Panel (14)"
+      },
+      "otherQuotes": [
+        {
+          "quote": "No additional payment is due at the lab.",
+          "sourceUrl": "https://support.ondemand.labcorp.com/hc/en-us/articles/360043703614-Are-there-any-additional-fees-at-the-lab"
+        },
+        {
+          "quote": "The cost of sample collection is included in your purchase price.",
+          "sourceUrl": "https://support.ondemand.labcorp.com/hc/en-us/articles/360043703614-Are-there-any-additional-fees-at-the-lab"
+        },
+        {
+          "quote": "A healthcare provider will review and approve your test requests; no healthcare provider visit is required.",
+          "sourceUrl": "https://www.ondemand.labcorp.com/lab-tests/comprehensive-metabolic-panel"
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "Product pages were found in https://www.ondemand.labcorp.com/sitemap.xml. Prices are in each page's server-rendered HTML (the price block and the add-to-cart button's data-price), so no price JSON was needed.",
+    "CPT codes: the OnDemand SKU is the Labcorp test number, and https://www.labcorp.com/tests/<sku> gives the CPT code in its page title (005009 is CPT 85025, 322000 is CPT 80053). Labcorp's test menu names 005009 'Complete Blood Count (CBC) With Differential, Reflex to Peripheral Smear Review'.",
+    "Fees: the help center articles (fetched as the help center's own article JSON) say the ordering provider's fee and sample collection are included in the price. Tax was not checked.",
+    "The CMP was on an October sale when captured: the page shows the sale price and the regular price. cashCents is the regular price; the sale price and its terms are in `sale`. The promotions article also says discounts do not apply to the physician fee, and the page shows no separate physician fee, so the exact sale total at checkout was not confirmed (no cart or checkout calls were made).",
+    "These are national online prices for ordering the test directly, with the draw at a Labcorp location. They are not tied to one location and are not hospital prices."
+  ]
+}
