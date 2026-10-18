@@ -41,13 +41,17 @@ const CONFERENCE_DIALING = {
 // L7 call tracking, with A2 Incoming call and A3 Missed. ?script=1 replays
 // the sample call (see DEMO_CALL_SCRIPT); otherwise it follows call.status.
 export default function Call() {
-  const { id, script } = useLocalSearchParams<{
+  const { id, script, failed, reason } = useLocalSearchParams<{
     id: string;
     script?: string;
+    failed?: string;
+    reason?: string;
   }>();
   const scripted = script === "1";
   const flow = useCallFlow(id, scripted);
-  const { stage } = flow;
+  // Join always advances after Start so the flow is not a dead end. A failed
+  // start must stay visibly failed rather than looking like a real call.
+  const stage = failed === "1" ? "failed" : flow.stage;
   const bill = flow.detail?.bill;
   const hospital = bill?.hospital.name.split(" ")[0] ?? "Billing";
   const flags = flow.detail?.audit?.flags.length ?? 0;
@@ -145,7 +149,9 @@ export default function Call() {
         </T>
         <T className="text-base text-muted leading-6">
           {stage !== "joined"
-            ? copy.sub
+            ? stage === "failed" && reason
+              ? reason
+              : copy.sub
             : conference
               ? "Your advocate is talking to billing for you. Jump in any time; it waits for you."
               : "Your advocate is asking for a hold, your itemized bill, and how to get your records."}

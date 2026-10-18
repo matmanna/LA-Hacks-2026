@@ -6,7 +6,7 @@ import { type ReactNode, useState } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
 
 import { Button, Icon, Screen, T } from "@/components/bb";
-import { useIsSample } from "@/lib/cases";
+import { useSampleCase } from "@/lib/cases";
 import { errorMessage } from "@/lib/errors";
 import { DEMO_CALL_SCRIPT } from "@/lib/use-call-flow";
 import { client, orpc } from "@/utils/orpc";
@@ -23,8 +23,8 @@ export default function Plan() {
   const [open, setOpen] = useState<"call" | "email" | null>(null);
   const [signed, setSigned] = useState(false);
   const [paidPlanAgreement, setPaidPlanAgreement] = useState(false);
-  const sample = useIsSample(id);
-  const scripted = DEMO_CALL_SCRIPT && sample;
+  const sample = useSampleCase(id);
+  const scripted = DEMO_CALL_SCRIPT && sample === true;
 
   const detail = useQuery(
     orpc.case.get.queryOptions({ input: { caseId: id } }),
@@ -67,14 +67,21 @@ export default function Plan() {
     // fails; the next screen can still show the scripted/sample flow.
     onSettled: () =>
       call.data
-        ? router.push({ pathname: "/case/[id]/join", params: { id } })
+        ? router.push({
+            pathname: "/case/[id]/join",
+            // Keep the sample flow explicit. AsyncStorage is not guaranteed
+            // to finish before the join screen renders.
+            params: scripted ? { id, script: "1" } : { id },
+          })
         : router.replace({ pathname: "/case/[id]", params: { id } }),
   });
 
   // Itemized requests go out by email even when a call can't be drafted.
   const withCall = !itemized || Boolean(call.data);
   const ready =
-    Boolean(email.data) && (itemized ? !call.isLoading : Boolean(call.data));
+    Boolean(email.data) &&
+    sample !== undefined &&
+    (itemized ? !call.isLoading : Boolean(call.data));
   const loading = email.isLoading || call.isLoading;
   const failed = email.error ?? (itemized ? null : call.error);
 

@@ -30,10 +30,12 @@ export async function forgetCase(id: string) {
   );
 }
 
-// True when this phone started the case from a synthetic sample bill.
-export function useIsSample(id: string) {
-  const [sample, setSample] = useState(false);
+// Undefined while the on-device case list is loading; otherwise whether this
+// phone started the case from a synthetic sample bill.
+export function useSampleCase(id: string) {
+  const [sample, setSample] = useState<boolean | undefined>(undefined);
   useEffect(() => {
+    setSample(undefined);
     void loadCases().then((cases) =>
       setSample(
         cases.some((c) => c.id === id && c.label.startsWith("Sample bill")),
@@ -41,4 +43,11 @@ export function useIsSample(id: string) {
     );
   }, [id]);
   return sample;
+}
+
+// Most screens only need a display hint, so they can treat a loading value as
+// false. Call-start screens use useSampleCase so they never lose the sample
+// flow while storage is resolving.
+export function useIsSample(id: string) {
+  return useSampleCase(id) ?? false;
 }
