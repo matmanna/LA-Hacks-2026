@@ -60,14 +60,17 @@ export function CallTranscriptCard({
         className="space-y-3"
         aria-live={status === "in_progress" ? "polite" : undefined}
       >
-        {turns.map((turn, index) => (
-          <div key={`${turn.speaker}-${index}`}>
-            <p className="font-medium text-muted-foreground text-xs leading-4">
-              {SPEAKER[turn.speaker]}
-            </p>
-            <p className="text-sm leading-6">{turn.text}</p>
-          </div>
-        ))}
+        {turns.map((turn) => {
+          const key = turn.at ?? `${turn.speaker}:${turn.text}`;
+          return (
+            <div key={key}>
+              <p className="font-medium text-muted-foreground text-xs leading-4">
+                {SPEAKER[turn.speaker]}
+              </p>
+              <p className="text-sm leading-6">{turn.text}</p>
+            </div>
+          );
+        })}
       </div>
       {outcome ? (
         <dl className="space-y-2 rounded-xl bg-mint-soft p-4 text-mint-ink text-sm leading-5">
