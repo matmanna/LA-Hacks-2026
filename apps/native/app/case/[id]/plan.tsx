@@ -52,7 +52,10 @@ export default function Plan() {
       if (email.data)
         await client.action.send({ actionId: email.data.action.id });
     },
-    onSuccess: () => router.replace({ pathname: "/case/[id]", params: { id } }),
+    onSuccess: () =>
+      itemized
+        ? router.replace({ pathname: "/case/[id]", params: { id } })
+        : router.push({ pathname: "/case/[id]/join", params: { id } }),
   });
 
   const ready = Boolean(email.data) && (itemized || Boolean(call.data));
