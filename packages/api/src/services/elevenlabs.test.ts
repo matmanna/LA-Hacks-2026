@@ -19,6 +19,7 @@ function configure() {
   vi.stubEnv("BB_FAKE_PROVIDERS", "");
   vi.stubEnv("ELEVENLABS_API_KEY", "xi_test");
   vi.stubEnv("ELEVENLABS_AGENT_ID", "agent_1");
+  vi.stubEnv("ELEVENLABS_BRANCH_ID", "");
   vi.stubEnv("ELEVENLABS_PHONE_NUMBER_ID", "phone_1");
 }
 
@@ -74,6 +75,17 @@ describe("startOutboundCall", () => {
       to_number: "+13105550100",
       conversation_initiation_client_data: { dynamic_variables: vars },
     });
+  });
+
+  it("uses the selected agent branch with the approved variables", async () => {
+    configure();
+    vi.stubEnv("ELEVENLABS_BRANCH_ID", "agtbrch_test");
+    const fetch = reply(200, { success: true, conversation_id: "conv_1" });
+    await startOutboundCall({ to: "+13105550100", vars }, { fetch });
+    const [, init] = fetch.mock.calls[0] ?? [];
+    expect(
+      JSON.parse(String(init?.body)).conversation_initiation_client_data,
+    ).toEqual({ branch_id: "agtbrch_test", dynamic_variables: vars });
   });
 
   it("throws when ElevenLabs refuses or errors", async () => {
