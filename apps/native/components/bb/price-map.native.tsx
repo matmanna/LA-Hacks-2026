@@ -40,13 +40,15 @@ export function PriceMap({
   const key = rows.map((r) => r.hospitalKey).join();
   // One tap can arrive as a marker press, a marker select (iOS) and the
   // map's marker events; open the hospital once.
-  const lastPick = useRef({ key: "", at: 0 });
+  // Only a hospital on this map counts (the "you are here" dot and iOS's
+  // own marker ids do not), and only the first event of a tap.
+  const lastPick = useRef(0);
   const pick = (hospitalKey: string | undefined) => {
     if (!hospitalKey || !onSelect) return;
+    if (!rows.some((r) => r.hospitalKey === hospitalKey)) return;
     const now = Date.now();
-    if (lastPick.current.key === hospitalKey && now - lastPick.current.at < 800)
-      return;
-    lastPick.current = { key: hospitalKey, at: now };
+    if (now - lastPick.current < 800) return;
+    lastPick.current = now;
     onSelect(hospitalKey);
   };
 
@@ -108,6 +110,7 @@ export function PriceMap({
     >
       <Marker
         coordinate={{ latitude: origin.lat, longitude: origin.lng }}
+        identifier="origin"
         title={here ? "You are here" : "Downtown Los Angeles"}
         anchor={{ x: 0.5, y: 0.5 }}
       >
