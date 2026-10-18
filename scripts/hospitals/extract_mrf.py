@@ -84,13 +84,20 @@ def main() -> None:
     ap.add_argument("--page-url", required=True)
     ap.add_argument("--run-id", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--hospital-key", default="cedars-sinai")
+    ap.add_argument("--hpt-url", default=HPT_URL)
+    ap.add_argument(
+        "--cdm-embedded-codes",
+        action="store_true",
+        help="also match CDM item numbers whose third '-' segment is the code (UCLA style); recorded as codeSource parsed_from_cdm",
+    )
     args = ap.parse_args()
     out = Path(args.out)
     evidence = out.parent / "evidence"
     evidence.mkdir(parents=True, exist_ok=True)
     codes = set(args.codes)
 
-    hpt, _ = fetch(HPT_URL)
+    hpt, _ = fetch(args.hpt_url)
     (evidence / "cms-hpt.txt").write_bytes(hpt)
     page, _ = fetch(args.page_url)
     (evidence / "price_page.html").write_bytes(page)
@@ -105,6 +112,15 @@ def main() -> None:
         for item in ijson.items(reader, "standard_charge_information.item", use_float=False):
             info = item.get("code_information") or []
             hit = [c for c in info if c.get("type") in ("CPT", "HCPCS") and c.get("code") in codes]
+            source = "tagged"
+            if not hit and args.cdm_embedded_codes:
+                for c in info:
+                    parts = str(c.get("code") or "").split("-")
+                    if c.get("type") == "CDM" and len(parts) > 2 and parts[2] in codes:
+                        seg = parts[2]
+                        hit = [{"code": seg, "type": "HCPCS" if seg[0].isalpha() else "CPT"}]
+                        source = "parsed_from_cdm"
+                        break
             if not hit:
                 continue
             for sc in item.get("standard_charges") or []:
@@ -112,6 +128,7 @@ def main() -> None:
                     {
                         "code": hit[0]["code"],
                         "codeType": hit[0]["type"],
+                        "codeSource": source,
                         "hospitalDescription": item.get("description"),
                         "otherCodes": [
                             {"code": c.get("code"), "type": c.get("type")} for c in info if c not in hit
@@ -128,14 +145,14 @@ def main() -> None:
     head = bytes(reader.head)
 
     result = {
-        "hospitalKey": "cedars-sinai",
+        "hospitalKey": args.hospital_key,
         "hospitalName": head_field(head, "hospital_name"),
         "capturedAt": captured_at,
         "capturedBy": f"browser_use_capture.py run {args.run_id} + extract_mrf.py",
         "sources": [
             {
                 "kind": "cms_hpt_txt",
-                "url": HPT_URL,
+                "url": args.hpt_url,
                 "sha256": hashlib.sha256(hpt).hexdigest(),
                 "bytes": len(hpt),
                 "evidenceFile": "evidence/cms-hpt.txt",
