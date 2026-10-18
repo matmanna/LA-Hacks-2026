@@ -1,219 +1,198 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocalSearchParams } from "expo-router";
-import { Button, Card, Spinner } from "heroui-native";
-import { RefreshControl, Text, View } from "react-native";
+import { useQuery } from "@tanstack/react-query";
+import { router, useLocalSearchParams } from "expo-router";
+import { cn } from "heroui-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 
-import { Container } from "@/components/container";
+import {
+  Button,
+  Disclaimer,
+  Icon,
+  Money,
+  Progress,
+  Screen,
+  T,
+  TierBadge,
+} from "@/components/bb";
+import { useIsSample } from "@/lib/cases";
 import { errorMessage } from "@/lib/errors";
-import { money, STATUS_LABEL, when } from "@/lib/format";
-import { client, orpc, queryClient } from "@/utils/orpc";
+import { serviceDay } from "@/lib/format";
+import { statusOf } from "@/lib/status";
+import { orpc } from "@/utils/orpc";
 
-// Poll while open so the status and activity update over time.
-const POLL_MS = 5000;
+const time = new Intl.DateTimeFormat("en-US", {
+  hour: "numeric",
+  minute: "2-digit",
+});
 
-const TIER_LABEL: Record<string, string> = {
-  confirmed: "Confirmed from your bill",
-  rule: "Billing rule",
-  published: "Hospital's published price",
-  estimate: "Estimate",
-};
-
-const ACTOR: Record<string, string> = {
-  user: "by you",
-  agent: "by BetterBill",
-  system: "automatic",
-};
-
-export default function CaseScreen() {
+// W3 Bill detail: where things stand, what we're asking about, and every
+// step so far from the case's event log.
+export default function BillDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const detailQuery = useQuery({
+  const isSample = useIsSample(id);
+  const detail = useQuery({
     ...orpc.case.get.queryOptions({ input: { caseId: id } }),
-    refetchInterval: POLL_MS,
+    refetchInterval: 5000,
   });
-  const eventsQuery = useQuery({
+  const events = useQuery({
     ...orpc.event.list.queryOptions({ input: { caseId: id } }),
-    refetchInterval: POLL_MS,
+    refetchInterval: 5000,
   });
 
-  const confirm = useMutation({
-    mutationFn: async () => {
-      const bill = detailQuery.data?.bill;
-      if (!bill) return;
-      await client.bill.confirmLines({
-        caseId: id,
-        lines: bill.lines,
-        eob: detailQuery.data?.eob ?? null,
-      });
-      await client.audit.run({ caseId: id });
-    },
-    onSettled: () => queryClient.invalidateQueries(),
-  });
+  const data = detail.data;
+  if (!data) {
+    return (
+      <Screen tone="wash">
+        {detail.isError ? (
+          <T className="pt-6 text-coral-ink">{errorMessage(detail.error)}</T>
+        ) : (
+          <ActivityIndicator className="pt-10" color="#1E4ED8" />
+        )}
+      </Screen>
+    );
+  }
 
-  const detail = detailQuery.data;
-  const bill = detail?.bill;
-  const audit = detail?.audit;
-  const events = eventsQuery.data ?? [];
+  const { bill, audit } = data;
+  const status = statusOf(data.case.status);
+  const log = [...(events.data ?? [])].reverse();
+  const next = !audit
+    ? { label: "Confirm your lines", path: "/case/[id]/confirm" as const }
+    : data.case.status === "audited" || data.case.status === "action_pending"
+      ? { label: "See the plan", path: "/case/[id]/plan" as const }
+      : null;
 
   return (
-    <Container
-      className="p-5"
-      scrollViewProps={{
-        refreshControl: (
-          <RefreshControl
-            refreshing={detailQuery.isRefetching && !detailQuery.isLoading}
-            onRefresh={() => {
-              void detailQuery.refetch();
-              void eventsQuery.refetch();
-            }}
+    <Screen
+      tone="wash"
+      onNav={() => router.replace("/")}
+      aside={isSample ? "Sample" : undefined}
+      footer={
+        next ? (
+          <Button
+            label={next.label}
+            onPress={() => router.push({ pathname: next.path, params: { id } })}
           />
-        ),
-      }}
+        ) : null
+      }
     >
-      <View className="gap-4">
-        {detailQuery.isError ? (
-          <Text className="text-danger">{errorMessage(detailQuery.error)}</Text>
-        ) : null}
-        {detailQuery.isLoading ? <Spinner /> : null}
-
-        {detail ? (
-          <View>
-            <Text className="font-semibold text-3xl text-foreground">
-              {bill?.hospital.name ?? detail.case.hospitalName ?? "Your bill"}
-            </Text>
-            <Text className="text-muted">
-              {STATUS_LABEL[detail.case.status] ?? detail.case.status}
-            </Text>
-          </View>
-        ) : null}
-
-        {audit ? (
-          <Card className="gap-2 p-5">
-            <Card.Title>Your fair balance</Card.Title>
-            <Text className="text-4xl text-foreground">
-              {money(audit.balance.fairBalanceCents)}
-            </Text>
-            {audit.balance.lessThanBilledCents > 0 ? (
-              <Text className="font-semibold text-success">
-                {money(-audit.balance.lessThanBilledCents)} less than billed
-              </Text>
-            ) : null}
-            <Card.Description>
-              Billed {money(audit.balance.billedCents)}.
-              {audit.balance.isEstimate ? " Includes estimates." : ""}
-            </Card.Description>
-          </Card>
-        ) : null}
-
-        {bill && !audit ? (
-          <Card variant="secondary" className="gap-2 p-4">
-            <Card.Title>Check what we read</Card.Title>
-            <Card.Description>
-              {bill.lines.length} lines. Line editing comes later; tap Looks
-              right if they match your bill.
-            </Card.Description>
-            {bill.lines.map((line) => (
-              <View
-                key={line.id}
-                className="flex-row gap-3 border-border border-b py-2"
-              >
-                <View className="flex-1">
-                  <Text className="text-foreground">{line.description}</Text>
-                  <Text className="text-muted text-xs">
-                    {[
-                      line.code,
-                      line.serviceDate,
-                      `${line.units} unit${line.units === 1 ? "" : "s"}`,
-                    ]
-                      .filter(Boolean)
-                      .join(" · ")}
-                    {line.confidence < 0.7 ? "  Please check this line." : ""}
-                  </Text>
-                </View>
-                <Text className="font-semibold text-foreground">
-                  {money(line.chargeCents)}
-                </Text>
-              </View>
-            ))}
-            <Button
-              onPress={() => confirm.mutate()}
-              isDisabled={confirm.isPending}
-            >
-              {confirm.isPending ? (
-                <Spinner size="sm" color="default" />
-              ) : (
-                <Button.Label>Looks right</Button.Label>
-              )}
-            </Button>
-            {confirm.isError ? (
-              <Text className="text-danger text-sm">
-                {errorMessage(confirm.error)}
-              </Text>
-            ) : null}
-          </Card>
-        ) : null}
-
-        {detail && !bill ? (
-          <Text className="text-muted">
-            No lines yet. Pull to refresh in a moment.
-          </Text>
-        ) : null}
-
-        {audit ? (
-          <View className="gap-3">
-            <Text className="font-semibold text-foreground text-xl">
-              What looks wrong ({audit.flags.length})
-            </Text>
-            {audit.flags.map((flag) => (
-              <Card key={flag.id} variant="secondary" className="gap-1 p-4">
-                <View className="flex-row gap-3">
-                  <Text className="flex-1 font-semibold text-foreground">
-                    {flag.title}
-                  </Text>
-                  <Text className="font-semibold text-danger">
-                    {money(flag.amountCents)}
-                  </Text>
-                </View>
-                <Text className="text-foreground">{flag.explanation}</Text>
-                <Card.Description>
-                  {TIER_LABEL[flag.tier] ?? flag.tier}
-                </Card.Description>
-              </Card>
-            ))}
-            <Text className="font-semibold text-success">
-              {money(audit.savings.confirmedCents)} confirmed
-            </Text>
-            {audit.savings.potentialHighCents > 0 ? (
-              <Text className="text-muted">
-                Plus {money(audit.savings.potentialLowCents)} to{" "}
-                {money(audit.savings.potentialHighCents)} possible (estimate)
-              </Text>
-            ) : null}
-          </View>
-        ) : null}
-
-        {events.length > 0 ? (
-          <View className="gap-2">
-            <Text className="font-semibold text-foreground text-xl">
-              Activity
-            </Text>
-            {events.map((event) => (
-              <View key={event.id} className="flex-row gap-3">
-                <View className="mt-1.5 size-3 rounded-full border-2 border-success" />
-                <View className="flex-1 pb-3">
-                  <Text className="text-foreground">{event.summary}</Text>
-                  <Text className="text-muted text-xs">
-                    {when(event.at)} · {ACTOR[event.actor] ?? event.actor}
-                  </Text>
-                </View>
-              </View>
-            ))}
-          </View>
-        ) : null}
-
-        <Text className="text-muted text-xs">
-          BetterBill is informational, not legal or medical advice.
-        </Text>
+      <View className="gap-0.5 pt-1">
+        <T weight="serif" className="text-[34px] leading-[38px]">
+          {bill?.hospital.name ?? data.case.hospitalName ?? "Your bill"}
+        </T>
+        <T className="text-muted text-sm">
+          {[
+            serviceDay(bill?.lines[0]?.serviceDate ?? null) &&
+              `Visit ${serviceDay(bill?.lines[0]?.serviceDate ?? null)}`,
+            bill?.accountRefMasked && `account ending ${bill.accountRefMasked}`,
+          ]
+            .filter(Boolean)
+            .join(" · ")}
+        </T>
       </View>
-    </Container>
+
+      <View className="mt-4 gap-3.5 rounded-3xl bg-ink p-5">
+        <View className="gap-1">
+          <View className="flex-row items-center gap-2">
+            <View className="size-2 rounded-full bg-mint" />
+            <T className="text-[13px] text-ink-muted">Now</T>
+          </View>
+          <T weight="semibold" className="text-[22px] text-white leading-7">
+            {status.title}
+          </T>
+          <T className="text-[#D5DCE4] text-sm leading-5">{status.next}</T>
+        </View>
+        <Progress step={status.step} label={status.title} />
+        {audit ? (
+          <View className="flex-row items-center justify-between border-white/10 border-t pt-3">
+            <T className="text-ink-muted text-sm">Asking to remove</T>
+            <View className="flex-row items-center gap-1">
+              <Money
+                cents={audit.balance.lessThanBilledCents}
+                size={14}
+                weight="semibold"
+                className="text-mint-soft"
+              />
+              <T weight="semibold" className="text-mint-soft text-sm">
+                of
+              </T>
+              <Money
+                cents={audit.balance.billedCents}
+                size={14}
+                weight="semibold"
+                className="text-mint-soft"
+              />
+            </View>
+          </View>
+        ) : null}
+      </View>
+
+      {audit && audit.flags.length > 0 ? (
+        <View className="mt-4 rounded-[20px] bg-white px-[18px] py-1.5">
+          <T weight="semibold" className="pt-3 pb-1 text-[13px] text-muted">
+            What we're asking about
+          </T>
+          {audit.flags.map((flag, i) => (
+            <Pressable
+              key={flag.id}
+              accessibilityRole="button"
+              onPress={() =>
+                router.push({
+                  pathname: "/case/[id]/flag/[flagId]",
+                  params: { id, flagId: flag.id },
+                })
+              }
+              className={cn(
+                "flex-row items-center gap-2.5 py-3",
+                i < audit.flags.length - 1 && "border-hairline border-b",
+              )}
+            >
+              <View className="flex-1 gap-0.5">
+                <T weight="semibold" className="text-[15px]">
+                  {flag.title}
+                </T>
+                <TierBadge tier={flag.tier} />
+              </View>
+              <Money
+                cents={flag.amountCents}
+                weight="semibold"
+                className="text-coral-ink"
+                label={flag.title}
+              />
+              <Icon name="chevron" size={16} color="#5B6B7C" />
+            </Pressable>
+          ))}
+        </View>
+      ) : null}
+
+      {log.length > 0 ? (
+        <View className="mt-4 rounded-[20px] bg-white px-[18px] pt-[18px] pb-1.5">
+          <T weight="semibold" className="pb-3.5 text-[13px] text-muted">
+            What happened
+          </T>
+          {log.map((e, i) => (
+            <View key={e.id} className="flex-row gap-3.5">
+              <View className="w-3.5 items-center gap-1 pt-[5px]">
+                <View
+                  className={cn(
+                    "size-2.5 rounded-full",
+                    i === 0 ? "bg-ink" : "bg-[#C8D1DC]",
+                  )}
+                />
+                {i < log.length - 1 ? (
+                  <View className="w-[1.5px] flex-1 bg-hairline" />
+                ) : null}
+              </View>
+              <T className="flex-1 pb-4 text-sm leading-5">{e.summary}</T>
+              <T className="pt-0.5 text-muted text-xs">
+                {time.format(new Date(e.at))}
+              </T>
+            </View>
+          ))}
+        </View>
+      ) : null}
+
+      <View className="pt-4">
+        <Disclaimer />
+      </View>
+    </Screen>
   );
 }
