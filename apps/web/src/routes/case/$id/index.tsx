@@ -22,6 +22,7 @@ import { toast } from "sonner";
 
 import { AppBar } from "@/components/app-bar";
 import { AssistanceCard } from "@/components/assistance-card";
+import { useLetterAction } from "@/features/actions/use-letter-action";
 import { orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/case/$id/")({
@@ -75,6 +76,7 @@ function CasePage() {
   );
   const [showAll, setShowAll] = useState(false);
   const [openFlagId, setOpenFlagId] = useState<string | null>(null);
+  const letter = useLetterAction(id);
 
   if (isLoading) return <CaseSkeleton />;
 
@@ -305,7 +307,15 @@ function CasePage() {
             </p>
           </Card>
           <Card>
+<<<<<<< HEAD
             <Button className="w-full" onClick={comingSoon}>
+=======
+            <Button
+              className="w-full"
+              onClick={letter.start}
+              disabled={letter.busy}
+            >
+>>>>>>> origin/main
               Send the letter
             </Button>
             <Button variant="secondary" className="w-full" onClick={comingSoon}>
@@ -344,8 +354,10 @@ function CasePage() {
         potentialLowCents={audit.savings.potentialLowCents}
         potentialHighCents={audit.savings.potentialHighCents}
         actionLabel="Send the letter"
-        onAction={comingSoon}
+        onAction={letter.start}
+        actionDisabled={letter.busy}
       />
+      {letter.sheet}
     </>
   );
 }

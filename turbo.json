@@ -35,7 +35,8 @@
     },
     "test": {
       "dependsOn": ["^build"],
-      "outputs": ["coverage/**"]
+      "outputs": ["coverage/**"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/data/**"]
     },
     "test:integration": {
       "cache": false
@@ -51,13 +52,16 @@
     "BETTER_AUTH_URL",
     "CI",
     "DATABASE_URL",
+    "EMAIL_TEST_INBOX",
     "GEMINI_API_KEY",
+    "GEMINI_MODEL",
     "NODE_ENV",
     "POLAR_ACCESS_TOKEN",
     "POLAR_SUCCESS_URL",
     "SENTRY_AUTH_TOKEN",
     "SENTRY_DSN",
     "STEPFUN_API_KEY",
+    "STEPFUN_BASE_URL",
     "VERCEL",
     "VERCEL_ENV",
     "VERCEL_PROJECT_PRODUCTION_URL",

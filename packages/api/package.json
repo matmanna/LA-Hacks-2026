@@ -8,7 +8,8 @@
   "scripts": {
     "build": "tsc -b",
     "check-types": "tsc -b",
-    "test": "vitest run"
+    "test": "vitest run --exclude \"**/*.int.test.ts\"",
+    "test:integration": "vitest run int.test"
   },
   "dependencies": {
     "@betterbill/auth": "workspace:*",
@@ -18,6 +19,7 @@
     "@orpc/openapi": "catalog:",
     "@orpc/server": "catalog:",
     "@orpc/zod": "catalog:",
+    "drizzle-orm": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

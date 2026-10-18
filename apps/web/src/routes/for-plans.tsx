@@ -52,12 +52,15 @@ export const Route = createFileRoute("/for-plans")({
     meta: [
       { title: "BetterBill for plans: evidence-first bill review" },
       {
+<<<<<<< HEAD
         property: "og:title",
         content: "BetterBill for plans: evidence-first bill review",
       },
       { property: "og:image", content: "/og/plans.png" },
       { name: "twitter:card", content: "summary_large_image" },
       {
+=======
+>>>>>>> origin/main
         name: "description",
         content:
           "Line-by-line hospital bill review with evidence tiers and an audit trail, for self-funded employers, TPAs, and plans.",
