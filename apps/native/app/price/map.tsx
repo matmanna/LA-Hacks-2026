@@ -11,8 +11,10 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Easing,
+  runOnJS,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
@@ -42,6 +44,9 @@ const SHADOW = {
   shadowOffset: { width: 0, height: 2 },
 };
 
+// How much of the sheet shows when peeking: handle, range and its label.
+const PEEK = 128;
+
 const openHospital = (hospitalKey: string, code: string) =>
   router.push({
     pathname: "/price/[hospitalKey]",
@@ -49,8 +54,9 @@ const openHospital = (hospitalKey: string, code: string) =>
   });
 
 // Price A: the hospitals near you on a map with their published cash price,
-// then a sheet with the range and the lowest three. Phones draw a real map;
-// the web places the same pins by location on a plain background.
+// then a sheet with the range and the list. Drag the sheet (or tap its
+// handle) between peek, middle and full. Phones draw a real map; the web
+// places the same pins by location on a plain background.
 export default function PriceMapScreen() {
   const { code = "" } = useLocalSearchParams<{ code: string }>();
   const service = SERVICES.find((s) => s.code === code);
@@ -58,28 +64,76 @@ export default function PriceMapScreen() {
   const { height } = useWindowDimensions();
   const nearby = useNearby(code);
   const { origin, data } = nearby;
-  const [all, setAll] = useState(false);
-  // The collapsed sheet's height, so the map keeps every pin above it.
-  const [sheetH, setSheetH] = useState(420);
   const reduced = useReducedMotion();
-  const shown = useSharedValue(reduced ? 1 : 0);
+
+  // The sheet is fullH tall and slides by y: 0 is full, fullH - peek peeks.
+  const pad = Math.max(insets.bottom, 16) + 6;
+  const fullH = Math.round(height * 0.86);
+  const peek = PEEK + pad;
+  const mid = Math.min(Math.round(height * 0.48), fullH);
+  const stops = { full: 0, mid: fullH - mid, peek: fullH - peek };
+  const y = useSharedValue(fullH);
+  const from = useSharedValue(0);
+  // How much of the sheet shows once it settles: the map fits above it.
+  const [visible, setVisible] = useState(mid);
+  const expanded = visible >= fullH - 1;
+
   useEffect(() => {
-    // Rise with the prices, or with the error and "Try again".
+    // Rise with the prices, or with the error and "Try again", once the
+    // last pin has popped in.
     if (!data && !nearby.isError) return;
-    // The sheet rises once the last pin has popped in.
     const pins = (data?.rows.length ?? 0) * PIN_STEP_MS;
-    shown.value = reduced
-      ? 1
+    y.value = reduced
+      ? stops.mid
       : withDelay(
           pins + 250,
-          withTiming(1, {
+          withTiming(stops.mid, {
             duration: 550,
             easing: Easing.bezier(0.2, 0.8, 0.2, 1),
           }),
         );
-  }, [data, nearby.isError, reduced, shown]);
+    setVisible(mid);
+  }, [data, nearby.isError, reduced, y, stops.mid, mid]);
+
+  const settle = (to: number) => {
+    "worklet";
+    y.value = withTiming(to, {
+      duration: reduced ? 0 : 280,
+      easing: Easing.out(Easing.cubic),
+    });
+    runOnJS(setVisible)(fullH - to);
+  };
+  // The same move from buttons and screen reader actions.
+  const goTo = (to: number) => {
+    y.value = withTiming(to, {
+      duration: reduced ? 0 : 280,
+      easing: Easing.out(Easing.cubic),
+    });
+    setVisible(fullH - to);
+  };
+  const pan = Gesture.Pan()
+    .onStart(() => {
+      from.value = y.value;
+    })
+    .onUpdate((e) => {
+      y.value = Math.min(stops.peek, Math.max(0, from.value + e.translationY));
+    })
+    .onEnd((e) => {
+      const aim = y.value + e.velocityY * 0.15;
+      const options = [stops.full, stops.mid, stops.peek];
+      let best = stops.mid;
+      for (const o of options) {
+        if (Math.abs(o - aim) < Math.abs(best - aim)) best = o;
+      }
+      settle(best);
+    });
+  // Tap the handle: peek and full go to the middle, the middle peeks.
+  const tap = Gesture.Tap().onEnd(() => {
+    settle(Math.abs(y.value - stops.mid) < 4 ? stops.peek : stops.mid);
+  });
+  const grab = Gesture.Race(pan, tap);
   const sheetStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: (1 - shown.value) * 420 }],
+    transform: [{ translateY: y.value }],
   }));
 
   const header = (
@@ -98,7 +152,7 @@ export default function PriceMapScreen() {
           accessibilityRole="search"
           accessibilityLabel={`Change service, now ${service?.name ?? code}`}
           onPress={() => router.push("/price/search")}
-          className="h-[50px] flex-1 flex-row items-center gap-2.5 rounded-full bg-white pr-2 pl-4"
+          className="h-[50px] flex-1 flex-row items-center gap-2.5 rounded-full bg-white px-4"
           style={SHADOW}
         >
           <Icon name="search" size={18} color="#5B6B7C" stroke={2} />
@@ -107,12 +161,7 @@ export default function PriceMapScreen() {
               {service?.short ?? code}
             </T>
             <T className="text-muted text-xs" numberOfLines={1}>
-              {`CPT ${code} · near ${origin?.label ?? "you"}`}
-            </T>
-          </View>
-          <View className="h-[34px] justify-center rounded-full bg-wash px-3">
-            <T weight="semibold" className="text-[13px]">
-              Cash
+              {`CPT ${code} · cash price · near ${origin?.label ?? "you"}`}
             </T>
           </View>
         </Pressable>
@@ -145,27 +194,8 @@ export default function PriceMapScreen() {
     </View>
   );
 
-  const body = nearby.isError ? (
-    <View className="gap-3 pt-4">
-      <T className="text-coral-ink text-sm leading-5">
-        {errorMessage(nearby.error)}
-      </T>
-      <Button
-        label="Try again"
-        variant="secondary"
-        onPress={() => void nearby.refetch()}
-      />
-    </View>
-  ) : data ? (
-    <SheetBody
-      rows={data.rows}
-      low={data.summary.lowCents}
-      high={data.summary.highCents}
-      all={all}
-      onAll={() => setAll(true)}
-      code={code}
-    />
-  ) : null;
+  const low = data?.summary.lowCents ?? null;
+  const high = data?.summary.highCents ?? null;
 
   return (
     <View className="flex-1 bg-[#EEF1F5]">
@@ -177,7 +207,7 @@ export default function PriceMapScreen() {
             origin={origin}
             here={origin.here}
             onSelect={(key) => openHospital(key, code)}
-            insets={{ top: insets.top + 150, bottom: sheetH + 24 }}
+            insets={{ top: insets.top + 150, bottom: visible + 16 }}
           />
         ) : null}
       </View>
@@ -185,15 +215,11 @@ export default function PriceMapScreen() {
         {header}
       </View>
       <Animated.View
-        className="absolute inset-x-0 bottom-0 rounded-t-[28px] bg-white px-5 pt-2.5"
-        onLayout={(e) => {
-          if (!all && data) setSheetH(e.nativeEvent.layout.height);
-        }}
+        className="absolute inset-x-0 bottom-0 rounded-t-[28px] bg-white"
         style={[
           sheetStyle,
           {
-            maxHeight: all ? height * 0.82 : undefined,
-            paddingBottom: Math.max(insets.bottom, 16) + 6,
+            height: fullH,
             shadowColor: "#0B1B2B",
             shadowOpacity: 0.12,
             shadowRadius: 24,
@@ -201,29 +227,95 @@ export default function PriceMapScreen() {
           },
         ]}
       >
-        <View className="h-[5px] w-10 self-center rounded-full bg-[#D5DAE1]" />
-        <ScrollView scrollEnabled={all} showsVerticalScrollIndicator={false}>
-          {body}
+        <GestureDetector gesture={grab}>
+          <View
+            className="px-5 pt-2.5 pb-1"
+            accessibilityRole="adjustable"
+            accessibilityLabel="Price list. Drag up for more, down for the map."
+            accessibilityActions={[
+              { name: "increment" },
+              { name: "decrement" },
+            ]}
+            onAccessibilityAction={(e) =>
+              goTo(
+                e.nativeEvent.actionName === "increment"
+                  ? stops.full
+                  : stops.peek,
+              )
+            }
+          >
+            <View className="h-[5px] w-10 self-center rounded-full bg-[#D5DAE1]" />
+            {low !== null && high !== null ? (
+              <View className="gap-1 pt-3.5">
+                <View className="flex-row items-center gap-1.5">
+                  <Money
+                    cents={low}
+                    size={26}
+                    weight="semibold"
+                    label="Lowest"
+                  />
+                  <T weight="semibold" className="text-[26px] leading-[30px]">
+                    –
+                  </T>
+                  <Money
+                    cents={high}
+                    size={26}
+                    weight="semibold"
+                    label="Highest"
+                  />
+                </View>
+                <T className="text-[13px] text-muted">
+                  Published cash prices near you, lowest first
+                </T>
+                <TierBadge tier="published" />
+              </View>
+            ) : (
+              <View className="h-3" />
+            )}
+          </View>
+        </GestureDetector>
+        <ScrollView
+          className="flex-1"
+          contentContainerClassName="px-5"
+          contentContainerStyle={{ paddingBottom: pad }}
+          scrollEnabled={expanded}
+          showsVerticalScrollIndicator={false}
+        >
+          {nearby.isError ? (
+            <View className="gap-3 pt-2">
+              <T className="text-coral-ink text-sm leading-5">
+                {errorMessage(nearby.error)}
+              </T>
+              <Button
+                label="Try again"
+                variant="secondary"
+                onPress={() => void nearby.refetch()}
+              />
+            </View>
+          ) : data ? (
+            <SheetList
+              rows={data.rows}
+              code={code}
+              expanded={expanded}
+              onAll={() => goTo(stops.full)}
+            />
+          ) : null}
         </ScrollView>
       </Animated.View>
     </View>
   );
 }
 
-function SheetBody({
+function SheetList({
   rows,
-  low,
-  high,
-  all,
-  onAll,
   code,
+  expanded,
+  onAll,
 }: {
   rows: NearbyPrice[];
-  low: number | null;
-  high: number | null;
-  all: boolean;
-  onAll: () => void;
   code: string;
+  expanded: boolean;
+  onAll: () => void;
 }) {
   if (rows.length === 0) {
     return (
@@ -237,25 +329,10 @@ function SheetBody({
       </View>
     );
   }
-  const shown = all ? rows : rows.slice(0, 3);
+  const shown = expanded ? rows : rows.slice(0, 3);
   return (
-    <View className="pt-3.5">
-      {low !== null && high !== null ? (
-        <View className="gap-1">
-          <View className="flex-row items-center gap-1.5">
-            <Money cents={low} size={26} weight="semibold" label="Lowest" />
-            <T weight="semibold" className="text-[26px] leading-[30px]">
-              –
-            </T>
-            <Money cents={high} size={26} weight="semibold" label="Highest" />
-          </View>
-          <T className="text-[13px] text-muted">
-            Published cash prices near you, lowest first
-          </T>
-          <TierBadge tier="published" />
-        </View>
-      ) : null}
-      <View className="mt-2">
+    <View>
+      <View className="mt-1">
         {shown.map((r, i) => (
           <PriceRow
             key={r.hospitalKey}
@@ -265,7 +342,7 @@ function SheetBody({
           />
         ))}
       </View>
-      {!all && rows.length > 3 ? (
+      {!expanded && rows.length > 3 ? (
         <Pressable
           accessibilityRole="button"
           onPress={onAll}

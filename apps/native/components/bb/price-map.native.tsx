@@ -42,9 +42,10 @@ export function PriceMap({
       {
         edgePadding: {
           top: insets.top,
-          right: 48,
+          // Wide enough for half a price tag and the "Lowest near you" label.
+          right: 80,
           bottom: insets.bottom,
-          left: 48,
+          left: 80,
         },
         animated: !reduced,
       },
