@@ -30,6 +30,12 @@ export function AppBar({ title, back }: AppBarProps) {
             <Wordmark />
           )}
         </div>
+        <Link
+          to="/cases"
+          className="py-3 text-primary text-sm underline-offset-4 hover:underline"
+        >
+          Your bills
+        </Link>
       </div>
     </header>
   );

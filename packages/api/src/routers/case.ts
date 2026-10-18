@@ -18,6 +18,7 @@ import { CaseDetail, RevokeResult, ShareResult } from "../outputs";
 import { saveParsedBill } from "../repo/bills";
 import {
   addEvent,
+  claimCase,
   getCaseRow,
   latestAudit,
   listActions,
@@ -97,6 +98,18 @@ export const caseRouter = {
         audit,
         actions: await listActions(context.db, input.caseId),
       };
+    }),
+
+  // Saves an unclaimed case to the signed-in patient's account.
+  claim: publicProcedure
+    .input(CaseIdInput)
+    .output(z.object({ claimed: z.boolean() }))
+    .handler(async ({ input, context }) => {
+      const userId = context.session?.user.id;
+      if (!userId) throw new ORPCError("UNAUTHORIZED");
+      if (!(await getCaseRow(context.db, input.caseId)))
+        throw new ORPCError("NOT_FOUND", { message: "Case not found." });
+      return { claimed: await claimCase(context.db, input.caseId, userId) };
     }),
 
   // The session user's cases (B-11 makes this auth-only). Empty without one.

@@ -1,0 +1,9 @@
+.venv
+.uv-cache
+.ruff_cache
+.git
+__pycache__
+*.pyc
+.env*
+*.log
+tests

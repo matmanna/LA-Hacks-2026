@@ -38,15 +38,16 @@ export const POLICY_LOOKUP_SCHEMA = {
   ],
 } as const;
 
-export function policyLookupTask(h: {
-  name: string;
-  city: string | null;
-  state: string | null;
-}): string {
+export function policyLookupTask(
+  h: { name: string; city: string | null; state: string | null },
+  websiteUrl?: string | null,
+): string {
   const where = [h.city, h.state].filter(Boolean).join(", ");
   return [
     `Find the financial assistance (charity care) policy for ${h.name}${where ? ` in ${where}` : ""}.`,
-    "Use the hospital's own official website.",
+    websiteUrl
+      ? `Start at ${websiteUrl}, the hospital's own website, and stay on that site.`
+      : "Use the hospital's own official website.",
     "Return the policy page URL, its title, and any policy PDF links.",
     "Copy verbatim every sentence that states an income limit as a percent of the federal poverty level (FPL) or a discount amount. Do not paraphrase.",
     "Set free_care_max_fpl_pct to the highest FPL percent that gets free care, and discount_max_fpl_pct to the highest FPL percent that gets any discount, only if a copied sentence states it. Otherwise null.",

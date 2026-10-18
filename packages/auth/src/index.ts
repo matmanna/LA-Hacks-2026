@@ -5,11 +5,13 @@ import { caseEvent, caseTable } from "@betterbill/db/schema/app";
 import * as schema from "@betterbill/db/schema/auth";
 import { checkout, polar, portal } from "@polar-sh/better-auth";
 import { betterAuth } from "better-auth";
-import { anonymous } from "better-auth/plugins";
+import { APIError } from "better-auth/api";
+import { anonymous, phoneNumber } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { eq } from "drizzle-orm";
 
 import { createPolarClient } from "./lib/payments";
+import { canText, sendText } from "./lib/sms";
 
 export type AuthConfig = {
   BETTER_AUTH_URL: string;
@@ -17,6 +19,7 @@ export type AuthConfig = {
   POLAR_ACCESS_TOKEN?: string;
   POLAR_SUCCESS_URL?: string;
   POLAR_SERVER?: string;
+  PHONE_AUTH_BYPASS_CODE?: string;
 };
 
 // Polar is optional: the plugin is only enabled when both values are set.
@@ -79,6 +82,52 @@ export function createAuth(env: AuthConfig, database: Database) {
               })),
             );
           }
+        },
+      }),
+      // Sign in with a phone number and a texted code. The number is also
+      // where BetterBill texts when a hospital lookup is ready.
+      phoneNumber({
+        otpLength: 6,
+        expiresIn: 300,
+        allowedAttempts: 3,
+        sendOTP: async ({ phoneNumber: to, code }) => {
+          const bypassCode = env.PHONE_AUTH_BYPASS_CODE;
+          if (bypassCode) {
+            if (!/^\d{6}$/.test(bypassCode)) {
+              throw new Error(
+                "PHONE_AUTH_BYPASS_CODE must be exactly 6 digits",
+              );
+            }
+            await database
+              .update(schema.verification)
+              .set({ value: `${bypassCode}:0` })
+              .where(eq(schema.verification.identifier, to));
+            return;
+          }
+          if (!canText(to)) {
+            throw new APIError("BAD_REQUEST", {
+              message: "This demo can only text numbers on the test list.",
+            });
+          }
+          try {
+            await sendText({
+              to,
+              text: `Your BetterBill code is ${code}. It expires in 5 minutes.`,
+              idempotencyKey: `otp:${to}:${code}`,
+            });
+          } catch (error) {
+            // Without Photon set up, local testing reads the code from here.
+            if (process.env.NODE_ENV === "production") throw error;
+            console.warn(
+              `[sms] could not text ${to}; dev code: ${code}`,
+              error,
+            );
+          }
+        },
+        signUpOnVerification: {
+          getTempEmail: (number) =>
+            `${number.replace(/\D/g, "")}@phone.betterbill.invalid`,
+          getTempName: (number) => number,
         },
       }),
       expo(),
