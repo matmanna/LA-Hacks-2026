@@ -1,7 +1,14 @@
 const MAX_EDGE = 2000;
+// Small JPEGs are sent byte for byte. Re-encoding changes the bytes, and the
+// server matches saved photo readings (BB_READER_MODE=cache_first) by the
+// hash of the exact upload, so a re-encoded demo photo would never match.
+const PASS_THROUGH_BYTES = 1_500_000;
 
 export async function fileToDataUrl(file: File): Promise<string> {
   if (!file.type.startsWith("image/")) {
+    return await readAsDataUrl(file);
+  }
+  if (file.type === "image/jpeg" && file.size <= PASS_THROUGH_BYTES) {
     return await readAsDataUrl(file);
   }
   const bitmap = await createImageBitmap(file);
