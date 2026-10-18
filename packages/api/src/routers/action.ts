@@ -2,15 +2,17 @@ import { Action } from "@betterbill/core";
 import { fixtureAction } from "../fixtures";
 import { publicProcedure } from "../index";
 import { ActionIdInput, DraftLetterInput } from "../inputs";
+import { DraftLetterResult } from "../outputs";
+import { draftLetter } from "../services/letter-drafter";
 
 const AT = "2026-10-17T23:05:00.000Z";
 
 export const actionRouter = {
-  // STUB: owned by A
+  // Becomes protectedProcedure in B-11.
   draftLetter: publicProcedure
     .input(DraftLetterInput)
-    .output(Action)
-    .handler(({ input }) => fixtureAction(input.caseId, input.kind)),
+    .output(DraftLetterResult)
+    .handler(({ input, context }) => draftLetter(context.db, input)),
   // STUB: owned by A. Becomes protectedProcedure in B-11.
   approve: publicProcedure
     .input(ActionIdInput)

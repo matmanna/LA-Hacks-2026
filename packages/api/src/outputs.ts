@@ -1,5 +1,12 @@
 // Procedure outputs that are not core contracts (plan B section 3.2).
-import { Action, AuditResult, Bill, CaseSummary, Eob } from "@betterbill/core";
+import {
+  Action,
+  AuditResult,
+  Bill,
+  CaseSummary,
+  Eob,
+  Tier,
+} from "@betterbill/core";
 import { z } from "zod";
 
 export const CaseDetail = z.object({
@@ -14,6 +21,22 @@ export type CaseDetail = z.infer<typeof CaseDetail>;
 export const ConfirmLinesOutput = z.object({
   caseId: z.string(),
   status: z.literal("lines_confirmed"),
+});
+
+// draftHash round-trips through the client so action.approve can prove the user
+// approved this exact text (A-05).
+export const DraftLetterResult = z.object({
+  action: Action,
+  draftHash: z.string(),
+  claims: z.array(
+    z.object({
+      flagId: z.string(),
+      paragraphIndex: z.number().int(),
+      amountCents: z.number().int(),
+      tier: Tier,
+    }),
+  ),
+  usedFallback: z.boolean(),
 });
 
 export const CallStarted = z.object({ callId: z.string(), status: z.string() });

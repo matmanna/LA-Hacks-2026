@@ -39,8 +39,8 @@ describe("procedure stubs", () => {
     );
   });
 
-  // case, bill.parseText, bill.confirmLines, audit, event and eval are real
-  // and covered by loop.int.test.ts and parseText.int.test.ts.
+  // case, bill.parseText, bill.confirmLines, audit, event, eval and
+  // action.draftLetter are real and covered by the *.int.test.ts files.
   it("bill.parsePhoto stub returns its declared shape", async () => {
     ParseResult.parse(
       await client.bill.parsePhoto({
@@ -58,15 +58,10 @@ describe("procedure stubs", () => {
         annualIncomeCents: 3_000_000,
       }),
     );
-    const draft = Action.parse(
-      await client.action.draftLetter({ caseId, kind: "letter" }),
-    );
-    expect(draft.approvedAt).toBeNull();
-    Action.parse(await client.action.approve({ actionId: draft.id }));
-    Action.parse(await client.action.send({ actionId: draft.id }));
-    const call = CallStarted.parse(
-      await client.call.start({ actionId: draft.id }),
-    );
+    const actionId = "action-test";
+    Action.parse(await client.action.approve({ actionId }));
+    Action.parse(await client.action.send({ actionId }));
+    const call = CallStarted.parse(await client.call.start({ actionId }));
     CallStatus.parse(await client.call.status({ callId: call.callId }));
   });
 
