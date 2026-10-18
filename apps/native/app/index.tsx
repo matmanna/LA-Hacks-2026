@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button, Icon, Money, Progress, T } from "@/components/bb";
 import { loadCases, type SavedCase } from "@/lib/cases";
 import { serviceDay } from "@/lib/format";
-import { statusOf } from "@/lib/status";
+import { caseStatus } from "@/lib/status";
 import { orpc } from "@/utils/orpc";
 
 // W2 Home: the latest bill's savings and status, then every bill on this
@@ -32,7 +32,7 @@ export default function Home() {
     })),
   });
   const latest = cases.find((q) => q.data?.audit)?.data;
-  const status = statusOf(latest?.case.status);
+  const status = caseStatus(latest);
   const sent = latest?.actions.filter((a) => a.sentAt).length ?? 0;
   const called = latest?.case.status === "called" ? 1 : 0;
 
@@ -143,7 +143,7 @@ export default function Home() {
             ) : null}
             {saved.map((c, i) => {
               const d = cases[i]?.data;
-              const s = statusOf(d?.case.status);
+              const s = caseStatus(d);
               return (
                 <Pressable
                   key={c.id}

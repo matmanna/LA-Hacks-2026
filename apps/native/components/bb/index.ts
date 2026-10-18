@@ -11,5 +11,6 @@ export { Money } from "./money";
 export { Progress } from "./progress";
 export { Row } from "./row";
 export { Disclaimer, Screen } from "./screen";
+export { StepBar } from "./step-bar";
 export { FONTS, T, type Weight } from "./t";
 export { TIER_LABELS, TierBadge } from "./tier-badge";

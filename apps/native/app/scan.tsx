@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { cn } from "heroui-native";
 import { useState } from "react";
@@ -22,7 +22,10 @@ const SAMPLE_ID = "SB-01";
 
 // L1 Camera + tips. The shutter opens the phone's camera; the bill drawn here
 // shows how to frame the page.
+// With ?caseId=… (Add my itemized bill) the pages go on that same case and
+// replace its summary bill.
 export default function Scan() {
+  const { caseId } = useLocalSearchParams<{ caseId?: string }>();
   const insets = useSafeAreaInsets();
   const [tip, setTip] = useState(true);
   const [busy, setBusy] = useState<null | "photo" | "sample">(null);
@@ -34,12 +37,14 @@ export default function Scan() {
       const pages = await getPages();
       if (!pages) return;
       setBusy("photo");
-      const { id } = await client.case.create({});
-      await saveCase({
-        id,
-        createdAt: new Date().toISOString(),
-        label: `Photo, ${pages.length} page${pages.length === 1 ? "" : "s"}`,
-      });
+      const id = caseId ?? (await client.case.create({})).id;
+      if (!caseId) {
+        await saveCase({
+          id,
+          createdAt: new Date().toISOString(),
+          label: `Photo, ${pages.length} page${pages.length === 1 ? "" : "s"}`,
+        });
+      }
       holdPages(id, pages);
       router.replace({ pathname: "/case/[id]/reading", params: { id } });
     } catch (e) {
@@ -82,20 +87,26 @@ export default function Scan() {
         >
           <Icon name="close" color="#FFFFFF" />
         </Pressable>
-        <Pressable
-          accessibilityRole="button"
-          onPress={sample}
-          disabled={busy !== null}
-          className="h-11 flex-row items-center rounded-full bg-white px-3.5"
-        >
-          {busy === "sample" ? (
-            <ActivityIndicator color="#0B1B2B" />
-          ) : (
-            <T weight="semibold" className="text-ink text-sm">
-              Try a sample bill
-            </T>
-          )}
-        </Pressable>
+        {caseId ? (
+          <T weight="semibold" className="text-sm text-white">
+            Add your itemized bill
+          </T>
+        ) : (
+          <Pressable
+            accessibilityRole="button"
+            onPress={sample}
+            disabled={busy !== null}
+            className="h-11 flex-row items-center rounded-full bg-white px-3.5"
+          >
+            {busy === "sample" ? (
+              <ActivityIndicator color="#0B1B2B" />
+            ) : (
+              <T weight="semibold" className="text-ink text-sm">
+                Try a sample bill
+              </T>
+            )}
+          </Pressable>
+        )}
       </View>
 
       {tip ? (
@@ -142,7 +153,12 @@ export default function Scan() {
         <Mode
           icon="clipboard"
           label="Paste text"
-          onPress={() => router.push("/paste")}
+          onPress={() =>
+            router.push({
+              pathname: "/paste",
+              params: caseId ? { caseId } : {},
+            })
+          }
         />
       </View>
 

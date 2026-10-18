@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { TextInput } from "react-native";
 
@@ -9,6 +9,7 @@ import { client } from "@/utils/orpc";
 
 // Paste the bill's text instead of a photo (bill.parseText).
 export default function Paste() {
+  const { caseId } = useLocalSearchParams<{ caseId?: string }>();
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -17,12 +18,14 @@ export default function Paste() {
     setError(null);
     setBusy(true);
     try {
-      const { id } = await client.case.create({});
-      await saveCase({
-        id,
-        createdAt: new Date().toISOString(),
-        label: "Pasted bill",
-      });
+      const id = caseId ?? (await client.case.create({})).id;
+      if (!caseId) {
+        await saveCase({
+          id,
+          createdAt: new Date().toISOString(),
+          label: "Pasted bill",
+        });
+      }
       await client.bill.parseText({ caseId: id, text });
       router.replace({ pathname: "/case/[id]/reading", params: { id } });
     } catch (e) {
