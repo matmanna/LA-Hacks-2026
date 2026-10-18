@@ -6144,6 +6144,17 @@ export const DATA = {
   ],
   "policies": [
     {
+      "hospitalName": "Ronald Reagan UCLA Medical Center",
+      "policyTitle": "Hospital Services: Patient Financial Assistance | UCLA Health",
+      "policyUrl": "https://www.uclahealth.org/patient-resources/billing-insurance/financial-assistance-program/hospital-services-help-paying-your-bill",
+      "capturedAt": "2026-10-18T09:42:53.796Z",
+      "freeCareMaxFplPct": 400,
+      "freeCareQuote": "Self-Pay Patients with Patient's Family incomes not exceeding 400% of the FPL and who reside in the Hospital's primary service area as defined in Appendix 1 may be eligible for a 100% Charity Care discount on services rendered and billed by the Hospital for emergency and Medically Necessary Care.",
+      "discountMaxFplPct": 450,
+      "discountQuote": "A Financially Qualified patient is defined as any patient with Patient's Family income that does not exceed 450% of the Federal Poverty Level and is:",
+      "references501r": "This Financial Assistance Policy is intended to comply with Section 501(r) of the Internal Revenue Code (IRC) as enacted by the Affordable Care Act, and the implementing regulations, effective for tax years beginning after December 29, 2015 as well California Health & Safety Code section 127400 et seq. (AB 774), Hospital Fair Pricing Policies, effective January 1, 2007, and Emergency Physician Fair Pricing Policies, effective January 1, 2011, and Office of Inspector General, Department of Health and Human Services (OIG) guidance regarding financial assistance to uninsured and under-insured patients."
+    },
+    {
       "hospitalName": "Cedars-Sinai Medical Center",
       "policyTitle": "Financial Assistance Policy",
       "policyUrl": "https://www.cedars-sinai.org/billing-insurance-records/help-paying-your-bill.html",

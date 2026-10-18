@@ -1,0 +1,79 @@
+{
+  "hospitalKey": "ucla-ronald-reagan",
+  "hospitalName": "Ronald Reagan UCLA Medical Center",
+  "policyUrl": "https://www.uclahealth.org/patient-resources/billing-insurance/financial-assistance-program/hospital-services-help-paying-your-bill",
+  "policyTitle": "Hospital Services: Patient Financial Assistance | UCLA Health",
+  "capturedAt": "2026-10-18T09:42:53.796Z",
+  "capturedBy": "scripts/hospitals/lookup-policy.ts, Browser Use run 85b382eb-263a-45a9-9846-93f6a4aeb7b5",
+  "billingPhone": "310-825-8021",
+  "evidence": [
+    {
+      "file": "evidence/browser_use_lookup_run.json",
+      "runId": "85b382eb-263a-45a9-9846-93f6a4aeb7b5"
+    },
+    {
+      "file": "evidence/policy-1.pdf",
+      "url": "https://www.uclahealth.org/sites/default/files/documents/financial-assistance-policy-hs5310.pdf?f=1b1b90f9",
+      "sha256": "597fbaccbff0c5a4c2b7a2ba657150bcb340cd538906e9d87115cab0a4d75025",
+      "bytes": 298451,
+      "retrievedAt": "2026-10-18T09:42:53.796Z"
+    }
+  ],
+  "quotes": [
+    {
+      "text": "\"Financial Assistance\" includes both full Charity Care (100% discount) and partial Charity Care discounts.",
+      "foundIn": "policy PDF"
+    },
+    {
+      "text": "A Financially Qualified patient is defined as any patient with Patient's Family income that does not exceed 450% of the Federal Poverty Level and is:",
+      "foundIn": "policy PDF"
+    },
+    {
+      "text": "Patients or other individuals responsible for payment on patients' behalf with demonstrated financial need may be eligible for Financial Assistance if they complete an application and meet the eligibility requirements for a full (100%) or partial Charity Care discount as defined in the Eligibility Procedures below.",
+      "foundIn": "policy PDF"
+    },
+    {
+      "text": "Self-Pay Patients with Patient's Family incomes not exceeding 400% of the FPL and who reside in the Hospital's primary service area as defined in Appendix 1 may be eligible for a 100% Charity Care discount on services rendered and billed by the Hospital for emergency and Medically Necessary Care.",
+      "foundIn": "policy PDF"
+    },
+    {
+      "text": "High Medical Cost Patients with Patient's Family incomes not exceeding 400% of the FPL, who reside in the Hospital's primary service area as defined in Appendix 1, may be extended a 100% Charity Care discount on services rendered and billed by the Hospital for emergency and Medically Necessary Care.",
+      "foundIn": "policy PDF"
+    },
+    {
+      "text": "The Revenue Cycle Director or Chief Financial Officer may - under unusual circumstances - extend a full Charity Care discount to individuals who would not otherwise qualify for Charity Care under this policy.",
+      "foundIn": "policy PDF"
+    },
+    {
+      "text": "Self-Pay Patients with Patient's Family incomes between 401% and 450% of FPL and who reside in the Hospital's primary service area as defined in Appendix 1, may be eligible for a partial Charity Care discount on services rendered and billed by the Hospital for emergency and Medically Necessary Care.",
+      "foundIn": "policy PDF"
+    },
+    {
+      "text": "High Medical Cost Patients also may be eligible for a partial Charity Care Discount as set forth in the section below.",
+      "foundIn": "policy PDF"
+    },
+    {
+      "text": "High Medical Cost Patients with Patient's Family incomes between 401% and 450% of FPL with third party coverage may be eligible for a partial Charity Care discount for emergency and Medically Necessary Care, if they reside in the Hospital's primary service area as defined in Appendix 1.",
+      "foundIn": "policy PDF"
+    },
+    {
+      "text": "For patients with no third-party coverage whose incomes exceed 450% of FPL, please refer to the Cash Discount Policy.",
+      "foundIn": "policy PDF"
+    },
+    {
+      "text": "When this electronic enrollment is used as the basis for presumptive eligibility, the most generous discount, a full Charity Care discount of 100%, will be granted for any emergency care or medically necessary care for retrospective dates of service.",
+      "foundIn": "policy PDF"
+    }
+  ],
+  "thresholds": {
+    "freeCareMaxFplPct": 400,
+    "freeCareQuote": "Self-Pay Patients with Patient's Family incomes not exceeding 400% of the FPL and who reside in the Hospital's primary service area as defined in Appendix 1 may be eligible for a 100% Charity Care discount on services rendered and billed by the Hospital for emergency and Medically Necessary Care.",
+    "discountMaxFplPct": 450,
+    "discountQuote": "A Financially Qualified patient is defined as any patient with Patient's Family income that does not exceed 450% of the Federal Poverty Level and is:"
+  },
+  "references501r": {
+    "quote": "This Financial Assistance Policy is intended to comply with Section 501(r) of the Internal Revenue Code (IRC) as enacted by the Affordable Care Act, and the implementing regulations, effective for tax years beginning after December 29, 2015 as well California Health & Safety Code section 127400 et seq. (AB 774), Hospital Fair Pricing Policies, effective January 1, 2007, and Emergency Physician Fair Pricing Policies, effective January 1, 2011, and Office of Inspector General, Department of Health and Human Services (OIG) guidance regarding financial assistance to uninsured and under-insured patients.",
+    "foundIn": "policy PDF"
+  },
+  "notes": "Limits are kept only when a quote found verbatim in the policy PDF states them. Quotes not found verbatim were dropped: 4. BetterBill only estimates; the hospital decides."
+}
