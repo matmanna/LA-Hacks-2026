@@ -22,6 +22,7 @@ import { toast } from "sonner";
 
 import { AppBar } from "@/components/app-bar";
 import { AssistanceCard } from "@/components/assistance-card";
+import { PayCard } from "@/components/pay-card";
 import { SharePacketButton } from "@/components/share-packet-button";
 import { useActionFlow } from "@/features/actions/use-action-flow";
 import { orpc } from "@/utils/orpc";
@@ -256,6 +257,10 @@ function CasePage() {
             <SharePacketButton caseId={id} className="w-full lg:hidden" />
           ) : null}
 
+          <div className="lg:hidden">
+            <PayCard caseId={id} />
+          </div>
+
           <Link
             to="/case/$id/activity"
             params={{ id }}
@@ -341,6 +346,7 @@ function CasePage() {
           {data.audit ? (
             <SharePacketButton caseId={id} className="w-full" />
           ) : null}
+          <PayCard caseId={id} />
           <Card>
             <CardTitle>Activity</CardTitle>
             <p className="text-muted-foreground text-sm leading-5">

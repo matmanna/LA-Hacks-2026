@@ -6,6 +6,7 @@ import {
   reconcile,
 } from "@betterbill/core";
 
+import { heroStep } from "../telemetry";
 import { cleanupText } from "./cleanup";
 import { STEPFUN_MODEL } from "./stepfun";
 
@@ -13,7 +14,7 @@ const LOW_CONFIDENCE = 0.8;
 
 // Deterministic first; the model only runs when more than 30% of rows
 // failed and the reader mode allows live calls.
-export async function readText(
+async function readTextInner(
   caseId: string,
   text: string,
   cleanup: typeof cleanupText = cleanupText,
@@ -55,3 +56,19 @@ export async function readText(
     warnings,
   };
 }
+
+export const readText = (
+  caseId: string,
+  text: string,
+  cleanup: typeof cleanupText = cleanupText,
+): Promise<ParseResult> =>
+  heroStep(
+    "parse",
+    { caseId, source: "text" },
+    () => readTextInner(caseId, text, cleanup),
+    (r) => ({
+      lineCount: r.bill.lines.length,
+      readerMode: r.reader.mode,
+      readerMs: r.reader.latencyMs,
+    }),
+  );

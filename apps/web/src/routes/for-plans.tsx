@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { BulkPlan } from "@/components/landing/plans/bulk-plan";
 import { PlansEvidence } from "@/components/landing/plans/evidence";
 import { Fit } from "@/components/landing/plans/fit";
 import { PlansHero, type PlansSample } from "@/components/landing/plans/hero";
@@ -52,6 +53,12 @@ export const Route = createFileRoute("/for-plans")({
     meta: [
       { title: "BetterBill for plans: evidence-first bill review" },
       {
+        property: "og:title",
+        content: "BetterBill for plans: evidence-first bill review",
+      },
+      { property: "og:image", content: "/og/plans.png" },
+      { name: "twitter:card", content: "summary_large_image" },
+      {
         name: "description",
         content:
           "Line-by-line hospital bill review with evidence tiers and an audit trail, for self-funded employers, TPAs, and plans.",
@@ -73,6 +80,7 @@ function ForPlans() {
         <PlansResults results={results} />
         <Integration />
         <Security />
+        <BulkPlan />
         <PilotForm />
       </main>
       <SiteFooter audience="plans" />

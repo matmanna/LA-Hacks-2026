@@ -34,6 +34,7 @@ export function FlagRow({
   return (
     <button
       type="button"
+      data-sentry-block
       onClick={() => onOpen(flag.id)}
       aria-label={`${flag.title}. ${TIER_LABELS[flag.tier]}. ${spoken}. Show evidence`}
       className={cn(

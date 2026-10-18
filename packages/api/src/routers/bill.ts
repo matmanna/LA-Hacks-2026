@@ -1,5 +1,6 @@
 import { type Line, ParseResult } from "@betterbill/core";
 import { ORPCError } from "@orpc/server";
+import { agentSpan, readerResultAttrs } from "../aiSpan";
 import { PHOTO_CACHE } from "../data";
 import { publicProcedure } from "../index";
 import { ConfirmLinesInput, ParsePhotoInput, ParseTextInput } from "../inputs";
@@ -36,7 +37,15 @@ export const billRouter = {
     .input(ParseTextInput)
     .output(ParseResult)
     .handler(async ({ input, context }) => {
-      const result = await readText(input.caseId, input.text);
+      const result = await agentSpan(
+        "bill-reader",
+        { "bb.reader.input": "text" },
+        async (setResult) => {
+          const r = await readText(input.caseId, input.text);
+          setResult(readerResultAttrs(r));
+          return r;
+        },
+      );
       const n = result.bill.lines.length;
       await saveParsedBill(
         context.db,
@@ -54,11 +63,23 @@ export const billRouter = {
     .handler(async ({ input, context }) => {
       let result: ParseResult;
       try {
-        result = await readPhotoWithCache(
-          input.caseId,
-          input.pages,
-          PHOTO_CACHE,
-          readerMode(),
+        result = await agentSpan(
+          "bill-reader",
+          {
+            "bb.reader.input": "photo",
+            "bb.reader.mode_setting": readerMode(),
+            "bb.reader.pages": input.pages.length,
+          },
+          async (setResult) => {
+            const r = await readPhotoWithCache(
+              input.caseId,
+              input.pages,
+              PHOTO_CACHE,
+              readerMode(),
+            );
+            setResult(readerResultAttrs(r));
+            return r;
+          },
         );
       } catch (e) {
         if (e instanceof PhotoReadError) {

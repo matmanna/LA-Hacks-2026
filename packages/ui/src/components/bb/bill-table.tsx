@@ -47,7 +47,7 @@ export function BillTable({
   className,
 }: BillTableProps) {
   return (
-    <Table className={cn(className)}>
+    <Table data-sentry-block className={cn(className)}>
       <TableHeader>
         <TableRow className="hover:bg-transparent">
           <TableHead scope="col">Item</TableHead>

@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { client } from "@/utils/orpc";
 
-const SAMPLE_ID = "bill-01";
+const SAMPLE_ID = "SB-01";
 
 export function useStartSample() {
   const navigate = useNavigate();

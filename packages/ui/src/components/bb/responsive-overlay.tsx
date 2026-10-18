@@ -36,7 +36,11 @@ export function ResponsiveOverlay({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent initialFocus={initialFocus} className="sm:max-w-xl">
+        <DialogContent
+          data-sentry-block
+          initialFocus={initialFocus}
+          className="sm:max-w-xl"
+        >
           <DialogTitle className="font-semibold text-[22px] leading-[28px]">
             {title}
           </DialogTitle>
@@ -55,6 +59,7 @@ export function ResponsiveOverlay({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
+        data-sentry-block
         initialFocus={initialFocus}
         className="gap-4 px-5 pt-5 pb-[calc(24px+env(safe-area-inset-bottom))]"
       >

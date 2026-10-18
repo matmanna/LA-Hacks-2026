@@ -231,7 +231,7 @@ describe.skipIf(!url)("action routes (integration)", () => {
       const { caseId, action, draftHash } = await drafted();
       await client.action.approve({ actionId: action.id, draftHash });
       vi.stubEnv("BB_FAKE_PROVIDERS", "");
-      vi.stubEnv("RESEND_API_KEY", "");
+      vi.stubEnv("PHOTON_API_KEY", "");
       await expect(
         client.action.send({ actionId: action.id }),
       ).rejects.toMatchObject({ code: "BAD_GATEWAY" });

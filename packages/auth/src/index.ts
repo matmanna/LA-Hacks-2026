@@ -1,9 +1,13 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
+import { expo } from "@better-auth/expo";
 import type { Database } from "@betterbill/db";
+import { caseEvent, caseTable } from "@betterbill/db/schema/app";
 import * as schema from "@betterbill/db/schema/auth";
 import { checkout, polar, portal } from "@polar-sh/better-auth";
 import { betterAuth } from "better-auth";
+import { anonymous } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
+import { eq } from "drizzle-orm";
 
 import { createPolarClient } from "./lib/payments";
 
@@ -43,11 +47,43 @@ export function createAuth(env: AuthConfig, database: Database) {
       provider: "pg",
       schema,
     }),
-    trustedOrigins: [env.BETTER_AUTH_URL],
+    trustedOrigins: [
+      env.BETTER_AUTH_URL,
+      // Expo app (apps/native): deep link scheme and Expo Go / Metro origins.
+      "betterbill://",
+      "exp://",
+      "http://localhost:8081",
+    ],
     emailAndPassword: { enabled: true },
     secret: env.BETTER_AUTH_SECRET,
     baseURL: env.BETTER_AUTH_URL,
-    plugins: [...polarPlugins(env), tanstackStartCookies()],
+    plugins: [
+      ...polarPlugins(env),
+      // Anyone can check a bill as an anonymous user. When they sign up,
+      // their cases move to the new account (the anonymous user is deleted).
+      anonymous({
+        onLinkAccount: async ({ anonymousUser, newUser }) => {
+          const moved = await database
+            .update(caseTable)
+            .set({ userId: newUser.user.id })
+            .where(eq(caseTable.userId, anonymousUser.user.id))
+            .returning({ id: caseTable.id });
+          if (moved.length > 0) {
+            await database.insert(caseEvent).values(
+              moved.map((c) => ({
+                id: crypto.randomUUID(),
+                caseId: c.id,
+                actor: "user",
+                type: "case.claimed",
+                summary: "Saved to a new account",
+              })),
+            );
+          }
+        },
+      }),
+      expo(),
+      tanstackStartCookies(),
+    ],
   });
 }
 
