@@ -70,6 +70,7 @@ export async function sendAction(
   try {
     sent = await send({
       to: action.recipient,
+      idempotencyKey: `letter_${action.id}_${hash}`,
       ...emailFromDraft(action.draft),
     });
   } catch (error) {
@@ -78,10 +79,10 @@ export async function sendAction(
       db,
       action.caseId,
       "action.send_failed",
-      `Letter not sent: ${reason.slice(0, 120)}`,
+      `Letter send not confirmed: ${reason.slice(0, 120)}`,
     );
     throw new ORPCError("BAD_GATEWAY", {
-      message: "We could not send it. Nothing was sent. Try again.",
+      message: "We could not confirm the send. Try again.",
     });
   }
 
@@ -96,7 +97,7 @@ export async function sendAction(
       tx,
       action.caseId,
       "action.sent",
-      `Letter sent to the test inbox (${sent.provider} ${sent.messageId})`,
+      `Letter accepted for delivery to the test inbox (${sent.provider} ${sent.messageId})`,
       { artifactRef: approvalRef(action.id, hash) },
     );
   });

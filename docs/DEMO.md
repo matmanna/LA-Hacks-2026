@@ -22,7 +22,20 @@ Owner: C. Built from `docs/plans/C-evidence-data-demo.md` section 9 with measure
 
 ## Missing
 
-- Photo metrics (line extraction, photo-to-lines time, seeded recall from photos): **not measured**. The bills aren't printed or photographed yet. Say nothing about photo accuracy until they are.
+- Seeded recall from photos (M2b): **not measured** (end-to-end audit on photo-read lines). Line extraction and photo time **are** measured; see the table below.
+
+**Photo reading (measured):** `data/eval/extraction.json`, written by B's `bun run photos:read`, measured 2026-10-18T02:57Z with StepFun step-5-preview. 35 phone photos of 7 printed synthetic bills, 5 conditions each. A line counts only when date, code, units and charge are all exact.
+
+| Condition | Line recall | Perfect photos |
+|---|---|---|
+| flat | 100% | 7 of 7 |
+| dimangle | 93% | 6 of 7 |
+| angle | 86% | 5 of 7 |
+| crumpled | 83.7% | 5 of 7 |
+| dim | 81.4% | 5 of 7 |
+| **overall** | **88.8%** | **28 of 35** |
+
+Photo to lines: p50 26.2 s, p90 58.3 s (target under 30 s at p50: met). Safe line: "On 35 phone photos of printed bills, BetterBill read 89% of lines exactly, and every line on flat, well-lit photos." The user confirms lines before any audit, so misreads are caught before flags.
 - Browser Use recording link: it exists but is **not public** (team decision). Use a screen capture of the run in the video, or add the link on Devpost after a teammate watches it.
 - Track names and extra requirements: confirm on the LA Hacks Devpost page (UNVERIFIED here).
 
@@ -122,7 +135,7 @@ Plan: 07:00 record shots 3 to 10 on main build with a fresh case; 07:40 shots 11
 - On 10 synthetic bills, we caught 12 of 12 planted errors, with 0 false flags on 3 clean bills. We wrote these errors ourselves, so this shows the rules work as designed.
 - On 5 recreated KFF Health News Bill of the Month cases, we caught 1 of the 3 reporter findings within BetterBill's scope. We missed an undated duplicate and a price comparison for a hospital whose price file we haven't captured. The other 10 findings (coding level, prior authorization, device prices) are outside what BetterBill checks.
 - The audit runs in under a millisecond per bill (p50 0.009 ms).
-- Photo reading accuracy: not measured yet. (Replace this line if the photo set is done by 07:30.)
+- Photo reading: on 35 phone photos of 7 printed synthetic bills (5 lighting and handling conditions), step-5-preview read 88.8% of lines exactly (100% on flat, well-lit photos; 81.4% in dim light), with p50 26.2 seconds per photo. You confirm every line before the audit runs.
 
 **How we built it.** TanStack Start, oRPC, Drizzle + Postgres (Tiger Data), Better Auth, Polar (sandbox), Vercel; StepFun step-5-preview for bill photos; Gemini for letter drafting; Browser Use for live hospital data capture; Photon + ElevenLabs for the call; Sentry + evlog for traces; Paper for design. (Confirm each one is load-bearing before submitting.)
 
