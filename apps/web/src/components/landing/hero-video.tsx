@@ -3,8 +3,8 @@ import { type RefObject, useEffect, useState } from "react";
 const VIMEO_SRC =
   "https://player.vimeo.com/video/1236972348?badge=0&autopause=0&player_id=0&app_id=58479";
 
-const MIN_W = 200;
-const MAX_W = 290;
+const MIN_W = 160;
+const MAX_W = 400;
 
 // Small player, bottom left of the hero on desktop. Its height is at most 3/5
 // of the space between the bottom of the anchor label and the bottom of the
@@ -26,8 +26,14 @@ export function HeroVideo({
       setWidth(Math.round(Math.min(MAX_W, Math.max(MIN_W, (h * 16) / 9))));
     }
     measure();
+    // Layout shifts once fonts load and the page settles. Measure again.
+    const ro = new ResizeObserver(measure);
+    ro.observe(document.body);
     window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
   }, [anchor]);
 
   return (
