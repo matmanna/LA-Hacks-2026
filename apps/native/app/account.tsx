@@ -11,7 +11,7 @@ import { authClient } from "@/lib/auth-client";
 import { useMyInfo } from "@/lib/my-info";
 import { queryClient } from "@/utils/orpc";
 
-import { ENV } from "../../src/env";
+import { ENV } from "../src/env";
 
 // P1 Account: "Your info" (saved only on this phone), updates, and sign in.
 export default function Account() {

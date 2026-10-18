@@ -4,6 +4,7 @@ import {
   Eob,
   type FplTable,
   type HospitalPolicy,
+  type NearbyCapture,
   type PublishedPrice,
   pricesFromCapture,
   Reconciliation,
@@ -31,6 +32,17 @@ export const UNIT_BOUNDS: UnitBound[] = DATA.mue
 export const PRICES: PublishedPrice[] = DATA.captures.flatMap((c) =>
   pricesFromCapture(c),
 );
+
+// Captured hospitals with a geocoded address, for the "Before you go" tab.
+export const PRICE_CAPTURES: NearbyCapture[] = DATA.captures.map((c) => ({
+  hospitalKey: c.hospitalKey,
+  hospitalName: c.hospitalName,
+  capturedAt: c.capturedAt,
+  sources: c.sources,
+  location: c.location,
+  policy: c.policy,
+  prices: c.prices,
+}));
 
 export const EVAL_RESULTS: unknown = DATA.evalResults;
 

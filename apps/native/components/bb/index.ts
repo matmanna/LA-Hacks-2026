@@ -1,3 +1,4 @@
+export { AccountButton } from "./account-button";
 export {
   BillMock,
   type MockLine,
@@ -10,6 +11,8 @@ export { EditLineSheet } from "./edit-line-sheet";
 export { Icon, type IconName } from "./icon";
 export { LookupCard } from "./lookup-card";
 export { Money } from "./money";
+export { PriceMap } from "./price-map";
+export { PIN_STEP_MS } from "./price-map-shared";
 export { Progress } from "./progress";
 export { Receipt } from "./receipt";
 export { Row } from "./row";

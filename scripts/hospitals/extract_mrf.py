@@ -1,8 +1,8 @@
 """Stream a CMS v2 JSON machine-readable file, hash every byte, and extract rows for given codes (C-05, Part B).
 
 Usage:
-  python -I scripts/hospitals/extract_mrf.py --url <mrf url> --codes 72148 85025 \
-      --page-url <source page url> --run-id <browser use run id> \
+  python3 -E -P scripts/hospitals/extract_mrf.py --url <mrf url> --codes 72148 85025 \
+      --page-url <source page url> [--run-id <browser use run id>] --hpt-url <cms-hpt.txt url> \
       --out data/hospitals/cedars-sinai/capture.json
 
 The MRF itself is never written to disk. Evidence (cms-hpt.txt, price page text) goes next to --out.
@@ -77,12 +77,24 @@ def head_field(head: bytes, name: str) -> str | None:
     return m.group(1).decode("utf-8", "replace") if m else None
 
 
+def head_strings(head: bytes, name: str) -> list[str] | None:
+    """A header field that is a string or an array of strings (CMS v2 hospital_address, location_name)."""
+    m = re.search(rb'"' + name.encode() + rb'"\s*:\s*(\[[^\]]*\]|"[^"]*")', head)
+    if not m:
+        return None
+    try:
+        v = json.loads(m.group(1).decode("utf-8", "replace"))
+    except ValueError:
+        return None
+    return [v] if isinstance(v, str) else [str(x) for x in v]
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", required=True)
     ap.add_argument("--codes", nargs="+", required=True)
     ap.add_argument("--page-url", required=True)
-    ap.add_argument("--run-id", required=True)
+    ap.add_argument("--run-id", help="Browser Use run id, when one found the file; omit when cms-hpt.txt was fetched directly")
     ap.add_argument("--out", required=True)
     ap.add_argument("--hospital-key", default="cedars-sinai")
     ap.add_argument("--hpt-url", default=HPT_URL)
@@ -148,7 +160,11 @@ def main() -> None:
         "hospitalKey": args.hospital_key,
         "hospitalName": head_field(head, "hospital_name"),
         "capturedAt": captured_at,
-        "capturedBy": f"browser_use_capture.py run {args.run_id} + extract_mrf.py",
+        "capturedBy": (
+            f"browser_use_capture.py run {args.run_id} + extract_mrf.py"
+            if args.run_id
+            else "extract_mrf.py (mrf-url read from the hospital's cms-hpt.txt; no Browser Use)"
+        ),
         "sources": [
             {
                 "kind": "cms_hpt_txt",
@@ -173,6 +189,8 @@ def main() -> None:
                 "httpLastModified": last_modified,
                 "fileLastUpdatedOn": head_field(head, "last_updated_on"),
                 "fileVersion": head_field(head, "version"),
+                "fileHospitalAddress": head_strings(head, "hospital_address"),
+                "fileLocationName": head_strings(head, "location_name"),
             },
         ],
         "allMatches": matches,
