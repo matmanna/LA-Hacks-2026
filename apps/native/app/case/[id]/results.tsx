@@ -8,6 +8,7 @@ import {
   Disclaimer,
   Icon,
   Money,
+  Receipt,
   Screen,
   ShareButton,
   T,
@@ -251,6 +252,16 @@ export default function Results() {
           <Icon name="chevron" size={16} color="#3E5A50" />
         </Pressable>
       ) : null}
+
+      <Receipt
+        id={id}
+        lines={bill?.lines.length ?? 0}
+        policyRead={
+          assistance.checks?.find(
+            (c) => c.id === "policy" && !c.finding.startsWith("Not on file"),
+          )?.title
+        }
+      />
     </Screen>
   );
 }

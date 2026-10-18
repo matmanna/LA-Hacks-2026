@@ -11,6 +11,7 @@ export { Icon, type IconName } from "./icon";
 export { LookupCard } from "./lookup-card";
 export { Money } from "./money";
 export { Progress } from "./progress";
+export { Receipt } from "./receipt";
 export { Row } from "./row";
 export { Disclaimer, Screen } from "./screen";
 export { ShareButton } from "./share-button";

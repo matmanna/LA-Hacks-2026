@@ -1,0 +1,161 @@
+{
+  "runAt": "2026-10-18T09:56:10Z",
+  "gitSha": "798079f",
+  "fixtures": 12,
+  "screened": 12,
+  "statuses": {
+    "likely": 4,
+    "possible": 4,
+    "unknown": 4,
+    "unlikely": 0
+  },
+  "checksPerBill": {
+    "min": 8,
+    "max": 8
+  },
+  "mayHelpWithSource": {
+    "sourced": 28,
+    "total": 28,
+    "rate": 1
+  },
+  "screenTimeMs": {
+    "p50": 0.006,
+    "p95": 0.017,
+    "runsPerFixture": 20
+  },
+  "perFixture": [
+    {
+      "fixture": "SB-01",
+      "hospitalKey": "cedars-sinai",
+      "policyOnFile": true,
+      "status": "likely",
+      "freeCare": true,
+      "checks": 8,
+      "mayHelp": [
+        "policy",
+        "state:ca-fpq",
+        "collections:ca-collections",
+        "federal:us-501r-agb"
+      ]
+    },
+    {
+      "fixture": "SB-02",
+      "hospitalKey": "sample-synthetic",
+      "policyOnFile": false,
+      "status": "unknown",
+      "freeCare": false,
+      "checks": 8,
+      "mayHelp": ["collections:ca-collections"]
+    },
+    {
+      "fixture": "SB-03",
+      "hospitalKey": "sample-synthetic",
+      "policyOnFile": false,
+      "status": "possible",
+      "freeCare": false,
+      "checks": 8,
+      "mayHelp": ["state:ca-fpq", "collections:ca-collections"]
+    },
+    {
+      "fixture": "SB-04",
+      "hospitalKey": "sample-synthetic",
+      "policyOnFile": false,
+      "status": "unknown",
+      "freeCare": false,
+      "checks": 8,
+      "mayHelp": ["collections:ca-collections"]
+    },
+    {
+      "fixture": "SB-05",
+      "hospitalKey": "sample-synthetic",
+      "policyOnFile": false,
+      "status": "unknown",
+      "freeCare": false,
+      "checks": 8,
+      "mayHelp": ["collections:ca-collections"]
+    },
+    {
+      "fixture": "SB-06",
+      "hospitalKey": "cedars-sinai",
+      "policyOnFile": true,
+      "status": "likely",
+      "freeCare": true,
+      "checks": 8,
+      "mayHelp": [
+        "policy",
+        "state:ca-fpq",
+        "collections:ca-collections",
+        "federal:us-501r-agb"
+      ]
+    },
+    {
+      "fixture": "SB-07",
+      "hospitalKey": "sample-synthetic",
+      "policyOnFile": false,
+      "status": "possible",
+      "freeCare": false,
+      "checks": 8,
+      "mayHelp": ["state:ca-fpq", "collections:ca-collections"]
+    },
+    {
+      "fixture": "SB-08",
+      "hospitalKey": "sample-synthetic",
+      "policyOnFile": false,
+      "status": "possible",
+      "freeCare": false,
+      "checks": 8,
+      "mayHelp": ["state:ca-fpq", "collections:ca-collections"]
+    },
+    {
+      "fixture": "SB-09",
+      "hospitalKey": "sample-synthetic",
+      "policyOnFile": false,
+      "status": "possible",
+      "freeCare": false,
+      "checks": 8,
+      "mayHelp": ["state:ca-fpq", "collections:ca-collections"]
+    },
+    {
+      "fixture": "SB-10",
+      "hospitalKey": "sample-synthetic",
+      "policyOnFile": false,
+      "status": "unknown",
+      "freeCare": false,
+      "checks": 8,
+      "mayHelp": ["collections:ca-collections"]
+    },
+    {
+      "fixture": "SB-11",
+      "hospitalKey": "ucla-ronald-reagan",
+      "policyOnFile": true,
+      "status": "likely",
+      "freeCare": true,
+      "checks": 8,
+      "mayHelp": [
+        "policy",
+        "state:ca-fpq",
+        "collections:ca-collections",
+        "federal:us-501r-agb"
+      ]
+    },
+    {
+      "fixture": "SB-12",
+      "hospitalKey": "cedars-sinai",
+      "policyOnFile": true,
+      "status": "likely",
+      "freeCare": true,
+      "checks": 8,
+      "mayHelp": [
+        "policy",
+        "state:ca-fpq",
+        "collections:ca-collections",
+        "federal:us-501r-agb"
+      ]
+    }
+  ],
+  "notes": [
+    "Synthetic patients from each fixture's context; insured is screened as a private plan.",
+    "No ground truth for eligibility: these are counts of what the screener does, not real-world accuracy. The hospital decides.",
+    "Sourced: a may-help finding links to the rule or policy it comes from (the insurance check cites the bill's own totals)."
+  ]
+}
