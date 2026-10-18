@@ -4,7 +4,7 @@ import type { Database } from "@betterbill/db";
 import { caseEvent, caseTable } from "@betterbill/db/schema/app";
 import * as schema from "@betterbill/db/schema/auth";
 import { checkout, polar, portal } from "@polar-sh/better-auth";
-import { betterAuth } from "better-auth";
+import { type BetterAuthPlugin, betterAuth } from "better-auth";
 import { APIError } from "better-auth/api";
 import { anonymous, phoneNumber } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
@@ -130,7 +130,12 @@ export function createAuth(env: AuthConfig, database: Database) {
           getTempName: (number) => number,
         },
       }),
-      expo(),
+      // Bun's isolated linker can give @better-auth/expo a distinct, but
+      // version-identical, @better-auth/core type instance. Its runtime plugin
+      // contract is the same one Better Auth consumes; bridge that package
+      // boundary here instead of letting deployment-specific type resolution
+      // reject the auth configuration.
+      expo() as unknown as BetterAuthPlugin,
       tanstackStartCookies(),
     ],
   });
