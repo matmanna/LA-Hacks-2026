@@ -47,6 +47,7 @@ export const AssistanceCheckInput = z.object({
 export const DraftLetterInput = z.object({
   caseId: z.string(),
   kind: z.enum(["letter", "itemized_request", "call"]),
+  patientConnection: z.enum(["phone", "browser"]).optional(),
 });
 
 export const ActionIdInput = z.object({ actionId: z.string() });

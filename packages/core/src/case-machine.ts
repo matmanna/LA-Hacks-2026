@@ -21,6 +21,18 @@ const TRANSITIONS: Record<EventTypeName, TransitionRule> = {
   "call.started": { from: ["action_pending"], to: "same" },
   "call.completed": { from: ["action_pending"], to: "called" },
   "call.failed": { from: ["action_pending"], to: "same" },
+  "call.dispatching": { from: "any", to: "same" },
+  "call.worker_started": { from: "any", to: "same" },
+  "call.ringing": { from: "any", to: "same" },
+  "call.ready": { from: "any", to: "same" },
+  "call.patient_inviting": { from: "any", to: "same" },
+  "call.patient_joined": { from: "any", to: "same" },
+  "call.patient_briefed": { from: "any", to: "same" },
+  "call.billing_connected": { from: "any", to: "same" },
+  "call.patient_left": { from: "any", to: "same" },
+  "call.patient_failed": { from: "any", to: "same" },
+  "call.conference_completed": { from: "any", to: "same" },
+  "call.conference_failed": { from: "any", to: "same" },
   "case.closed": { from: "any", to: "closed" },
 };
 

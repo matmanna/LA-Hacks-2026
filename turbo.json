@@ -48,6 +48,10 @@
   "globalEnv": [
     "BB_ADAPTER_KEY",
     "BB_FAKE_PROVIDERS",
+    "BROWSER_RTC_TEST",
+    "LIVEKIT_URL",
+    "LIVEKIT_API_KEY",
+    "LIVEKIT_API_SECRET",
     "BB_READER_MODE",
     "BB_REQUIRE_ACCOUNT",
     "BETTER_AUTH_SECRET",
@@ -85,7 +89,14 @@
     "VERCEL_URL",
     "VITE_SENTRY_DSN",
     "_VARLOCK_ENV_KEY",
-    "EXPO_PUBLIC_SERVER_URL"
+    "EXPO_PUBLIC_SERVER_URL",
+    "CALL_MODE",
+    "CALL_PATIENT_NUMBER",
+    "LIVEKIT_PHOTON_TRUNK_ID",
+    "ELEVENLABS_CONFERENCE_BRANCH_ID",
+    "ELEVENLABS_INVITATION_VOICE_ID",
+    "BB_VOICE_WORKER_KEY",
+    "BETTERBILL_VOICE_API_URL"
   ],
   "globalDependencies": [".env*", "apps/*/.env*", "packages/*/.env*"]
 }

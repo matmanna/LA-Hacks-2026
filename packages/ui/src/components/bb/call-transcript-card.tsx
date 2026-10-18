@@ -1,9 +1,13 @@
 import { cn } from "@betterbill/ui/lib/utils";
 
 type CallTranscriptCardProps = {
-  status: "ringing" | "in_progress" | "ended" | "failed";
+  status: "ringing" | "in_progress" | "ended" | "interrupted" | "failed";
   recorded?: boolean;
-  turns: { speaker: "agent" | "billing"; text: string; at?: string }[];
+  turns: {
+    speaker: "agent" | "billing" | "participant";
+    text: string;
+    at?: string;
+  }[];
   outcome?: {
     referenceNumber?: string;
     nextStep?: string;
@@ -16,10 +20,15 @@ const STATUS = {
   ringing: "Calling",
   in_progress: "On the call",
   ended: "Call ended",
+  interrupted: "Call ended early",
   failed: "Call didn't connect",
 } as const;
 
-const SPEAKER = { agent: "BetterBill assistant", billing: "Billing office" };
+const SPEAKER = {
+  agent: "BetterBill assistant",
+  billing: "Billing office",
+  participant: "Call participant",
+};
 
 export function CallTranscriptCard({
   status,

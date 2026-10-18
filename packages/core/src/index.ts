@@ -2,6 +2,7 @@ export * from "./assistance/index";
 export * from "./balance";
 export * from "./call";
 export * from "./case-machine";
+export * from "./conference";
 export * from "./copy";
 export * from "./events";
 export * from "./hash";

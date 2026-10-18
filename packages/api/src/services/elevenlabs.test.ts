@@ -7,6 +7,10 @@ const vars = {
   account_last4: "4321",
   disputed_items: "Duplicate lab charge, $84.00",
   ask: "Please review these items.",
+  review_topics: "Duplicate lab charge",
+  case_context: "Two lab entries need review.",
+  patient_name: "",
+  patient_dob: "",
 };
 
 function reply(status: number, body: object) {

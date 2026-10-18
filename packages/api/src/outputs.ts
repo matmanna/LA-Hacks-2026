@@ -39,7 +39,13 @@ export const DraftLetterResult = z.object({
   usedFallback: z.boolean(),
 });
 
-export const CallStarted = z.object({ callId: z.string(), status: z.string() });
+export const CallStarted = z.object({
+  callId: z.string(),
+  status: z.string(),
+  browserSession: z
+    .object({ serverUrl: z.string(), token: z.string() })
+    .optional(),
+});
 
 export const CallStatus = z.object({
   status: z.string(),
