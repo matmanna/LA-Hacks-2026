@@ -2,6 +2,7 @@ import { Wordmark } from "@betterbill/ui/components/bb/wordmark";
 import { Button } from "@betterbill/ui/components/button";
 import { cn } from "@betterbill/ui/lib/utils";
 import { useEffect, useState } from "react";
+import { ArrowSlide } from "../arrow-slide";
 
 const LINKS = [
   ["#approach", "Approach"],
@@ -27,7 +28,7 @@ export function PlansNav() {
         scrolled ? "border-border" : "border-transparent",
       )}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8 lg:grid lg:grid-cols-[1fr_auto_1fr]">
         <a href="/for-plans" aria-label="BetterBill for plans home">
           <Wordmark suffix="for plans" />
         </a>
@@ -44,11 +45,12 @@ export function PlansNav() {
         </nav>
         <Button
           size="sm"
-          className="lg:h-11 lg:rounded-xl lg:px-5 lg:text-base"
+          className="lg:h-11 lg:justify-self-end lg:rounded-xl lg:px-5 lg:text-base"
           nativeButton={false}
           render={<a href="#pilot" />}
         >
           Book a pilot
+          <ArrowSlide />
         </Button>
       </div>
     </header>

@@ -1,7 +1,7 @@
 import type { Tier } from "@betterbill/ui/components/bb/tier-badge";
 import { Button } from "@betterbill/ui/components/button";
 import { Link } from "@tanstack/react-router";
-
+import { ArrowSlide } from "../arrow-slide";
 import { Console, type ConsoleData, FALLBACK_CONSOLE } from "./console";
 
 export type PlansSample = {
@@ -59,6 +59,7 @@ export function PlansHero({ sample }: { sample: PlansSample | null }) {
               nativeButton={false}
             >
               Book a pilot
+              <ArrowSlide />
             </Button>
             <Button
               variant="secondary"

@@ -2,7 +2,7 @@ import { Button } from "@betterbill/ui/components/button";
 import { Card } from "@betterbill/ui/components/card";
 import { Link } from "@tanstack/react-router";
 import { Check } from "lucide-react";
-
+import { ArrowSlide } from "./arrow-slide";
 import { Section, SectionTitle } from "./section";
 
 function Checks({ items }: { items: string[] }) {
@@ -41,6 +41,7 @@ export function Pricing() {
           />
           <Button nativeButton={false} render={<Link to="/check" />}>
             Check my bill
+            <ArrowSlide />
           </Button>
         </Card>
         <Card className="gap-5">

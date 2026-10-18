@@ -9,6 +9,7 @@ import { BadgeCheck, FileCheck2, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 
 import { useStartSample } from "@/hooks/use-start-sample";
+import { ArrowSlide } from "./arrow-slide";
 import {
   CheckScreen,
   type DemoFlag,
@@ -102,6 +103,7 @@ export function Hero({ sample }: { sample: HeroSample | null }) {
               render={<Link to="/check" />}
             >
               Check my bill
+              <ArrowSlide />
             </Button>
             <Button
               variant="secondary"
