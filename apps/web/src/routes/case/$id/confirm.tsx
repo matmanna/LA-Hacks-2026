@@ -2,7 +2,7 @@ import { LineConfirmRow } from "@betterbill/ui/components/bb/line-confirm-row";
 import { Money } from "@betterbill/ui/components/bb/money";
 import { AuditingState, ErrorState } from "@betterbill/ui/components/bb/states";
 import { Button } from "@betterbill/ui/components/button";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -27,6 +27,7 @@ type Lines = NonNullable<
 function ConfirmPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data, isLoading, isError } = useQuery(
     orpc.case.get.queryOptions({ input: { caseId: id } }),
   );
@@ -49,8 +50,12 @@ function ConfirmPage() {
     setAuditing(true);
     setFailed(false);
     try {
-      await client.bill.confirmLines({ caseId: id, lines, eob: null });
+      // eob is left out so a stored EOB is kept (null would delete it).
+      await client.bill.confirmLines({ caseId: id, lines });
       await client.audit.run({ caseId: id });
+      // The cached case.get is from before the audit; drop it so the results
+      // page loads the audited case instead of "We can't find that case".
+      await queryClient.invalidateQueries();
       await navigate({ to: "/case/$id", params: { id } });
     } catch {
       setAuditing(false);

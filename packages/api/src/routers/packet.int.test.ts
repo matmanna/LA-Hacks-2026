@@ -40,7 +40,9 @@ describe.skipIf(!url)("evidence packet (integration)", () => {
     expect((await client.case.share({ caseId })).token).toBe(token);
 
     const p = await client.case.packet({ token });
-    expect(p.case.id).toBe(caseId);
+    // The packet never carries the case id, which unlocks other procedures.
+    expect(p.case.id).toBe("shared");
+    expect(JSON.stringify(p)).not.toContain(caseId);
     expect(p.flags.map((f) => f.lever).sort()).toEqual([
       "duplicate",
       "published_price",
