@@ -19,6 +19,7 @@ export default function Plan() {
   const emailKind: Kind = itemized ? "itemized_request" : "letter";
   const [open, setOpen] = useState<"call" | "email" | null>(null);
   const [signed, setSigned] = useState(false);
+  const [paidPlanAgreement, setPaidPlanAgreement] = useState(false);
 
   const detail = useQuery(
     orpc.case.get.queryOptions({ input: { caseId: id } }),
@@ -96,13 +97,39 @@ export default function Plan() {
               </T>
             </View>
           </Pressable>
+          <Pressable
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: paidPlanAgreement }}
+            onPress={() => setPaidPlanAgreement((s) => !s)}
+            className="flex-row items-start gap-3 rounded-[14px] border border-hairline px-3.5 py-3"
+          >
+            <View
+              className={cn(
+                "size-[22px] items-center justify-center rounded-md",
+                paidPlanAgreement
+                  ? "bg-ink"
+                  : "border-[#C8D1DC] border-[1.5px]",
+              )}
+            >
+              {paidPlanAgreement ? (
+                <Icon name="check" size={14} color="#FFFFFF" stroke={2.5} />
+              ) : null}
+            </View>
+            <T className="flex-1 text-sm leading-[19px]">
+              I agree to BetterBill’s paid plan: 10% of confirmed savings,
+              capped at $1,000. Estimates never count, and there is no fee when
+              nothing is confirmed.
+            </T>
+          </Pressable>
           <T className="pt-1 text-center text-muted text-xs leading-4">
             Approving covers{withCall ? " the call script," : ""} the email, and
             your signed form. We save your approval with the time.
           </T>
           <Button
             label="Approve and start"
-            variant={signed && ready ? "primary" : "disabled"}
+            variant={
+              signed && paidPlanAgreement && ready ? "primary" : "disabled"
+            }
             busy={approve.isPending}
             onPress={() => approve.mutate()}
           />

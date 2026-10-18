@@ -3,8 +3,6 @@ import { Pressable, Switch, TextInput, View } from "react-native";
 
 import { Choice, Icon, Screen, T } from "@/components/bb";
 import { PhoneSignIn } from "@/components/phone-sign-in";
-import { SignIn } from "@/components/sign-in";
-import { SignUp } from "@/components/sign-up";
 import { insuranceOptions } from "@/lib/assist";
 import { authClient } from "@/lib/auth-client";
 import { useMyInfo } from "@/lib/my-info";
@@ -132,11 +130,7 @@ export default function Account() {
       {session?.user ? (
         <SignedIn name={session.user.name} email={session.user.email} />
       ) : (
-        <View className="gap-3">
-          <PhoneSignIn />
-          <SignIn />
-          <SignUp />
-        </View>
+        <PhoneSignIn />
       )}
     </Screen>
   );

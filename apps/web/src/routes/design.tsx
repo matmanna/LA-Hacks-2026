@@ -287,6 +287,7 @@ function DesignPage() {
           text={SAMPLE_LETTER}
           dataShared={["Your name", "Account ending 0000", "2 disputed lines"]}
           onApprove={() => setApprovalOpen(false)}
+          paidPlanAgreement={{ checked: true, onCheckedChange: () => {} }}
         />
         <AccountPrompt
           open={accountOpen}
