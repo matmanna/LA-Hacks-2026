@@ -1155,9 +1155,259 @@ export const DATA = {
         "claimRefMasked": "7731",
         "patientResponsibilityCents": 80000
       }
+    },
+    {
+      "id": "SB-11",
+      "title": "Demo: SB-01's bill at Ronald Reagan UCLA, self-pay",
+      "bill": {
+        "id": "bill_sb11",
+        "hospital": {
+          "name": "Ronald Reagan UCLA Medical Center",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-10-01",
+        "accountRefMasked": "7305",
+        "kind": "itemized",
+        "sourceKind": "pdf",
+        "lines": [
+          {
+            "id": "sb11-l01",
+            "serviceDate": "2026-09-14",
+            "description": "ED VISIT LEVEL 4",
+            "code": "99284",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 295000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l02",
+            "serviceDate": "2026-09-14",
+            "description": "MRI LUMBAR SPINE W/O CONTRAST",
+            "code": "72148",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 690000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l03",
+            "serviceDate": "2026-09-14",
+            "description": "XR LUMBAR SPINE 2-3 VIEWS",
+            "code": "72100",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 64000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l04",
+            "serviceDate": "2026-09-14",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l05",
+            "serviceDate": "2026-09-14",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l06",
+            "serviceDate": "2026-09-14",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l07",
+            "serviceDate": "2026-09-14",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 4,
+            "chargeCents": 15200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l08",
+            "serviceDate": "2026-09-14",
+            "description": "IV PUSH SINGLE DRUG",
+            "code": "96374",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 48600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l09",
+            "serviceDate": "2026-09-14",
+            "description": "KETOROLAC INJ 15 MG",
+            "code": "J1885",
+            "codeType": "HCPCS",
+            "units": 1,
+            "chargeCents": 9600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l10",
+            "serviceDate": "2026-09-14",
+            "description": "NORMAL SALINE 1000 CC",
+            "code": "J7030",
+            "codeType": "HCPCS",
+            "units": 1,
+            "chargeCents": 18600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l11",
+            "serviceDate": "2026-09-14",
+            "description": "URINALYSIS AUTO W/O SCOPE",
+            "code": "81003",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 1200000,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 1200000
+        }
+      },
+      "eob": null
     }
   ],
   "captures": [
+    {
+      "hospitalName": "Ronald Reagan UCLA Medical Center",
+      "capturedAt": "2026-10-18T00:55:12Z",
+      "sources": [
+        {
+          "kind": "cms_hpt_txt",
+          "url": "https://www.uclahealth.org/cms-hpt.txt"
+        },
+        {
+          "kind": "price_page",
+          "url": "https://www.uclahealth.org/patient-resources/billing-insurance/price-transparency/machine-readable-files"
+        },
+        {
+          "kind": "mrf",
+          "url": "https://www.uclahealth.org/sites/default/files/cms-hpt/956006143_ronald-reagan-ucla-medical-center_standardcharges.json"
+        }
+      ],
+      "prices": [
+        {
+          "code": "99284",
+          "setting": "outpatient",
+          "discountedCashCents": 133100
+        },
+        {
+          "code": "72148",
+          "setting": "outpatient",
+          "discountedCashCents": 306350
+        },
+        {
+          "code": "72100",
+          "setting": "outpatient",
+          "discountedCashCents": 36850
+        },
+        {
+          "code": "85025",
+          "setting": "outpatient",
+          "discountedCashCents": 7700
+        },
+        {
+          "code": "80053",
+          "setting": "outpatient",
+          "discountedCashCents": 18700
+        },
+        {
+          "code": "36415",
+          "setting": "outpatient",
+          "discountedCashCents": 2200
+        },
+        {
+          "code": "96374",
+          "setting": "outpatient",
+          "discountedCashCents": 46200
+        },
+        {
+          "code": "81003",
+          "setting": "outpatient",
+          "discountedCashCents": 4950
+        }
+      ]
+    },
     {
       "hospitalName": "Cedars-Sinai Medical Center",
       "capturedAt": "2026-10-17T23:00:45Z",
