@@ -144,6 +144,7 @@ export const NearbyPrice = z.object({
     .nullable(),
   rank: z.number().int().nullable(),
   shareOfHighest: z.number().nullable(),
+  level: z.enum(["lower", "middle", "higher"]).nullable(),
   lat: z.number(),
   lng: z.number(),
 });
@@ -171,6 +172,7 @@ export const HospitalSummary = z.object({
   services: z.number().int(),
   lowestOn: z.number().int(),
   belowMiddleOn: z.number().int(),
+  level: z.enum(["lower", "middle", "higher"]).nullable(),
 });
 export const HospitalDetail = HospitalSummary.extend({
   prices: z.array(

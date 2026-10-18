@@ -13,6 +13,7 @@ export { HospitalPin } from "./hospital-pin";
 export { Icon, type IconName } from "./icon";
 export { LookupCard } from "./lookup-card";
 export { Money } from "./money";
+export { PriceLegend } from "./price-legend";
 export { PriceMap } from "./price-map";
 export { PIN_STEP_MS } from "./price-map-shared";
 export { Progress } from "./progress";

@@ -31,6 +31,7 @@ import {
   Icon,
   Money,
   PIN_STEP_MS,
+  PriceLegend,
   PriceMap,
   T,
   TierBadge,
@@ -194,6 +195,11 @@ export default function PriceMapScreen() {
           </>
         )}
       </View>
+      {data && data.summary.priced > 1 ? (
+        <View className="items-center">
+          <PriceLegend kind="price" />
+        </View>
+      ) : null}
     </View>
   );
 
@@ -210,7 +216,7 @@ export default function PriceMapScreen() {
             origin={origin}
             here={origin.here}
             onSelect={(key) => openHospital(key, code)}
-            insets={{ top: insets.top + 150, bottom: visible + 16 }}
+            insets={{ top: insets.top + 190, bottom: visible + 16 }}
           />
         ) : null}
       </View>

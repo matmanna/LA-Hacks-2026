@@ -12,6 +12,9 @@ export type PriceMapProps = {
     discountedCashCents?: number | null;
     rank?: number | null;
     shareOfHighest?: number | null;
+    // Lower, middle or higher third (price pins) or how often the hospital
+    // is below the middle (hospital pins), from the server.
+    level?: "lower" | "middle" | "higher" | null;
     lat: number;
     lng: number;
   }[];
@@ -25,3 +28,16 @@ export type PriceMapProps = {
   // Room the floating controls cover, so the pins stay visible.
   insets?: { top: number; bottom: number };
 };
+
+// Green to red: the colours for lower, middle and higher prices.
+export const LEVEL_COLORS = {
+  lower: { solid: "#0F9D76", bg: "bg-mint-soft", text: "text-mint-ink" },
+  middle: { solid: "#D97706", bg: "bg-amber-soft", text: "text-amber-ink" },
+  higher: { solid: "#E5484D", bg: "bg-coral-soft", text: "text-coral-ink" },
+} as const;
+
+export const LEVEL_WORDS = {
+  lower: "lower than most near you",
+  middle: "in the middle near you",
+  higher: "higher than most near you",
+} as const;

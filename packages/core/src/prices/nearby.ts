@@ -22,6 +22,8 @@ export type NearbyCapture = {
 
 export type LatLng = { lat: number; lng: number };
 
+export type PriceLevel = "lower" | "middle" | "higher";
+
 // The hospital's captured financial assistance policy (data/hospitals/*/policy.json).
 export type AssistancePolicy = {
   policyUrl: string;
@@ -52,6 +54,10 @@ export type NearbyPrice = {
   rank: number | null;
   // This cash price as a share of the highest one (0..1), for compare bars.
   shareOfHighest: number | null;
+  // Which third of the published cash prices near the patient this one is
+  // in, for map colours: lower (green), middle, higher (red). Null without
+  // a cash price or when only one hospital publishes one.
+  level: PriceLevel | null;
   lat: number;
   lng: number;
 };
@@ -120,6 +126,7 @@ export function nearbyPrices({
       policy: c.policy ?? null,
       rank: null,
       shareOfHighest: null,
+      level: null,
       lat: c.location.lat,
       lng: c.location.lng,
     });
@@ -135,6 +142,7 @@ export function nearbyPrices({
   const high = rows.findLast(
     (r) => r.discountedCashCents !== null,
   )?.discountedCashCents;
+  const priced = rows.filter((r) => r.discountedCashCents !== null).length;
   let rank = 0;
   return rows.map((r) => {
     if (r.discountedCashCents === null) return r;
@@ -143,6 +151,7 @@ export function nearbyPrices({
       ...r,
       rank,
       shareOfHighest: high ? r.discountedCashCents / high : null,
+      level: thirdOf(rank, priced),
     };
   });
 }
@@ -163,4 +172,11 @@ export function summarizeNearby(rows: readonly NearbyPrice[]): NearbySummary {
     highCents: high,
     middleShareOfHighest: middle !== null && high ? middle / high : null,
   };
+}
+
+// Lower, middle or higher third by rank among n priced hospitals.
+export function thirdOf(rank: number, n: number): PriceLevel | null {
+  if (n < 2) return null;
+  const at = (rank - 1) / (n - 1);
+  return at <= 1 / 3 ? "lower" : at >= 2 / 3 ? "higher" : "middle";
 }

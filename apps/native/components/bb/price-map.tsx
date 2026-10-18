@@ -13,7 +13,12 @@ import Animated, {
 
 import { HospitalPin } from "./hospital-pin";
 import { Money } from "./money";
-import { PIN_STEP_MS, type PriceMapProps } from "./price-map-shared";
+import {
+  LEVEL_COLORS,
+  LEVEL_WORDS,
+  PIN_STEP_MS,
+  type PriceMapProps,
+} from "./price-map-shared";
 import { shortHospitalName } from "./short-name";
 import { T } from "./t";
 
@@ -139,17 +144,25 @@ function Pin({
       >
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={`${row.hospitalName}, ${row.distanceMiles.toFixed(1)} miles`}
+          accessibilityLabel={`${row.hospitalName}, ${row.distanceMiles.toFixed(1)} miles${row.level ? `, prices mostly ${LEVEL_WORDS[row.level]}` : ""}`}
           onPress={onPress}
         >
-          <HospitalPin name={shortHospitalName(row.hospitalName)} />
+          <HospitalPin
+            name={shortHospitalName(row.hospitalName)}
+            level={row.level ?? null}
+          />
         </Pressable>
       </Animated.View>
     );
   }
   const lowest = row.rank === 1;
-  const highest = !lowest && row.shareOfHighest === 1;
-  const bg = lowest ? "bg-mint" : highest ? "bg-coral-soft" : "bg-white";
+  const level = row.level ?? null;
+  const bg = lowest ? "bg-mint" : level ? LEVEL_COLORS[level].bg : "bg-white";
+  const ink = lowest
+    ? "text-white"
+    : level
+      ? LEVEL_COLORS[level].text
+      : "text-foreground";
   return (
     <Animated.View
       className="absolute items-center justify-end"
@@ -167,7 +180,7 @@ function Pin({
     >
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`${row.hospitalName}, ${row.distanceMiles.toFixed(1)} miles`}
+        accessibilityLabel={`${row.hospitalName}, ${row.distanceMiles.toFixed(1)} miles${row.level ? `, ${LEVEL_WORDS[row.level]}` : ""}`}
         onPress={onPress}
         className="items-center"
       >
@@ -195,13 +208,7 @@ function Pin({
               size={14}
               weight="semibold"
               whole
-              className={
-                lowest
-                  ? "text-white"
-                  : highest
-                    ? "text-coral-ink"
-                    : "text-foreground"
-              }
+              className={ink}
               label={row.hospitalName}
             />
           )}

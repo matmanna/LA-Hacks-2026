@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { hospitalDetail, nearbyHospitals } from "./hospitals";
+import { hospitalDetail, levelOf, nearbyHospitals } from "./hospitals";
 import type { NearbyCapture } from "./nearby";
 import { searchHospitals } from "./search";
 import type { PriceService } from "./services";
@@ -64,6 +64,22 @@ describe("nearbyHospitals", () => {
       ["c", 2, 0, 0],
       ["d", 1, 0, 0],
     ]);
+  });
+});
+
+describe("levelOf", () => {
+  it("says how often a hospital is below the middle, as a level", () => {
+    expect(levelOf(10, 11)).toBe("lower");
+    expect(levelOf(6, 11)).toBe("middle");
+    expect(levelOf(1, 11)).toBe("higher");
+    expect(levelOf(0, 2)).toBe("higher");
+    expect(levelOf(0, 0)).toBeNull();
+  });
+
+  it("is on each hospital in the list", () => {
+    expect(
+      nearbyHospitals({ captures, origin, services }).map((h) => h.level),
+    ).toEqual(["middle", "higher", "higher", "higher"]);
   });
 });
 

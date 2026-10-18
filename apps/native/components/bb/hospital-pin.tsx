@@ -1,6 +1,7 @@
 import { View } from "react-native";
 
 import { Icon } from "./icon";
+import { LEVEL_COLORS } from "./price-map-shared";
 import { T } from "./t";
 
 // A hospital on the Prices map: a round marker with a short name under it.
@@ -8,19 +9,24 @@ import { T } from "./t";
 export function HospitalPin({
   name,
   strong = false,
+  level = null,
 }: {
   name: string;
   strong?: boolean;
+  // Colours the marker green to red; white when unknown.
+  level?: "lower" | "middle" | "higher" | null;
 }) {
+  const fill = strong
+    ? "#0B1B2B"
+    : level
+      ? LEVEL_COLORS[level].solid
+      : "#FFFFFF";
   return (
     <View className="items-center gap-[3px]">
       <View
-        className={
-          strong
-            ? "size-[30px] items-center justify-center rounded-full bg-ink"
-            : "size-[30px] items-center justify-center rounded-full bg-white"
-        }
+        className="size-[30px] items-center justify-center rounded-full border-2 border-white"
         style={{
+          backgroundColor: fill,
           shadowColor: "#0B1B2B",
           shadowOpacity: 0.18,
           shadowRadius: 8,
@@ -30,7 +36,7 @@ export function HospitalPin({
         <Icon
           name="landmark"
           size={16}
-          color={strong ? "#FFFFFF" : "#1E3A8A"}
+          color={fill === "#FFFFFF" ? "#1E3A8A" : "#FFFFFF"}
           stroke={2}
         />
       </View>

@@ -6,6 +6,7 @@ import {
   type LatLng,
   type NearbyCapture,
   nearbyPrices,
+  type PriceLevel,
   summarizeNearby,
 } from "./nearby";
 import { type PriceService, SERVICES } from "./services";
@@ -38,6 +39,10 @@ export type HospitalSummary = {
   lowestOn: number;
   // Services where its cash price is below the middle one near the patient.
   belowMiddleOn: number;
+  // For map colours: "lower" when its price is below the middle on at least
+  // 60% of its services, "higher" under a third, else "middle". A count,
+  // never an average of prices.
+  level: PriceLevel | null;
 };
 
 export type HospitalDetail = HospitalSummary & {
@@ -76,6 +81,7 @@ function byHospital({ captures, origin, services = SERVICES }: Args) {
         services: 0,
         lowestOn: 0,
         belowMiddleOn: 0,
+        level: null,
         prices: [],
         capturedAt: r.capturedAt,
         sourceUrl: r.sourceUrl,
@@ -101,6 +107,7 @@ function byHospital({ captures, origin, services = SERVICES }: Args) {
       out.set(r.hospitalKey, h);
     }
   }
+  for (const h of out.values()) h.level = levelOf(h.belowMiddleOn, h.services);
   return out;
 }
 
@@ -117,6 +124,7 @@ export function nearbyHospitals(args: Args): HospitalSummary[] {
       services: h.services,
       lowestOn: h.lowestOn,
       belowMiddleOn: h.belowMiddleOn,
+      level: h.level,
     }))
     .sort(
       (a, b) =>
@@ -136,4 +144,13 @@ export function hospitalDetail(
     p.lowest ? 0 : (p.rank ?? Number.POSITIVE_INFINITY);
   h.prices.sort((a, b) => order(a) - order(b));
   return h;
+}
+
+export function levelOf(
+  belowMiddle: number,
+  services: number,
+): PriceLevel | null {
+  if (services === 0) return null;
+  const share = belowMiddle / services;
+  return share >= 0.6 ? "lower" : share < 1 / 3 ? "higher" : "middle";
 }
