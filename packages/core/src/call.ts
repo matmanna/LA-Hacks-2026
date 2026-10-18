@@ -133,6 +133,20 @@ export function isAllowedNumber(e164: string, allowlist: string): boolean {
   return allowed.includes(e164.trim());
 }
 
+// A number may be dialed when it is on the allowlist, or when the operator
+// has turned on patient-entered numbers (CALL_ALLOW_USER_NUMBERS=1) and it
+// is a well-formed E.164 number.
+export function isDialableNumber(
+  e164: string,
+  allowlist: string,
+  allowUserNumbers: boolean,
+): boolean {
+  return (
+    isAllowedNumber(e164, allowlist) ||
+    (allowUserNumbers && /^\+[1-9]\d{7,14}$/.test(e164.trim()))
+  );
+}
+
 // "agent:" / "billing:" lines, the format the activity page's transcript
 // card reads.
 export function transcriptText(

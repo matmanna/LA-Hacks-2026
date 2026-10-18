@@ -2,7 +2,7 @@ import {
   type CallOutcome,
   type CallVars,
   DISCLOSURE,
-  isAllowedNumber,
+  isDialableNumber,
   renderCallScript,
 } from "./call";
 
@@ -49,6 +49,12 @@ export function renderConferenceScript(
   ].join("\n\n");
 }
 
+// The number the approved script says it will call for the patient ("" for
+// a browser call).
+export function patientNumberForScript(script: string): string {
+  return /patient test participant at (\+\d+)\b/.exec(script)?.[1] ?? "";
+}
+
 export function isPatientFirstConferenceScript(script: string): boolean {
   return script.includes(APPROVAL_MARKER);
 }
@@ -76,13 +82,14 @@ export function validConferenceDestinations(
   billing: string,
   patient: string,
   allowlist: string,
+  allowUserNumbers = false,
 ): boolean {
   return (
     billing !== patient &&
     /^\+[1-9]\d{7,14}$/.test(billing) &&
     /^\+[1-9]\d{7,14}$/.test(patient) &&
-    isAllowedNumber(billing, allowlist) &&
-    isAllowedNumber(patient, allowlist)
+    isDialableNumber(billing, allowlist, allowUserNumbers) &&
+    isDialableNumber(patient, allowlist, allowUserNumbers)
   );
 }
 

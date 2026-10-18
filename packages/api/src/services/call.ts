@@ -8,8 +8,8 @@ import {
   type CallOutcome,
   CallOutcomeSchema,
   type CallState,
-  isAllowedNumber,
   isConferenceScript,
+  isDialableNumber,
   isPatientFirstConferenceScript,
   isSyntheticSampleCase,
   mapConversationStatus,
@@ -40,6 +40,7 @@ import {
   expireConference,
   startConferenceCall,
 } from "./conference";
+import { allowUserNumbers, resolveCallNumbers } from "./contact";
 import { getConversation, startOutboundCall } from "./elevenlabs";
 
 const MAX_CALLS_PER_10_MIN = 3;
@@ -55,16 +56,6 @@ const startedFor =
   (actionId: string) => (e: { type: string; artifactRef?: string }) =>
     e.type === "call.started" &&
     (e.artifactRef?.startsWith(`action:${actionId}#`) ?? false);
-
-// The first number on CALL_ALLOWLIST is the "billing office" test phone.
-function billingTestPhone(): string | null {
-  return (
-    (process.env.CALL_ALLOWLIST ?? "")
-      .split(",")
-      .map((n) => n.trim())
-      .find(Boolean) ?? null
-  );
-}
 
 export async function draftCall(
   db: Database,
@@ -88,7 +79,8 @@ export async function draftCall(
       message: "Nothing on this bill needs a call.",
     });
   }
-  const to = billingTestPhone();
+  const numbers = await resolveCallNumbers(db, input.caseId);
+  const to = numbers.billing;
   if (!to) {
     throw new ORPCError("PRECONDITION_FAILED", {
       message: "Calls are not set up yet.",
@@ -115,7 +107,8 @@ export async function draftCall(
         ? renderConferenceScript(
             vars,
             to,
-            conferenceDestinations(to, input.patientConnection).patientNumber,
+            conferenceDestinations(to, input.patientConnection, numbers.patient)
+              .patientNumber,
             input.patientConnection,
           )
         : renderCallScript(vars),
@@ -160,7 +153,13 @@ export async function startCall(
       message: "Please approve the call first.",
     });
   }
-  if (!isAllowedNumber(action.recipient, process.env.CALL_ALLOWLIST ?? "")) {
+  if (
+    !isDialableNumber(
+      action.recipient,
+      process.env.CALL_ALLOWLIST ?? "",
+      allowUserNumbers(),
+    )
+  ) {
     throw new ORPCError("FORBIDDEN", {
       message: "This demo only calls numbers on the test list.",
     });

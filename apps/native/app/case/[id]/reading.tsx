@@ -211,7 +211,7 @@ export default function Reading() {
 }
 
 function next(id: string) {
-  router.replace({ pathname: "/case/[id]/confirm", params: { id } });
+  router.replace({ pathname: "/case/[id]/phone", params: { id } });
 }
 
 function Step({

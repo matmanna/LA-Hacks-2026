@@ -74,3 +74,11 @@ export const PaymentCheckoutInput = z.object({
   promoCode: PromoCode,
 });
 export const BulkCheckoutInput = z.object({ promoCode: PromoCode });
+
+// contact.set: blank clears a field, omitted leaves it as it is.
+export const ContactSetInput = z.object({
+  caseId: z.string(),
+  patientPhone: z.string().max(40).optional(),
+  billingPhone: z.string().max(40).optional(),
+  hospitalUrl: z.string().max(300).optional(),
+});

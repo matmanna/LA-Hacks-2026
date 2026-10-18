@@ -116,3 +116,14 @@ export const LookupStatus = z.object({
     .nullable(),
 });
 export type LookupStatus = z.infer<typeof LookupStatus>;
+
+// contact.get / contact.set: where calls for a case go. Phones are E.164.
+// savedPatientPhone is the number from the signed-in patient's earlier case.
+export const Contact = z.object({
+  patientPhone: z.string().nullable(),
+  billingPhone: z.string().nullable(),
+  hospitalUrl: z.string().nullable(),
+  savedPatientPhone: z.string().nullable(),
+  hospitalName: z.string().nullable(),
+});
+export type Contact = z.infer<typeof Contact>;

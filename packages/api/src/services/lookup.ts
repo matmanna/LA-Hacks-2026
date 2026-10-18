@@ -10,6 +10,7 @@ import {
   type LookupEvent,
   type LookupStep,
   lookupSteps,
+  normalizePhone,
   policyFromLookup,
   shortHospitalName,
 } from "@betterbill/core";
@@ -19,7 +20,7 @@ import { and, asc, eq, like } from "drizzle-orm";
 
 import { POLICIES } from "../data";
 import type { LookupStatus } from "../outputs";
-import { addEvent } from "../repo/cases";
+import { addEvent, getCaseRow } from "../repo/cases";
 import {
   type Fetch,
   getLiveUrl,
@@ -84,6 +85,17 @@ export async function caseLookupPolicy(
   const { end } = await lookupRecords(db, caseId);
   if (end?.type !== LOOKUP_COMPLETED) return null;
   return parse<Finished>(end.artifactRef)?.policy ?? null;
+}
+
+// The billing phone a finished lookup found on the hospital's site, as E.164.
+export async function caseLookupBillingPhone(
+  db: Db,
+  caseId: string,
+): Promise<string | null> {
+  const { end } = await lookupRecords(db, caseId);
+  if (end?.type !== LOOKUP_COMPLETED) return null;
+  const phone = parse<Finished>(end.artifactRef)?.billingPhone;
+  return phone ? normalizePhone(phone) : null;
 }
 
 const base = (bill: Bill): LookupStatus => ({
@@ -256,6 +268,7 @@ export async function startLookup(
       state: bill.hospital.state,
     },
     deps.fetch,
+    (await getCaseRow(db, caseId))?.hospitalUrl ?? null,
   );
   const started: Started = {
     runId: run.id,
