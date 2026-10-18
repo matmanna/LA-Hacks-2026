@@ -40,20 +40,25 @@ SB-01 and SB-06 name Cedars-Sinai Medical Center so the published-price lever co
 
 ### 1. Three-minute script (hero path)
 
-Setup before going on: phone mirrored to the screen (or laptop with phone frame), SB-01 printed on paper, app on the sample case start screen, Sentry trace tab open, Browser Use run recording tab open, judge phone card printed (if A1), cached run ready (section 11).
+This script follows the **mobile app (Expo Go)** and the mobile design canvas (lean flow L1 to L7, W1 to W4): one approval covers the call and the email, and the call is watched through "Listen in". The earlier letter-first web script is replaced. The web app can still carry the desktop shot (section 3, shot 8).
 
-| Time | On screen | Say (exact) |
+Setup before going on: phone running the Expo Go build, mirrored to the screen; app freshly installed so the three welcome cards show; SB-01 printed on paper; laptop with the test inbox, the Sentry trace tab, and the Browser Use run recording open; judge phone card printed (if A1); cached run ready (section 11).
+
+| Time | On screen (mobile) | Say (exact) |
 |---|---|---|
 | 0:00 to 0:15 | Title, then the printed bill in hand | "This is a twelve thousand dollar hospital bill. It's synthetic, but the problem isn't. Close to half of insured adults ages 19 to 64 got a bill in the past year they thought insurance should have covered. Fewer than half pushed back, mostly because they didn't know they could." |
-| 0:15 to 0:35 | Camera capture of the printed SB-01; lines appear | "BetterBill reads every line from a photo with StepFun's step-5-preview. I check them before anything happens. One tap to fix a line if it misread." (Tap Looks right.) |
-| 0:35 to 1:05 | Flag list with tier badges | "Three things look wrong, and each shows its proof. The blood count is listed twice, same day, same amount: confirmed from the bill itself. Venipuncture billed four times: Medicare's usual daily limit is two, from the CMS table. That's a billing rule, so we label it that way." |
-| 1:05 to 1:40 | Published-price card, ComparePriceBar, source link; cut to Browser Use recording for 5 s | "Here's the real data. On October 17, Browser Use went to Cedars-Sinai's public price page and found its own price file; we hashed all 884 megabytes of it. The hospital's published cash price for this MRI is five thousand one hundred forty-three dollars and fifteen cents. The bill says six thousand nine hundred. Source and capture date are right here." |
-| 1:40 (optional, +10 s) | Switch the sample to SB-11; published-price card | "Same bill, but at the hospital hosting this hackathon. UCLA's own published cash price for this MRI is three thousand sixty-three fifty. That's thirty-eight hundred dollars less than billed." Cut this beat if the run is over 3:00. |
-| 1:40 to 1:55 | Savings summary and assistance card | "So: eighty-four dollars confirmed, about eighteen hundred thirty-three dollars more potential, all labelled. And from the hospital's assistance policy, quoted word for word, this household may qualify for help. It's an estimate, not a decision." |
-| 1:55 to 2:20 | Letter draft, ApprovalSheet, Approve and send | "BetterBill drafts the dispute letter. Every sentence points to a flag. Nothing is sent until I approve the exact text." (Approve.) "Sent to our test inbox." |
-| 2:20 to 2:40 | **If A1:** call starts to the judge's phone | "Want to be the billing office? Read line one of this card." (Judge answers; agent opens: "Hi, this is an automated assistant calling on behalf of a patient.") **If no A1:** show the transcript card labelled "Recorded test call." |
-| 2:40 to 2:50 | Sentry trace for the run | "Every step is traced in Sentry: parse, rules, capture, letter, call." |
+| 0:15 to 0:25 | Welcome cards: swipe 1 to 3, tap "Check my bill" | "BetterBill does three things. Snap your bill. See what's wrong, with proof. And we contact billing for you, only after you approve." |
+| 0:25 to 0:45 | Camera on the printed SB-01, reading animation, confirm lines; tap "Looks right" | "It reads every line from a photo with StepFun's step-5-preview. I check the lines before anything happens. One tap to fix a line if it misread." |
+| 0:45 to 1:10 | Checking rings, then Results: fair balance card and three flags with their tier | "Three things look wrong, and each shows its proof. The blood count is listed twice, same day, same amount: confirmed from the bill itself. The blood draw is billed four times: Medicare's usual daily limit is two, from the CMS table. That's a billing rule, so we label it that way. Eighty-four dollars confirmed, about eighteen hundred thirty-three dollars more potential, all labelled." |
+| 1:10 to 1:40 | Tap the MRI flag: flag detail with the source rows; cut to the Browser Use recording for 5 s | "Here's the real data. On October 17, Browser Use went to Cedars-Sinai's public price page and found its own price file; we hashed all 884 megabytes of it. The hospital's published cash price for this MRI is five thousand one hundred forty-three dollars and fifteen cents. The bill says six thousand nine hundred. Source and dates are right here." |
+| 1:40 (optional, +10 s) | Switch the sample to SB-11; MRI flag detail | "Same bill, but at the hospital hosting this hackathon. UCLA's own published cash price for this MRI is three thousand sixty-three fifty. That's thirty-eight hundred dollars less than billed." Cut this beat if the run is over 3:00. |
+| 1:40 to 2:00 | "Handle it for me", then the plan screen; open "See what we'll say" and "See the email"; tap "Approve and start" | "Now BetterBill acts for me. It will call billing and email them every error, plus a request for a fully itemized bill. I see the exact words of both. One tap approves them, and nothing goes out before that." |
+| 2:00 to 2:25 | Live tracking, tap "Listen in". **If A1:** the judge's phone rings. Laptop: the email lands in the test inbox | **If A1:** "Want to be the billing office? Read line one of this card." (Judge answers; agent opens: "Hi, this is an automated assistant calling on behalf of a patient.") **If no A1:** show the transcript labelled "Recorded test call." Then: "And the written version is already in their inbox." |
+| 2:25 to 2:40 | Back to Home: "Waiting on billing"; tap the bill for its timeline | "When the call ends, I get a reference number and a text. Home shows where my bill stands and what happens next." |
+| 2:40 to 2:50 | Sentry trace for the run | "Every step is traced in Sentry: read, rules, capture, call, email." |
 | 2:50 to 3:00 | Measured results card | "On our ten synthetic bills, we caught twelve of twelve planted errors with zero false flags on three clean bills, and on five published Bill of the Month cases, we caught one of the three problems that fall within what BetterBill checks. Goodbill does this with human experts for twenty percent of savings. BetterBill is the self-serve version: you see every reason, and you approve every step." |
+
+**Open before rehearsal:** (1) A confirms that one "Approve and start" tap records an approval event for each draft (call script and email); if not, the plan screen needs two taps and the 1:40 line changes to "two taps". (2) The assistance beat is **parked** for the mobile flow (`assistance.check` still exists in the API). Use the assistance numbers in section "Numbers used" only if a judge asks.
 
 If any number changes at the 07:30 final run, update it here first; never fill a gap with a target.
 
@@ -76,16 +81,18 @@ Target 2:30 to 3:00, 1080p, screen capture plus phone close-ups, voiceover recor
 |---|---|---|---|
 | 1 | Printed bill on a table, hand picks it up | 5 s | Phone camera |
 | 2 | Hook text: the Commonwealth numbers with citation | 8 s | Slide |
-| 3 | Camera capture in app, lines appear, one edit | 15 s | Phone screen recording |
-| 4 | Flag list, tap duplicate, evidence sheet | 15 s | Phone screen |
+| 2b | Welcome cards swiped 1 to 3 (Expo Go) | 6 s | Phone screen recording |
+| 3 | Camera capture in app, reading animation, confirm lines, one edit | 15 s | Phone screen recording |
+| 4 | Results: fair balance and three flags with tiers | 10 s | Phone screen |
 | 5 | Units flag evidence with CMS source | 8 s | Phone screen |
 | 6 | Browser Use run recording navigating Cedars-Sinai price page | 10 s | Browser Use live preview or recording (UNVERIFIED export) or screen capture |
-| 7 | Published-price card with source and capture date | 10 s | Phone screen |
-| 7b | Optional: SB-11 at UCLA, published-price card | 6 s | Phone screen |
-| 8 | Desktop full insights table | 8 s | Laptop 1280 px |
-| 9 | Assistance card with verbatim quote | 8 s | Phone |
-| 10 | Letter approval and send; inbox receives it | 15 s | Phone + laptop |
-| 11 | Call: judge or teammate answers; transcript card (labelled recording if not live) | 20 s | Phone + camera |
+| 7 | MRI flag detail with source rows and dates | 10 s | Phone screen |
+| 7b | Optional: SB-11 at UCLA, MRI flag detail | 6 s | Phone screen |
+| 8 | Desktop full insights table (web app) | 8 s | Laptop 1280 px |
+| 9 | Plan screen: call script and email expanded, "Approve and start" | 10 s | Phone |
+| 10 | Live tracking, "Listen in"; test inbox receives the email | 15 s | Phone + laptop |
+| 11 | Call: judge or teammate answers; transcript (labelled recording if not live) | 20 s | Phone + camera |
+| 11b | Home "Waiting on billing" and the bill's timeline | 6 s | Phone |
 | 12 | SB-04 EOB mismatch flag (second bill) | 8 s | Phone |
 | 13 | Sentry trace and one bug found via trace | 12 s | Laptop |
 | 14 | Measured results card, BotM if done | 10 s | Phone |
