@@ -11,10 +11,11 @@ import {
   CONFERENCE_STATUSES,
   type ConferenceStatus,
   canReportConferenceStatus,
-  isAllowedNumber,
+  isDialableNumber,
   isSyntheticSampleCase,
   type PatientConnection,
   patientConnectionForScript,
+  patientNumberForScript,
   renderConferenceScript,
   sha256Hex,
   validConferenceDestinations,
@@ -27,6 +28,7 @@ import { z } from "zod";
 import { SAMPLES } from "../data";
 import { listEvents } from "../repo/cases";
 import { checkTransition, getAction, loadAuditedCase } from "./actions";
+import { allowUserNumbers } from "./contact";
 import {
   browserPatientSession,
   closeConference,
@@ -56,26 +58,32 @@ const statusSummary: Record<ConferenceStatus, string> = {
   failed: "Conference ended before it could finish",
 };
 
+// patientNumber is the patient's own number from their case. Without one,
+// the demo's CALL_PATIENT_NUMBER is used.
 export function conferenceDestinations(
   billingNumber: string,
   connection: PatientConnection = "phone",
+  patientOverride?: string | null,
 ) {
+  const allowlist = process.env.CALL_ALLOWLIST ?? "";
   if (connection === "browser") {
     if (
       !/^\+[1-9]\d{7,14}$/.test(billingNumber) ||
-      !isAllowedNumber(billingNumber, process.env.CALL_ALLOWLIST ?? "")
+      !isDialableNumber(billingNumber, allowlist, allowUserNumbers())
     )
       throw new ORPCError("FORBIDDEN", {
         message: "This demo only calls numbers on the test list.",
       });
     return { billingNumber, patientNumber: "" };
   }
-  const patientNumber = process.env.CALL_PATIENT_NUMBER?.trim() ?? "";
+  const patientNumber =
+    patientOverride || process.env.CALL_PATIENT_NUMBER?.trim() || "";
   if (
     !validConferenceDestinations(
       billingNumber,
       patientNumber,
-      process.env.CALL_ALLOWLIST ?? "",
+      allowlist,
+      allowUserNumbers(),
     )
   ) {
     throw new ORPCError("PRECONDITION_FAILED", {
@@ -201,18 +209,12 @@ export function conferenceProgress(actionId: string, events: CaseEvent[]) {
 async function validateApproval(db: Db, action: Action, events: CaseEvent[]) {
   if (action.kind !== "call" || action.outcome || !action.approvedAt)
     throw new ORPCError("FORBIDDEN", { message: "This call is not active." });
-  const billing = (process.env.CALL_ALLOWLIST ?? "")
-    .split(",")
-    .map((value) => value.trim())
-    .find(Boolean);
-  if (billing !== action.recipient)
-    throw new ORPCError("FORBIDDEN", {
-      message: "The call destination changed. Review the call again.",
-    });
+  // The approved script names both numbers; they must still be dialable.
   const patientConnection = patientConnectionForScript(action.draft);
   const destinations = conferenceDestinations(
     action.recipient,
     patientConnection,
+    patientNumberForScript(action.draft),
   );
   const audited = await loadAuditedCase(db, action.caseId);
   const vars = buildCallVars(

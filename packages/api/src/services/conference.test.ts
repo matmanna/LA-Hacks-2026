@@ -378,9 +378,10 @@ it("fails closed when patient presence is absent or unavailable and blocks after
 it("revalidates exact approval and both destinations at each dial", async () => {
   const db = fakeDb();
   await boot(db);
-  vi.stubEnv("CALL_PATIENT_NUMBER", "+13105550102");
+  // The approved script names the patient's number; it must stay dialable.
+  vi.stubEnv("CALL_ALLOWLIST", "+13105550100");
   await expect(dial(db, "patient")).rejects.toThrow();
-  vi.stubEnv("CALL_PATIENT_NUMBER", "+13105550101");
+  vi.stubEnv("CALL_ALLOWLIST", "+13105550100,+13105550101");
   await brief(db);
   fixture.action.draft += " changed";
   await expect(dial(db, "billing")).rejects.toThrow();

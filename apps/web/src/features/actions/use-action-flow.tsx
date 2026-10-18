@@ -270,7 +270,8 @@ export function useActionFlow(caseId: string, kind: Kind) {
             Call my phone
           </Button>
           <p className="text-muted-foreground text-sm">
-            Receive a call on your configured patient test phone.
+            Receive a call on the phone number you entered, or the demo patient
+            phone if you skipped it.
           </p>
         </ResponsiveOverlay>
         {browser.panel}

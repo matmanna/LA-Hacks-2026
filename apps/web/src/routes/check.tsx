@@ -38,7 +38,7 @@ function CheckPage() {
     try {
       const created = await client.case.create({});
       await read(created.id);
-      await navigate({ to: "/case/$id/confirm", params: { id: created.id } });
+      await navigate({ to: "/case/$id/phone", params: { id: created.id } });
     } catch {
       setError(
         "We couldn't read this. Try a flatter, brighter photo, or paste the text instead.",
