@@ -34,7 +34,8 @@
       "sourceUrl": "https://www.irs.gov/charities-non-profits/limitation-on-charges-section-501r5",
       "quote": "to not more that the amount generally billed (AGB) to individuals who have insurance covering such care",
       "verified": true,
-      "capturedAt": "2026-10-18"
+      "capturedAt": "2026-10-18",
+      "short": "If you qualify, you can't be charged more than insured patients usually pay"
     },
     {
       "id": "us-501r-eca",
@@ -52,7 +53,8 @@
       "sourceUrl": "https://www.irs.gov/charities-non-profits/billing-and-collections-section-501r6",
       "quote": "refrains from initiating such ECAs for at least 120 days",
       "verified": true,
-      "capturedAt": "2026-10-18"
+      "capturedAt": "2026-10-18",
+      "short": "120 days before harsh collections, and 240 days to apply"
     },
     {
       "id": "us-nsa-emergency",
@@ -72,7 +74,8 @@
       "sourceUrl": "https://www.law.cornell.edu/uscode/text/42/300gg-111",
       "quote": "the cost-sharing requirement is not greater than the requirement that would apply",
       "verified": true,
-      "capturedAt": "2026-10-18"
+      "capturedAt": "2026-10-18",
+      "short": "Emergency care is billed at your in-network cost, even out of network"
     },
     {
       "id": "us-nsa-gfe",
@@ -91,7 +94,8 @@
       "sourceUrl": "https://www.cms.gov/medical-bill-rights",
       "quote": "You may be able to dispute your bill if it's at least $400 more than the estimate.",
       "verified": true,
-      "capturedAt": "2026-10-18"
+      "capturedAt": "2026-10-18",
+      "short": "Only if you got a price estimate before care"
     },
     {
       "id": "us-medicare-itemized",
@@ -109,7 +113,8 @@
       "sourceUrl": "https://www.law.cornell.edu/uscode/text/42/1395b-7",
       "quote": "Not later than 30 days after the date on which a request under paragraph (1) has been made",
       "verified": true,
-      "capturedAt": "2026-10-18"
+      "capturedAt": "2026-10-18",
+      "short": "You can ask for a free itemized statement, sent within 30 days"
     }
   ]
 }

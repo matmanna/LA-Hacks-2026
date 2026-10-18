@@ -47,7 +47,26 @@
       "quote": "not more than 300 percent of the federal poverty level, adjusted for family size",
       "notes": "Large system: owned by a system with 3+ acute hospitals, or large bed counts in certain counties (RCW 70.170.060(5)(a)). Applications within two years of service use income at application (10)(b). 75% and 50% discounts may be reduced for assets (5)(c).",
       "verified": true,
-      "capturedAt": "2026-10-18"
+      "capturedAt": "2026-10-18",
+      "screen": {
+        "free": {
+          "pct": 200,
+          "inclusive": true
+        },
+        "freeLarge": {
+          "pct": 300,
+          "inclusive": true
+        },
+        "help": {
+          "pct": 300,
+          "inclusive": true
+        },
+        "helpLarge": {
+          "pct": 400,
+          "inclusive": true
+        },
+        "insured": "any"
+      }
     }
   ]
 }

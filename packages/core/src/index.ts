@@ -1,3 +1,4 @@
+export * from "./assistance/index";
 export * from "./balance";
 export * from "./call";
 export * from "./case-machine";

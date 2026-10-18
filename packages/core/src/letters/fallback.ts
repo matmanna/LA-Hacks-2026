@@ -32,7 +32,9 @@ function sentenceFor(flag: Flag, lines: Line[]): string {
     case "published_price":
       return `The charge for ${description} (${code}) is ${formatMoney(primary?.chargeCents ?? flag.amountCents)}. That is ${amount} higher than your own published price for this service. Please review it.`;
     case "assistance":
-      return "Based on your published financial assistance policy, I may qualify. This is an estimate. Please send me the application.";
+      return flag.evidence.detail
+        ? `Based on ${flag.evidence.detail}, I may qualify for help paying this bill. This is an estimate. Please send me the application.`
+        : "Based on your published financial assistance policy, I may qualify. This is an estimate. Please send me the application.";
     case "missing_itemization":
       return "My statement does not list each charge. Please send a complete itemized bill.";
     case "not_received":

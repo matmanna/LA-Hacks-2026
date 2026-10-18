@@ -116,11 +116,52 @@ export const AssistanceStatus = z.enum([
 ]);
 export type AssistanceStatus = z.infer<typeof AssistanceStatus>;
 
+// One rule the assistance screener checked (hospital policy, state law,
+// federal rule, or the income comparison), with what it found and its source.
+export const AssistanceCheck = z.object({
+  id: z.string(),
+  kind: z.enum(["policy", "state", "federal", "insurance", "income"]),
+  title: z.string(),
+  outcome: z.enum(["may_help", "not_applicable", "needs_info"]),
+  finding: z.string(),
+  source: z
+    .object({
+      label: z.string(),
+      url: z.string().optional(),
+      quote: z.string().optional(),
+      capturedAt: z.string().optional(),
+    })
+    .optional(),
+});
+export type AssistanceCheck = z.infer<typeof AssistanceCheck>;
+
+// A household income range the patient picks instead of typing an income.
+// incomeCents is what the app sends for that range, never the real income.
+export const IncomeBand = z.object({
+  minCents: cents,
+  maxCents: cents.nullable(),
+  incomeCents: cents,
+});
+export type IncomeBand = z.infer<typeof IncomeBand>;
+
+export const AssistanceRight = z.object({
+  text: z.string(),
+  citation: z.string(),
+  sourceUrl: z.string(),
+});
+export type AssistanceRight = z.infer<typeof AssistanceRight>;
+
 export const Assistance = z.object({
   status: AssistanceStatus,
   quote: z.string().optional(),
   sourceUrl: z.string().optional(),
   capturedAt: z.string().optional(),
+  // Assistance screener (contract PR). All optional, so older payloads parse.
+  freeCare: z.boolean().optional(),
+  asksIncome: z.boolean().optional(),
+  checks: z.array(AssistanceCheck).optional(),
+  rights: z.array(AssistanceRight).optional(),
+  incomeBands: z.array(IncomeBand).optional(),
 });
 export type Assistance = z.infer<typeof Assistance>;
 
