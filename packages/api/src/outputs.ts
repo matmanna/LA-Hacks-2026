@@ -194,6 +194,25 @@ export const HospitalDetail = HospitalSummary.extend({
   pageUrl: z.string().nullable(),
   fileUpdatedOn: z.string().nullable(),
   policy: NearbyPrice.shape.policy,
+  ratings: z
+    .object({
+      ccn: z.string(),
+      overallStars: z.number().int().min(1).max(5).nullable(),
+      patientSurveyStars: z.number().int().min(1).max(5).nullable(),
+      surveysCompleted: z.number().int().nullable(),
+      surveyPeriodEnd: z.string().nullable(),
+      capturedAt: z.string(),
+      sources: z.array(
+        z.object({
+          dataset: z.string(),
+          landingPage: z.string().nullable(),
+          url: z.string(),
+          modified: z.string().nullable(),
+          sha256: z.string().nullable(),
+        }),
+      ),
+    })
+    .nullable(),
 });
 
 // A lab's own online self-pay price for a service (core prices/labs).

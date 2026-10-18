@@ -1,3 +1,4 @@
+import type { HospitalRatings } from "@betterbill/core";
 import { useQuery } from "@tanstack/react-query";
 import * as Linking from "expo-linking";
 import { router, useLocalSearchParams } from "expo-router";
@@ -13,6 +14,7 @@ import Animated, {
   withDelay,
   withTiming,
 } from "react-native-reanimated";
+import Svg, { Path } from "react-native-svg";
 
 import { Disclaimer, Icon, Money, Screen, T, TierBadge } from "@/components/bb";
 import { errorMessage } from "@/lib/errors";
@@ -136,6 +138,8 @@ export default function HospitalPrices() {
           </T>
         </View>
       </Rise>
+
+      {h.ratings ? <MedicareRatings ratings={h.ratings} /> : null}
 
       <View className="mt-[22px] flex-row items-center justify-between gap-2">
         <T weight="semibold" className="text-lg">
@@ -326,4 +330,96 @@ function Rise({
     transform: [{ translateY: (1 - shown.value) * 8 }],
   }));
   return <Animated.View style={style}>{children}</Animated.View>;
+}
+
+// Medicare's own star ratings (CMS Care Compare), with where they come from.
+// Not reviews from a review site.
+function MedicareRatings({ ratings }: { ratings: HospitalRatings }) {
+  const source = ratings.sources[0];
+  const updated = source?.modified
+    ? capturedLong(`${source.modified}T12:00:00Z`)
+    : null;
+  const through = monthYear(ratings.surveyPeriodEnd);
+  return (
+    <View className="mt-3 gap-2.5 rounded-[18px] border border-hairline px-4 py-3.5">
+      <View className="flex-row items-center justify-between gap-2">
+        <T weight="semibold" className="text-[15px]">
+          Medicare ratings
+        </T>
+        <View className="h-6 justify-center rounded-full bg-slate-soft px-2">
+          <T className="text-slate-ink text-xs">Medicare Care Compare</T>
+        </View>
+      </View>
+      <StarRow label="Overall quality" stars={ratings.overallStars} />
+      <StarRow label="Patient survey" stars={ratings.patientSurveyStars} />
+      {ratings.surveysCompleted ? (
+        <T className="text-muted text-xs leading-4">
+          {`From ${ratings.surveysCompleted.toLocaleString("en-US")} patient surveys${through ? `, through ${through}` : ""}.`}
+        </T>
+      ) : null}
+      <View className="flex-row items-center justify-between gap-3 border-[#EEF0F3] border-t pt-2.5">
+        <T className="flex-1 text-muted text-xs leading-4">
+          {`Medicare's star ratings, not reviews from a review site.${updated ? ` Data updated ${updated}.` : ""}`}
+        </T>
+        {source?.landingPage ? (
+          <Pressable
+            accessibilityRole="link"
+            accessibilityLabel="Open Medicare's data for this hospital"
+            hitSlop={10}
+            onPress={() =>
+              source.landingPage &&
+              void WebBrowser.openBrowserAsync(source.landingPage)
+            }
+            className="min-h-11 justify-center"
+          >
+            <T weight="semibold" className="text-[13px] text-accent">
+              Open
+            </T>
+          </Pressable>
+        ) : null}
+      </View>
+    </View>
+  );
+}
+
+function StarRow({ label, stars }: { label: string; stars: number | null }) {
+  return (
+    <View
+      className="flex-row items-center justify-between gap-3"
+      accessible
+      accessibilityLabel={
+        stars ? `${label}: ${stars} of 5 stars` : `${label}: not available`
+      }
+    >
+      <T className="text-sm">{label}</T>
+      {stars ? (
+        <View className="flex-row items-center gap-2">
+          <View className="flex-row gap-0.5">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <Star key={n} filled={n <= stars} />
+            ))}
+          </View>
+          <T weight="semibold" className="text-sm">
+            {`${stars} of 5`}
+          </T>
+        </View>
+      ) : (
+        <T className="text-muted text-sm">Not available</T>
+      )}
+    </View>
+  );
+}
+
+function Star({ filled }: { filled: boolean }) {
+  return (
+    <Svg width={16} height={16} viewBox="0 0 24 24" aria-hidden>
+      <Path
+        d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3 1.1-6.5-4.7-4.6 6.5-.9z"
+        fill={filled ? "#0B1B2B" : "none"}
+        stroke={filled ? "#0B1B2B" : "#C8D1DC"}
+        strokeWidth={1.6}
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
 }

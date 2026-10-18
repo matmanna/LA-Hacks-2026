@@ -36,11 +36,15 @@ export function buildData() {
     .map((d) => {
       const c = tryRead(`data/hospitals/${d.name}/capture.json`);
       return c
-        ? { c, policy: tryRead(`data/hospitals/${d.name}/policy.json`) }
+        ? {
+            c,
+            policy: tryRead(`data/hospitals/${d.name}/policy.json`),
+            ratings: tryRead(`data/hospitals/${d.name}/ratings.json`),
+          }
         : null;
     })
     .filter(Boolean)
-    .map(({ c, policy }) => ({
+    .map(({ c, policy, ratings }) => ({
       hospitalKey: c.hospitalKey,
       hospitalName: c.hospitalName,
       capturedAt: c.capturedAt,
@@ -65,6 +69,32 @@ export function buildData() {
           fileLastUpdatedOn: s.fileLastUpdatedOn ?? null,
         }),
       ),
+      // Medicare's star ratings (Care Compare) when captured beside it.
+      ratings: ratings?.ccn
+        ? {
+            ccn: ratings.ccn,
+            overallStars: ratings.overallStars ?? null,
+            patientSurveyStars: ratings.patientSurveyStars ?? null,
+            surveysCompleted: ratings.surveysCompleted ?? null,
+            surveyPeriodEnd: ratings.surveyPeriod?.end ?? null,
+            capturedAt: ratings.capturedAt,
+            sources: ratings.sources.map(
+              (s: {
+                dataset: string;
+                landingPage?: string;
+                url: string;
+                modified?: string;
+                sha256?: string;
+              }) => ({
+                dataset: s.dataset,
+                landingPage: s.landingPage ?? null,
+                url: s.url,
+                modified: s.modified ?? null,
+                sha256: s.sha256 ?? null,
+              }),
+            ),
+          }
+        : null,
       // The hospital's assistance policy when one was captured beside it.
       policy: policy?.thresholds
         ? {

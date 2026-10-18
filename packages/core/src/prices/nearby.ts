@@ -12,6 +12,7 @@ export type NearbyCapture = {
   }[];
   location?: { address: string; lat: number; lng: number } | null;
   policy?: AssistancePolicy | null;
+  ratings?: HospitalRatings | null;
   prices: readonly {
     code: string;
     setting: string;
@@ -23,6 +24,24 @@ export type NearbyCapture = {
 export type LatLng = { lat: number; lng: number };
 
 export type PriceLevel = "lower" | "middle" | "higher";
+
+// Medicare's public star ratings for the hospital (CMS Care Compare): the
+// overall quality rating and the HCAHPS patient survey summary, 1 to 5.
+export type HospitalRatings = {
+  ccn: string;
+  overallStars: number | null;
+  patientSurveyStars: number | null;
+  surveysCompleted: number | null;
+  surveyPeriodEnd: string | null;
+  capturedAt: string;
+  sources: {
+    dataset: string;
+    landingPage: string | null;
+    url: string;
+    modified: string | null;
+    sha256: string | null;
+  }[];
+};
 
 // The hospital's captured financial assistance policy (data/hospitals/*/policy.json).
 export type AssistancePolicy = {

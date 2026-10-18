@@ -95,6 +95,32 @@ describe("hospitalDetail", () => {
     expect(b?.sourceUrl).toBe("https://b.example/mrf.json");
   });
 
+  it("carries the hospital's Medicare ratings when captured", () => {
+    const ratings = {
+      ccn: "050000",
+      overallStars: 4,
+      patientSurveyStars: 3,
+      surveysCompleted: 500,
+      surveyPeriodEnd: "2025-09-30",
+      capturedAt: "2026-10-18T17:01:24Z",
+      sources: [],
+    };
+    const withRatings = captures.map((c) =>
+      c.hospitalKey === "a" ? { ...c, ratings } : c,
+    );
+    expect(
+      hospitalDetail({
+        captures: withRatings,
+        origin,
+        services,
+        hospitalKey: "a",
+      })?.ratings,
+    ).toEqual(ratings);
+    expect(
+      hospitalDetail({ captures, origin, services, hospitalKey: "b" })?.ratings,
+    ).toBeNull();
+  });
+
   it("puts services without a cash price last", () => {
     const d = hospitalDetail({ captures, origin, services, hospitalKey: "d" });
     expect(d?.prices.map((p) => [p.code, p.rank])).toEqual([["1", null]]);

@@ -3,6 +3,7 @@
 // an average across an MRI and a blood test would mean nothing.
 import {
   type AssistancePolicy,
+  type HospitalRatings,
   type LatLng,
   type NearbyCapture,
   nearbyPrices,
@@ -53,6 +54,7 @@ export type HospitalDetail = HospitalSummary & {
   pageUrl: string | null;
   fileUpdatedOn: string | null;
   policy: AssistancePolicy | null;
+  ratings: HospitalRatings | null;
 };
 
 type Args = {
@@ -89,6 +91,7 @@ function byHospital({ captures, origin, services = SERVICES }: Args) {
         pageUrl: r.pageUrl,
         fileUpdatedOn: r.fileUpdatedOn,
         policy: r.policy,
+        ratings: null,
       };
       h.services += 1;
       if (lowest) h.lowestOn += 1;
@@ -140,6 +143,9 @@ export function hospitalDetail(
 ): HospitalDetail | null {
   const h = byHospital(args).get(args.hospitalKey);
   if (!h) return null;
+  h.ratings =
+    args.captures.find((c) => c.hospitalKey === args.hospitalKey)?.ratings ??
+    null;
   const order = (p: HospitalServicePrice) =>
     p.lowest ? 0 : (p.rank ?? Number.POSITIVE_INFINITY);
   h.prices.sort((a, b) => order(a) - order(b));

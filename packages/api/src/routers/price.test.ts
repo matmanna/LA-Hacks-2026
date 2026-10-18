@@ -114,6 +114,9 @@ describe("price routes", () => {
       ).toBe(true);
     }
     expect(d.lowestOn).toBe(d.prices.filter((p) => p.lowest).length);
+    expect(d.ratings?.ccn).toBe(capture?.ratings?.ccn);
+    expect(d.ratings?.overallStars).toBe(capture?.ratings?.overallStars);
+    expect(d.ratings?.sources[0]?.sha256).toMatch(/^[0-9a-f]{64}$/);
     await expect(
       client.price.hospital({ hospitalKey: "nope", ...downtownLA }),
     ).rejects.toThrow();
