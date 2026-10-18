@@ -48,6 +48,7 @@
     "check": "biome check --write .",
     "fixtures:validate": "bun scripts/fixtures/validate.ts",
     "copy:check": "bun scripts/copy/check-wording.ts",
+    "measure:letters": "bun --env-file=apps/web/.env packages/api/scripts/measure-letters.ts",
     "e2e": "playwright test",
     "data:gen": "bun scripts/gen-api-data.ts",
     "data:check": "bun scripts/gen-api-data.ts --check",

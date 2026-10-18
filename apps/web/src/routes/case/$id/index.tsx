@@ -22,6 +22,7 @@ import { toast } from "sonner";
 
 import { AppBar } from "@/components/app-bar";
 import { AssistanceCard } from "@/components/assistance-card";
+import { SharePacketButton } from "@/components/share-packet-button";
 import { useActionFlow } from "@/features/actions/use-action-flow";
 import { orpc } from "@/utils/orpc";
 
@@ -251,6 +252,10 @@ function CasePage() {
             Call for me
           </Button>
 
+          {data.audit ? (
+            <SharePacketButton caseId={id} className="w-full lg:hidden" />
+          ) : null}
+
           <Link
             to="/case/$id/activity"
             params={{ id }}
@@ -333,6 +338,9 @@ function CasePage() {
               Call for me
             </Button>
           </Card>
+          {data.audit ? (
+            <SharePacketButton caseId={id} className="w-full" />
+          ) : null}
           <Card>
             <CardTitle>Activity</CardTitle>
             <p className="text-muted-foreground text-sm leading-5">

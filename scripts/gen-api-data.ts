@@ -32,10 +32,13 @@ export function buildData() {
     .map((c) => ({
       hospitalName: c.hospitalName,
       capturedAt: c.capturedAt,
-      sources: c.sources.map((s: { kind: string; url: string }) => ({
-        kind: s.kind,
-        url: s.url,
-      })),
+      sources: c.sources.map(
+        (s: { kind: string; url: string; sha256?: string }) => ({
+          kind: s.kind,
+          url: s.url,
+          sha256: s.sha256 ?? null,
+        }),
+      ),
       prices: c.prices.map(
         (p: {
           code: string;

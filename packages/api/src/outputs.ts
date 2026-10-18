@@ -51,3 +51,9 @@ export const CallStatus = z.object({
 export const EvalResults = z.looseObject({
   generatedAt: z.string().nullable(),
 });
+
+export const ShareResult = z.object({ token: z.string(), path: z.string() });
+export const RevokeResult = z.object({
+  caseId: z.string(),
+  revoked: z.boolean(),
+});

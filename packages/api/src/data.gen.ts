@@ -5811,15 +5811,18 @@ export const DATA = {
       "sources": [
         {
           "kind": "cms_hpt_txt",
-          "url": "https://www.uclahealth.org/cms-hpt.txt"
+          "url": "https://www.uclahealth.org/cms-hpt.txt",
+          "sha256": "77b64648a50b3722656bbb5ac5cfec2ba3babd23dfd2e846ee8fd1302a8a6c56"
         },
         {
           "kind": "price_page",
-          "url": "https://www.uclahealth.org/patient-resources/billing-insurance/price-transparency/machine-readable-files"
+          "url": "https://www.uclahealth.org/patient-resources/billing-insurance/price-transparency/machine-readable-files",
+          "sha256": "3ec3e18f38ec1dd2ca6026944e0a64baf2ebbf57788e6c0b78b2e5d200efec4f"
         },
         {
           "kind": "mrf",
-          "url": "https://www.uclahealth.org/sites/default/files/cms-hpt/956006143_ronald-reagan-ucla-medical-center_standardcharges.json"
+          "url": "https://www.uclahealth.org/sites/default/files/cms-hpt/956006143_ronald-reagan-ucla-medical-center_standardcharges.json",
+          "sha256": "97215d1ec3a3c1ec872d65a6f36a744ba14b7628c311471044e5280b9251c5a6"
         }
       ],
       "prices": [
@@ -5871,15 +5874,18 @@ export const DATA = {
       "sources": [
         {
           "kind": "cms_hpt_txt",
-          "url": "https://www.cedars-sinai.org/cms-hpt.txt"
+          "url": "https://www.cedars-sinai.org/cms-hpt.txt",
+          "sha256": "03159e751868fa2c399dfac9eb4ad8ff9b66bf0ffd00e4119fe411c0418269c4"
         },
         {
           "kind": "price_page",
-          "url": "https://cedars-sinai.org/price-transparency.html"
+          "url": "https://cedars-sinai.org/price-transparency.html",
+          "sha256": "9a1e98f9e3b568ce245e8da80df8770462852ca4bdc1e182fb05f7fb0b3a3467"
         },
         {
           "kind": "mrf",
-          "url": "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/documents/951644600_CEDARS-SINAI-MEDICAL-CENTER_standardcharges.json"
+          "url": "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/documents/951644600_CEDARS-SINAI-MEDICAL-CENTER_standardcharges.json",
+          "sha256": "8c188ab3b02967785256d5867cf760778581e5e849f0fd1141955c2a2dcd2dbf"
         }
       ],
       "prices": [

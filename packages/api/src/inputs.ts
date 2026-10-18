@@ -56,3 +56,5 @@ export const ApproveInput = z.object({
 });
 
 export const CallIdInput = z.object({ callId: z.string() });
+
+export const ShareTokenInput = z.object({ token: z.string().min(20).max(100) });
