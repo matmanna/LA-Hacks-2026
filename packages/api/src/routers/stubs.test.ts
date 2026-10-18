@@ -1,4 +1,4 @@
-import { Action, Assistance, ParseResult } from "@betterbill/core";
+import { Assistance, ParseResult } from "@betterbill/core";
 import { createRouterClient } from "@orpc/server";
 import { describe, expect, it } from "vitest";
 
@@ -39,9 +39,8 @@ describe("procedure stubs", () => {
     );
   });
 
-  // case, bill.parseText, bill.confirmLines, audit, event, eval,
-  // action.draftLetter and action.approve are real and covered by the
-  // *.int.test.ts files.
+  // case, bill.parseText, bill.confirmLines, audit, event, eval and the
+  // action routes are real and covered by the *.int.test.ts files.
   it("bill.parsePhoto stub returns its declared shape", async () => {
     ParseResult.parse(
       await client.bill.parsePhoto({
@@ -51,7 +50,7 @@ describe("procedure stubs", () => {
     );
   });
 
-  it("assistance, action, call stubs return their declared shapes", async () => {
+  it("assistance and call stubs return their declared shapes", async () => {
     Assistance.parse(
       await client.assistance.check({
         caseId,
@@ -59,9 +58,9 @@ describe("procedure stubs", () => {
         annualIncomeCents: 3_000_000,
       }),
     );
-    const actionId = "action-test";
-    Action.parse(await client.action.send({ actionId }));
-    const call = CallStarted.parse(await client.call.start({ actionId }));
+    const call = CallStarted.parse(
+      await client.call.start({ actionId: "action-test" }),
+    );
     CallStatus.parse(await client.call.status({ callId: call.callId }));
   });
 

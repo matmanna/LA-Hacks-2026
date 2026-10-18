@@ -48,23 +48,36 @@ export function useLetterAction(caseId: string) {
     }
   }
 
-  async function approve() {
-    if (!draft) return;
-    setBusy(true);
+  // The approval stays valid after a failed send, so "Try again" just resends.
+  async function send(actionId: string) {
     try {
-      await client.action.approve({
-        actionId: draft.action.id,
-        draftHash: draft.draftHash,
-      });
-      setDraft(null);
-      setOpen(false);
-      toast.success("Approved. Sending is coming next.");
+      await client.action.send({ actionId });
+      toast.success("Sent to the test inbox.");
     } catch (error) {
-      toast.error(errorMessage(error));
+      toast.error(errorMessage(error), {
+        action: { label: "Try again", onClick: () => void send(actionId) },
+      });
     } finally {
-      setBusy(false);
       void refresh();
     }
+  }
+
+  async function approve() {
+    if (!draft) return;
+    const actionId = draft.action.id;
+    setBusy(true);
+    try {
+      await client.action.approve({ actionId, draftHash: draft.draftHash });
+    } catch (error) {
+      toast.error(errorMessage(error));
+      setBusy(false);
+      void refresh();
+      return;
+    }
+    setDraft(null);
+    setOpen(false);
+    await send(actionId);
+    setBusy(false);
   }
 
   async function onOpenChange(next: boolean) {
