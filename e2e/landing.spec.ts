@@ -47,3 +47,28 @@ test("hero CTAs sit above the fold on the mobile viewport", async ({
     );
   }
 });
+
+test("plans landing: H1, honest results card, labelled form, axe", async ({
+  page,
+}, testInfo) => {
+  await page.goto("/for-plans");
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "Bill review your members can see.",
+    }),
+  ).toBeVisible();
+  // B's eval.results stub has no measurements, so the honest placeholder shows.
+  await expect(page.getByText("Measured results coming.")).toBeVisible();
+  await expect(page.getByLabel("Work email")).toBeVisible();
+  await expect(page.getByLabel("Organization")).toBeVisible();
+  const noOverflow = await page.evaluate(
+    () => document.documentElement.scrollWidth <= window.innerWidth,
+  );
+  expect(noOverflow).toBe(true);
+  await expectNoA11yViolations(page);
+  await page.screenshot({
+    path: `design/screens/plans-${testInfo.project.name}.png`,
+    fullPage: true,
+  });
+});

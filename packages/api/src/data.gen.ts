@@ -1155,9 +1155,259 @@ export const DATA = {
         "claimRefMasked": "7731",
         "patientResponsibilityCents": 80000
       }
+    },
+    {
+      "id": "SB-11",
+      "title": "Demo: SB-01's bill at Ronald Reagan UCLA, self-pay",
+      "bill": {
+        "id": "bill_sb11",
+        "hospital": {
+          "name": "Ronald Reagan UCLA Medical Center",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-10-01",
+        "accountRefMasked": "7305",
+        "kind": "itemized",
+        "sourceKind": "pdf",
+        "lines": [
+          {
+            "id": "sb11-l01",
+            "serviceDate": "2026-09-14",
+            "description": "ED VISIT LEVEL 4",
+            "code": "99284",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 295000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l02",
+            "serviceDate": "2026-09-14",
+            "description": "MRI LUMBAR SPINE W/O CONTRAST",
+            "code": "72148",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 690000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l03",
+            "serviceDate": "2026-09-14",
+            "description": "XR LUMBAR SPINE 2-3 VIEWS",
+            "code": "72100",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 64000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l04",
+            "serviceDate": "2026-09-14",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l05",
+            "serviceDate": "2026-09-14",
+            "description": "CBC W/ AUTO DIFF",
+            "code": "85025",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 8400,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l06",
+            "serviceDate": "2026-09-14",
+            "description": "COMPREHENSIVE METABOLIC PANEL",
+            "code": "80053",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l07",
+            "serviceDate": "2026-09-14",
+            "description": "VENIPUNCTURE",
+            "code": "36415",
+            "codeType": "CPT",
+            "units": 4,
+            "chargeCents": 15200,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l08",
+            "serviceDate": "2026-09-14",
+            "description": "IV PUSH SINGLE DRUG",
+            "code": "96374",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 48600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l09",
+            "serviceDate": "2026-09-14",
+            "description": "KETOROLAC INJ 15 MG",
+            "code": "J1885",
+            "codeType": "HCPCS",
+            "units": 1,
+            "chargeCents": 9600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l10",
+            "serviceDate": "2026-09-14",
+            "description": "NORMAL SALINE 1000 CC",
+            "code": "J7030",
+            "codeType": "HCPCS",
+            "units": 1,
+            "chargeCents": 18600,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          },
+          {
+            "id": "sb11-l11",
+            "serviceDate": "2026-09-14",
+            "description": "URINALYSIS AUTO W/O SCOPE",
+            "code": "81003",
+            "codeType": "CPT",
+            "units": 1,
+            "chargeCents": 21000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 1200000,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 1200000
+        }
+      },
+      "eob": null
     }
   ],
   "captures": [
+    {
+      "hospitalName": "Ronald Reagan UCLA Medical Center",
+      "capturedAt": "2026-10-18T00:55:12Z",
+      "sources": [
+        {
+          "kind": "cms_hpt_txt",
+          "url": "https://www.uclahealth.org/cms-hpt.txt"
+        },
+        {
+          "kind": "price_page",
+          "url": "https://www.uclahealth.org/patient-resources/billing-insurance/price-transparency/machine-readable-files"
+        },
+        {
+          "kind": "mrf",
+          "url": "https://www.uclahealth.org/sites/default/files/cms-hpt/956006143_ronald-reagan-ucla-medical-center_standardcharges.json"
+        }
+      ],
+      "prices": [
+        {
+          "code": "99284",
+          "setting": "outpatient",
+          "discountedCashCents": 133100
+        },
+        {
+          "code": "72148",
+          "setting": "outpatient",
+          "discountedCashCents": 306350
+        },
+        {
+          "code": "72100",
+          "setting": "outpatient",
+          "discountedCashCents": 36850
+        },
+        {
+          "code": "85025",
+          "setting": "outpatient",
+          "discountedCashCents": 7700
+        },
+        {
+          "code": "80053",
+          "setting": "outpatient",
+          "discountedCashCents": 18700
+        },
+        {
+          "code": "36415",
+          "setting": "outpatient",
+          "discountedCashCents": 2200
+        },
+        {
+          "code": "96374",
+          "setting": "outpatient",
+          "discountedCashCents": 46200
+        },
+        {
+          "code": "81003",
+          "setting": "outpatient",
+          "discountedCashCents": 4950
+        }
+      ]
+    },
     {
       "hospitalName": "Cedars-Sinai Medical Center",
       "capturedAt": "2026-10-17T23:00:45Z",
@@ -1361,5 +1611,169 @@ export const DATA = {
       }
     ]
   },
-  "evalResults": null
+  "evalResults": {
+    "schemaVersion": 1,
+    "runAt": "2026-10-17T23:32:42Z",
+    "gitSha": "eca94ef+botm-fixtures",
+    "coreVersion": "0.0.0",
+    "datasets": {
+      "synthetic": {
+        "fixtures": 10,
+        "cleanFixtures": 3,
+        "expectedFlags": 12,
+        "skippedRequiresCapture": 0
+      },
+      "photos": {
+        "photos": 0,
+        "conditions": [],
+        "model": null
+      },
+      "botm": {
+        "cases": 5,
+        "reporterFindings": 13,
+        "inScopeFindings": 3
+      }
+    },
+    "metrics": {
+      "seededRecall": {
+        "caught": 12,
+        "expected": 12,
+        "rate": 1,
+        "byLever": {
+          "duplicate": {
+            "caught": 3,
+            "expected": 3
+          },
+          "units": {
+            "caught": 4,
+            "expected": 4
+          },
+          "eob_mismatch": {
+            "caught": 2,
+            "expected": 2
+          },
+          "published_price": {
+            "caught": 2,
+            "expected": 2
+          },
+          "missing_itemization": {
+            "caught": 1,
+            "expected": 1
+          }
+        }
+      },
+      "seededRecallFromPhotos": {
+        "caught": 0,
+        "expected": 0,
+        "rate": null
+      },
+      "falseFlagsOnClean": {
+        "count": 0,
+        "cleanFixtures": 3,
+        "items": []
+      },
+      "precision": {
+        "matched": 12,
+        "produced": 12,
+        "rate": 1
+      },
+      "confirmedAmountExact": {
+        "exact": 5,
+        "caughtConfirmed": 5
+      },
+      "evidenceCompleteness": {
+        "complete": 11,
+        "produced": 12,
+        "rate": 0.917
+      },
+      "auditTimeMs": {
+        "p50": 0.009,
+        "p95": 0.04,
+        "runsPerFixture": 20
+      },
+      "photoToLinesSec": {
+        "p50": null,
+        "p95": null,
+        "n": 0
+      },
+      "lineExtraction": {
+        "recall": null,
+        "precision": null,
+        "exactLineRate": null,
+        "totalsMatchRate": null,
+        "byCondition": {},
+        "fieldAccuracy": {
+          "code": null,
+          "serviceDate": null,
+          "units": null,
+          "chargeCents": null
+        }
+      },
+      "botmRecall": {
+        "inScope": {
+          "caught": 1,
+          "total": 3,
+          "rate": 0.333
+        },
+        "all": {
+          "caught": 1,
+          "total": 13,
+          "rate": 0.077
+        },
+        "extraFlags": 3
+      }
+    },
+    "misses": [
+      {
+        "fixture": "BOTM-01",
+        "lever": "duplicate",
+        "lineIds": [
+          "botm01-l01",
+          "botm01-l02"
+        ],
+        "amountCents": null
+      },
+      {
+        "fixture": "BOTM-04",
+        "lever": "published_price",
+        "lineIds": [
+          "botm04-l01"
+        ],
+        "amountCents": null
+      }
+    ],
+    "extras": [
+      {
+        "fixture": "BOTM-01",
+        "lever": "missing_itemization",
+        "lineIds": [
+          "botm01-l01",
+          "botm01-l02"
+        ],
+        "amountCents": 0
+      },
+      {
+        "fixture": "BOTM-04",
+        "lever": "missing_itemization",
+        "lineIds": [
+          "botm04-l01"
+        ],
+        "amountCents": 0
+      },
+      {
+        "fixture": "BOTM-05",
+        "lever": "missing_itemization",
+        "lineIds": [
+          "botm05-l01",
+          "botm05-l02"
+        ],
+        "amountCents": 0
+      }
+    ],
+    "notes": [
+      "Run on main 4725b9a + eval harness (eca94ef) + the BotM fixtures and run.ts change in this commit.",
+      "Synthetic errors were planted by the team; seededRecall shows the rules work as designed, not real-world accuracy. See botmRecall for published cases.",
+      "Published prices: outpatient rows of each captured price file (data/hospitals/*/capture.json)."
+    ]
+  }
 } as const;
