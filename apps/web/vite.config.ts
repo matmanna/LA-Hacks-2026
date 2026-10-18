@@ -13,6 +13,15 @@ export default defineConfig(({ command }) => ({
   resolve: {
     tsconfigPaths: true,
   },
+  // Release and environment for the browser SDK (Vite only exposes VITE_*).
+  define: {
+    "import.meta.env.VITE_SENTRY_RELEASE": JSON.stringify(
+      process.env.VERCEL_GIT_COMMIT_SHA ?? "",
+    ),
+    "import.meta.env.VITE_SENTRY_ENVIRONMENT": JSON.stringify(
+      process.env.SENTRY_ENVIRONMENT || process.env.VERCEL_ENV || "",
+    ),
+  },
   plugins: [
     varlockVitePlugin({ ssrInjectMode: "resolved-env" }),
     tailwindcss(),
@@ -29,6 +38,12 @@ export default defineConfig(({ command }) => ({
             org: process.env.SENTRY_ORG,
             project: process.env.SENTRY_PROJECT,
             authToken: process.env.SENTRY_AUTH_TOKEN,
+            release: process.env.VERCEL_GIT_COMMIT_SHA
+              ? { name: process.env.VERCEL_GIT_COMMIT_SHA }
+              : undefined,
+            // data-sentry-component attributes make replays searchable by
+            // component name. Bill content is still blocked, see SENTRY.md.
+            reactComponentAnnotation: { enabled: true },
           }),
         ]
       : []),

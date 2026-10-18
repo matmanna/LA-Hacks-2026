@@ -9,6 +9,7 @@ import { callRouter } from "./call";
 import { caseRouter } from "./case";
 import { evalRouter } from "./eval";
 import { eventRouter } from "./event";
+import { paymentRouter } from "./payment";
 
 export const appRouter = {
   healthCheck: publicProcedure.handler(() => {
@@ -28,6 +29,7 @@ export const appRouter = {
   call: callRouter,
   event: eventRouter,
   eval: evalRouter,
+  payment: paymentRouter,
 };
 export type AppRouter = typeof appRouter;
 export type AppRouterClient = RouterClient<typeof appRouter>;

@@ -57,3 +57,28 @@ export const RevokeResult = z.object({
   caseId: z.string(),
   revoked: z.boolean(),
 });
+
+// Fee breakdown computed on the server from the stored audit (core savingsFee).
+export const PaymentQuote = z.object({
+  caseId: z.string(),
+  owed: z.boolean(),
+  confirmedCents: z.number().int(),
+  potentialLowCents: z.number().int(),
+  potentialHighCents: z.number().int(),
+  feeBps: z.number().int(),
+  percentLabel: z.string(),
+  feeCents: z.number().int(),
+  minCents: z.number().int(),
+  capCents: z.number().int(),
+  capped: z.boolean(),
+  devOverride: z.boolean(),
+  note: z.string(),
+  // false when POLAR_ACCESS_TOKEN or the product id is missing
+  paymentsEnabled: z.boolean(),
+});
+export type PaymentQuote = z.infer<typeof PaymentQuote>;
+
+export const CheckoutResult = z.object({
+  url: z.string(),
+  checkoutId: z.string(),
+});

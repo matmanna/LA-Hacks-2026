@@ -1,1 +1,5 @@
 env = false
+
+[install]
+# Hoisted node_modules so Expo (apps/native) sees one copy of each native module.
+linker = "hoisted"

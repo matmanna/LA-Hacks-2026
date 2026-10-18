@@ -8,6 +8,7 @@ export * from "./letters/index";
 export * from "./money";
 export * from "./parse/readerOutput";
 export * from "./parse/text";
+export * from "./payments";
 export * from "./rules";
 export * from "./savings";
 export * from "./schemas";

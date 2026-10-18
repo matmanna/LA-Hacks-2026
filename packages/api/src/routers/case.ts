@@ -27,6 +27,7 @@ import {
   toSummary,
 } from "../repo/cases";
 import { buildPacket } from "../repo/packet";
+import { logStep } from "../telemetry";
 import { auditResult } from "./audit";
 
 export const caseRouter = {
@@ -64,6 +65,7 @@ export const caseRouter = {
       }
       const row = await getCaseRow(context.db, caseId);
       if (!row) throw new ORPCError("INTERNAL_SERVER_ERROR");
+      logStep("case.created", { caseId, sample: sample?.id });
       return toSummary(row, null);
     }),
 
