@@ -1,8 +1,8 @@
-"""BetterBill's Fetch.ai chat adapter.
+"""BetterBill's Fetch.ai chat agent (tickets A-02, A-07).
 
-Thin by design: no business logic beyond routing chat text to api_client
-and rendering replies. See docs/plans/A-conversation-actions.md ticket
-A-02 and docs/plans/00-shared-context.md.
+Thin by design: it keeps each person's session state and hands their text to
+flow.handle_text, which formats what the BetterBill API decides. See
+docs/plans/A-conversation-actions.md.
 """
 
 import os
@@ -16,12 +16,8 @@ from uagents_core.contrib.protocols.chat import (
 )
 
 from betterbill_agent.api_client import call_core_api
-from betterbill_agent.cards import (
-    card_message,
-    gate_test_card,
-    parse_card_selection,
-    text_message,
-)
+from betterbill_agent.cards import text_message
+from betterbill_agent.flow import handle_text
 
 AGENT_SEED = os.environ.get("AGENT_SEED")
 if not AGENT_SEED:
@@ -43,54 +39,27 @@ protocol = Protocol(spec=chat_protocol_spec)
 @protocol.on_message(model=ChatMessage)
 async def handle_message(ctx: Context, sender: str, msg: ChatMessage) -> None:
     await ctx.send(sender, ChatAcknowledgement(acknowledged_msg_id=msg.msg_id))
-
     text = "".join(
         item.text for item in msg.content if isinstance(item, TextContent)
     ).strip()
     if not text:
         return
-
-    selection = parse_card_selection(text)
-    if selection:
-        await ctx.send(
-            sender, card_message(f"Got it: {selection}", "ack", {"action": selection})
-        )
-        return
-
-    lowered = text.lower()
-    if lowered == "ping":
+    if text.lower() == "ping":
         await ctx.send(
             sender,
             text_message("BetterBill is here. Paste your hospital bill text to start."),
         )
         return
 
-    if lowered == "card":
-        await ctx.send(sender, gate_test_card())
-        return
-
-    if lowered == "case":
-        try:
-            result = await call_core_api("case.create", {})
-            await ctx.send(
-                sender, text_message(f"Started case {result.get('id', 'unknown')}.")
-            )
-        except Exception as exc:  # noqa: BLE001 - this is the user-facing fallback, not a crash
-            ctx.logger.warning(f"case.create failed: {exc}")
-            await ctx.send(
-                sender,
-                text_message(
-                    "I couldn't reach BetterBill's server just now. Please try again in a moment."
-                ),
-            )
-        return
-
-    await ctx.send(
-        sender,
-        text_message(
-            "Try: ping, card, or case. Or paste your hospital bill text to start an audit."
-        ),
-    )
+    key = f"session:{sender}"
+    state = ctx.storage.get(key) or {}
+    new_state, replies = await handle_text(state, text, call_core_api)
+    if new_state.get("last"):
+        # Bill text is never logged, only which step failed.
+        ctx.logger.warning(f"flow step failed: {new_state['last']}")
+    ctx.storage.set(key, new_state)
+    for reply in replies:
+        await ctx.send(sender, reply)
 
 
 @protocol.on_message(model=ChatAcknowledgement)

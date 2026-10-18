@@ -22,7 +22,8 @@ import { toast } from "sonner";
 
 import { AppBar } from "@/components/app-bar";
 import { AssistanceCard } from "@/components/assistance-card";
-import { useLetterAction } from "@/features/actions/use-letter-action";
+import { SharePacketButton } from "@/components/share-packet-button";
+import { useActionFlow } from "@/features/actions/use-action-flow";
 import { orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/case/$id/")({
@@ -76,7 +77,8 @@ function CasePage() {
   );
   const [showAll, setShowAll] = useState(false);
   const [openFlagId, setOpenFlagId] = useState<string | null>(null);
-  const letter = useLetterAction(id);
+  const letter = useActionFlow(id, "letter");
+  const call = useActionFlow(id, "call");
 
   if (isLoading) return <CaseSkeleton />;
 
@@ -241,6 +243,19 @@ function CasePage() {
             </Accordion>
           ) : null}
 
+          <Button
+            variant="secondary"
+            className="w-full lg:hidden"
+            onClick={call.start}
+            disabled={call.busy}
+          >
+            Call for me
+          </Button>
+
+          {data.audit ? (
+            <SharePacketButton caseId={id} className="w-full lg:hidden" />
+          ) : null}
+
           <Link
             to="/case/$id/activity"
             params={{ id }}
@@ -314,10 +329,18 @@ function CasePage() {
             >
               Send the letter
             </Button>
-            <Button variant="secondary" className="w-full" onClick={comingSoon}>
+            <Button
+              variant="secondary"
+              className="w-full"
+              onClick={call.start}
+              disabled={call.busy}
+            >
               Call for me
             </Button>
           </Card>
+          {data.audit ? (
+            <SharePacketButton caseId={id} className="w-full" />
+          ) : null}
           <Card>
             <CardTitle>Activity</CardTitle>
             <p className="text-muted-foreground text-sm leading-5">
@@ -354,6 +377,7 @@ function CasePage() {
         actionDisabled={letter.busy}
       />
       {letter.sheet}
+      {call.sheet}
     </>
   );
 }

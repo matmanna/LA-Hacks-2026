@@ -1,4 +1,6 @@
-import { CaseSummary, computeSavings } from "@betterbill/core";
+import { randomBytes } from "node:crypto";
+
+import { CaseSummary, computeSavings, Packet } from "@betterbill/core";
 import { caseTable } from "@betterbill/db/schema/index";
 import { ORPCError } from "@orpc/server";
 import { desc, eq } from "drizzle-orm";
@@ -6,8 +8,13 @@ import { z } from "zod";
 
 import { PRICES, SAMPLES } from "../data";
 import { publicProcedure } from "../index";
-import { CaseCreateInput, CaseIdInput, EmptyInput } from "../inputs";
-import { CaseDetail } from "../outputs";
+import {
+  CaseCreateInput,
+  CaseIdInput,
+  EmptyInput,
+  ShareTokenInput,
+} from "../inputs";
+import { CaseDetail, RevokeResult, ShareResult } from "../outputs";
 import { saveParsedBill } from "../repo/bills";
 import {
   addEvent,
@@ -19,6 +26,7 @@ import {
   saveEob,
   toSummary,
 } from "../repo/cases";
+import { buildPacket } from "../repo/packet";
 import { auditResult } from "./audit";
 
 export const caseRouter = {
@@ -106,5 +114,79 @@ export const caseRouter = {
           );
         }),
       );
+    }),
+
+  // B2: a revocable, unguessable link to a read-only evidence packet.
+  share: publicProcedure
+    .input(CaseIdInput)
+    .output(ShareResult)
+    .handler(async ({ input, context }) => {
+      const row = await getCaseRow(context.db, input.caseId);
+      if (!row)
+        throw new ORPCError("NOT_FOUND", { message: "Case not found." });
+      if (!(await latestAudit(context.db, input.caseId))) {
+        throw new ORPCError("PRECONDITION_FAILED", {
+          message: "Check the bill before sharing it.",
+        });
+      }
+      let token = row.shareToken;
+      if (!token) {
+        token = randomBytes(32).toString("base64url");
+        await context.db
+          .update(caseTable)
+          .set({ shareToken: token })
+          .where(eq(caseTable.id, input.caseId));
+        await addEvent(
+          context.db,
+          input.caseId,
+          "case.shared",
+          "Evidence packet link created",
+          {
+            actor: "user",
+          },
+        );
+      }
+      return { token, path: `/packet/${token}` };
+    }),
+
+  revokeShare: publicProcedure
+    .input(CaseIdInput)
+    .output(RevokeResult)
+    .handler(async ({ input, context }) => {
+      const row = await getCaseRow(context.db, input.caseId);
+      if (!row)
+        throw new ORPCError("NOT_FOUND", { message: "Case not found." });
+      if (!row.shareToken) return { caseId: input.caseId, revoked: false };
+      await context.db
+        .update(caseTable)
+        .set({ shareToken: null })
+        .where(eq(caseTable.id, input.caseId));
+      await addEvent(
+        context.db,
+        input.caseId,
+        "case.unshared",
+        "Evidence packet link turned off",
+        {
+          actor: "user",
+        },
+      );
+      return { caseId: input.caseId, revoked: true };
+    }),
+
+  // Public by design: whoever holds the token can read the packet.
+  packet: publicProcedure
+    .input(ShareTokenInput)
+    .output(Packet)
+    .handler(async ({ input, context }) => {
+      const [row] = await context.db
+        .select({ id: caseTable.id })
+        .from(caseTable)
+        .where(eq(caseTable.shareToken, input.token));
+      const packet = row ? await buildPacket(context.db, row.id) : null;
+      if (!packet)
+        throw new ORPCError("NOT_FOUND", {
+          message: "This link is not active.",
+        });
+      return packet;
     }),
 };

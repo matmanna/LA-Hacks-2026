@@ -1,4 +1,5 @@
 import { Button } from "@betterbill/ui/components/button";
+import { Checkbox } from "@betterbill/ui/components/checkbox";
 import { LoaderCircle } from "lucide-react";
 import { useRef } from "react";
 
@@ -14,6 +15,8 @@ type ApprovalSheetProps = {
   dataShared: string[];
   pending?: boolean;
   onApprove: () => void;
+  // Calls only: Approve stays disabled until the person's consent is confirmed.
+  consent?: { checked: boolean; onCheckedChange: (checked: boolean) => void };
 };
 
 const CALL_OPENING =
@@ -29,6 +32,7 @@ export function ApprovalSheet({
   dataShared,
   pending,
   onApprove,
+  consent,
 }: ApprovalSheetProps) {
   const isCall = kind === "call";
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -80,10 +84,24 @@ export function ApprovalSheet({
         {isCall ? ` The call starts with: "${CALL_OPENING}"` : null}
       </p>
 
+      {consent ? (
+        // biome-ignore lint/a11y/noLabelWithoutControl: Checkbox renders the input
+        <label className="flex min-h-11 items-start gap-3 text-sm leading-5">
+          <Checkbox
+            className="mt-0.5"
+            checked={consent.checked}
+            onCheckedChange={(checked) =>
+              consent.onCheckedChange(checked === true)
+            }
+          />
+          The person at this number agreed to take a test call.
+        </label>
+      ) : null}
+
       <div className="flex flex-col gap-2 lg:flex-row-reverse lg:justify-start">
         <Button
           className="w-full lg:w-auto"
-          disabled={pending}
+          disabled={pending || (consent !== undefined && !consent.checked)}
           onClick={onApprove}
         >
           {pending ? (

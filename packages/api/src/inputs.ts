@@ -38,9 +38,10 @@ export const AssistanceCheckInput = z.object({
   annualIncomeCents: z.number().int().min(0),
 });
 
+// kind "call" drafts the call script the user approves before call.start.
 export const DraftLetterInput = z.object({
   caseId: z.string(),
-  kind: z.enum(["letter", "itemized_request"]),
+  kind: z.enum(["letter", "itemized_request", "call"]),
 });
 
 export const ActionIdInput = z.object({ actionId: z.string() });
@@ -55,3 +56,5 @@ export const ApproveInput = z.object({
 });
 
 export const CallIdInput = z.object({ callId: z.string() });
+
+export const ShareTokenInput = z.object({ token: z.string().min(20).max(100) });

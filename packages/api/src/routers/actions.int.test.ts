@@ -4,6 +4,7 @@ import {
   approvalCoverage,
   approvalRef,
   checkWording,
+  DISCLOSURE,
   findApproval,
   sha256Hex,
 } from "@betterbill/core";
@@ -53,6 +54,49 @@ describe.skipIf(!url)("action routes (integration)", () => {
   async function status(caseId: string) {
     return (await client.case.get({ caseId })).case.status;
   }
+
+  it("walks one case from new to sent, with every send approved (A-10)", async () => {
+    vi.stubEnv("EMAIL_TEST_INBOX", "flow@example.com");
+    vi.stubEnv("EMAIL_ALLOWLIST", "flow@example.com");
+    vi.stubEnv("BB_FAKE_PROVIDERS", "1");
+    try {
+      const c = await client.case.create({ sample: "SB-01" });
+      const seen = [await status(c.id)];
+      const detail = await client.case.get({ caseId: c.id });
+      await client.bill.confirmLines({
+        caseId: c.id,
+        lines: detail.bill?.lines ?? [],
+      });
+      seen.push(await status(c.id));
+      await client.audit.run({ caseId: c.id });
+      seen.push(await status(c.id));
+      const { action, draftHash } = await client.action.draftLetter({
+        caseId: c.id,
+        kind: "letter",
+      });
+      seen.push(await status(c.id));
+      await client.action.approve({ actionId: action.id, draftHash });
+      await client.action.send({ actionId: action.id });
+      seen.push(await status(c.id));
+
+      expect(seen).toEqual([
+        "new",
+        "lines_confirmed",
+        "audited",
+        "action_pending",
+        "sent",
+      ]);
+      const events = await client.event.list({ caseId: c.id });
+      expect(approvalCoverage(events)).toEqual({
+        outbound: 1,
+        approved: 1,
+        ratio: 1,
+      });
+      expect(checkWording(action.draft)).toEqual([]);
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
 
   describe("draftLetter", () => {
     it("refuses to draft before the bill is checked", async () => {
@@ -197,6 +241,92 @@ describe.skipIf(!url)("action routes (integration)", () => {
       expect(await status(caseId)).toBe("action_pending");
       expect(await sentEvents(caseId)).toHaveLength(0);
       expect(findApproval(events, action.id)?.hash).toBe(draftHash);
+    });
+  });
+
+  describe("call", () => {
+    const PHONE = "+13105550100";
+
+    beforeEach(() => {
+      vi.stubEnv("CALL_ALLOWLIST", PHONE);
+      vi.stubEnv("BB_FAKE_PROVIDERS", "1");
+    });
+    afterEach(() => {
+      vi.unstubAllEnvs();
+    });
+
+    async function draftedCall() {
+      const { caseId } = await auditedCase();
+      const res = await client.action.draftLetter({ caseId, kind: "call" });
+      return { caseId, ...res };
+    }
+
+    it("won't draft a call when no test phone is set up", async () => {
+      vi.stubEnv("CALL_ALLOWLIST", "");
+      const { caseId } = await auditedCase();
+      await expect(
+        client.action.draftLetter({ caseId, kind: "call" }),
+      ).rejects.toMatchObject({ code: "PRECONDITION_FAILED" });
+    });
+
+    it("needs approval with consent before it dials", async () => {
+      const { action, draftHash } = await draftedCall();
+      expect(action.kind).toBe("call");
+      expect(action.recipient).toBe(PHONE);
+      expect(action.draft.startsWith(DISCLOSURE)).toBe(true);
+
+      await expect(
+        client.call.start({ actionId: action.id }),
+      ).rejects.toMatchObject({ code: "FORBIDDEN" });
+      await expect(
+        client.action.approve({ actionId: action.id, draftHash }),
+      ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    });
+
+    it("only dials numbers on the test list", async () => {
+      const { action, draftHash } = await draftedCall();
+      await client.action.approve({
+        actionId: action.id,
+        draftHash,
+        consent: true,
+      });
+      vi.stubEnv("CALL_ALLOWLIST", "+13105550199");
+      await expect(
+        client.call.start({ actionId: action.id }),
+      ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    });
+
+    it("places one call and saves its outcome once", async () => {
+      const { caseId, action, draftHash } = await draftedCall();
+      await client.action.approve({
+        actionId: action.id,
+        draftHash,
+        consent: true,
+      });
+
+      const started = await client.call.start({ actionId: action.id });
+      expect(started).toEqual({
+        callId: `call-${action.id}`,
+        status: "ringing",
+      });
+      expect((await client.call.start({ actionId: action.id })).status).toBe(
+        "started",
+      );
+
+      const first = await client.call.status({ callId: started.callId });
+      const second = await client.call.status({ callId: started.callId });
+      expect(first.status).toBe("done");
+      expect(second).toEqual(first);
+      expect(first.transcript?.startsWith(`agent: ${DISCLOSURE}`)).toBe(true);
+      expect(JSON.parse(first.outcome ?? "{}").summary).toContain(
+        "No phone call was placed",
+      );
+
+      const events = await client.event.list({ caseId });
+      expect(events.filter((e) => e.type === "call.started")).toHaveLength(1);
+      expect(events.filter((e) => e.type === "call.completed")).toHaveLength(1);
+      expect(approvalCoverage(events).ratio).toBe(1);
+      expect(await status(caseId)).toBe("called");
     });
   });
 });

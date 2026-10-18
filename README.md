@@ -98,6 +98,31 @@ Run standalone Node/Bun tools that use Varlock from the owning app directory so 
 
 For more details, see the guide on [Deploying to Vercel](https://www.better-t-stack.dev/docs/guides/vercel).
 
+## Fetch.ai agent
+
+![tag:innovationlab](https://img.shields.io/badge/innovationlab-3D8BD3)
+![tag:hackathon](https://img.shields.io/badge/hackathon-5F43F1)
+
+| | |
+|---|---|
+| Agent name | `betterbill` |
+| Address | `agent1qwqz9059qrve4w2vykv4lrsws3hsw0r4ru4mmeh8wd3v0796al8zjh4uf7n` |
+| Agentverse profile | add after registering the agent |
+| ASI:One shared chat | add after the recorded run |
+
+The agent is a thin adapter. It calls BetterBill's TypeScript API over HTTP. All rules, savings, and letters live in `packages/core`. In ASI:One you paste a bill (or type `sample`), check the lines on a review card, see what looks wrong with its evidence, read the exact letter, and approve it on a card before anything is sent.
+
+Run it:
+
+```
+cd agents/fetch-adapter
+uv sync
+cp .env.example .env   # set AGENT_SEED, BETTERBILL_API_BASE, BB_ADAPTER_KEY
+uv run python -m betterbill_agent.agent
+```
+
+Open the inspector URL it logs, connect the mailbox, then use "Chat with Agent" on the Agentverse profile. Try it by typing `sample`. Keep `AGENT_SEED` unchanged: it sets the address above.
+
 ## Git Hooks and Formatting
 
 - Run checks: `bun run check`

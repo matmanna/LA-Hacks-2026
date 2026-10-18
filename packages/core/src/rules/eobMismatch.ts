@@ -1,4 +1,5 @@
 import { copy } from "../copy";
+import { formatMoney } from "../money";
 import type { Bill, Eob, Flag } from "../schemas";
 import { flagId } from "./util";
 
@@ -29,8 +30,8 @@ export function detectEobMismatch(
         kind: "arithmetic",
         detail:
           explainedCents > 0
-            ? `Bill due ${due} cents minus EOB patient responsibility ${owed} cents (${eob.payer}), minus ${explainedCents} cents already flagged as duplicates.`
-            : `Bill due ${due} cents minus EOB patient responsibility ${owed} cents (${eob.payer}).`,
+            ? `Bill asks ${formatMoney(due)}; ${eob.payer}'s EOB says you owe ${formatMoney(owed)}. ${formatMoney(explainedCents)} of the gap is already flagged as duplicates.`
+            : `Bill asks ${formatMoney(due)}; ${eob.payer}'s EOB says you owe ${formatMoney(owed)}.`,
       },
       confidence: 1,
     },
