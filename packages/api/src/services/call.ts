@@ -250,6 +250,8 @@ function present(outcome: CallOutcome, conference = false): CallStatusResult {
 // Saves the outcome once; later polls find it already stored. The status only
 // moves to "called" when the state machine allows it (a letter sent during
 // the call leaves the case at "sent"), but the result is never dropped.
+// A failed call leaves the status alone: nobody was called, and a retry the
+// user already drafted must stay approvable.
 async function saveOutcome(
   db: Database,
   action: Action,
@@ -264,11 +266,13 @@ async function saveOutcome(
       .returning({ id: actionTable.id });
     if (updated.length === 0) return;
     const row = await getCaseRow(tx, action.caseId);
-    try {
-      const status = checkTransition(row?.status ?? "", "call.completed", "");
-      await setStatus(tx, action.caseId, status);
-    } catch {
-      // see comment above
+    if (outcome.status !== "failed") {
+      try {
+        const status = checkTransition(row?.status ?? "", "call.completed", "");
+        await setStatus(tx, action.caseId, status);
+      } catch {
+        // see comment above
+      }
     }
     await addEvent(tx, action.caseId, "call.completed", summary);
   });

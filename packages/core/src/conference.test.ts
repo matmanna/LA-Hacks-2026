@@ -27,12 +27,21 @@ const vars = {
 };
 
 describe("conference approval", () => {
-  it("briefs the patient about the specific hospital and items before connecting billing", () => {
+  it("briefs the patient about the hospital and the asks before connecting billing", () => {
     const introduction = buildConferenceIntroduction(vars);
     expect(introduction).toContain("Alex Morgan");
     expect(introduction).toContain("Example");
-    expect(introduction).toContain("Duplicate test");
+    expect(introduction).toContain("hold your account");
     expect(introduction).toContain("Advocate, can you help?");
+    // The controller refuses over 45 s of audio. 114 words measured 46.7 s,
+    // so stay well under with a long hospital name and long service names.
+    const long = buildConferenceIntroduction({
+      ...vars,
+      hospital_name: "Cedars-Sinai Medical Center",
+      review_topics:
+        "MRI LUMBAR SPINE W/O CONTRAST on September 14, 2026; ".repeat(3),
+    });
+    expect(long.split(" ").length).toBeLessThan(75);
     expect(
       renderConferenceScript(vars, "+13105550100", "+13105550101"),
     ).toContain(introduction);

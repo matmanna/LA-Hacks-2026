@@ -22,19 +22,18 @@ export const CONFERENCE_OPENING = `${DISCLOSURE} The patient is here with us and
 // advocate goes quiet.
 export const PATIENT_CUE = "They need to verify you. Go ahead.";
 
+// The controller refuses a briefing over 45 seconds of audio. Billing hears
+// the services by name, so the briefing doesn't list them.
 export function buildConferenceIntroduction(vars: CallVars): string {
   return [
     "This is BetterBill's automated advocate.",
     ...(vars.patient_name
       ? [`For this demo, you're ${vars.patient_name}.`]
       : []),
-    `I'll call ${vars.hospital_name} billing and ask for three things.`,
-    "A hold on your account while you review it.",
-    "Your itemized bill by email.",
-    `And how to get your medical records for ${vars.review_topics || "this visit"}.`,
-    "They'll need to verify you. When they ask, answer them yourself.",
-    "After that I stay quiet. If you want me to speak, say 'Advocate, can you help?' I'll answer once, then listen again.",
-    "This call may be recorded and transcribed. Hanging up ends everyone's call. Connecting billing now.",
+    `I'll ask ${vars.hospital_name} billing to hold your account, email your itemized bill, and explain how to get your medical records.`,
+    "They'll need to verify you, so answer them yourself.",
+    "Then I stay quiet. If you need me, say 'Advocate, can you help?'",
+    "This call may be recorded and transcribed. Hanging up ends the call for everyone. Connecting billing now.",
   ].join(" ");
 }
 
