@@ -6,7 +6,7 @@ import { Button } from "@betterbill/ui/components/button";
 import { cn } from "@betterbill/ui/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { BadgeCheck, FileCheck2, ShieldCheck } from "lucide-react";
-import { useRef, useState } from "react";
+import { type CSSProperties, useRef, useState } from "react";
 
 import { useStartSample } from "@/hooks/use-start-sample";
 import { ArrowSlide } from "./arrow-slide";
@@ -17,7 +17,7 @@ import {
   FALLBACK_FLAGS,
 } from "./demo-phone";
 import { PortedEdge } from "./edge";
-import { HeroVideo } from "./hero-video";
+import { HeroVideo, VIDEO_W_DEFAULT } from "./hero-video";
 import { useMediaQuery, usePrefersReducedMotion } from "./motion";
 import { Phone3D } from "./phone-3d";
 
@@ -207,11 +207,16 @@ export function Hero({ sample }: { sample: HeroSample | null }) {
           </p>
         </div>
       </div>
-      <div className="relative mx-auto mt-12 max-w-6xl border-t pt-6 lg:mt-16">
+      <div
+        className="relative mx-auto mt-12 max-w-6xl border-t pt-6 lg:mt-16"
+        style={
+          { "--vw": videoW ? `${videoW}px` : VIDEO_W_DEFAULT } as CSSProperties
+        }
+      >
         <HeroVideo anchor={freeRef} onWidth={setVideoW} />
         <ul
           className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-10 lg:flex-nowrap"
-          style={{ paddingLeft: wide ? videoW + 40 : undefined }}
+          style={wide ? { paddingLeft: "calc(var(--vw) + 40px)" } : undefined}
         >
           {TRUST.map(([Icon, label]) => (
             <li
