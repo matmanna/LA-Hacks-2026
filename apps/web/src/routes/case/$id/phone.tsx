@@ -28,7 +28,6 @@ function PhonePage() {
     orpc.contact.get.queryOptions({ input: { caseId: id } }),
   );
   const [patientPhone, setPatientPhone] = useState("");
-  const [hospitalUrl, setHospitalUrl] = useState("");
   const [billingPhone, setBillingPhone] = useState("");
   const [filled, setFilled] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -40,7 +39,6 @@ function PhonePage() {
     if (!data || filled) return;
     const phone = data.patientPhone ?? data.savedPatientPhone;
     setPatientPhone(phone ? formatPhone(phone) : "");
-    setHospitalUrl(data.hospitalUrl ?? "");
     setBillingPhone(data.billingPhone ? formatPhone(data.billingPhone) : "");
     setFilled(true);
   }, [data, filled]);
@@ -55,7 +53,6 @@ function PhonePage() {
       await client.contact.set({
         caseId: id,
         patientPhone,
-        hospitalUrl,
         billingPhone,
       });
       await queryClient.invalidateQueries();
@@ -112,29 +109,13 @@ function PhonePage() {
 
           <section className="space-y-4 rounded-2xl border p-5">
             <h2 className="font-semibold text-lg leading-6">
-              Hospital billing office
-              {data?.hospitalName ? `, ${data.hospitalName}` : ""}
+              Demo Billing Department Override
             </h2>
             <p className="text-muted-foreground text-sm leading-5">
-              We look for the billing phone number on the hospital's website.
-              Add either box below to use your own instead.
+              Browser Use researches the hospital named on your itemized bill
+              and finds its official billing contact. Enter a number only to
+              override that demo lookup.
             </p>
-            <div className="space-y-2">
-              <Label htmlFor="hospital-url">Hospital website</Label>
-              <Input
-                id="hospital-url"
-                type="text"
-                inputMode="url"
-                autoCapitalize="none"
-                autoCorrect="off"
-                placeholder="www.hospital.org"
-                value={hospitalUrl}
-                onChange={(e) => setHospitalUrl(e.target.value)}
-              />
-              <p className="text-muted-foreground text-sm leading-5">
-                We start our search here.
-              </p>
-            </div>
             <div className="space-y-2">
               <Label htmlFor="billing-phone">Billing phone</Label>
               <Input

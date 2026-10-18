@@ -122,7 +122,6 @@ export type LookupStatus = z.infer<typeof LookupStatus>;
 export const Contact = z.object({
   patientPhone: z.string().nullable(),
   billingPhone: z.string().nullable(),
-  hospitalUrl: z.string().nullable(),
   savedPatientPhone: z.string().nullable(),
   hospitalName: z.string().nullable(),
 });

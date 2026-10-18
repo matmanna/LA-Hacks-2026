@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { isDialableNumber } from "./call";
 import { validConferenceDestinations } from "./conference";
-import { formatPhone, normalizeHospitalUrl, normalizePhone } from "./phone";
+import { formatPhone, normalizePhone } from "./phone";
 
 describe("normalizePhone", () => {
   it("accepts US numbers in common shapes", () => {
@@ -29,29 +29,6 @@ describe("normalizePhone", () => {
   it("formats US numbers", () => {
     expect(formatPhone("+14155550123")).toBe("(415) 555-0123");
     expect(formatPhone("+442079460958")).toBe("+442079460958");
-  });
-});
-
-describe("normalizeHospitalUrl", () => {
-  it("adds https and drops the fragment", () => {
-    expect(normalizeHospitalUrl("cedars-sinai.org/billing#top")).toBe(
-      "https://cedars-sinai.org/billing",
-    );
-    expect(normalizeHospitalUrl(" http://www.uclahealth.org ")).toBe(
-      "https://www.uclahealth.org/",
-    );
-  });
-  it("rejects unsafe or unusable addresses", () => {
-    for (const bad of [
-      "",
-      "javascript:alert(1)",
-      "ftp://x.org",
-      "https://user:pw@x.org",
-      "http://localhost:3000",
-      "http://192.168.0.1",
-      "not a url",
-    ])
-      expect(normalizeHospitalUrl(bad)).toBeNull();
   });
 });
 
