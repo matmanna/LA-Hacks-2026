@@ -12,15 +12,14 @@ const INPUT =
   "h-12 rounded-xl border border-hairline px-3.5 text-base text-foreground";
 const FONT = { fontFamily: "Geist_400Regular" };
 
-// After the bill is read: the patient's phone and, optionally, the hospital's
-// website or billing phone to use instead of what we look up.
+// After the bill is read: the patient's phone and an optional demo billing
+// number override. Browser Use finds the hospital contact from the bill.
 export default function Phone() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const contact = useQuery(
     orpc.contact.get.queryOptions({ input: { caseId: id } }),
   );
   const [patientPhone, setPatientPhone] = useState("");
-  const [hospitalUrl, setHospitalUrl] = useState("");
   const [billingPhone, setBillingPhone] = useState("");
   const [filled, setFilled] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -32,7 +31,6 @@ export default function Phone() {
     if (!data || filled) return;
     const phone = data.patientPhone ?? data.savedPatientPhone;
     setPatientPhone(phone ? formatPhone(phone) : "");
-    setHospitalUrl(data.hospitalUrl ?? "");
     setBillingPhone(data.billingPhone ? formatPhone(data.billingPhone) : "");
     setFilled(true);
   }, [contact.data, filled]);
@@ -47,10 +45,9 @@ export default function Phone() {
       await client.contact.set({
         caseId: id,
         patientPhone,
-        hospitalUrl,
         billingPhone,
       });
-      // Look for the billing phone on the hospital's site in the background.
+      // Research the hospital's billing phone from the bill in the background.
       void client.hospital.lookup({ caseId: id }).catch(() => undefined);
       toConfirm();
     } catch (e) {
@@ -58,8 +55,6 @@ export default function Phone() {
       setBusy(false);
     }
   }
-
-  const hospital = contact.data?.hospitalName;
 
   return (
     <Screen
@@ -104,26 +99,13 @@ export default function Phone() {
 
       <View className="mt-6 gap-3 rounded-2xl border border-hairline p-4">
         <T weight="semibold" className="text-[15px]">
-          Hospital billing office{hospital ? `, ${hospital}` : ""}
+          Demo Billing Department Override
         </T>
         <T className="text-[13px] text-muted leading-5">
-          We look for the billing phone number on the hospital's website. Fill
-          in either box to use your own instead.
+          Browser Use researches the hospital named on your itemized bill and
+          finds its official billing contact. Enter a number only to override
+          that demo lookup.
         </T>
-        <View className="gap-1.5">
-          <T className="text-[15px]">Hospital website</T>
-          <TextInput
-            accessibilityLabel="Hospital website"
-            className={INPUT}
-            style={FONT}
-            keyboardType="url"
-            autoCapitalize="none"
-            autoCorrect={false}
-            placeholder="www.hospital.org"
-            value={hospitalUrl}
-            onChangeText={setHospitalUrl}
-          />
-        </View>
         <View className="gap-1.5">
           <T className="text-[15px]">Billing phone</T>
           <TextInput

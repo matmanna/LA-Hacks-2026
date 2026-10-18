@@ -5,7 +5,6 @@
 import {
   isAllowedNumber,
   isDialableNumber,
-  normalizeHospitalUrl,
   normalizePhone,
 } from "@betterbill/core";
 import type { Database } from "@betterbill/db";
@@ -38,7 +37,6 @@ export function testBillingPhone(): string | null {
 export type ContactInput = {
   patientPhone?: string | null;
   billingPhone?: string | null;
-  hospitalUrl?: string | null;
 };
 
 // Blank clears a field. Anything else must parse, or it is rejected so a
@@ -52,7 +50,6 @@ export async function saveContact(
   const fields = [
     ["patientPhone", "Your phone number", normalizePhone],
     ["billingPhone", "The billing phone number", normalizePhone],
-    ["hospitalUrl", "The hospital website", normalizeHospitalUrl],
   ] as const;
   for (const [key, label, parse] of fields) {
     const raw = input[key];
@@ -64,10 +61,7 @@ export async function saveContact(
     const value = parse(raw);
     if (!value) {
       throw new ORPCError("BAD_REQUEST", {
-        message:
-          key === "hospitalUrl"
-            ? `${label} doesn't look right. Use an address like www.hospital.org.`
-            : `${label} doesn't look right. Use a full number, like (415) 555-0123.`,
+        message: `${label} doesn't look right. Use a full number, like (415) 555-0123.`,
       });
     }
     patch[key] = value;

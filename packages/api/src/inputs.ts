@@ -80,5 +80,4 @@ export const ContactSetInput = z.object({
   caseId: z.string(),
   patientPhone: z.string().max(40).optional(),
   billingPhone: z.string().max(40).optional(),
-  hospitalUrl: z.string().max(300).optional(),
 });

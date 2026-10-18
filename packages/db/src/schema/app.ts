@@ -24,9 +24,9 @@ export const caseTable = pgTable("case", {
   hospitalName: text("hospital_name"),
   // B2: random token for the read-only evidence packet link; null = not shared.
   shareToken: text("share_token").unique(),
-  // Where calls go. patientPhone is the patient's own number; billingPhone
-  // and hospitalUrl are the patient's overrides of what the hospital lookup
-  // finds. E.164 and https URL, validated by core before they are saved.
+  // Where calls go. patientPhone is the patient's own number; billingPhone is
+  // the demo override. The legacy hospital_url column is retained in the
+  // database for compatibility but is no longer exposed or used.
   patientPhone: text("patient_phone"),
   billingPhone: text("billing_phone"),
   hospitalUrl: text("hospital_url"),

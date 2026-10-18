@@ -14,7 +14,6 @@ async function contactFor(db: Db, caseId: string, userId?: string) {
   return {
     patientPhone: row.patientPhone,
     billingPhone: row.billingPhone,
-    hospitalUrl: row.hospitalUrl,
     savedPatientPhone: await savedPatientPhone(db, userId, caseId),
     hospitalName: row.hospitalName,
   };

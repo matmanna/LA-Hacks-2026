@@ -20,7 +20,7 @@ import { and, asc, eq, like } from "drizzle-orm";
 
 import { POLICIES } from "../data";
 import type { LookupStatus } from "../outputs";
-import { addEvent, getCaseRow } from "../repo/cases";
+import { addEvent } from "../repo/cases";
 import {
   type Fetch,
   getLiveUrl,
@@ -268,7 +268,6 @@ export async function startLookup(
       state: bill.hospital.state,
     },
     deps.fetch,
-    (await getCaseRow(db, caseId))?.hospitalUrl ?? null,
   );
   const started: Started = {
     runId: run.id,

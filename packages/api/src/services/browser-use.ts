@@ -67,12 +67,11 @@ export function startPolicyLookup(
   key: string,
   hospital: { name: string; city: string | null; state: string | null },
   f: Fetch = fetch,
-  websiteUrl: string | null = null,
 ): Promise<{ id: string; sessionId: string; status: RunStatus }> {
   return call(f, key, "/runs", {
     method: "POST",
     body: JSON.stringify({
-      task: policyLookupTask(hospital, websiteUrl),
+      task: policyLookupTask(hospital),
       outputSchema: POLICY_LOOKUP_SCHEMA,
       maxCostUsd: MAX_COST_USD,
     }),

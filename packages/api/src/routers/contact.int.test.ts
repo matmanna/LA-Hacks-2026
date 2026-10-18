@@ -1,5 +1,5 @@
-// Integration: where a call goes (patient phone, billing override, hospital
-// website) against a migrated Postgres. No network and no real calls.
+// Integration: where a call goes (patient phone and billing override) against
+// a migrated Postgres. No network and no real calls.
 import { createDb } from "@betterbill/db";
 import { createRouterClient } from "@orpc/server";
 import {
@@ -49,36 +49,30 @@ describe.skipIf(!url)("contact routes (integration)", () => {
     return c.id;
   }
 
-  it("saves numbers as E.164 and an https website, and clears blanks", async () => {
+  it("saves phone numbers as E.164 and clears blanks", async () => {
     const { id } = await client.case.create({});
     expect(await client.contact.get({ caseId: id })).toMatchObject({
       patientPhone: null,
       billingPhone: null,
-      hospitalUrl: null,
     });
     const saved = await client.contact.set({
       caseId: id,
       patientPhone: "(310) 555-0101",
       billingPhone: "310.555.0100",
-      hospitalUrl: "www.cedars-sinai.org/billing",
     });
     expect(saved).toMatchObject({
       patientPhone: "+13105550101",
       billingPhone: "+13105550100",
-      hospitalUrl: "https://www.cedars-sinai.org/billing",
     });
     const cleared = await client.contact.set({ caseId: id, billingPhone: " " });
     expect(cleared.billingPhone).toBeNull();
     expect(cleared.patientPhone).toBe("+13105550101");
   });
 
-  it("rejects values that aren't a phone number or website", async () => {
+  it("rejects values that aren't phone numbers", async () => {
     const { id } = await client.case.create({});
     await expect(
       client.contact.set({ caseId: id, patientPhone: "call me" }),
-    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
-    await expect(
-      client.contact.set({ caseId: id, hospitalUrl: "javascript:alert(1)" }),
     ).rejects.toMatchObject({ code: "BAD_REQUEST" });
   });
 
