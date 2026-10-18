@@ -34,7 +34,9 @@ export default function Join() {
     mutationFn: async () => {
       if (!scripted && call) await client.call.start({ actionId: call.id });
     },
-    onSuccess: () =>
+    // The live call provider can be unavailable in the demo, but the user
+    // should still be able to continue through the call experience.
+    onSettled: () =>
       router.replace({
         pathname: "/case/[id]/call",
         params: scripted ? { id, script: "1" } : { id },
