@@ -1,4 +1,4 @@
-import { Assistance, ParseResult } from "@betterbill/core";
+import { Assistance } from "@betterbill/core";
 import { createRouterClient } from "@orpc/server";
 import { describe, expect, it } from "vitest";
 
@@ -39,17 +39,8 @@ describe("procedure stubs", () => {
     );
   });
 
-  // case, bill.parseText, bill.confirmLines, audit, event, eval and the
-  // action routes are real and covered by the *.int.test.ts files.
-  it("bill.parsePhoto stub returns its declared shape", async () => {
-    ParseResult.parse(
-      await client.bill.parsePhoto({
-        caseId,
-        pages: [{ imageDataUrl: "data:image/jpeg;base64,AA==", page: 1 }],
-      }),
-    );
-  });
-
+  // case, bill, audit, event, eval and the action routes are real and
+  // covered by the *.int.test.ts and reader tests.
   it("assistance and call stubs return their declared shapes", async () => {
     Assistance.parse(
       await client.assistance.check({
@@ -66,7 +57,7 @@ describe("procedure stubs", () => {
 
   it("rejects invalid input", async () => {
     await expect(
-      client.bill.parsePhoto({ caseId, pages: [] }),
+      client.action.draftLetter({ caseId, kind: "fax" as never }),
     ).rejects.toThrow();
   });
 });
