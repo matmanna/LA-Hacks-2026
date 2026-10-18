@@ -1,0 +1,199 @@
+{
+  "photo": "data/synthetic/photos/SB-01-dimangle.jpg",
+  "sha256": "6482e91d7f11d01df0f6422ef09dd0280abd09a214abc425fc39528bcb4de94c",
+  "model": "step-5-preview",
+  "latencyMs": 28636,
+  "readAt": "2026-10-18T02:47:14.183Z",
+  "bill": {
+    "id": "cache-bill",
+    "hospital": {
+      "name": "Cedars-Sinai Medical Center",
+      "city": "Los Angeles",
+      "state": "CA"
+    },
+    "statementDate": "2026-10-01",
+    "accountRefMasked": null,
+    "kind": "itemized",
+    "sourceKind": "photo",
+    "lines": [
+      {
+        "id": "cache-l01",
+        "serviceDate": "2026-09-14",
+        "description": "ED VISIT LEVEL 4",
+        "code": "99284",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 295000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l02",
+        "serviceDate": "2026-09-14",
+        "description": "MRI LUMBAR SPINE W/O CONTRAST",
+        "code": "72148",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 690000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l03",
+        "serviceDate": "2026-09-14",
+        "description": "XR LUMBAR SPINE 2-3 VIEWS",
+        "code": "72100",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 64000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l04",
+        "serviceDate": "2026-09-14",
+        "description": "CBC W/ AUTO DIFF",
+        "code": "85025",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 8400,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l05",
+        "serviceDate": "2026-09-14",
+        "description": "CBC W/ AUTO DIFF",
+        "code": "85025",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 8400,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l06",
+        "serviceDate": "2026-09-14",
+        "description": "COMPREHENSIVE METABOLIC PANEL",
+        "code": "80053",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 21200,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l07",
+        "serviceDate": "2026-09-14",
+        "description": "VENIPUNCTURE",
+        "code": "36415",
+        "codeType": "CPT",
+        "units": 4,
+        "chargeCents": 15200,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l08",
+        "serviceDate": "2026-09-14",
+        "description": "IV PUSH SINGLE DRUG",
+        "code": "96374",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 48600,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l09",
+        "serviceDate": "2026-09-14",
+        "description": "KETOROLAC INJ 15 MG",
+        "code": "J1885",
+        "codeType": "HCPCS",
+        "units": 1,
+        "chargeCents": 9600,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l10",
+        "serviceDate": "2026-09-14",
+        "description": "NORMAL SALINE 1000 CC",
+        "code": "J7030",
+        "codeType": "HCPCS",
+        "units": 1,
+        "chargeCents": 18600,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l11",
+        "serviceDate": "2026-09-14",
+        "description": "URINALYSIS AUTO W/O SCOPE",
+        "code": "81003",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 21000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 1200000,
+      "adjustmentsCents": 0,
+      "paidCents": 0,
+      "dueCents": 1200000
+    }
+  },
+  "reconciliation": {
+    "linesSumCents": 1200000,
+    "statedChargesCents": 1200000,
+    "diffCents": 0,
+    "ok": true
+  },
+  "warnings": []
+}

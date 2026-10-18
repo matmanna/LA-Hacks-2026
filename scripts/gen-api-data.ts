@@ -48,8 +48,28 @@ export function buildData() {
         }),
       ),
     }));
+  const cacheDir = join(ROOT, "data/cache/photos");
+  const photoCache = (() => {
+    try {
+      return readdirSync(cacheDir)
+        .filter((f) => f.endsWith(".json"))
+        .sort()
+        .map((f) => read(`data/cache/photos/${f}`))
+        .map((c) => ({
+          sha256: c.sha256,
+          model: c.model,
+          readAt: c.readAt,
+          bill: c.bill,
+          reconciliation: c.reconciliation,
+          warnings: c.warnings,
+        }));
+    } catch {
+      return [];
+    }
+  })();
   return {
     samples,
+    photoCache,
     captures: hospitals,
     mue: tryRead("data/rules/mue-subset.json"),
     evalResults: tryRead("data/eval/results.json"),
