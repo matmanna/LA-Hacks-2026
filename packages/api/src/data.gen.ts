@@ -1345,6 +1345,46 @@ export const DATA = {
         }
       },
       "eob": null
+    },
+    {
+      "id": "SB-12",
+      "title": "Demo: summary statement for the SB-01 visit",
+      "bill": {
+        "id": "bill_sb12",
+        "hospital": {
+          "name": "Cedars-Sinai Medical Center",
+          "city": "Los Angeles",
+          "state": "CA"
+        },
+        "statementDate": "2026-09-30",
+        "accountRefMasked": "4821",
+        "kind": "summary",
+        "sourceKind": "pdf",
+        "lines": [
+          {
+            "id": "sb12-l01",
+            "serviceDate": "2026-09-14",
+            "description": "EMERGENCY SERVICES",
+            "code": null,
+            "codeType": null,
+            "units": 1,
+            "chargeCents": 1200000,
+            "source": {
+              "page": 1,
+              "bbox": null
+            },
+            "confidence": 1,
+            "userEdited": false
+          }
+        ],
+        "totals": {
+          "chargesCents": 1200000,
+          "adjustmentsCents": 0,
+          "paidCents": 0,
+          "dueCents": 1200000
+        }
+      },
+      "eob": null
     }
   ],
   "photoCache": [
