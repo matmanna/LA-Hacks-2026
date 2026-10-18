@@ -50,9 +50,8 @@ describe("Browser Use client", () => {
     const { url, init } = calls[0] ?? { url: "" };
     expect(url).toBe("https://api.browser-use.com/api/v4/runs");
     expect(init?.method).toBe("POST");
-    expect(
-      (init?.headers as Record<string, string>)["X-Browser-Use-API-Key"],
-    ).toBe("test-key");
+    const headers = init?.headers as Record<string, string> | undefined;
+    expect(headers?.["X-Browser-Use-API-Key"]).toBe("test-key");
     const body = JSON.parse(String(init?.body));
     expect(body.maxCostUsd).toBe(MAX_COST_USD);
     expect(body.outputSchema.required).toContain("quotes");
