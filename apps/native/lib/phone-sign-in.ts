@@ -32,9 +32,10 @@ export async function verifyCode(
 // web shows them too. Cases that already belong to someone are skipped.
 export async function claimLocalCases() {
   const cases = await loadCases();
-  await Promise.all(
-    cases.map((c) =>
-      client.case.claim({ caseId: c.id }).catch(() => undefined),
-    ),
+  const results = await Promise.allSettled(
+    cases.map((c) => client.case.claim({ caseId: c.id })),
   );
+  if (results.some((result) => result.status === "rejected")) {
+    throw new Error("Signed in, but some bills could not be synced.");
+  }
 }

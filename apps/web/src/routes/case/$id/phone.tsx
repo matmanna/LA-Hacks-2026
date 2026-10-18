@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 
 import { AppBar } from "@/components/app-bar";
 import { authClient } from "@/lib/auth-client";
+import { claimDeviceCases, rememberDeviceCase } from "@/lib/device-cases";
 import { client, orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/case/$id/phone")({
@@ -89,6 +90,21 @@ function PhonePage() {
     if (verifyError) {
       setBusy(false);
       setError(verifyError.message ?? "That code didn't work. Try again.");
+      return;
+    }
+    try {
+      rememberDeviceCase(id);
+      await claimDeviceCases(
+        (caseId) => client.case.claim({ caseId }),
+        localStorage,
+      );
+    } catch (syncError) {
+      setBusy(false);
+      setError(
+        syncError instanceof Error
+          ? syncError.message
+          : "Signed in, but your bill could not be synced.",
+      );
       return;
     }
     await save();

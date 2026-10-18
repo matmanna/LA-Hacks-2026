@@ -9,7 +9,8 @@ import { useState } from "react";
 
 import { AppBar } from "@/components/app-bar";
 import { authClient } from "@/lib/auth-client";
-import { orpc } from "@/utils/orpc";
+import { claimDeviceCases } from "@/lib/device-cases";
+import { client, orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/cases")({
   head: () => ({
@@ -107,7 +108,21 @@ function SignInByText() {
         code,
       });
       if (e) setError(e.message ?? "That code didn't work. Try again.");
-      else await queryClient.invalidateQueries();
+      else {
+        try {
+          await claimDeviceCases(
+            (caseId) => client.case.claim({ caseId }),
+            localStorage,
+          );
+          await queryClient.invalidateQueries();
+        } catch (syncError) {
+          setError(
+            syncError instanceof Error
+              ? syncError.message
+              : "Signed in, but your bills could not be synced.",
+          );
+        }
+      }
     }
     setBusy(false);
   }
