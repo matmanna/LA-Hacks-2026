@@ -21,6 +21,7 @@ describe("procedure stubs", () => {
         "case.get",
         "case.claim",
         "case.list",
+        "case.summary",
         "case.share",
         "case.revokeShare",
         "case.packet",

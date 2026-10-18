@@ -1,6 +1,13 @@
 import { randomBytes } from "node:crypto";
 
-import { CaseSummary, computeSavings, Packet } from "@betterbill/core";
+import {
+  CaseSummary,
+  computeSavings,
+  type HomeCase,
+  HomeSummary,
+  homeSummary,
+  Packet,
+} from "@betterbill/core";
 import { caseTable } from "@betterbill/db/schema/index";
 import { ORPCError } from "@orpc/server";
 import { desc, eq } from "drizzle-orm";
@@ -11,6 +18,7 @@ import { publicProcedure } from "../index";
 import {
   CaseCreateInput,
   CaseIdInput,
+  CaseIdsInput,
   EmptyInput,
   ShareTokenInput,
 } from "../inputs";
@@ -22,6 +30,7 @@ import {
   getCaseRow,
   latestAudit,
   listActions,
+  listEvents,
   loadBill,
   loadEob,
   saveEob,
@@ -141,6 +150,41 @@ export const caseRouter = {
           );
         }),
       );
+    }),
+
+  // Home V4: totals and counts across the cases on this phone, added up in
+  // core (homeSummary). Unknown ids are skipped. The app only displays it.
+  summary: publicProcedure
+    .input(CaseIdsInput)
+    .output(HomeSummary)
+    .handler(async ({ input, context }) => {
+      const cases: HomeCase[] = [];
+      for (const caseId of new Set(input.caseIds)) {
+        const row = await getCaseRow(context.db, caseId);
+        if (!row) continue;
+        const run = await latestAudit(context.db, caseId);
+        const loaded = run ? await loadBill(context.db, caseId) : null;
+        const savings =
+          run && loaded
+            ? computeSavings(
+                run.flags,
+                loaded.bill,
+                PRICES,
+                await loadAssistance(context.db, caseId, loaded.bill),
+              )
+            : null;
+        cases.push({
+          id: row.id,
+          status: row.status as HomeCase["status"],
+          createdAt: row.createdAt.toISOString(),
+          billedCents: loaded?.bill.totals.dueCents ?? null,
+          savings,
+          flagCount: run?.flags.length ?? 0,
+          actions: await listActions(context.db, caseId),
+          events: await listEvents(context.db, caseId),
+        });
+      }
+      return homeSummary(cases);
     }),
 
   // B2: a revocable, unguessable link to a read-only evidence packet.

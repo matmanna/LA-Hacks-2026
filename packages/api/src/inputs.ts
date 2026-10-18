@@ -10,6 +10,11 @@ export const CaseCreateInput = z.object({
 
 export const CaseIdInput = z.object({ caseId: z.string() });
 
+// case.summary: the cases saved on this phone (Home V4 totals).
+export const CaseIdsInput = z.object({
+  caseIds: z.array(z.string()).max(100),
+});
+
 export const ParseTextInput = z.object({
   caseId: z.string(),
   text: z.string().max(50_000),
