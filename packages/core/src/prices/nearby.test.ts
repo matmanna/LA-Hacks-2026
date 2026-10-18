@@ -227,12 +227,25 @@ describe("summarizeNearby", () => {
 });
 
 describe("SERVICES", () => {
-  it("lists the four comparable services once each", () => {
-    expect(SERVICES.map((s) => s.code)).toEqual([
+  it("lists each comparable service once, with plain words to find it", () => {
+    const codes = SERVICES.map((s) => s.code);
+    expect(new Set(codes).size).toBe(codes.length);
+    expect(codes).toEqual([
       "72148",
       "85025",
       "99284",
       "70450",
+      "72100",
+      "71046",
+      "76700",
+      "74177",
+      "73721",
+      "77067",
+      "80053",
     ]);
+    for (const s of SERVICES) {
+      expect(s.terms.length).toBeGreaterThan(0);
+      expect(s.notCovered).not.toBe("");
+    }
   });
 });

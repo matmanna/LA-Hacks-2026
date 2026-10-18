@@ -80,4 +80,95 @@ export const SERVICES: readonly PriceService[] = [
       "ct brain",
     ],
   },
+  {
+    code: "72100",
+    name: "X-ray of the lower back",
+    short: "X-ray lower back",
+    what: "Pictures of the lower spine, 2 or 3 views.",
+    notCovered:
+      "Not the radiologist who reads it. They usually send a separate bill.",
+    terms: [
+      "xray back",
+      "x ray back",
+      "back xray",
+      "lumbar xray",
+      "spine xray",
+    ],
+  },
+  {
+    code: "71046",
+    name: "Chest X-ray, 2 views",
+    short: "Chest X-ray",
+    what: "Pictures of the lungs and heart from two angles.",
+    notCovered:
+      "Not the radiologist who reads it. They usually send a separate bill.",
+    terms: ["chest xray", "chest x ray", "lung xray", "cxr"],
+  },
+  {
+    code: "76700",
+    name: "Ultrasound of the belly",
+    short: "Belly ultrasound",
+    what: "A sound-wave scan of the organs in your belly, like the liver and kidneys.",
+    notCovered:
+      "Not the radiologist who reads it. They usually send a separate bill.",
+    terms: [
+      "ultrasound",
+      "abdominal ultrasound",
+      "abdomen ultrasound",
+      "belly ultrasound",
+      "sonogram",
+    ],
+  },
+  {
+    code: "74177",
+    name: "CT of the belly and pelvis, with contrast",
+    short: "CT belly and pelvis",
+    what: "A detailed X-ray scan of the belly and pelvis, done with dye.",
+    notCovered:
+      "Not the radiologist who reads it, or the dye when it is billed as its own line.",
+    terms: [
+      "ct abdomen",
+      "ct belly",
+      "ct pelvis",
+      "abdominal ct",
+      "ct abdomen pelvis",
+      "cat scan belly",
+    ],
+  },
+  {
+    code: "73721",
+    name: "MRI of a leg joint, no contrast",
+    short: "MRI knee",
+    what: "A detailed scan of one leg joint, such as the knee or ankle, done without dye.",
+    notCovered:
+      "Not the radiologist who reads it. They usually send a separate bill.",
+    terms: ["mri knee", "knee mri", "ankle mri", "hip mri", "leg joint mri"],
+  },
+  {
+    code: "77067",
+    name: "Screening mammogram",
+    short: "Mammogram",
+    what: "A routine X-ray of both breasts to check for cancer.",
+    notCovered:
+      "Not the radiologist who reads it. They usually send a separate bill.",
+    terms: ["mammogram", "breast xray", "breast screening", "mammo"],
+  },
+  {
+    code: "80053",
+    name: "Metabolic panel (CMP)",
+    short: "Metabolic panel",
+    what: "A blood test that checks your kidneys, liver, sugar and salts.",
+    notCovered:
+      "Not other tests or the blood draw, when they are billed as separate lines.",
+    terms: [
+      "metabolic panel",
+      "cmp",
+      "comprehensive metabolic panel",
+      "blood test",
+      "blood work",
+      "labs",
+      "kidney test",
+      "liver test",
+    ],
+  },
 ];
