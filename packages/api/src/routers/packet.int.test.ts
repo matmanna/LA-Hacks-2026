@@ -71,4 +71,27 @@ describe.skipIf(!url)("evidence packet (integration)", () => {
       client.case.packet({ token: "x".repeat(43) }),
     ).rejects.toBeInstanceOf(ORPCError);
   });
+
+  it("shows the free-care result, with no income and no screener records", async () => {
+    const caseId = await auditedCase();
+    const bands = await client.assistance.check({ caseId, householdSize: 3 });
+    await client.assistance.check({
+      caseId,
+      householdSize: 3,
+      annualIncomeCents: bands.incomeBands?.[0]?.incomeCents ?? 0,
+      insurance: "none",
+    });
+    const { token } = await client.case.share({ caseId });
+    const p = await client.case.packet({ token });
+
+    expect(p.savings.assistance.status).toBe("likely");
+    expect(p.balance.fairBalanceLowCents).toBe(0);
+    expect(p.case.status).toBe("audited");
+    const checked = p.events.find((e) => e.type === "assistance.checked");
+    expect(checked?.summary).toMatch(/^Checked \d+ rules: \d+ may help$/);
+    expect(checked?.artifactRef).toBeUndefined();
+    expect(JSON.stringify(p)).not.toMatch(
+      /"id":"income"|incomeBands|householdSize/,
+    );
+  });
 });
