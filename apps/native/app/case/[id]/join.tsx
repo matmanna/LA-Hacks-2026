@@ -7,7 +7,7 @@ import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button, Icon, T } from "@/components/bb";
-import { useIsSample } from "@/lib/cases";
+import { useSampleCase } from "@/lib/cases";
 import { errorMessage } from "@/lib/errors";
 import { DEMO_CALL_SCRIPT } from "@/lib/use-call-flow";
 import { client, orpc } from "@/utils/orpc";
@@ -21,10 +21,15 @@ const READY = [
 
 // A1 Can you join the call? A sheet over the plan.
 export default function Join() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, script } = useLocalSearchParams<{
+    id: string;
+    script?: string;
+  }>();
   const insets = useSafeAreaInsets();
-  const sample = useIsSample(id);
-  const scripted = DEMO_CALL_SCRIPT && sample;
+  const sample = useSampleCase(id);
+  // Plan passes script=1 for samples so this does not race AsyncStorage on
+  // the transition. The stored-case check keeps direct deep links working.
+  const scripted = script === "1" || (DEMO_CALL_SCRIPT && sample === true);
   const [when, setWhen] = useState<"now" | "later">("now");
   const detail = useQuery(
     orpc.case.get.queryOptions({ input: { caseId: id } }),
@@ -37,14 +42,21 @@ export default function Join() {
 
   const start = useMutation({
     mutationFn: async () => {
-      if (!scripted && call) await client.call.start({ actionId: call.id });
+      if (scripted) return;
+      if (!call)
+        throw new Error("The call is not ready yet. Go back and try again.");
+      await client.call.start({ actionId: call.id });
     },
-    // The live call provider can be unavailable in the demo, but the user
-    // should still be able to continue through the call experience.
-    onSettled: () =>
+    // Keep the promised next-step bypass, but do not render a failed start as
+    // an active call. The call screen gives the user a clear retry state.
+    onSettled: (_, error) =>
       router.replace({
         pathname: "/case/[id]/call",
-        params: scripted ? { id, script: "1" } : { id },
+        params: scripted
+          ? { id, script: "1" }
+          : error
+            ? { id, failed: "1", reason: errorMessage(error).slice(0, 240) }
+            : { id },
       }),
   });
 
@@ -125,7 +137,11 @@ export default function Join() {
         <View className="gap-2">
           <Button
             label={when === "now" ? "Start the call" : "Choose a time"}
-            variant={when === "now" ? "primary" : "disabled"}
+            variant={
+              when === "now" && (script === "1" || sample !== undefined)
+                ? "primary"
+                : "disabled"
+            }
             busy={start.isPending}
             onPress={() => start.mutate()}
           />
