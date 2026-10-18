@@ -71,7 +71,10 @@ export async function startOutboundCall(
         agent_id: agentId,
         agent_phone_number_id: phoneNumberId,
         to_number: req.to,
-        conversation_initiation_client_data: { dynamic_variables: req.vars },
+        conversation_initiation_client_data: {
+          dynamic_variables: req.vars,
+          branch_id: process.env.ELEVENLABS_BRANCH_ID || undefined,
+        },
       }),
       signal: AbortSignal.timeout(20_000),
     },
