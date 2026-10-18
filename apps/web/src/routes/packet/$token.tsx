@@ -95,7 +95,10 @@ function PacketPage() {
   };
 
   return (
-    <main className="mx-auto min-w-0 max-w-3xl space-y-8 overflow-x-hidden px-5 py-8 md:px-8 print:max-w-none print:px-0 print:py-0">
+    <main
+      data-sentry-block
+      className="mx-auto min-w-0 max-w-3xl space-y-8 overflow-x-hidden px-5 py-8 md:px-8 print:max-w-none print:px-0 print:py-0"
+    >
       <header className="space-y-4">
         <div className="flex items-center justify-between gap-3">
           <Wordmark />
