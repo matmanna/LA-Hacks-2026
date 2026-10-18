@@ -1,12 +1,14 @@
 """Browser Use live navigation of Cedars-Sinai's price transparency page (ticket C-05, Part A).
 
-Usage: python -I scripts/hospitals/browser_use_capture.py
+Usage: python -I scripts/hospitals/browser_use_capture.py [--key cedars-sinai] [--hpt-url URL] [--share]
 Reads BROWSER_USE_API_KEY from the environment or the repo .env. Never prints the key.
-Writes data/hospitals/cedars-sinai/evidence/browser_use_run.json.
+Writes data/hospitals/<key>/evidence/browser_use_run.json. --share also creates a session share link
+(off by default: the team keeps recordings private until reviewed).
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import sys
@@ -16,11 +18,10 @@ from browser_use_sdk.v4 import BrowserUse
 from pydantic import BaseModel
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "data/hospitals/cedars-sinai/evidence/browser_use_run.json"
 MAX_COST_USD = 1.0
 
 TASK = (
-    "Go to https://www.cedars-sinai.org/cms-hpt.txt and read it. Then open the source-page-url it lists. "
+    "Go to {hpt_url} and read it. Then open the source-page-url it lists. "
     "On that page, find every link to a machine-readable standard charges file and any link to the hospital's "
     "financial assistance or charity care policy. Do not download large files. Return the URLs exactly as written "
     "on the page, any 'last updated' text shown, and short notes on what the page says about the file."
@@ -48,19 +49,30 @@ def api_key() -> str:
 
 
 def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--key", default="cedars-sinai")
+    ap.add_argument("--hpt-url", default="https://www.cedars-sinai.org/cms-hpt.txt")
+    ap.add_argument("--share", action="store_true")
+    args = ap.parse_args()
+    out = ROOT / f"data/hospitals/{args.key}/evidence/browser_use_run.json"
     client = BrowserUse(api_key=api_key())
     created = client.runs.create(
-        TASK, output_schema=PriceLinks.model_json_schema(), max_cost_usd=MAX_COST_USD
+        TASK.format(hpt_url=args.hpt_url),
+        output_schema=PriceLinks.model_json_schema(),
+        max_cost_usd=MAX_COST_USD,
     )
     print(f"run {created.id} started (session {created.session_id})")
     run = client.runs.wait_for_completion(created.id, timeout=900)
 
     share_url = None
-    try:
-        share = client.sessions.create_share(run.session_id)
-        share_url = share.model_dump(mode="json", by_alias=True)
-    except Exception as exc:  # recording link is optional evidence
-        share_url = {"error": str(exc)}
+    if not args.share:
+        share_url = {"note": "No share link created (run with --share)."}
+    else:
+        try:
+            share = client.sessions.create_share(run.session_id)
+            share_url = share.model_dump(mode="json", by_alias=True)
+        except Exception as exc:  # recording link is optional evidence
+            share_url = {"error": str(exc)}
 
     record = {
         "runId": str(run.id),
@@ -77,8 +89,8 @@ def main() -> None:
         "eventsUrl": created.events_url,
         "sessionShare": share_url,
     }
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(record, indent=2) + "\n")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(record, indent=2) + "\n")
     print(json.dumps(record["output"], indent=2))
     if record["status"] != "completed":
         sys.exit(f"run ended with status {record['status']}: {run.error}")

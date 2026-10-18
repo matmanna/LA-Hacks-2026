@@ -1,0 +1,99 @@
+{
+  "fixtureVersion": 1,
+  "id": "BOTM-01",
+  "title": "Surgery center billed one operation as two",
+  "synthetic": false,
+  "scenario": "botm",
+  "source": {
+    "publisher": "KFF Health News",
+    "series": "Bill of the Month",
+    "url": "https://kffhealthnews.org/health-care-costs/bill-of-the-month-one-surgery-charged-for-two-collections-lawsuit/",
+    "published": "2024-08-21",
+    "accessedAt": "2026-10-17T23:19:00Z"
+  },
+  "bill": {
+    "id": "bill_botm01",
+    "hospital": {
+      "name": "Pacific Rim Outpatient Surgery Center",
+      "city": "Bellingham",
+      "state": "WA"
+    },
+    "statementDate": null,
+    "accountRefMasked": null,
+    "kind": "itemized",
+    "sourceKind": "text",
+    "lines": [
+      {
+        "id": "botm01-l01",
+        "serviceDate": null,
+        "description": "OPERATION CHARGE",
+        "code": null,
+        "codeType": null,
+        "units": 1,
+        "chargeCents": 481000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "botm01-l02",
+        "serviceDate": null,
+        "description": "OPERATION CHARGE",
+        "code": null,
+        "codeType": null,
+        "units": 1,
+        "chargeCents": 481000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 962000,
+      "adjustmentsCents": 575300,
+      "paidCents": 126200,
+      "dueCents": 260500
+    }
+  },
+  "eob": null,
+  "lineSources": {
+    "botm01-l01": "reported",
+    "botm01-l02": "reported"
+  },
+  "reporterFindings": [
+    {
+      "id": "RF1",
+      "summary": "The center billed two operations at the same price, but only one operation took place.",
+      "lever": "duplicate",
+      "inScope": true,
+      "lineIds": ["botm01-l01", "botm01-l02"],
+      "outcome": "Not reduced; a collector sued, and summary judgment was denied."
+    },
+    {
+      "id": "RF2",
+      "summary": "Billing staff did not fix the charge after the patient explained it.",
+      "lever": null,
+      "inScope": false,
+      "lineIds": [],
+      "outcome": "No change reported."
+    }
+  ],
+  "expected": {
+    "clean": false,
+    "flags": [
+      {
+        "lever": "duplicate",
+        "tier": "confirmed",
+        "lineIds": ["botm01-l01", "botm01-l02"],
+        "amountCents": 481000
+      }
+    ],
+    "notes": "Reported: two operation charges of $4,810 each (total $9,620), insurer paid $1,262, patient billed $2,605. Adjustments are derived (9,620 - 1,262 - 2,605). The article gives no codes, printed descriptions or day of service (2019 only), so descriptions are ours and dates are null."
+  }
+}

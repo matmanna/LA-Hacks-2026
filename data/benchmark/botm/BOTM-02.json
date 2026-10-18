@@ -1,0 +1,99 @@
+{
+  "fixtureVersion": 1,
+  "id": "BOTM-02",
+  "title": "ER charge after leaving before being seen",
+  "synthetic": false,
+  "scenario": "botm",
+  "source": {
+    "publisher": "KFF Health News",
+    "series": "Bill of the Month",
+    "url": "https://kffhealthnews.org/health-care-costs/emergency-room-not-treated-still-charged-illinois-bill-of-the-month-september-2026/",
+    "published": "2026-09-29",
+    "accessedAt": "2026-10-17T23:19:00Z"
+  },
+  "bill": {
+    "id": "bill_botm02",
+    "hospital": {
+      "name": "Carle Foundation Hospital",
+      "city": "Urbana",
+      "state": "IL"
+    },
+    "statementDate": null,
+    "accountRefMasked": null,
+    "kind": "summary",
+    "sourceKind": "text",
+    "lines": [
+      {
+        "id": "botm02-l01",
+        "serviceDate": null,
+        "description": "EMERGENCY ROOM LEVEL 1",
+        "code": "99281",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 41000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 41000,
+      "adjustmentsCents": 0,
+      "paidCents": 2500,
+      "dueCents": 38500
+    }
+  },
+  "eob": null,
+  "lineSources": {
+    "botm02-l01": "reported"
+  },
+  "reporterFindings": [
+    {
+      "id": "RF1",
+      "summary": "Triage alone was billed with an emergency visit code, which coding guidance says it is not.",
+      "lever": null,
+      "inScope": false,
+      "lineIds": ["botm02-l01"],
+      "outcome": "Hospital said the charge was accurate."
+    },
+    {
+      "id": "RF2",
+      "summary": "An expert said the charge was well above the usual amount for that code.",
+      "lever": null,
+      "inScope": false,
+      "lineIds": ["botm02-l01"],
+      "outcome": "No change reported."
+    },
+    {
+      "id": "RF3",
+      "summary": "The patient asked for an itemized bill and never got one.",
+      "lever": "missing_itemization",
+      "inScope": true,
+      "lineIds": ["botm02-l01"],
+      "outcome": "Still not provided as of publication."
+    },
+    {
+      "id": "RF4",
+      "summary": "A new hospital policy allowed the charge, and the patient was not told.",
+      "lever": null,
+      "inScope": false,
+      "lineIds": [],
+      "outcome": "No change reported."
+    }
+  ],
+  "expected": {
+    "clean": false,
+    "flags": [
+      {
+        "lever": "missing_itemization",
+        "tier": "rule",
+        "lineIds": ["botm02-l01"],
+        "amountCents": 0
+      }
+    ],
+    "notes": "Reported: one $410 charge, ER level 1, CPT 99281; the patient paid $25; the insurer denied the claim. Bill kind is summary because the hospital did not provide an itemized bill. Service date is April with no day or explicit year, so it is null."
+  }
+}
