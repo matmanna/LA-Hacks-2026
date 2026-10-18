@@ -24,5 +24,7 @@ export const CallStatus = z.object({
   outcome: z.string().nullable(),
 });
 
-// Passthrough of data/eval/results.json; only generatedAt is required.
-export const EvalResults = z.looseObject({ generatedAt: z.string() });
+// Passthrough of data/eval/results.json; generatedAt is null until C ships it.
+export const EvalResults = z.looseObject({
+  generatedAt: z.string().nullable(),
+});

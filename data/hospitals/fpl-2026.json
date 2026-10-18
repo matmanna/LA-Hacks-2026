@@ -1,0 +1,43 @@
+{
+  "year": 2026,
+  "source": "https://aspe.hhs.gov/topics/poverty-economic-mobility/poverty-guidelines",
+  "federalRegister": "2026-00755 (January 15, 2026)",
+  "federalRegisterUrl": "https://www.govinfo.gov/content/pkg/FR-2026-01-15/pdf/2026-00755.pdf",
+  "retrievedAt": "2026-10-17T23:07:03Z",
+  "sourceSha256": "7e54b7fdbb52bf2bb890c2a8feac3a12ea5b27504c09cbc63e72cc91766937f4",
+  "note": "sha256 is of the ASPE page HTML as fetched; the page may change. All 27 figures checked against the page text.",
+  "units": "dollars per year",
+  "contiguous48AndDC": {
+    "1": 15960,
+    "2": 21640,
+    "3": 27320,
+    "4": 33000,
+    "5": 38680,
+    "6": 44360,
+    "7": 50040,
+    "8": 55720,
+    "additionalPerson": 5680
+  },
+  "alaska": {
+    "1": 19950,
+    "2": 27050,
+    "3": 34150,
+    "4": 41250,
+    "5": 48350,
+    "6": 55450,
+    "7": 62550,
+    "8": 69650,
+    "additionalPerson": 7100
+  },
+  "hawaii": {
+    "1": 18360,
+    "2": 24890,
+    "3": 31420,
+    "4": 37950,
+    "5": 44480,
+    "6": 51010,
+    "7": 57540,
+    "8": 64070,
+    "additionalPerson": 6530
+  }
+}
