@@ -52,6 +52,32 @@ export function packetSources(flags: Flag[]): PacketSource[] {
   return [...out.values()];
 }
 
+// Masks an email or phone number so a shared packet never shows a real
+// contact. Plain names ("Billing Office, ...") are kept.
+export function maskRecipient(r: string): string {
+  const at = r.indexOf("@");
+  if (at > 0) return `${r[0]}***${r.slice(at)}`;
+  const digits = r.replace(/\D/g, "");
+  if (/^\+?[\d\s().-]{7,}$/.test(r.trim()) && digits.length >= 7)
+    return `phone ending ${digits.slice(-2)}`;
+  return r;
+}
+
+// A packet is read by anyone with the link, so it must not carry ids that
+// unlock other procedures (case id, action ids) or drafts nobody approved.
+export function redactPacket(p: Packet): Packet {
+  const actions = p.actions
+    .filter((a) => a.approvedAt !== null)
+    .map((a) => ({ ...a, recipient: maskRecipient(a.recipient) }));
+  let json = JSON.stringify({ ...p, actions });
+  const swaps: [string, string][] = [
+    [p.case.id, "shared"],
+    ...p.actions.map((a, i): [string, string] => [a.id, `action-${i + 1}`]),
+  ];
+  for (const [from, to] of swaps) if (from) json = json.split(from).join(to);
+  return JSON.parse(json) as Packet;
+}
+
 export async function buildPacket(
   db: Database,
   caseId: string,
@@ -61,7 +87,7 @@ export async function buildPacket(
   if (!row || !loaded) return null;
   const run = await latestAudit(db, caseId);
   const audit = auditResult(caseId, loaded.bill, run?.flags ?? [], 0);
-  return {
+  return redactPacket({
     case: toSummary(row, run ? audit.savings : null),
     bill: loaded.bill,
     flags: audit.flags,
@@ -71,5 +97,5 @@ export async function buildPacket(
     events: await listEvents(db, caseId),
     sources: packetSources(audit.flags),
     generatedAt: new Date().toISOString(),
-  };
+  });
 }

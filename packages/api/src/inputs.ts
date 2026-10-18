@@ -5,7 +5,7 @@ import { z } from "zod";
 export const EmptyInput = z.object({});
 
 export const CaseCreateInput = z.object({
-  sample: z.string().optional(), // sample id like "bill-01"
+  sample: z.string().optional(), // sample id like "SB-01"
 });
 
 export const CaseIdInput = z.object({ caseId: z.string() });
