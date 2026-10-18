@@ -9,6 +9,7 @@ export const TIER_LABELS: Record<Tier, string> = {
   rule: "Billing rule",
   published: "Hospital's published price",
   estimate: "Estimate",
+  reported: "You told us",
 };
 
 // Icon plus label, never color alone (section 8.1).
@@ -17,6 +18,7 @@ const TIERS: Record<Tier, { icon: IconName; ink: string; text: string }> = {
   rule: { icon: "book", ink: "#334155", text: "text-slate-ink" },
   published: { icon: "landmark", ink: "#1E3A8A", text: "text-secondary-ink" },
   estimate: { icon: "circleDashed", ink: "#92400E", text: "text-amber-ink" },
+  reported: { icon: "user", ink: "#334155", text: "text-slate-ink" },
 };
 
 // The quiet inline form used under flag titles in the Paper frames.

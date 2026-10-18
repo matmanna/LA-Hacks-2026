@@ -72,6 +72,8 @@ export const line = pgTable(
     bbox: jsonb("bbox").$type<[number, number, number, number] | null>(),
     confidence: real("confidence").notNull(),
     userEdited: boolean("user_edited").notNull().default(false),
+    // Patient says they did not receive this service.
+    notReceived: boolean("not_received").notNull().default(false),
   },
   (t) => [index("line_bill_id_position_idx").on(t.billId, t.position)],
 );
@@ -116,7 +118,7 @@ export const flag = pgTable(
     amountCents: integer("amount_cents").notNull(),
     evidence: jsonb("evidence")
       .$type<{
-        kind: "arithmetic" | "rule" | "quote" | "price_file";
+        kind: "arithmetic" | "rule" | "quote" | "price_file" | "patient";
         detail: string;
         quote?: string;
         sourceUrl?: string;

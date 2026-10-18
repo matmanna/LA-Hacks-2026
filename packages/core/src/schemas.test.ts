@@ -104,12 +104,13 @@ describe("contracts", () => {
     for (const tier of Tier.options) {
       expect(Flag.safeParse({ ...flag, tier }).success).toBe(true);
     }
-    expect(Lever.options).toHaveLength(6);
+    expect(Lever.options).toHaveLength(7);
     expect(Tier.options).toEqual([
       "confirmed",
       "rule",
       "published",
       "estimate",
+      "reported",
     ]);
   });
 

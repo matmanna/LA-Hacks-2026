@@ -57,6 +57,7 @@ export async function saveParsedBill(
           bbox: l.source.bbox,
           confidence: l.confidence,
           userEdited: l.userEdited,
+          notReceived: l.notReceived ?? false,
         })),
       );
     }

@@ -90,6 +90,7 @@ export async function loadBill(
         source: { page: l.sourcePage, bbox: l.bbox ?? null },
         confidence: l.confidence,
         userEdited: l.userEdited,
+        notReceived: l.notReceived,
       })),
       totals: {
         chargesCents: b.chargesCents,
@@ -151,6 +152,7 @@ export async function confirmBillLines(
         bbox: l.source.bbox,
         confidence: l.confidence,
         userEdited: l.userEdited,
+        notReceived: l.notReceived ?? false,
       })),
     );
   }

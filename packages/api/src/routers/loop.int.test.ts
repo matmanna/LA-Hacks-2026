@@ -72,6 +72,38 @@ describe.skipIf(!url)("core loop (integration)", () => {
     expect(after.audit?.flags).toEqual(audit.flags);
   });
 
+  it("keeps a line the patient did not receive and flags it as reported", async () => {
+    const c = await client.case.create({ sample: "SB-01" });
+    const lines = (await client.case.get({ caseId: c.id })).bill?.lines ?? [];
+    // The patient says they never had the blood draw (36415, 4 units).
+    const marked = lines.map((l) =>
+      l.code === "36415" ? { ...l, notReceived: true } : l,
+    );
+    await client.bill.confirmLines({ caseId: c.id, lines: marked });
+    const saved = (await client.case.get({ caseId: c.id })).bill?.lines ?? [];
+    const draw = saved.find((l) => l.code === "36415");
+    expect(draw).toMatchObject({ notReceived: true, userEdited: false });
+    const audit = await client.audit.run({ caseId: c.id });
+    const byLever = Object.fromEntries(
+      audit.flags.map((f) => [f.lever, f.amountCents]),
+    );
+    // Units no longer looks at the blood draw; the full charge is disputed.
+    expect(byLever).toEqual({
+      not_received: 15200,
+      duplicate: 8400,
+      published_price: 175685,
+    });
+    expect(audit.flags.find((f) => f.lever === "not_received")?.tier).toBe(
+      "reported",
+    );
+    expect(audit.savings.confirmedCents).toBe(8400);
+    expect(audit.savings.potentialHighCents).toBe(175685 + 15200);
+    const events = await client.event.list({ caseId: c.id });
+    expect(events.find((e) => e.type === "bill.confirmed")?.summary).toContain(
+      "1 you did not receive",
+    );
+  });
+
   it("marks edited lines and audits what the user confirmed", async () => {
     const c = await client.case.create({ sample: "SB-01" });
     const lines = (await client.case.get({ caseId: c.id })).bill?.lines ?? [];

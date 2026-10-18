@@ -124,6 +124,7 @@ export const billRouter = {
           userEdited: l.userEdited || changed,
         };
       });
+      const missing = lines.filter((l) => l.notReceived).length;
       await context.db.transaction(async (tx) => {
         await confirmBillLines(tx, loaded.bill.id, lines);
         if (input.eob !== undefined) await saveEob(tx, input.caseId, input.eob);
@@ -132,7 +133,7 @@ export const billRouter = {
           tx,
           input.caseId,
           "bill.confirmed",
-          `Confirmed ${lines.length} lines (${edited} edited)`,
+          `Confirmed ${lines.length} lines (${edited} edited${missing ? `, ${missing} you did not receive` : ""})`,
           { actor: "user" },
         );
       });
