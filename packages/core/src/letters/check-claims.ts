@@ -44,9 +44,19 @@ export function checkLetterClaims(
     const flagLines = flag.lineIds
       .map((id) => lineById.get(id))
       .filter((line): line is Line => Boolean(line));
+    const chargedCents = flagLines.reduce((sum, l) => sum + l.chargeCents, 0);
     const allowedCents = new Set<number>([
       flag.amountCents,
       ...flagLines.map((line) => line.chargeCents),
+      // A published-price flag's amount is charge minus the published price,
+      // so the published price itself is a true number the letter may state.
+      ...(flag.lever === "published_price" && chargedCents > flag.amountCents
+        ? [chargedCents - flag.amountCents]
+        : []),
+      // Amounts in the flag's own evidence (e.g. the EOB total) are true too.
+      ...[...flag.evidence.detail.matchAll(MONEY_RE)].map((m) =>
+        moneyToCents(m[0]),
+      ),
     ]);
     const allowedCodes = new Set<string>(
       flagLines

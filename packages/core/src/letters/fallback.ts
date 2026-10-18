@@ -24,13 +24,13 @@ function sentenceFor(flag: Flag, lines: Line[]): string {
 
   switch (flag.lever) {
     case "duplicate":
-      return `The line ${description} (${code}) for ${amount} appears more than once on ${primary?.serviceDate ?? "the same date"}. Please remove the extra charge.`;
+      return `The line ${description} (${code}) for ${amount} is listed more than once on ${primary?.serviceDate ?? "the same date"}. Did I have more than one? If not, please remove the repeat.`;
     case "units":
       return `The line ${description} (${code}) lists ${primary?.units ?? "more"} units. That is more than the billing rule allows. Please check the units.`;
     case "eob_mismatch":
       return `My insurer's explanation of benefits says I owe a different amount. The bill asks for ${amount} more than that. Please correct the balance.`;
     case "published_price":
-      return `The charge for ${description} (${code}) is ${amount}. That is higher than your own published price for this service. Please review it.`;
+      return `The charge for ${description} (${code}) is ${formatMoney(primary?.chargeCents ?? flag.amountCents)}. That is ${amount} higher than your own published price for this service. Please review it.`;
     case "assistance":
       return "Based on your published financial assistance policy, I may qualify. This is an estimate. Please send me the application.";
     case "missing_itemization":
