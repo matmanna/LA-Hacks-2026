@@ -48,6 +48,18 @@ const PATHS = {
     "M3 7l9 6 9-6",
   ],
   clock: ["M12 7v5l3 2", "M21 12a9 9 0 11-18 0 9 9 0 0118 0z"],
+  shield: ["M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"],
+  shieldCheck: [
+    "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z",
+    "M8.5 12l2.5 2.5 4.5-5",
+  ],
+  share: ["M12 3v12M7 8l5-5 5 5", "M5 13v6a2 2 0 002 2h10a2 2 0 002-2v-6"],
+  link: [
+    "M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1",
+    "M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1",
+  ],
+  minus: ["M5 12h14"],
+  plus: ["M12 5v14M5 12h14"],
   hangup: [
     "M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2",
   ],
@@ -57,7 +69,9 @@ export type IconName =
   | keyof typeof PATHS
   | "badgeCheck"
   | "circleDashed"
-  | "monitor";
+  | "monitor"
+  | "lock"
+  | "globe";
 
 type Props = { name: IconName; size?: number; color?: string; stroke?: number };
 
@@ -91,6 +105,21 @@ export function Icon({
         <>
           <Rect x={3} y={4} width={18} height={14} rx={2} {...common} />
           <Path d="M8 21h8M12 18v3" {...common} />
+        </>
+      ) : null}
+      {name === "lock" ? (
+        <>
+          <Rect x={5} y={11} width={14} height={10} rx={2} {...common} />
+          <Path d="M8 11V8a4 4 0 018 0v3" {...common} />
+        </>
+      ) : null}
+      {name === "globe" ? (
+        <>
+          <Circle cx={12} cy={12} r={9} {...common} />
+          <Path
+            d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"
+            {...common}
+          />
         </>
       ) : null}
       {name in PATHS

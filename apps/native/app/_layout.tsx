@@ -27,6 +27,10 @@ function StackLayout() {
         name="case/[id]/join"
         options={{ presentation: "transparentModal", animation: "fade" }}
       />
+      <Stack.Screen
+        name="case/[id]/share"
+        options={{ presentation: "transparentModal", animation: "fade" }}
+      />
     </Stack>
   );
 }
