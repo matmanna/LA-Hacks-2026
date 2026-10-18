@@ -14,6 +14,9 @@ const tryRead = (p: string) => {
   }
 };
 
+const byName = (a: { name: string }, b: { name: string }) =>
+  a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+
 export function buildData() {
   const dir = "data/synthetic/bills";
   const samples = readdirSync(join(ROOT, dir))
@@ -23,10 +26,13 @@ export function buildData() {
       const fx = read(`${dir}/${f}`);
       return { id: fx.id, title: fx.title, bill: fx.bill, eob: fx.eob };
     });
+  // Sorted: readdir order differs by OS (macOS vs CI Linux), and the
+  // generated file must be byte-identical everywhere (data:check).
   const hospitals = readdirSync(join(ROOT, "data/hospitals"), {
     withFileTypes: true,
   })
     .filter((d) => d.isDirectory())
+    .sort(byName)
     .map((d) => {
       const c = tryRead(`data/hospitals/${d.name}/capture.json`);
       return c
@@ -129,6 +135,7 @@ export function buildData() {
     withFileTypes: true,
   })
     .filter((d) => d.isDirectory())
+    .sort(byName)
     .map((d) => {
       const p = tryRead(`data/hospitals/${d.name}/policy.json`);
       const c = tryRead(`data/hospitals/${d.name}/capture.json`);
