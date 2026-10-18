@@ -29,31 +29,49 @@ function set(next: Origin | null) {
   for (const f of subs) f();
 }
 
+// Resolves to null if the promise takes longer than ms (GPS and reverse
+// geocoding can hang on a phone; the screen must never wait forever).
+function within<T>(ms: number, p: Promise<T>): Promise<T | null> {
+  return Promise.race([
+    p,
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), ms)),
+  ]);
+}
+
+// The last place the phone reported, kept so switching back is instant.
+let lastHere: Origin | null = null;
+
 async function locate() {
   try {
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") return set(DOWNTOWN);
     const pos =
-      (await Location.getLastKnownPositionAsync()) ??
-      (await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
-      }));
+      (await within(3000, Location.getLastKnownPositionAsync())) ??
+      (await within(
+        8000,
+        Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+        }),
+      ));
+    if (!pos) return set(lastHere ?? DOWNTOWN);
     const round = (n: number) => Math.round(n * 1000) / 1000;
     const lat = round(pos.coords.latitude);
     const lng = round(pos.coords.longitude);
     let zip: string | null = null;
     try {
-      const [place] = await Location.reverseGeocodeAsync({
-        latitude: lat,
-        longitude: lng,
-      });
+      const [place] =
+        (await within(
+          4000,
+          Location.reverseGeocodeAsync({ latitude: lat, longitude: lng }),
+        )) ?? [];
       zip = place?.postalCode ?? null;
     } catch {
       zip = null;
     }
-    set({ lat, lng, here: true, label: zip ?? "you" });
+    lastHere = { lat, lng, here: true, label: zip ?? "you" };
+    set(lastHere);
   } catch {
-    set(DOWNTOWN);
+    set(lastHere ?? DOWNTOWN);
   }
 }
 
@@ -83,6 +101,8 @@ export const canChangeOrigin = !web;
 export function changeOrigin() {
   if (web) return;
   if (state?.here) return set(DOWNTOWN);
-  set(null);
+  // Back to the phone's location: show the last one at once (the map keeps
+  // its hospitals), then refresh it in the background.
+  if (lastHere) set(lastHere);
   void locate();
 }

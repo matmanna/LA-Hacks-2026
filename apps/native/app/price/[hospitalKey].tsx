@@ -55,6 +55,10 @@ export default function PriceHospital() {
 
   const data = nearby.data;
   const row = data?.rows.find((r) => r.hospitalKey === hospitalKey);
+  if (data && !row) {
+    // Shows in the Expo terminal if a page opens without its hospital.
+    console.warn("price page: no row", { hospitalKey, code });
+  }
   if (!row || !data) {
     return (
       <Screen>

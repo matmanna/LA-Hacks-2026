@@ -1,0 +1,65 @@
+{
+  "hospitalKey": "providence-holy-cross",
+  "ourName": "Providence Holy Cross Medical Center",
+  "ourAddress": "15031 Rinaldi St, Mission Hills, CA 91345",
+  "ccn": "050278",
+  "matchedName": "PROVIDENCE HOLY CROSS MEDICAL CENTER",
+  "matchedAddress": "15031 RINALDI ST, MISSION HILLS, CA 91346",
+  "matchNote": "Matched on state, city, street number and street name; name similarity 1.0 (token overlap with capture.json hospitalName). CMS lists ZIP 91346; our address has 91345.",
+  "overallStars": 4,
+  "overallRaw": "4",
+  "overallFootnote": null,
+  "patientSurveyStars": 3,
+  "patientSurveyRaw": "3",
+  "patientSurveyFootnote": null,
+  "surveysCompleted": 439,
+  "responseRatePct": 15,
+  "surveyPeriod": {
+    "start": "2024-10-01",
+    "end": "2025-09-30"
+  },
+  "candidates": [
+    {
+      "ccn": "050278",
+      "name": "PROVIDENCE HOLY CROSS MEDICAL CENTER",
+      "address": "15031 RINALDI ST, MISSION HILLS, CA 91346",
+      "hospitalType": "Acute Care Hospitals",
+      "nameSimilarity": 1.0
+    }
+  ],
+  "capturedAt": "2026-10-18T17:01:27Z",
+  "sources": [
+    {
+      "dataset": "Hospital General Information",
+      "id": "xubh-q36u",
+      "landingPage": "https://data.cms.gov/provider-data/dataset/xubh-q36u",
+      "modified": "2026-07-22",
+      "released": "2026-08-13",
+      "url": "https://data.cms.gov/provider-data/api/1/datastore/query/xubh-q36u/0?conditions%5B0%5D%5Bproperty%5D=state&conditions%5B0%5D%5Bvalue%5D=CA&conditions%5B0%5D%5Boperator%5D=%3D&conditions%5B1%5D%5Bproperty%5D=citytown&conditions%5B1%5D%5Bvalue%5D=MISSION+HILLS&conditions%5B1%5D%5Boperator%5D=%3D&conditions%5B2%5D%5Bproperty%5D=address&conditions%5B2%5D%5Bvalue%5D=15031+%25&conditions%5B2%5D%5Boperator%5D=like&schema=false",
+      "sha256": "1f535ac4f4a78b11a6398d2111fa83b3183a239b7a74cfd79488292599487ba0",
+      "fetchedAt": "2026-10-18T17:01:27Z",
+      "evidence": "evidence/care-compare-general-information.json",
+      "metastore": {
+        "url": "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/xubh-q36u",
+        "sha256": "31eea397b8bfe8207168cefda23256eb9cb3d5e49158d221eda8465a2d8e5f8c",
+        "evidence": "evidence/care-compare-metastore-xubh-q36u.json"
+      }
+    },
+    {
+      "dataset": "Patient survey (HCAHPS) - Hospital",
+      "id": "dgck-syfz",
+      "landingPage": "https://data.cms.gov/provider-data/dataset/dgck-syfz",
+      "modified": "2026-07-22",
+      "released": "2026-08-13",
+      "url": "https://data.cms.gov/provider-data/api/1/datastore/query/dgck-syfz/0?conditions%5B0%5D%5Bproperty%5D=facility_id&conditions%5B0%5D%5Bvalue%5D=050278&conditions%5B0%5D%5Boperator%5D=%3D&conditions%5B1%5D%5Bproperty%5D=hcahps_measure_id&conditions%5B1%5D%5Bvalue%5D=H_STAR_RATING&conditions%5B1%5D%5Boperator%5D=%3D&schema=false",
+      "sha256": "69b28293f84676eff6b4e67c0292c173e752ba965aa78b83396bae439a65a4b5",
+      "fetchedAt": "2026-10-18T17:01:29Z",
+      "evidence": "evidence/care-compare-hcahps-summary-star.json",
+      "metastore": {
+        "url": "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/dgck-syfz",
+        "sha256": "070a02b7e2fcff0cef07a3ffd5d099f6f27fd3b0050139723cdbc9ecd220b042",
+        "evidence": "evidence/care-compare-metastore-dgck-syfz.json"
+      }
+    }
+  ]
+}

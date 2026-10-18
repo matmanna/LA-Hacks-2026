@@ -11,8 +11,15 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { HospitalPin } from "./hospital-pin";
 import { Money } from "./money";
-import { PIN_STEP_MS, type PriceMapProps } from "./price-map-shared";
+import {
+  LEVEL_COLORS,
+  LEVEL_WORDS,
+  PIN_STEP_MS,
+  type PriceMapProps,
+} from "./price-map-shared";
+import { shortHospitalName } from "./short-name";
 import { T } from "./t";
 
 const PAD_X = 64;
@@ -30,6 +37,7 @@ export function PriceMap({
   here,
   onSelect,
   insets = { top: 56, bottom: 32 },
+  kind = "price",
 }: PriceMapProps) {
   const [size, setSize] = useState({ w: 0, h: 0 });
   const key = rows.map((r) => r.hospitalKey).join();
@@ -81,6 +89,7 @@ export function PriceMap({
               row={r}
               at={place(r)}
               delay={i * PIN_STEP_MS}
+              kind={kind}
               z={rows.length - i}
               onPress={() => onSelect?.(r.hospitalKey)}
             />
@@ -96,11 +105,13 @@ function Pin({
   at,
   delay,
   z,
+  kind,
   onPress,
 }: {
   row: PriceMapProps["rows"][number];
   at: { x: number; y: number };
   delay: number;
+  kind: "price" | "hospital";
   // Lower prices sit on top where tags overlap.
   z: number;
   onPress: () => void;
@@ -121,9 +132,37 @@ function Pin({
       { scale: 0.5 + shown.value * 0.5 },
     ],
   }));
+  if (kind === "hospital") {
+    return (
+      <Animated.View
+        className="absolute items-center"
+        style={[
+          { left: at.x - PIN_W / 2, top: at.y - 15, width: PIN_W, zIndex: z },
+          style,
+        ]}
+        pointerEvents="box-none"
+      >
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`${row.hospitalName}, ${row.distanceMiles.toFixed(1)} miles${row.level ? `, prices mostly ${LEVEL_WORDS[row.level]}` : ""}`}
+          onPress={onPress}
+        >
+          <HospitalPin
+            name={shortHospitalName(row.hospitalName)}
+            level={row.level ?? null}
+          />
+        </Pressable>
+      </Animated.View>
+    );
+  }
   const lowest = row.rank === 1;
-  const highest = !lowest && row.shareOfHighest === 1;
-  const bg = lowest ? "bg-mint" : highest ? "bg-coral-soft" : "bg-white";
+  const level = row.level ?? null;
+  const bg = lowest ? "bg-mint" : level ? LEVEL_COLORS[level].bg : "bg-white";
+  const ink = lowest
+    ? "text-white"
+    : level
+      ? LEVEL_COLORS[level].text
+      : "text-foreground";
   return (
     <Animated.View
       className="absolute items-center justify-end"
@@ -141,7 +180,7 @@ function Pin({
     >
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`${row.hospitalName}, ${row.distanceMiles.toFixed(1)} miles`}
+        accessibilityLabel={`${row.hospitalName}, ${row.distanceMiles.toFixed(1)} miles${row.level ? `, ${LEVEL_WORDS[row.level]}` : ""}`}
         onPress={onPress}
         className="items-center"
       >
@@ -161,7 +200,7 @@ function Pin({
             shadowOffset: { width: 0, height: 2 },
           }}
         >
-          {row.discountedCashCents === null ? (
+          {row.discountedCashCents == null ? (
             <T className="text-muted text-xs">No cash price</T>
           ) : (
             <Money
@@ -169,13 +208,7 @@ function Pin({
               size={14}
               weight="semibold"
               whole
-              className={
-                lowest
-                  ? "text-white"
-                  : highest
-                    ? "text-coral-ink"
-                    : "text-foreground"
-              }
+              className={ink}
               label={row.hospitalName}
             />
           )}

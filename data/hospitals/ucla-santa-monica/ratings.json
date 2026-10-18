@@ -1,0 +1,65 @@
+{
+  "hospitalKey": "ucla-santa-monica",
+  "ourName": "UCLA Santa Monica Medical Center",
+  "ourAddress": "1250 16th Street, Santa Monica, CA 90404",
+  "ccn": "050112",
+  "matchedName": "SANTA MONICA - UCLA MED CTR & ORTHOPAEDIC HOSPITAL",
+  "matchedAddress": "1250 16TH STREET, SANTA MONICA, CA 90404",
+  "matchNote": "Matched on state, city, street number and street name; name similarity 0.71 (token overlap with capture.json hospitalName). CMS lists one CCN for the medical center and its orthopaedic hospital together ('SANTA MONICA - UCLA MED CTR & ORTHOPAEDIC HOSPITAL'). The price file in capture.json covers the same combined hospital (its file name is santa-monica-ucla-medical-center-and-orthopaedic-hospital), so the stars are for both buildings together.",
+  "overallStars": 5,
+  "overallRaw": "5",
+  "overallFootnote": null,
+  "patientSurveyStars": 3,
+  "patientSurveyRaw": "3",
+  "patientSurveyFootnote": null,
+  "surveysCompleted": 639,
+  "responseRatePct": 19,
+  "surveyPeriod": {
+    "start": "2024-10-01",
+    "end": "2025-09-30"
+  },
+  "candidates": [
+    {
+      "ccn": "050112",
+      "name": "SANTA MONICA - UCLA MED CTR & ORTHOPAEDIC HOSPITAL",
+      "address": "1250 16TH STREET, SANTA MONICA, CA 90404",
+      "hospitalType": "Acute Care Hospitals",
+      "nameSimilarity": 0.71
+    }
+  ],
+  "capturedAt": "2026-10-18T17:01:15Z",
+  "sources": [
+    {
+      "dataset": "Hospital General Information",
+      "id": "xubh-q36u",
+      "landingPage": "https://data.cms.gov/provider-data/dataset/xubh-q36u",
+      "modified": "2026-07-22",
+      "released": "2026-08-13",
+      "url": "https://data.cms.gov/provider-data/api/1/datastore/query/xubh-q36u/0?conditions%5B0%5D%5Bproperty%5D=state&conditions%5B0%5D%5Bvalue%5D=CA&conditions%5B0%5D%5Boperator%5D=%3D&conditions%5B1%5D%5Bproperty%5D=citytown&conditions%5B1%5D%5Bvalue%5D=SANTA+MONICA&conditions%5B1%5D%5Boperator%5D=%3D&conditions%5B2%5D%5Bproperty%5D=address&conditions%5B2%5D%5Bvalue%5D=1250+%25&conditions%5B2%5D%5Boperator%5D=like&schema=false",
+      "sha256": "5fc82dbba2d6ae12b30363cdc5071dc65696390d41415c48ff8b5a877913571b",
+      "fetchedAt": "2026-10-18T17:01:15Z",
+      "evidence": "evidence/care-compare-general-information.json",
+      "metastore": {
+        "url": "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/xubh-q36u",
+        "sha256": "31eea397b8bfe8207168cefda23256eb9cb3d5e49158d221eda8465a2d8e5f8c",
+        "evidence": "evidence/care-compare-metastore-xubh-q36u.json"
+      }
+    },
+    {
+      "dataset": "Patient survey (HCAHPS) - Hospital",
+      "id": "dgck-syfz",
+      "landingPage": "https://data.cms.gov/provider-data/dataset/dgck-syfz",
+      "modified": "2026-07-22",
+      "released": "2026-08-13",
+      "url": "https://data.cms.gov/provider-data/api/1/datastore/query/dgck-syfz/0?conditions%5B0%5D%5Bproperty%5D=facility_id&conditions%5B0%5D%5Bvalue%5D=050112&conditions%5B0%5D%5Boperator%5D=%3D&conditions%5B1%5D%5Bproperty%5D=hcahps_measure_id&conditions%5B1%5D%5Bvalue%5D=H_STAR_RATING&conditions%5B1%5D%5Boperator%5D=%3D&schema=false",
+      "sha256": "7e3d86e67d2c93a810667efe24d4a860f052eb075a6ad8506f20ada1c24bcae8",
+      "fetchedAt": "2026-10-18T17:01:16Z",
+      "evidence": "evidence/care-compare-hcahps-summary-star.json",
+      "metastore": {
+        "url": "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/dgck-syfz",
+        "sha256": "070a02b7e2fcff0cef07a3ffd5d099f6f27fd3b0050139723cdbc9ecd220b042",
+        "evidence": "evidence/care-compare-metastore-dgck-syfz.json"
+      }
+    }
+  ]
+}

@@ -12,8 +12,15 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { HospitalPin } from "./hospital-pin";
 import { Money } from "./money";
-import { PIN_STEP_MS, type PriceMapProps } from "./price-map-shared";
+import {
+  LEVEL_COLORS,
+  LEVEL_WORDS,
+  PIN_STEP_MS,
+  type PriceMapProps,
+} from "./price-map-shared";
+import { shortHospitalName } from "./short-name";
 import { T } from "./t";
 
 // Phone only (Price A): the patient's spot pulses while we check, then a
@@ -25,11 +32,25 @@ export function PriceMap({
   here,
   onSelect,
   insets = { top: 56, bottom: 32 },
+  kind = "price",
 }: PriceMapProps) {
   const map = useRef<MapView>(null);
   const reduced = useReducedMotion();
   const [shown, setShown] = useState(0);
   const key = rows.map((r) => r.hospitalKey).join();
+  // One tap can arrive as a marker press, a marker select (iOS) and the
+  // map's marker events; open the hospital once.
+  // Only a hospital on this map counts (the "you are here" dot and iOS's
+  // own marker ids do not), and only the first event of a tap.
+  const lastPick = useRef(0);
+  const pick = (hospitalKey: string | undefined) => {
+    if (!hospitalKey || !onSelect) return;
+    if (!rows.some((r) => r.hospitalKey === hospitalKey)) return;
+    const now = Date.now();
+    if (now - lastPick.current < 800) return;
+    lastPick.current = now;
+    onSelect(hospitalKey);
+  };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: refit when the hospitals or the free area change
   useEffect(() => {
@@ -83,26 +104,60 @@ export function PriceMap({
       }}
       showsPointsOfInterests={false}
       toolbarEnabled={false}
+      onMarkerPress={(e) => pick(e.nativeEvent.id)}
+      onMarkerSelect={(e) => pick(e.nativeEvent.id)}
       accessibilityLabel="Map of nearby hospitals and their published cash prices"
     >
       <Marker
         coordinate={{ latitude: origin.lat, longitude: origin.lng }}
+        identifier="origin"
         title={here ? "You are here" : "Downtown Los Angeles"}
         anchor={{ x: 0.5, y: 0.5 }}
       >
         <Here checking={rows.length === 0} />
       </Marker>
       {rows.slice(0, shown).map((r) => {
+        if (kind === "hospital") {
+          return (
+            <Marker
+              key={r.hospitalKey}
+              coordinate={{ latitude: r.lat, longitude: r.lng }}
+              anchor={{ x: 0.5, y: 0.29 }}
+              identifier={r.hospitalKey}
+              tappable
+              onPress={() => pick(r.hospitalKey)}
+              onSelect={() => pick(r.hospitalKey)}
+              accessibilityLabel={`${r.hospitalName}, ${r.distanceMiles.toFixed(1)} miles${r.level ? `, prices mostly ${LEVEL_WORDS[r.level]}` : ""}`}
+            >
+              <HospitalPin
+                name={shortHospitalName(r.hospitalName)}
+                level={r.level ?? null}
+              />
+            </Marker>
+          );
+        }
         const lowest = r.rank === 1;
-        const highest = !lowest && r.shareOfHighest === 1;
-        const bg = lowest ? "bg-mint" : highest ? "bg-coral-soft" : "bg-white";
+        const level = r.level ?? null;
+        const bg = lowest
+          ? "bg-mint"
+          : level
+            ? LEVEL_COLORS[level].bg
+            : "bg-white";
+        const ink = lowest
+          ? "text-white"
+          : level
+            ? LEVEL_COLORS[level].text
+            : "text-foreground";
         return (
           <Marker
             key={r.hospitalKey}
             coordinate={{ latitude: r.lat, longitude: r.lng }}
             anchor={{ x: 0.5, y: 1 }}
-            onPress={() => onSelect?.(r.hospitalKey)}
-            accessibilityLabel={r.hospitalName}
+            identifier={r.hospitalKey}
+            tappable
+            onPress={() => pick(r.hospitalKey)}
+            onSelect={() => pick(r.hospitalKey)}
+            accessibilityLabel={`${r.hospitalName}${r.level ? `, ${LEVEL_WORDS[r.level]}` : ""}`}
           >
             <View className="items-center">
               {lowest ? (
@@ -121,7 +176,7 @@ export function PriceMap({
                   shadowOffset: { width: 0, height: 2 },
                 }}
               >
-                {r.discountedCashCents === null ? (
+                {r.discountedCashCents == null ? (
                   <T className="text-muted text-xs">No cash price</T>
                 ) : (
                   <Money
@@ -129,13 +184,7 @@ export function PriceMap({
                     size={14}
                     weight="semibold"
                     whole
-                    className={
-                      lowest
-                        ? "text-white"
-                        : highest
-                          ? "text-coral-ink"
-                          : "text-foreground"
-                    }
+                    className={ink}
                     label={r.hospitalName}
                   />
                 )}

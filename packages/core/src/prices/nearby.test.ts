@@ -5,6 +5,7 @@ import {
   type NearbyCapture,
   nearbyPrices,
   summarizeNearby,
+  thirdOf,
 } from "./nearby";
 import { SERVICES } from "./services";
 
@@ -112,6 +113,7 @@ describe("nearbyPrices", () => {
       policy: null,
       rank: 1,
       shareOfHighest: 1,
+      level: null,
       lat: 34.1,
       lng: -118.3,
     });
@@ -190,6 +192,40 @@ describe("nearbyPrices", () => {
 });
 
 const row85025 = () => row("85025", 700);
+
+describe("thirdOf", () => {
+  it("splits ranks into lower, middle and higher thirds", () => {
+    expect([1, 2, 3, 4, 5, 6, 7].map((r) => thirdOf(r, 7))).toEqual([
+      "lower",
+      "lower",
+      "lower",
+      "middle",
+      "higher",
+      "higher",
+      "higher",
+    ]);
+    expect(thirdOf(1, 1)).toBeNull();
+  });
+
+  it("colours the ranked rows", () => {
+    const rows = nearbyPrices({
+      captures: [
+        capture("x", [row("72148", 3_000)]),
+        capture("y", [row("72148", 4_500)]),
+        capture("z", [row("72148", 5_000)]),
+        capture("w", [row("72148", null)]),
+      ],
+      code: "72148",
+      origin,
+    });
+    expect(rows.map((r) => r.level)).toEqual([
+      "lower",
+      "middle",
+      "higher",
+      null,
+    ]);
+  });
+});
 
 describe("summarizeNearby", () => {
   it("gives the lowest, a real middle price and the highest", () => {

@@ -82,4 +82,58 @@ describe("price routes", () => {
       client.price.nearby({ code: "72148", lat: 120, lng: 0 }),
     ).rejects.toThrow();
   });
+
+  it("lists every located hospital nearest first, with counts", async () => {
+    const list = await client.price.hospitals(downtownLA);
+    const located = DATA.captures.filter((c) => c.location).length;
+    expect(list).toHaveLength(located);
+    const miles = list.map((h) => h.distanceMiles);
+    expect(miles).toEqual([...miles].sort((a, b) => a - b));
+    for (const h of list) {
+      expect(h.lowestOn).toBeLessThanOrEqual(h.services);
+      expect(h.belowMiddleOn).toBeLessThanOrEqual(h.services);
+    }
+  });
+
+  it("gives one hospital's prices, each matching its capture", async () => {
+    const d = await client.price.hospital({
+      hospitalKey: "providence-tarzana",
+      ...downtownLA,
+    });
+    const capture = DATA.captures.find(
+      (c) => c.hospitalKey === "providence-tarzana",
+    );
+    expect(d.prices.length).toBe(d.services);
+    for (const p of d.prices) {
+      expect(
+        capture?.prices.some(
+          (c) =>
+            c.code === p.code &&
+            c.discountedCashCents === p.discountedCashCents,
+        ),
+      ).toBe(true);
+    }
+    expect(d.lowestOn).toBe(d.prices.filter((p) => p.lowest).length);
+    expect(d.ratings?.ccn).toBe(capture?.ratings?.ccn);
+    expect(d.ratings?.overallStars).toBe(capture?.ratings?.overallStars);
+    expect(d.ratings?.sources[0]?.sha256).toMatch(/^[0-9a-f]{64}$/);
+    await expect(
+      client.price.hospital({ hospitalKey: "nope", ...downtownLA }),
+    ).rejects.toThrow();
+  });
+
+  it("gives labs' online prices for blood tests, each from its capture", async () => {
+    for (const code of ["85025", "80053"]) {
+      const rows = await client.price.labs({ code });
+      expect(rows.length).toBeGreaterThan(0);
+      for (const r of rows) {
+        const lab = DATA.labs.find((l) => l.labKey === r.labKey);
+        const p = lab?.prices.find((x) => x.code === code);
+        expect(p?.cashCents).toBe(r.cashCents);
+        expect(p?.sourceUrl).toBe(r.sourceUrl);
+        expect(r.sourceSha256).toMatch(/^[0-9a-f]{64}$/);
+      }
+    }
+    expect(await client.price.labs({ code: "72148" })).toEqual([]);
+  });
 });

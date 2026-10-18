@@ -1,0 +1,150 @@
+{
+  "labKey": "quest-health",
+  "labName": "Quest Diagnostics (questhealth.com)",
+  "capturedAt": "2026-10-18T16:32:25Z",
+  "capturedBy": "scripts/labs/capture_lab_prices.py (plain HTTPS GETs; no Browser Use, login or checkout)",
+  "sources": [
+    {
+      "kind": "product_page",
+      "url": "https://www.questhealth.com/product/complete-blood-count-cbc/6399M.html",
+      "sha256": "16524fa4f65ea22a892d461c35cdf65353e1218d8f46a89def970a23189f65b9",
+      "bytes": 405930,
+      "evidenceFile": "evidence/cbc-product-page.html",
+      "fetchedAt": "2026-10-18T16:32:30Z",
+      "httpStatus": 200,
+      "contentType": "text/html;charset=UTF-8",
+      "redacted": {
+        "note": "sha256 and bytes are of the original response. The committed copy replaces public client-side key values (Stripe publishable key, Algolia search key) with [redacted].",
+        "evidenceSha256": "694060c8e9b0f6083f74662eb11c9b8d32ef2c858017639ffdc50eb9b37eb85b",
+        "evidenceBytes": 405841
+      }
+    },
+    {
+      "kind": "product_page",
+      "url": "https://www.questhealth.com/product/comprehensive-metabolic-panel-cmp/10231M.html",
+      "sha256": "9e3766cc72e6b9b98751cd0caba2311ad3ae26b3d85c47a5485b85ef19c86eed",
+      "bytes": 422262,
+      "evidenceFile": "evidence/cmp-product-page.html",
+      "fetchedAt": "2026-10-18T16:32:31Z",
+      "httpStatus": 200,
+      "contentType": "text/html;charset=UTF-8",
+      "redacted": {
+        "note": "sha256 and bytes are of the original response. The committed copy replaces public client-side key values (Stripe publishable key, Algolia search key) with [redacted].",
+        "evidenceSha256": "2f5ee9be4d5f7a87e9997bbab18c71080d3151d753e6fd7c42653c5d8048c5f1",
+        "evidenceBytes": 422173
+      }
+    }
+  ],
+  "prices": [
+    {
+      "code": "85025",
+      "test": "Blood count (CBC with differential)",
+      "productName": "Complete Blood Count (CBC) Test",
+      "productId": "6399M",
+      "cashCents": 3500,
+      "cashCentsBasis": "Listed test price plus the Physician Service Fee shown under it, for one test in one order, before tax.",
+      "listedPriceCents": 2900,
+      "addedFees": [
+        {
+          "name": "Physician Service Fee",
+          "cents": 600,
+          "quote": "$6.00 Physician Service Fee"
+        }
+      ],
+      "includes": "questhealth.com is designed for purchasing tests directly—no doctor’s visit is needed and physician oversight of testing is included with your order from questhealth.com.",
+      "includesSourceUrl": "https://www.questhealth.com/product/complete-blood-count-cbc/6399M.html",
+      "sourceUrl": "https://www.questhealth.com/product/complete-blood-count-cbc/6399M.html",
+      "quote": "$29.00 + $6.00 Physician Service Fee",
+      "sale": null,
+      "codeEvidence": {
+        "verified": false,
+        "kind": "page_description",
+        "url": "https://www.questhealth.com/product/complete-blood-count-cbc/6399M.html",
+        "quote": "This CBC includes a white blood cell differential, which measures the different types of white blood cells in your blood.",
+        "note": "questhealth.com does not print CPT codes. Matched from the page's own description."
+      },
+      "otherQuotes": [
+        {
+          "quote": "The PWN Service Fee is collected on behalf of PWNHealth and its affiliated professional entities for independent physician oversight of lab testing including ordering testing if appropriate, as well as providing physician follow-up services.",
+          "sourceUrl": "https://www.questhealth.com/product/complete-blood-count-cbc/6399M.html",
+          "note": "Checkout text embedded in the product page (pwnServiceFee)."
+        },
+        {
+          "quote": "Sample collection: This test requires sample collection at a Quest Diagnostics location or through Quest Mobile® where available, a convenient option for in-home sample collection*.",
+          "sourceUrl": "https://www.questhealth.com/product/complete-blood-count-cbc/6399M.html"
+        },
+        {
+          "quote": "Collection is not available in AZ, HI, or PR.",
+          "sourceUrl": "https://www.questhealth.com/product/complete-blood-count-cbc/6399M.html"
+        },
+        {
+          "quote": "If in-home service is available in your area, purchase for an additional $79 fee.",
+          "sourceUrl": "https://www.questhealth.com/product/complete-blood-count-cbc/6399M.html"
+        },
+        {
+          "quote": "Tests purchased on questhealth.com are intended for individuals paying directly—we do not bill insurance, and purchases cannot be submitted for insurance reimbursement.",
+          "sourceUrl": "https://www.questhealth.com/product/complete-blood-count-cbc/6399M.html"
+        }
+      ]
+    },
+    {
+      "code": "80053",
+      "test": "Metabolic panel (comprehensive metabolic panel, CMP)",
+      "productName": "Comprehensive Metabolic Panel (CMP) Test",
+      "productId": "10231M",
+      "cashCents": 5500,
+      "cashCentsBasis": "Listed test price plus the Physician Service Fee shown under it, for one test in one order, before tax.",
+      "listedPriceCents": 4900,
+      "addedFees": [
+        {
+          "name": "Physician Service Fee",
+          "cents": 600,
+          "quote": "$6.00 Physician Service Fee"
+        }
+      ],
+      "includes": "questhealth.com is designed for purchasing tests directly—no doctor’s visit is needed and physician oversight of testing is included with your order from questhealth.com.",
+      "includesSourceUrl": "https://www.questhealth.com/product/comprehensive-metabolic-panel-cmp/10231M.html",
+      "sourceUrl": "https://www.questhealth.com/product/comprehensive-metabolic-panel-cmp/10231M.html",
+      "quote": "$49.00 + $6.00 Physician Service Fee",
+      "sale": null,
+      "codeEvidence": {
+        "verified": false,
+        "kind": "page_description",
+        "url": "https://www.questhealth.com/product/comprehensive-metabolic-panel-cmp/10231M.html",
+        "quote": "The comprehensive metabolic panel (CMP) measures 14 components of the blood.",
+        "note": "questhealth.com does not print CPT codes. Matched from the page's own description."
+      },
+      "otherQuotes": [
+        {
+          "quote": "The PWN Service Fee is collected on behalf of PWNHealth and its affiliated professional entities for independent physician oversight of lab testing including ordering testing if appropriate, as well as providing physician follow-up services.",
+          "sourceUrl": "https://www.questhealth.com/product/comprehensive-metabolic-panel-cmp/10231M.html",
+          "note": "Checkout text embedded in the product page (pwnServiceFee)."
+        },
+        {
+          "quote": "Sample collection: This test requires sample collection at a Quest Diagnostics location or through Quest Mobile® where available, a convenient option for in-home sample collection*.",
+          "sourceUrl": "https://www.questhealth.com/product/comprehensive-metabolic-panel-cmp/10231M.html"
+        },
+        {
+          "quote": "Collection is not available in AZ, HI, or PR.",
+          "sourceUrl": "https://www.questhealth.com/product/comprehensive-metabolic-panel-cmp/10231M.html"
+        },
+        {
+          "quote": "If in-home service is available in your area, purchase for an additional $79 fee.",
+          "sourceUrl": "https://www.questhealth.com/product/comprehensive-metabolic-panel-cmp/10231M.html"
+        },
+        {
+          "quote": "Tests purchased on questhealth.com are intended for individuals paying directly—we do not bill insurance, and purchases cannot be submitted for insurance reimbursement.",
+          "sourceUrl": "https://www.questhealth.com/product/comprehensive-metabolic-panel-cmp/10231M.html"
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "Product pages were found in https://www.questhealth.com/sitemap_0.xml. Prices are in each page's server-rendered HTML (price-formatted and pwn-fee-price), so no price JSON was needed. robots.txt disallows /on/demandware.store paths; none were fetched.",
+    "Each page shows the test price plus a $6.00 Physician Service Fee. cashCents adds the two for one test in one order. The pages do not say whether the fee is charged once per order or once per test, so ordering both tests together may cost less than the two cashCents added together (not checked; no cart or checkout calls were made). Tax was not checked.",
+    "CPT codes are not printed on questhealth.com. Quest's test directory (testdirectory.questdiagnostics.com) loads test details from an API that needs app credentials, so it was not used. The codes here are matched from each page's own description and are marked codeEvidence.verified = false.",
+    "The pages do not list a separate fee for the draw at a Quest location. In-home collection costs extra where it is offered (see otherQuotes).",
+    "The committed evidence copies of the product pages redact Quest's Stripe publishable key, a public checkout key embedded in every page.",
+    "These are national online prices for ordering the test directly, with the draw at a Quest location. They are not tied to one location and are not hospital prices."
+  ]
+}

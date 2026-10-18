@@ -164,6 +164,7 @@ export const NearbyPrice = z.object({
     .nullable(),
   rank: z.number().int().nullable(),
   shareOfHighest: z.number().nullable(),
+  level: z.enum(["lower", "middle", "higher"]).nullable(),
   lat: z.number(),
   lng: z.number(),
 });
@@ -177,4 +178,72 @@ export const NearbyPrices = z.object({
     highCents: z.number().int().nullable(),
     middleShareOfHighest: z.number().nullable(),
   }),
+});
+
+// A hospital across every service: counts of lowest and below-middle prices
+// near the patient (core prices/hospitals). Never an average.
+export const HospitalSummary = z.object({
+  hospitalKey: z.string(),
+  hospitalName: z.string(),
+  address: z.string(),
+  distanceMiles: z.number(),
+  lat: z.number(),
+  lng: z.number(),
+  services: z.number().int(),
+  lowestOn: z.number().int(),
+  belowMiddleOn: z.number().int(),
+  level: z.enum(["lower", "middle", "higher"]).nullable(),
+});
+export const HospitalDetail = HospitalSummary.extend({
+  prices: z.array(
+    z.object({
+      code: z.string(),
+      name: z.string(),
+      short: z.string(),
+      discountedCashCents: z.number().int().nullable(),
+      grossChargeCents: z.number().int().nullable(),
+      rank: z.number().int().nullable(),
+      priced: z.number().int(),
+      lowest: z.boolean(),
+      belowMiddle: z.boolean(),
+    }),
+  ),
+  capturedAt: z.string(),
+  sourceUrl: z.string(),
+  sourceSha256: z.string().nullable(),
+  pageUrl: z.string().nullable(),
+  fileUpdatedOn: z.string().nullable(),
+  policy: NearbyPrice.shape.policy,
+  ratings: z
+    .object({
+      ccn: z.string(),
+      overallStars: z.number().int().min(1).max(5).nullable(),
+      patientSurveyStars: z.number().int().min(1).max(5).nullable(),
+      surveysCompleted: z.number().int().nullable(),
+      surveyPeriodEnd: z.string().nullable(),
+      capturedAt: z.string(),
+      sources: z.array(
+        z.object({
+          dataset: z.string(),
+          landingPage: z.string().nullable(),
+          url: z.string(),
+          modified: z.string().nullable(),
+          sha256: z.string().nullable(),
+        }),
+      ),
+    })
+    .nullable(),
+});
+
+// A lab's own online self-pay price for a service (core prices/labs).
+export const LabPrice = z.object({
+  labKey: z.string(),
+  labName: z.string(),
+  productName: z.string(),
+  cashCents: z.number().int(),
+  detail: z.string().nullable(),
+  quote: z.string(),
+  sourceUrl: z.string(),
+  sourceSha256: z.string().nullable(),
+  capturedAt: z.string(),
 });

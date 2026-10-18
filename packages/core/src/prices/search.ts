@@ -33,3 +33,16 @@ export function searchServices(
   });
   return scored.sort((a, b) => a.score - b.score).map((x) => x.s);
 }
+
+// Finds hospitals by name: every typed word must start a word of the name.
+export function searchHospitals<T extends { hospitalName: string }>(
+  query: string,
+  hospitals: readonly T[],
+): T[] {
+  const typed = words(query);
+  if (typed.length === 0) return [...hospitals];
+  return hospitals.filter((h) => {
+    const name = words(h.hospitalName);
+    return typed.every((t) => name.some((w) => w.startsWith(t)));
+  });
+}

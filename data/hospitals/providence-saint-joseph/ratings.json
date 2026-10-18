@@ -1,0 +1,65 @@
+{
+  "hospitalKey": "providence-saint-joseph",
+  "ourName": "Providence Saint Joseph Medical Center",
+  "ourAddress": "501 S Buena Vista, Burbank, CA 91505",
+  "ccn": "050235",
+  "matchedName": "PROVIDENCE SAINT JOSEPH MEDICAL CTR",
+  "matchedAddress": "501 SOUTH BUENA VISTA STREET, BURBANK, CA 91505",
+  "matchNote": "Matched on state, city, street number and street name; name similarity 1.0 (token overlap with capture.json hospitalName).",
+  "overallStars": 3,
+  "overallRaw": "3",
+  "overallFootnote": null,
+  "patientSurveyStars": 3,
+  "patientSurveyRaw": "3",
+  "patientSurveyFootnote": null,
+  "surveysCompleted": 360,
+  "responseRatePct": 17,
+  "surveyPeriod": {
+    "start": "2024-10-01",
+    "end": "2025-09-30"
+  },
+  "candidates": [
+    {
+      "ccn": "050235",
+      "name": "PROVIDENCE SAINT JOSEPH MEDICAL CTR",
+      "address": "501 SOUTH BUENA VISTA STREET, BURBANK, CA 91505",
+      "hospitalType": "Acute Care Hospitals",
+      "nameSimilarity": 1.0
+    }
+  ],
+  "capturedAt": "2026-10-18T17:01:21Z",
+  "sources": [
+    {
+      "dataset": "Hospital General Information",
+      "id": "xubh-q36u",
+      "landingPage": "https://data.cms.gov/provider-data/dataset/xubh-q36u",
+      "modified": "2026-07-22",
+      "released": "2026-08-13",
+      "url": "https://data.cms.gov/provider-data/api/1/datastore/query/xubh-q36u/0?conditions%5B0%5D%5Bproperty%5D=state&conditions%5B0%5D%5Bvalue%5D=CA&conditions%5B0%5D%5Boperator%5D=%3D&conditions%5B1%5D%5Bproperty%5D=citytown&conditions%5B1%5D%5Bvalue%5D=BURBANK&conditions%5B1%5D%5Boperator%5D=%3D&conditions%5B2%5D%5Bproperty%5D=address&conditions%5B2%5D%5Bvalue%5D=501+%25&conditions%5B2%5D%5Boperator%5D=like&schema=false",
+      "sha256": "f98fe88c8a98a444dacf519c5820880238c5bae07bc409115c722c246eec6dcc",
+      "fetchedAt": "2026-10-18T17:01:21Z",
+      "evidence": "evidence/care-compare-general-information.json",
+      "metastore": {
+        "url": "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/xubh-q36u",
+        "sha256": "31eea397b8bfe8207168cefda23256eb9cb3d5e49158d221eda8465a2d8e5f8c",
+        "evidence": "evidence/care-compare-metastore-xubh-q36u.json"
+      }
+    },
+    {
+      "dataset": "Patient survey (HCAHPS) - Hospital",
+      "id": "dgck-syfz",
+      "landingPage": "https://data.cms.gov/provider-data/dataset/dgck-syfz",
+      "modified": "2026-07-22",
+      "released": "2026-08-13",
+      "url": "https://data.cms.gov/provider-data/api/1/datastore/query/dgck-syfz/0?conditions%5B0%5D%5Bproperty%5D=facility_id&conditions%5B0%5D%5Bvalue%5D=050235&conditions%5B0%5D%5Boperator%5D=%3D&conditions%5B1%5D%5Bproperty%5D=hcahps_measure_id&conditions%5B1%5D%5Bvalue%5D=H_STAR_RATING&conditions%5B1%5D%5Boperator%5D=%3D&schema=false",
+      "sha256": "1a71d3d94407667b30d0d2ca8acbc56416bbf8b9902a0484927529a286097101",
+      "fetchedAt": "2026-10-18T17:01:22Z",
+      "evidence": "evidence/care-compare-hcahps-summary-star.json",
+      "metastore": {
+        "url": "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/dgck-syfz",
+        "sha256": "070a02b7e2fcff0cef07a3ffd5d099f6f27fd3b0050139723cdbc9ecd220b042",
+        "evidence": "evidence/care-compare-metastore-dgck-syfz.json"
+      }
+    }
+  ]
+}

@@ -4,6 +4,12 @@ import Svg, { Circle, Path, Rect } from "react-native-svg";
 const PATHS = {
   back: ["M15 6l-6 6 6 6"],
   close: ["M6 6l12 12M18 6L6 18"],
+  bolt: ["M13 2L4 14h7l-1 8 9-12h-7z"],
+  boltOff: [
+    "M13 2L9.5 7M8 9.5L4 14h7l-1 8 4.5-6M16 12h3l-2.5 3.3",
+    "M3 3l18 18",
+  ],
+  lock: ["M6 11h12v10H6z", "M8 11V7a4 4 0 018 0v4"],
   chevron: ["M9 6l6 6-6 6"],
   check: ["M5 12l5 5L19 7"],
   pencil: ["M12 20h9", "M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"],
@@ -26,6 +32,8 @@ const PATHS = {
   user: ["M4 21a8 8 0 0116 0"],
   card: ["M3 10h18", "M6 15h4"],
   search: ["M20 20l-4-4"],
+  navigation: ["M3 11l18-8-8 18-2-8z"],
+  flask: ["M9 3h6M10 3v6l-5 9a2 2 0 002 3h10a2 2 0 002-3l-5-9V3", "M7 15h10"],
   mapPin: [
     "M20 10c0 5-5.5 10.2-7.4 11.8a1 1 0 01-1.2 0C9.5 20.2 4 15 4 10a8 8 0 0116 0",
   ],

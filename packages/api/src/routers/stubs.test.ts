@@ -46,6 +46,9 @@ describe("procedure stubs", () => {
         "payment.bulkCheckout",
         "price.services",
         "price.nearby",
+        "price.hospitals",
+        "price.hospital",
+        "price.labs",
       ].sort(),
     );
   });
