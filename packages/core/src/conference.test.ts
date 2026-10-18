@@ -3,11 +3,12 @@ import { describe, expect, it } from "vitest";
 import { transcriptText } from "./call";
 import {
   buildConferenceIntroduction,
-  CONFERENCE_INTRODUCTION_TEXT,
+  CONFERENCE_OPENING,
   type ConferenceStatus,
   canReportConferenceStatus,
   isConferenceScript,
   isPatientFirstConferenceScript,
+  PATIENT_CUE,
   patientConnectionForScript,
   renderConferenceScript,
   validConferenceDestinations,
@@ -54,7 +55,15 @@ describe("conference approval", () => {
     expect(script).not.toMatch(
       /press 1|keypad|hang up when|stays connected and silent/i,
     );
-    expect(CONFERENCE_INTRODUCTION_TEXT).toContain("answer them directly");
+    // Billing hears the request before verification; the patient gets one cue.
+    expect(script).toContain(CONFERENCE_OPENING);
+    expect(script).toContain(
+      "account ending in 1234 at Example. Please review.",
+    );
+    expect(script).toContain(PATIENT_CUE);
+    expect(script).toContain("does not argue charges");
+    expect(buildConferenceIntroduction(vars)).toContain("itemized bill");
+    expect(buildConferenceIntroduction(vars)).toContain("answer them yourself");
     expect(isPatientFirstConferenceScript(script)).toBe(true);
     expect(isPatientFirstConferenceScript("Patient connection approval:")).toBe(
       false,
@@ -104,6 +113,9 @@ describe("conference approval", () => {
         summary: "The call ended.",
         referenceNumber: null,
         billingResponse: "Yes",
+        holdAgreed: null,
+        itemizedPromised: null,
+        recordsProcess: null,
         nextStep: null,
         followUpDate: null,
         durationSecs: 40,

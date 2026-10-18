@@ -90,6 +90,48 @@ describe("demo advocate configuration", () => {
     ]);
   });
 
+  it("adds the hold, itemized and records fields next to existing data fields", () => {
+    const withFields = {
+      ...current,
+      platform_settings: {
+        data_collection: { reference_number: { type: "string" } },
+      },
+    };
+    const patch = buildDemoAdvocatePatch(withFields, ids);
+    expect(Object.keys(patch.platform_settings.data_collection)).toEqual([
+      "reference_number",
+      "hold_agreed",
+      "itemized_promised",
+      "records_process",
+    ]);
+    const updated = {
+      ...withFields,
+      ...patch,
+      conversation_config: {
+        ...current.conversation_config,
+        ...patch.conversation_config,
+        agent: {
+          ...current.conversation_config.agent,
+          ...patch.conversation_config.agent,
+          prompt: {
+            ...current.conversation_config.agent.prompt,
+            ...patch.conversation_config.agent.prompt,
+          },
+        },
+      },
+    };
+    expect(() => verifyDemoAdvocate(withFields, updated, ids)).not.toThrow();
+    const { reference_number: _, ...dropped } =
+      patch.platform_settings.data_collection;
+    expect(() =>
+      verifyDemoAdvocate(
+        withFields,
+        { ...updated, platform_settings: { data_collection: dropped } },
+        ids,
+      ),
+    ).toThrow("Existing data fields were removed");
+  });
+
   it("enables completion once without dropping existing events or conversation settings", () => {
     const alreadyEnabled = structuredClone(current);
     alreadyEnabled.conversation_config.conversation.client_events.push(

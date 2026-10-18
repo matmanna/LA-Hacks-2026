@@ -13,6 +13,12 @@ function field(conv: Conversation, key: string): string | null {
   return null;
 }
 
+// Yes/no fields come back as booleans or as "true"/"false" text.
+function yesNo(conv: Conversation, key: string): boolean | null {
+  const value = field(conv, key)?.toLowerCase();
+  return value === "true" ? true : value === "false" ? false : null;
+}
+
 export function buildOutcome(conv: Conversation): CallOutcome {
   const transcript = (conv.transcript ?? []).flatMap((t) =>
     t.message
@@ -40,6 +46,9 @@ export function buildOutcome(conv: Conversation): CallOutcome {
     billingResponse: field(conv, "billing_response"),
     nextStep: field(conv, "next_step"),
     followUpDate: field(conv, "follow_up_date"),
+    holdAgreed: yesNo(conv, "hold_agreed"),
+    itemizedPromised: yesNo(conv, "itemized_promised"),
+    recordsProcess: field(conv, "records_process"),
     durationSecs,
     transcript,
     recorded: true,

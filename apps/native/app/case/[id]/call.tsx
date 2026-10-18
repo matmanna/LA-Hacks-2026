@@ -1,9 +1,9 @@
+import { agreedText } from "@betterbill/core";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { cn } from "heroui-native";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
 import { Button, Icon, type IconName, Row, Screen, T } from "@/components/bb";
 import { type CallStage, useCallFlow } from "@/lib/use-call-flow";
 
@@ -148,7 +148,7 @@ export default function Call() {
             ? copy.sub
             : conference
               ? "You and billing are talking. Your advocate is listening."
-              : `Your advocate is asking about the ${flags} item${flags === 1 ? "" : "s"}.`}
+              : "Your advocate is asking for a hold, your itemized bill, and how to get your records."}
         </T>
       </View>
 
@@ -223,6 +223,24 @@ export default function Call() {
           {flow.outcome?.referenceNumber ? (
             <Row label="Reference" value={flow.outcome.referenceNumber} />
           ) : null}
+          {(
+            [
+              [
+                "Account hold",
+                agreedText(flow.outcome?.holdAgreed, "Billing agreed"),
+              ],
+              [
+                "Itemized bill",
+                agreedText(
+                  flow.outcome?.itemizedPromised,
+                  "Billing will send it",
+                ),
+              ],
+              ["Your records", flow.outcome?.recordsProcess ?? undefined],
+            ] as [string, string | undefined][]
+          ).map(([label, value]) =>
+            value ? <Row key={label} label={label} value={value} /> : null,
+          )}
           {scripted ? (
             <Row label="Itemized bill" value="Sent to your email" />
           ) : null}

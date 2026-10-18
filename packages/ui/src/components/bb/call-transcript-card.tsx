@@ -12,6 +12,9 @@ type CallTranscriptCardProps = {
     referenceNumber?: string;
     nextStep?: string;
     followUpBy?: string;
+    hold?: string;
+    itemized?: string;
+    records?: string;
   };
   className?: string;
 };
@@ -40,6 +43,9 @@ export function CallTranscriptCard({
   const rows: [string, string | undefined][] = outcome
     ? [
         ["Reference number", outcome.referenceNumber],
+        ["Account hold", outcome.hold],
+        ["Itemized bill", outcome.itemized],
+        ["How to get your records", outcome.records],
         ["Next step", outcome.nextStep],
         ["Follow up by", outcome.followUpBy],
       ]

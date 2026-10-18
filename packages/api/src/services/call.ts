@@ -26,7 +26,13 @@ import { ORPCError } from "@orpc/server";
 import { and, eq, gt, isNull, notLike } from "drizzle-orm";
 import { SAMPLES } from "../data";
 import { RECORDED_CALL } from "../recorded-call";
-import { addEvent, getCaseRow, listEvents, setStatus } from "../repo/cases";
+import {
+  addEvent,
+  getCaseRow,
+  listActions,
+  listEvents,
+  setStatus,
+} from "../repo/cases";
 import {
   checkTransition,
   getAction,
@@ -268,6 +274,20 @@ async function saveOutcome(
   });
 }
 
+// call.status saves the outcome, but only runs while a screen polls it.
+// Opening the case settles a call nobody watched to the end.
+export async function settleCalls(db: Database, caseId: string) {
+  const pending = (await listActions(db, caseId)).filter(
+    (a) => a.kind === "call" && a.approvedAt && !a.outcome,
+  );
+  await Promise.all(
+    // A provider error leaves the call to the next poll or visit.
+    pending.map((a) =>
+      callStatus(db, { callId: `call-${a.id}` }).catch(() => null),
+    ),
+  );
+}
+
 export async function callStatus(
   db: Database,
   input: { callId: string },
@@ -318,6 +338,9 @@ export async function callStatus(
             billingResponse: null,
             nextStep: null,
             followUpDate: null,
+            holdAgreed: null,
+            itemizedPromised: null,
+            recordsProcess: null,
             durationSecs: null,
             transcript: [],
             recorded: false,

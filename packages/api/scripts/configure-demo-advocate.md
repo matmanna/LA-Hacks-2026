@@ -28,6 +28,14 @@ For the role-play, staff asks for the patient, the advocate yields, and both hum
 
 Rehearse a slow account lookup, the patient answering verification, a representative correcting a detail, and a short hold before discussing a charge. Expect short answers, no interruption of the human exchange, and no recitation of every code or amount. This is a conversation exercise rather than a fixed script.
 
+## Records request
+
+The call asks billing for three things: a hold on the account while the patient reviews it, the itemized bill by email, and how the patient can get the medical records for the named services. It does not argue charges; the letter does that. When staff need to verify the patient, the advocate says "They need to verify you. Go ahead." once, then stays quiet.
+
+The patch also adds three data fields, `hold_agreed`, `itemized_promised` and `records_process`, next to the agent's existing ones. `call-outcome.ts` reads them into the call result. Data fields are agent settings in ElevenLabs, so they may also show up on the original branch. They only add analysis fields.
+
+This script does not manage the original branch that direct calls use. Its prompt says "The patient found items that look wrong: {{disputed_items}}. {{ask}}", which no longer matches the approved direct script. Change that line to "I am calling about account ending in {{account_last4}} at {{hospital_name}}. The patient is not on this call. {{ask}}", and change its goal from reviewing the bill to asking for the hold, the itemized bill and how to get the records.
+
 Checks, from `packages/api`:
 
 ```powershell
