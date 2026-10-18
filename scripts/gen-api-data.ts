@@ -27,9 +27,14 @@ export function buildData() {
     withFileTypes: true,
   })
     .filter((d) => d.isDirectory())
-    .map((d) => tryRead(`data/hospitals/${d.name}/capture.json`))
+    .map((d) => {
+      const c = tryRead(`data/hospitals/${d.name}/capture.json`);
+      return c
+        ? { c, policy: tryRead(`data/hospitals/${d.name}/policy.json`) }
+        : null;
+    })
     .filter(Boolean)
-    .map((c) => ({
+    .map(({ c, policy }) => ({
       hospitalKey: c.hospitalKey,
       hospitalName: c.hospitalName,
       capturedAt: c.capturedAt,
@@ -42,12 +47,27 @@ export function buildData() {
           }
         : null,
       sources: c.sources.map(
-        (s: { kind: string; url: string; sha256?: string }) => ({
+        (s: {
+          kind: string;
+          url: string;
+          sha256?: string;
+          fileLastUpdatedOn?: string;
+        }) => ({
           kind: s.kind,
           url: s.url,
           sha256: s.sha256 ?? null,
+          fileLastUpdatedOn: s.fileLastUpdatedOn ?? null,
         }),
       ),
+      // The hospital's assistance policy when one was captured beside it.
+      policy: policy?.thresholds
+        ? {
+            policyUrl: policy.policyUrl,
+            capturedAt: policy.capturedAt,
+            freeCareMaxFplPct: policy.thresholds.freeCareMaxFplPct ?? null,
+            discountMaxFplPct: policy.thresholds.discountMaxFplPct ?? null,
+          }
+        : null,
       prices: c.prices.map(
         (p: {
           code: string;

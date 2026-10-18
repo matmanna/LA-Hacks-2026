@@ -6406,19 +6406,28 @@ export const DATA = {
         {
           "kind": "cms_hpt_txt",
           "url": "https://www.uclahealth.org/cms-hpt.txt",
-          "sha256": "77b64648a50b3722656bbb5ac5cfec2ba3babd23dfd2e846ee8fd1302a8a6c56"
+          "sha256": "77b64648a50b3722656bbb5ac5cfec2ba3babd23dfd2e846ee8fd1302a8a6c56",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "price_page",
           "url": "https://www.uclahealth.org/patient-resources/billing-insurance/price-transparency/machine-readable-files",
-          "sha256": "3ec3e18f38ec1dd2ca6026944e0a64baf2ebbf57788e6c0b78b2e5d200efec4f"
+          "sha256": "3ec3e18f38ec1dd2ca6026944e0a64baf2ebbf57788e6c0b78b2e5d200efec4f",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "mrf",
           "url": "https://www.uclahealth.org/sites/default/files/cms-hpt/956006143_ronald-reagan-ucla-medical-center_standardcharges.json",
-          "sha256": "97215d1ec3a3c1ec872d65a6f36a744ba14b7628c311471044e5280b9251c5a6"
+          "sha256": "97215d1ec3a3c1ec872d65a6f36a744ba14b7628c311471044e5280b9251c5a6",
+          "fileLastUpdatedOn": "2026-03-29"
         }
       ],
+      "policy": {
+        "policyUrl": "https://www.uclahealth.org/patient-resources/billing-insurance/financial-assistance-program/hospital-services-help-paying-your-bill",
+        "capturedAt": "2026-10-18T09:42:53.796Z",
+        "freeCareMaxFplPct": 400,
+        "discountMaxFplPct": 450
+      },
       "prices": [
         {
           "code": "99284",
@@ -6483,19 +6492,23 @@ export const DATA = {
         {
           "kind": "cms_hpt_txt",
           "url": "https://www.uclahealth.org/cms-hpt.txt",
-          "sha256": "77b64648a50b3722656bbb5ac5cfec2ba3babd23dfd2e846ee8fd1302a8a6c56"
+          "sha256": "77b64648a50b3722656bbb5ac5cfec2ba3babd23dfd2e846ee8fd1302a8a6c56",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "price_page",
           "url": "https://www.uclahealth.org/patient-resources/billing-insurance/price-transparency/machine-readable-files",
-          "sha256": "eea9a75ee5b4f3cfe7f8184c4e3793a3b6bfe16fa0749c54e6fd3e3991f107f2"
+          "sha256": "eea9a75ee5b4f3cfe7f8184c4e3793a3b6bfe16fa0749c54e6fd3e3991f107f2",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "mrf",
           "url": "https://www.uclahealth.org/sites/default/files/cms-hpt/954541687_santa-monica-ucla-medical-center-and-orthopaedic-hospital_standardcharges.json",
-          "sha256": "5abda4012a4104edee6666e05f128b95ccac5de5769b3743da45ad4302cc12ba"
+          "sha256": "5abda4012a4104edee6666e05f128b95ccac5de5769b3743da45ad4302cc12ba",
+          "fileLastUpdatedOn": "2026-03-29"
         }
       ],
+      "policy": null,
       "prices": [
         {
           "code": "72148",
@@ -6536,19 +6549,23 @@ export const DATA = {
         {
           "kind": "cms_hpt_txt",
           "url": "https://www.memorialcare.org/cms-hpt.txt",
-          "sha256": "8e39a4922aad6fa4a517d121c76dcaa7c81b6b399cd6218447ac73c94bd3e608"
+          "sha256": "8e39a4922aad6fa4a517d121c76dcaa7c81b6b399cd6218447ac73c94bd3e608",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "price_page",
           "url": "https://www.memorialcare.org/patients-visitors/patient-financial-tools-and-resources",
-          "sha256": "cab96872a1b4cef35d8ba3dd0dc689d5fedf946ddf2a3865b5eb783989923d44"
+          "sha256": "cab96872a1b4cef35d8ba3dd0dc689d5fedf946ddf2a3865b5eb783989923d44",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "mrf",
           "url": "https://www.memorialcare.org/sites/default/files/_images/content/Patient-Financial-Services/953527031-1477596583_long-beach-memorial-medical-center_standardcharges.json",
-          "sha256": "2c5d583ed6b6ba00cd22caca6d53c75be3f06ba5eb976879e210185172c15850"
+          "sha256": "2c5d583ed6b6ba00cd22caca6d53c75be3f06ba5eb976879e210185172c15850",
+          "fileLastUpdatedOn": "2026-04-01"
         }
       ],
+      "policy": null,
       "prices": [
         {
           "code": "72148",
@@ -6589,19 +6606,23 @@ export const DATA = {
         {
           "kind": "cms_hpt_txt",
           "url": "https://www.providence.org/cms-hpt.txt",
-          "sha256": "b8eac725ab54836f3bfaa189bf44ac848c2dc87f23a56133a3454bdf6bd2a5d5"
+          "sha256": "b8eac725ab54836f3bfaa189bf44ac848c2dc87f23a56133a3454bdf6bd2a5d5",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "price_page",
           "url": "https://www.providence.org/billing-support/pricing-transparency",
-          "sha256": "aed6ba02c3a90b25d88d2c6395f1ce032ce49801fb0e53997e782747e14d6208"
+          "sha256": "aed6ba02c3a90b25d88d2c6395f1ce032ce49801fb0e53997e782747e14d6208",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "mrf",
           "url": "https://pricetransparency.providence.org/socal/live/951684082_providence-st-johns-health-center_standardcharges.json",
-          "sha256": "021e37693b7f1dd6043f86478a8f222dbcad2e8c0754ce012be31784709a9761"
+          "sha256": "021e37693b7f1dd6043f86478a8f222dbcad2e8c0754ce012be31784709a9761",
+          "fileLastUpdatedOn": "2026-04-01"
         }
       ],
+      "policy": null,
       "prices": [
         {
           "code": "72148",
@@ -6642,19 +6663,23 @@ export const DATA = {
         {
           "kind": "cms_hpt_txt",
           "url": "https://www.providence.org/cms-hpt.txt",
-          "sha256": "b8eac725ab54836f3bfaa189bf44ac848c2dc87f23a56133a3454bdf6bd2a5d5"
+          "sha256": "b8eac725ab54836f3bfaa189bf44ac848c2dc87f23a56133a3454bdf6bd2a5d5",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "price_page",
           "url": "https://www.providence.org/billing-support/pricing-transparency",
-          "sha256": "e9a691770982eba4172bb2ec156ed5985709fd61614892992e44e7bce330d4eb"
+          "sha256": "e9a691770982eba4172bb2ec156ed5985709fd61614892992e44e7bce330d4eb",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "mrf",
           "url": "https://pricetransparency.providence.org/socal/live/421672810_providence-little-company-of-mary-med-center-torrance_standardcharges.json",
-          "sha256": "efa901a556d7f9ea64e0d4c0f380dffc7c610c847150e05bd3ec16bd07067a1f"
+          "sha256": "efa901a556d7f9ea64e0d4c0f380dffc7c610c847150e05bd3ec16bd07067a1f",
+          "fileLastUpdatedOn": "2026-04-01"
         }
       ],
+      "policy": null,
       "prices": [
         {
           "code": "72148",
@@ -6695,19 +6720,28 @@ export const DATA = {
         {
           "kind": "cms_hpt_txt",
           "url": "https://www.cedars-sinai.org/cms-hpt.txt",
-          "sha256": "03159e751868fa2c399dfac9eb4ad8ff9b66bf0ffd00e4119fe411c0418269c4"
+          "sha256": "03159e751868fa2c399dfac9eb4ad8ff9b66bf0ffd00e4119fe411c0418269c4",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "price_page",
           "url": "https://cedars-sinai.org/price-transparency.html",
-          "sha256": "9a1e98f9e3b568ce245e8da80df8770462852ca4bdc1e182fb05f7fb0b3a3467"
+          "sha256": "9a1e98f9e3b568ce245e8da80df8770462852ca4bdc1e182fb05f7fb0b3a3467",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "mrf",
           "url": "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/documents/951644600_CEDARS-SINAI-MEDICAL-CENTER_standardcharges.json",
-          "sha256": "8c188ab3b02967785256d5867cf760778581e5e849f0fd1141955c2a2dcd2dbf"
+          "sha256": "8c188ab3b02967785256d5867cf760778581e5e849f0fd1141955c2a2dcd2dbf",
+          "fileLastUpdatedOn": "2025-11-26"
         }
       ],
+      "policy": {
+        "policyUrl": "https://www.cedars-sinai.org/billing-insurance-records/help-paying-your-bill.html",
+        "capturedAt": "2026-10-17T23:10:40Z",
+        "freeCareMaxFplPct": 400,
+        "discountMaxFplPct": 600
+      },
       "prices": [
         {
           "code": "72148",
@@ -6748,19 +6782,23 @@ export const DATA = {
         {
           "kind": "cms_hpt_txt",
           "url": "https://www.providence.org/cms-hpt.txt",
-          "sha256": "b8eac725ab54836f3bfaa189bf44ac848c2dc87f23a56133a3454bdf6bd2a5d5"
+          "sha256": "b8eac725ab54836f3bfaa189bf44ac848c2dc87f23a56133a3454bdf6bd2a5d5",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "price_page",
           "url": "https://www.providence.org/billing-support/pricing-transparency",
-          "sha256": "8eeb6d229640f204299058e1854942220df8d89b363286f5bd8a488f7cee1496"
+          "sha256": "8eeb6d229640f204299058e1854942220df8d89b363286f5bd8a488f7cee1496",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "mrf",
           "url": "https://pricetransparency.providence.org/socal/live/833972614_providence-cedars-sinai-tarzana-medical-center_standardcharges.json",
-          "sha256": "8608d6061c6d33294c77c93d5acb5cc25067b4af0912e006631613b1441c9675"
+          "sha256": "8608d6061c6d33294c77c93d5acb5cc25067b4af0912e006631613b1441c9675",
+          "fileLastUpdatedOn": "2026-04-01"
         }
       ],
+      "policy": null,
       "prices": [
         {
           "code": "72148",
@@ -6801,19 +6839,23 @@ export const DATA = {
         {
           "kind": "cms_hpt_txt",
           "url": "https://www.providence.org/cms-hpt.txt",
-          "sha256": "b8eac725ab54836f3bfaa189bf44ac848c2dc87f23a56133a3454bdf6bd2a5d5"
+          "sha256": "b8eac725ab54836f3bfaa189bf44ac848c2dc87f23a56133a3454bdf6bd2a5d5",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "price_page",
           "url": "https://www.providence.org/billing-support/pricing-transparency",
-          "sha256": "857b56adad268156fcb1928dd9c3fc928ba89057bdf7d6a47e0c36fde489963a"
+          "sha256": "857b56adad268156fcb1928dd9c3fc928ba89057bdf7d6a47e0c36fde489963a",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "mrf",
           "url": "https://pricetransparency.providence.org/socal/live/951675600_providence-st-joseph-medical-center_standardcharges.json",
-          "sha256": "309515174fa409d70b93daaf8c8b2d1c35e66f4ce2833d0ede59738aa195a2f6"
+          "sha256": "309515174fa409d70b93daaf8c8b2d1c35e66f4ce2833d0ede59738aa195a2f6",
+          "fileLastUpdatedOn": "2026-04-01"
         }
       ],
+      "policy": null,
       "prices": [
         {
           "code": "72148",
@@ -6854,19 +6896,23 @@ export const DATA = {
         {
           "kind": "cms_hpt_txt",
           "url": "https://www.providence.org/cms-hpt.txt",
-          "sha256": "b8eac725ab54836f3bfaa189bf44ac848c2dc87f23a56133a3454bdf6bd2a5d5"
+          "sha256": "b8eac725ab54836f3bfaa189bf44ac848c2dc87f23a56133a3454bdf6bd2a5d5",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "price_page",
           "url": "https://www.providence.org/billing-support/pricing-transparency",
-          "sha256": "041c54e5392164edbb88ae417c3b4c6f34bca474acf8f85a01082565711f9354"
+          "sha256": "041c54e5392164edbb88ae417c3b4c6f34bca474acf8f85a01082565711f9354",
+          "fileLastUpdatedOn": null
         },
         {
           "kind": "mrf",
           "url": "https://pricetransparency.providence.org/socal/live/954582647_providence-holy-cross-medical-center_standardcharges.json",
-          "sha256": "621bd9927503ac7ffb05681b4d4869e1f486bb4b16ee708507f1ebf6e589e9bb"
+          "sha256": "621bd9927503ac7ffb05681b4d4869e1f486bb4b16ee708507f1ebf6e589e9bb",
+          "fileLastUpdatedOn": "2026-04-01"
         }
       ],
+      "policy": null,
       "prices": [
         {
           "code": "72148",

@@ -40,6 +40,7 @@ export const PRICE_CAPTURES: NearbyCapture[] = DATA.captures.map((c) => ({
   capturedAt: c.capturedAt,
   sources: c.sources,
   location: c.location,
+  policy: c.policy,
   prices: c.prices,
 }));
 

@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { distanceMiles, type NearbyCapture, nearbyPrices } from "./nearby";
+import {
+  distanceMiles,
+  type NearbyCapture,
+  nearbyPrices,
+  summarizeNearby,
+} from "./nearby";
 import { SERVICES } from "./services";
 
 const origin = { lat: 34.0522, lng: -118.2437 };
@@ -20,7 +25,12 @@ const capture = (
   sources: [
     { kind: "cms_hpt_txt", url: `https://${key}.example/cms-hpt.txt` },
     { kind: "price_page", url: `https://${key}.example/prices` },
-    { kind: "mrf", url: `https://${key}.example/mrf.json`, sha256: "abc" },
+    {
+      kind: "mrf",
+      url: `https://${key}.example/mrf.json`,
+      sha256: "abc",
+      fileLastUpdatedOn: "2026-04-01",
+    },
   ],
   location,
   prices,
@@ -98,6 +108,10 @@ describe("nearbyPrices", () => {
       sourceUrl: "https://a.example/mrf.json",
       sourceSha256: "abc",
       pageUrl: "https://a.example/prices",
+      fileUpdatedOn: "2026-04-01",
+      policy: null,
+      rank: 1,
+      shareOfHighest: 1,
       lat: 34.1,
       lng: -118.3,
     });
@@ -140,12 +154,75 @@ describe("nearbyPrices", () => {
       sourceSha256: null,
       pageUrl: null,
       grossChargeCents: null,
+      fileUpdatedOn: null,
     });
     expect(rows[1]?.sourceUrl).toBe("https://z.example/hpt");
   });
 
+  it("ranks priced rows and gives each a share of the highest price", () => {
+    const rows = nearbyPrices({ captures, code: "72148", origin });
+    expect(rows.map((r) => [r.rank, r.shareOfHighest])).toEqual([
+      [1, 0.6],
+      [2, 0.9],
+      [3, 1],
+      [null, null],
+    ]);
+  });
+
+  it("carries the hospital's captured assistance policy", () => {
+    const policy = {
+      policyUrl: "https://p.example/fap",
+      capturedAt: "2026-10-17T23:10:40Z",
+      freeCareMaxFplPct: 400,
+      discountMaxFplPct: 600,
+    };
+    const [row] = nearbyPrices({
+      captures: [{ ...capture("p", [row85025()]), policy }],
+      code: "85025",
+      origin,
+    });
+    expect(row?.policy).toEqual(policy);
+  });
+
   it("returns an empty list for an unknown code", () => {
     expect(nearbyPrices({ captures, code: "00000", origin })).toEqual([]);
+  });
+});
+
+const row85025 = () => row("85025", 700);
+
+describe("summarizeNearby", () => {
+  it("gives the lowest, a real middle price and the highest", () => {
+    const rows = nearbyPrices({
+      captures: [
+        capture("a", [row("1", 100)]),
+        capture("b", [row("1", 300)]),
+        capture("c", [row("1", 200)]),
+        capture("d", [row("1", 400)]),
+        capture("e", [row("1", null)]),
+      ],
+      code: "1",
+      origin,
+    });
+    expect(summarizeNearby(rows)).toEqual({
+      hospitals: 5,
+      priced: 4,
+      lowCents: 100,
+      middleCents: 200,
+      highCents: 400,
+      middleShareOfHighest: 0.5,
+    });
+  });
+
+  it("is empty when nothing has a cash price", () => {
+    expect(summarizeNearby([])).toEqual({
+      hospitals: 0,
+      priced: 0,
+      lowCents: null,
+      middleCents: null,
+      highCents: null,
+      middleShareOfHighest: null,
+    });
   });
 });
 

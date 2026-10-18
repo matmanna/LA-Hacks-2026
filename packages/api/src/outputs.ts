@@ -116,7 +116,10 @@ export type LookupStatus = z.infer<typeof LookupStatus>;
 export const PriceService = z.object({
   code: z.string(),
   name: z.string(),
+  short: z.string(),
   what: z.string(),
+  notCovered: z.string(),
+  terms: z.array(z.string()),
 });
 export const NearbyPrice = z.object({
   hospitalKey: z.string(),
@@ -130,6 +133,28 @@ export const NearbyPrice = z.object({
   sourceUrl: z.string(),
   sourceSha256: z.string().nullable(),
   pageUrl: z.string().nullable(),
+  fileUpdatedOn: z.string().nullable(),
+  policy: z
+    .object({
+      policyUrl: z.string(),
+      capturedAt: z.string(),
+      freeCareMaxFplPct: z.number().nullable(),
+      discountMaxFplPct: z.number().nullable(),
+    })
+    .nullable(),
+  rank: z.number().int().nullable(),
+  shareOfHighest: z.number().nullable(),
   lat: z.number(),
   lng: z.number(),
+});
+export const NearbyPrices = z.object({
+  rows: z.array(NearbyPrice),
+  summary: z.object({
+    hospitals: z.number().int(),
+    priced: z.number().int(),
+    lowCents: z.number().int().nullable(),
+    middleCents: z.number().int().nullable(),
+    highCents: z.number().int().nullable(),
+    middleShareOfHighest: z.number().nullable(),
+  }),
 });
