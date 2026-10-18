@@ -80,6 +80,11 @@ export async function draftCall(
     throw new ORPCError("PRECONDITION_FAILED", {
       message: "Browser calls require the advocate conference service.",
     });
+  if (audited.bill.kind === "summary") {
+    throw new ORPCError("PRECONDITION_FAILED", {
+      message: "Request an itemized bill before calling billing.",
+    });
+  }
   if (audited.flags.length === 0) {
     throw new ORPCError("PRECONDITION_FAILED", {
       message: "Nothing on this bill needs a call.",

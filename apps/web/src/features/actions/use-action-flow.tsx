@@ -14,10 +14,22 @@ import { toast } from "sonner";
 import { client } from "@/utils/orpc";
 import { useBrowserCall } from "./use-browser-call";
 
-type Kind = "letter" | "call";
+type Kind = "letter" | "itemized_request" | "call";
 type Draft = Awaited<ReturnType<typeof client.action.draftLetter>>;
 
 const FLOW = {
+  itemized_request: {
+    drafting: "Preparing your itemized-bill request.",
+    channelDetail: "Email. This demo sends only to the team's test inbox.",
+    dataShared: [
+      "Hospital name",
+      "Account number, last 4 digits only",
+      "A request for service dates, codes, units, and charges",
+    ],
+    recipient: (to: string) => to,
+    go: (actionId: string) => client.action.send({ actionId }),
+    done: "Itemized-bill request sent.",
+  },
   letter: {
     drafting: "Writing your letter. This takes a few seconds.",
     channelDetail: "Email. This demo sends only to the team's test inbox.",

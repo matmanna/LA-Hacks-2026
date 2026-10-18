@@ -127,6 +127,21 @@ describe.skipIf(!url)("action routes (integration)", () => {
         artifactRef: approvalRef(action.id, draftHash),
       });
     });
+
+    it("starts a summary bill with an itemized-bill request", async () => {
+      const { caseId } = await auditedCase("SB-12");
+
+      const request = await client.action.draftLetter({
+        caseId,
+        kind: "itemized_request",
+      });
+
+      expect(request.action.kind).toBe("itemized_request");
+      expect(request.action.draft).toContain("complete itemized bill");
+      await expect(
+        client.action.draftLetter({ caseId, kind: "letter" }),
+      ).rejects.toMatchObject({ code: "PRECONDITION_FAILED" });
+    });
   });
 
   describe("approve and cancel", () => {
@@ -265,6 +280,13 @@ describe.skipIf(!url)("action routes (integration)", () => {
     it("won't draft a call when no test phone is set up", async () => {
       vi.stubEnv("CALL_ALLOWLIST", "");
       const { caseId } = await auditedCase();
+      await expect(
+        client.action.draftLetter({ caseId, kind: "call" }),
+      ).rejects.toMatchObject({ code: "PRECONDITION_FAILED" });
+    });
+
+    it("does not call billing before a summary bill is itemized", async () => {
+      const { caseId } = await auditedCase("SB-12");
       await expect(
         client.action.draftLetter({ caseId, kind: "call" }),
       ).rejects.toMatchObject({ code: "PRECONDITION_FAILED" });
