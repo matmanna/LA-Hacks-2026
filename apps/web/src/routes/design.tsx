@@ -1,7 +1,9 @@
 import { Badge } from "@betterbill/ui/components/badge";
 import { AccountPrompt } from "@betterbill/ui/components/bb/account-prompt";
+import { ActivityTimeline } from "@betterbill/ui/components/bb/activity-timeline";
 import { ApprovalSheet } from "@betterbill/ui/components/bb/approval-sheet";
 import { BalanceCard } from "@betterbill/ui/components/bb/balance-card";
+import { CallTranscriptCard } from "@betterbill/ui/components/bb/call-transcript-card";
 import {
   ComparePending,
   ComparePriceBar,
@@ -292,6 +294,64 @@ function DesignPage() {
           onCreate={() => setAccountOpen(false)}
           onSignIn={() => setAccountOpen(false)}
         />
+      </Section>
+
+      <Section title="Activity and call">
+        <div className="grid gap-6 md:grid-cols-2">
+          <ActivityTimeline
+            current={{
+              title: "Waiting for the billing office",
+              detail: "Sample step. Synthetic data.",
+              icon: "phone",
+            }}
+            events={[
+              {
+                id: "e1",
+                at: "2026-10-17T23:02:00.000Z",
+                summary: "Bill checked",
+                actor: "system",
+                done: true,
+              },
+              {
+                id: "e2",
+                at: "2026-10-17T23:10:00.000Z",
+                summary: "Letter approved",
+                actor: "user",
+                done: true,
+              },
+              {
+                id: "e3",
+                at: "2026-10-17T23:11:00.000Z",
+                summary: "Letter sent",
+                actor: "agent",
+                done: true,
+              },
+              {
+                id: "e4",
+                at: "2026-10-18T16:00:00.000Z",
+                summary: "Reply received",
+                actor: "system",
+                done: false,
+              },
+            ]}
+          />
+          <CallTranscriptCard
+            status="ended"
+            recorded
+            turns={[
+              {
+                speaker: "agent",
+                text: "Hi, this is an automated assistant calling on behalf of a patient.",
+              },
+              { speaker: "billing", text: "Sample reply. Synthetic data." },
+            ]}
+            outcome={{
+              referenceNumber: "SAMPLE-0000",
+              nextStep: "Sample next step",
+              followUpBy: "Sample date",
+            }}
+          />
+        </div>
       </Section>
 
       <Section title="Savings bar">
