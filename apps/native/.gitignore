@@ -39,3 +39,9 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# UniWind generated types
+uniwind-types.d.ts
+
+!.env.schema
+/src/env.ts

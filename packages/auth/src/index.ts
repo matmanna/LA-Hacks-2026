@@ -1,4 +1,5 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
+import { expo } from "@better-auth/expo";
 import type { Database } from "@betterbill/db";
 import { caseEvent, caseTable } from "@betterbill/db/schema/app";
 import * as schema from "@betterbill/db/schema/auth";
@@ -46,7 +47,13 @@ export function createAuth(env: AuthConfig, database: Database) {
       provider: "pg",
       schema,
     }),
-    trustedOrigins: [env.BETTER_AUTH_URL],
+    trustedOrigins: [
+      env.BETTER_AUTH_URL,
+      // Expo app (apps/native): deep link scheme and Expo Go / Metro origins.
+      "betterbill://",
+      "exp://",
+      "http://localhost:8081",
+    ],
     emailAndPassword: { enabled: true },
     secret: env.BETTER_AUTH_SECRET,
     baseURL: env.BETTER_AUTH_URL,
@@ -74,6 +81,7 @@ export function createAuth(env: AuthConfig, database: Database) {
           }
         },
       }),
+      expo(),
       tanstackStartCookies(),
     ],
   });

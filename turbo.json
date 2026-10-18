@@ -82,7 +82,8 @@
     "VERCEL_PROJECT_PRODUCTION_URL",
     "VERCEL_URL",
     "VITE_SENTRY_DSN",
-    "_VARLOCK_ENV_KEY"
+    "_VARLOCK_ENV_KEY",
+    "EXPO_PUBLIC_SERVER_URL"
   ],
   "globalDependencies": [".env*", "apps/*/.env*", "packages/*/.env*"]
 }
