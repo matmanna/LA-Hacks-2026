@@ -1,9 +1,12 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import type { Database } from "@betterbill/db";
+import { caseEvent, caseTable } from "@betterbill/db/schema/app";
 import * as schema from "@betterbill/db/schema/auth";
 import { checkout, polar, portal } from "@polar-sh/better-auth";
 import { betterAuth } from "better-auth";
+import { anonymous } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
+import { eq } from "drizzle-orm";
 
 import { createPolarClient } from "./lib/payments";
 
@@ -47,7 +50,32 @@ export function createAuth(env: AuthConfig, database: Database) {
     emailAndPassword: { enabled: true },
     secret: env.BETTER_AUTH_SECRET,
     baseURL: env.BETTER_AUTH_URL,
-    plugins: [...polarPlugins(env), tanstackStartCookies()],
+    plugins: [
+      ...polarPlugins(env),
+      // Anyone can check a bill as an anonymous user. When they sign up,
+      // their cases move to the new account (the anonymous user is deleted).
+      anonymous({
+        onLinkAccount: async ({ anonymousUser, newUser }) => {
+          const moved = await database
+            .update(caseTable)
+            .set({ userId: newUser.user.id })
+            .where(eq(caseTable.userId, anonymousUser.user.id))
+            .returning({ id: caseTable.id });
+          if (moved.length > 0) {
+            await database.insert(caseEvent).values(
+              moved.map((c) => ({
+                id: crypto.randomUUID(),
+                caseId: c.id,
+                actor: "user",
+                type: "case.claimed",
+                summary: "Saved to a new account",
+              })),
+            );
+          }
+        },
+      }),
+      tanstackStartCookies(),
+    ],
   });
 }
 
