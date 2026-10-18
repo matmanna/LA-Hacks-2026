@@ -1,7 +1,7 @@
 {
   "hospitalKey": "providence-saint-joseph",
   "hospitalName": "Providence Saint Joseph Medical Center",
-  "capturedAt": "2026-10-18T14:27:27Z",
+  "capturedAt": "2026-10-18T15:53:01Z",
   "capturedBy": "extract_mrf.py (mrf-url read from the hospital's cms-hpt.txt; no Browser Use)",
   "sources": [
     {
@@ -15,8 +15,8 @@
     {
       "kind": "price_page",
       "url": "https://www.providence.org/billing-support/pricing-transparency",
-      "sha256": "857b56adad268156fcb1928dd9c3fc928ba89057bdf7d6a47e0c36fde489963a",
-      "bytes": 249281,
+      "sha256": "f7930ffdf149fced89c26a5763e8e05782eedcd630609fa4a853b4039356cf10",
+      "bytes": 249081,
       "evidenceFile": "evidence/price_page.html"
     },
     {
@@ -68,6 +68,40 @@
       "maxNegotiatedCents": null
     },
     {
+      "code": "80053",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC COMPREHEN METABOLIC PANEL",
+      "otherCodes": [
+        {
+          "code": "Px00030112062",
+          "type": "CDM"
+        }
+      ],
+      "setting": "both",
+      "grossChargeCents": 123400,
+      "discountedCashCents": 43190,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null
+    },
+    {
+      "code": "80053",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC COMPREHEN METABOLIC PANEL",
+      "otherCodes": [
+        {
+          "code": "Px00030112062",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 7400,
+      "discountedCashCents": 2590,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null
+    },
+    {
       "code": "85025",
       "codeType": "HCPCS",
       "codeSource": "tagged",
@@ -166,6 +200,74 @@
       "setting": "outpatient",
       "grossChargeCents": 4500,
       "discountedCashCents": 1575,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null
+    },
+    {
+      "code": "72100",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC XR SPINE LUMBOSACRAL 2 OR 3 VIEWS",
+      "otherCodes": [
+        {
+          "code": "Px00032010065",
+          "type": "CDM"
+        }
+      ],
+      "setting": "both",
+      "grossChargeCents": 184200,
+      "discountedCashCents": 64470,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null
+    },
+    {
+      "code": "71046",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC XR CHEST 2 VIEWS",
+      "otherCodes": [
+        {
+          "code": "Px00032410015",
+          "type": "CDM"
+        }
+      ],
+      "setting": "both",
+      "grossChargeCents": 133900,
+      "discountedCashCents": 46865,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null
+    },
+    {
+      "code": "74177",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC CT ABDOMEN & PELVIS W  CONTRAST",
+      "otherCodes": [
+        {
+          "code": "Px00035010025",
+          "type": "CDM"
+        }
+      ],
+      "setting": "both",
+      "grossChargeCents": 866900,
+      "discountedCashCents": 303415,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null
+    },
+    {
+      "code": "74177",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC CT ABDOMEN & PELVIS W  CONTRAST",
+      "otherCodes": [
+        {
+          "code": "Px00035010025",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 298800,
+      "discountedCashCents": 104580,
       "minNegotiatedCents": null,
       "maxNegotiatedCents": null
     },
@@ -204,6 +306,57 @@
       "maxNegotiatedCents": null
     },
     {
+      "code": "76700",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC US EXAM ABDOMEN COMPLETE",
+      "otherCodes": [
+        {
+          "code": "Px00040210008",
+          "type": "CDM"
+        }
+      ],
+      "setting": "both",
+      "grossChargeCents": 444200,
+      "discountedCashCents": 155470,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null
+    },
+    {
+      "code": "77067",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC MAMMO SCREEN BIL W CAD",
+      "otherCodes": [
+        {
+          "code": "Px00040310004",
+          "type": "CDM"
+        }
+      ],
+      "setting": "both",
+      "grossChargeCents": 59400,
+      "discountedCashCents": 20790,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null
+    },
+    {
+      "code": "77067",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC MAMMO SCREEN UNIL/BIL W CAD",
+      "otherCodes": [
+        {
+          "code": "Px00040310005",
+          "type": "CDM"
+        }
+      ],
+      "setting": "both",
+      "grossChargeCents": 59400,
+      "discountedCashCents": 20790,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null
+    },
+    {
       "code": "99284",
       "codeType": "HCPCS",
       "codeSource": "tagged",
@@ -217,6 +370,57 @@
       "setting": "both",
       "grossChargeCents": 453000,
       "discountedCashCents": 158550,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null
+    },
+    {
+      "code": "73721",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC MRI LOWER EXTREMITY JOINT WO CONTRAST",
+      "otherCodes": [
+        {
+          "code": "Px00061010075",
+          "type": "CDM"
+        }
+      ],
+      "setting": "both",
+      "grossChargeCents": 881400,
+      "discountedCashCents": 308490,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null
+    },
+    {
+      "code": "73721",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC MRI LOWER EXTREMITY JOINT WO CONTRAST",
+      "otherCodes": [
+        {
+          "code": "Px00061010075",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 367200,
+      "discountedCashCents": 128520,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null
+    },
+    {
+      "code": "73721",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC MRI JNT OF LWR EXTRE W/O DYE LIMITED",
+      "otherCodes": [
+        {
+          "code": "Px00061010222",
+          "type": "CDM"
+        }
+      ],
+      "setting": "both",
+      "grossChargeCents": 734500,
+      "discountedCashCents": 257075,
       "minNegotiatedCents": null,
       "maxNegotiatedCents": null
     },
@@ -255,6 +459,18 @@
       "maxNegotiatedCents": null
     },
     {
+      "code": "73721",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "Mri jnt of lwr extre w/o dye",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 30688,
+      "maxNegotiatedCents": 229488
+    },
+    {
       "code": "70450",
       "codeType": "HCPCS",
       "codeSource": "tagged",
@@ -265,6 +481,18 @@
       "discountedCashCents": null,
       "minNegotiatedCents": 13446,
       "maxNegotiatedCents": 98200
+    },
+    {
+      "code": "74177",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "Ct abd & pelv w/contrast",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 44871,
+      "maxNegotiatedCents": 146783
     },
     {
       "code": "72148",
@@ -279,6 +507,78 @@
       "maxNegotiatedCents": 258248
     },
     {
+      "code": "72100",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "X-ray exam l-s spine 2/3 vws",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 5276,
+      "maxNegotiatedCents": 36482
+    },
+    {
+      "code": "71046",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "X-ray exam chest 2 views",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 3439,
+      "maxNegotiatedCents": 30208
+    },
+    {
+      "code": "76700",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "Us exam abdom complete",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 13446,
+      "maxNegotiatedCents": 41113
+    },
+    {
+      "code": "77067",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "Scr mammo bi incl cad",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 15995,
+      "maxNegotiatedCents": 62434
+    },
+    {
+      "code": "77067",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "Scr mammo bi incl cad",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 10884,
+      "maxNegotiatedCents": 23292
+    },
+    {
+      "code": "80053",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "Comprehen metabolic panel",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 1056,
+      "maxNegotiatedCents": 10073
+    },
+    {
       "code": "85025",
       "codeType": "HCPCS",
       "codeSource": "tagged",
@@ -289,6 +589,18 @@
       "discountedCashCents": null,
       "minNegotiatedCents": 777,
       "maxNegotiatedCents": 7407
+    },
+    {
+      "code": "93000",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "Electrocardiogram complete",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 8732,
+      "maxNegotiatedCents": 18057
     },
     {
       "code": "99284",
@@ -375,15 +687,175 @@
       "minNegotiatedCents": null,
       "maxNegotiatedCents": null,
       "rowsInFile": 1
+    },
+    {
+      "code": "72100",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC XR SPINE LUMBOSACRAL 2 OR 3 VIEWS",
+      "otherCodes": [
+        {
+          "code": "Px00032010065",
+          "type": "CDM"
+        }
+      ],
+      "setting": "both",
+      "grossChargeCents": 184200,
+      "discountedCashCents": 64470,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null,
+      "rowsInFile": 1
+    },
+    {
+      "code": "71046",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC XR CHEST 2 VIEWS",
+      "otherCodes": [
+        {
+          "code": "Px00032410015",
+          "type": "CDM"
+        }
+      ],
+      "setting": "both",
+      "grossChargeCents": 133900,
+      "discountedCashCents": 46865,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null,
+      "rowsInFile": 1
+    },
+    {
+      "code": "76700",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC US EXAM ABDOMEN COMPLETE",
+      "otherCodes": [
+        {
+          "code": "Px00040210008",
+          "type": "CDM"
+        }
+      ],
+      "setting": "both",
+      "grossChargeCents": 444200,
+      "discountedCashCents": 155470,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null,
+      "rowsInFile": 1
+    },
+    {
+      "code": "74177",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC CT ABDOMEN & PELVIS W  CONTRAST",
+      "otherCodes": [
+        {
+          "code": "Px00035010025",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 298800,
+      "discountedCashCents": 104580,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null,
+      "rowsInFile": 1
+    },
+    {
+      "code": "73721",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC MRI LOWER EXTREMITY JOINT WO CONTRAST",
+      "otherCodes": [
+        {
+          "code": "Px00061010075",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 367200,
+      "discountedCashCents": 128520,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null,
+      "rowsInFile": 1
+    },
+    {
+      "code": "77067",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC MAMMO SCREEN BIL W CAD",
+      "otherCodes": [
+        {
+          "code": "Px00040310004",
+          "type": "CDM"
+        }
+      ],
+      "setting": "both",
+      "grossChargeCents": 59400,
+      "discountedCashCents": 20790,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null,
+      "rowsInFile": 2
+    },
+    {
+      "code": "80053",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "HC COMPREHEN METABOLIC PANEL",
+      "otherCodes": [
+        {
+          "code": "Px00030112062",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 7400,
+      "discountedCashCents": 2590,
+      "minNegotiatedCents": null,
+      "maxNegotiatedCents": null,
+      "rowsInFile": 1
+    },
+    {
+      "code": "93000",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "Electrocardiogram complete",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 8732,
+      "maxNegotiatedCents": 18057,
+      "rowsInFile": 1
     }
   ],
   "selection": {
     "72148": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
     "85025": "4 outpatient row(s) with a cash price for this code. 4 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
     "99284": "1 both row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
-    "70450": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches."
+    "70450": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "72100": "1 both row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "71046": "1 both row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "76700": "1 both row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "74177": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "73721": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "77067": "2 both row(s) with a cash price for this code. 2 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "80053": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "93000": "1 outpatient row(s) for this code in the file, none with a cash price."
   },
-  "codesSearched": ["72148", "85025", "99284", "70450"],
+  "codesSearched": [
+    "72148",
+    "85025",
+    "99284",
+    "70450",
+    "72100",
+    "71046",
+    "76700",
+    "74177",
+    "73721",
+    "77067",
+    "80053",
+    "93000"
+  ],
   "fileHospitalName": "Providence Health System - Southern California",
   "hospitalNameSource": "mrf location_name",
   "location": {

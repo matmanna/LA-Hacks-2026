@@ -6458,7 +6458,7 @@ export const DATA = {
     {
       "hospitalKey": "memorialcare-long-beach",
       "hospitalName": "Long Beach Memorial Medical Center",
-      "capturedAt": "2026-10-18T14:28:07Z",
+      "capturedAt": "2026-10-18T15:53:08Z",
       "location": {
         "address": "2801 Atlantic Ave, Long Beach, CA 90806",
         "lat": 33.809011,
@@ -6474,7 +6474,7 @@ export const DATA = {
         {
           "kind": "price_page",
           "url": "https://www.memorialcare.org/patients-visitors/patient-financial-tools-and-resources",
-          "sha256": "cab96872a1b4cef35d8ba3dd0dc689d5fedf946ddf2a3865b5eb783989923d44",
+          "sha256": "3209531794b4c8d3b53961c20d3ce71f836847f855e53276a11d32023c65978e",
           "fileLastUpdatedOn": null
         },
         {
@@ -6509,13 +6509,61 @@ export const DATA = {
           "setting": "both",
           "discountedCashCents": 521500,
           "grossChargeCents": 521500
+        },
+        {
+          "code": "72100",
+          "setting": "both",
+          "discountedCashCents": 92300,
+          "grossChargeCents": 92300
+        },
+        {
+          "code": "71046",
+          "setting": "both",
+          "discountedCashCents": 116600,
+          "grossChargeCents": 116600
+        },
+        {
+          "code": "76700",
+          "setting": "both",
+          "discountedCashCents": 250300,
+          "grossChargeCents": 250300
+        },
+        {
+          "code": "74177",
+          "setting": "both",
+          "discountedCashCents": 1005500,
+          "grossChargeCents": 1005500
+        },
+        {
+          "code": "73721",
+          "setting": "both",
+          "discountedCashCents": 625300,
+          "grossChargeCents": 625300
+        },
+        {
+          "code": "77067",
+          "setting": "both",
+          "discountedCashCents": 76000,
+          "grossChargeCents": 76000
+        },
+        {
+          "code": "80053",
+          "setting": "both",
+          "discountedCashCents": 88300,
+          "grossChargeCents": 88300
+        },
+        {
+          "code": "93000",
+          "setting": "outpatient",
+          "discountedCashCents": null,
+          "grossChargeCents": null
         }
       ]
     },
     {
       "hospitalKey": "providence-holy-cross",
       "hospitalName": "Providence Holy Cross Medical Center",
-      "capturedAt": "2026-10-18T14:28:28Z",
+      "capturedAt": "2026-10-18T15:53:39Z",
       "location": {
         "address": "15031 Rinaldi St, Mission Hills, CA 91345",
         "lat": 34.280803,
@@ -6531,7 +6579,7 @@ export const DATA = {
         {
           "kind": "price_page",
           "url": "https://www.providence.org/billing-support/pricing-transparency",
-          "sha256": "041c54e5392164edbb88ae417c3b4c6f34bca474acf8f85a01082565711f9354",
+          "sha256": "b3229446fc299d1c7078929da90dbcc4c7fef492119805c0f9757d1d7ca6be8b",
           "fileLastUpdatedOn": null
         },
         {
@@ -6566,13 +6614,61 @@ export const DATA = {
           "setting": "outpatient",
           "discountedCashCents": 48265,
           "grossChargeCents": 137900
+        },
+        {
+          "code": "72100",
+          "setting": "both",
+          "discountedCashCents": 28175,
+          "grossChargeCents": 80500
+        },
+        {
+          "code": "71046",
+          "setting": "both",
+          "discountedCashCents": 46655,
+          "grossChargeCents": 133300
+        },
+        {
+          "code": "76700",
+          "setting": "both",
+          "discountedCashCents": 58625,
+          "grossChargeCents": 167500
+        },
+        {
+          "code": "74177",
+          "setting": "outpatient",
+          "discountedCashCents": 102375,
+          "grossChargeCents": 292500
+        },
+        {
+          "code": "73721",
+          "setting": "outpatient",
+          "discountedCashCents": 78365,
+          "grossChargeCents": 223900
+        },
+        {
+          "code": "77067",
+          "setting": "both",
+          "discountedCashCents": 19320,
+          "grossChargeCents": 55200
+        },
+        {
+          "code": "80053",
+          "setting": "outpatient",
+          "discountedCashCents": 3745,
+          "grossChargeCents": 10700
+        },
+        {
+          "code": "93000",
+          "setting": "outpatient",
+          "discountedCashCents": null,
+          "grossChargeCents": null
         }
       ]
     },
     {
       "hospitalKey": "providence-little-company-of-mary-torrance",
       "hospitalName": "Providence Little Company of Mary Med Center Torrance",
-      "capturedAt": "2026-10-18T14:28:30Z",
+      "capturedAt": "2026-10-18T15:55:28Z",
       "location": {
         "address": "4101 Torrance Blvd, Torrance, CA 90503",
         "lat": 33.838808,
@@ -6588,7 +6684,7 @@ export const DATA = {
         {
           "kind": "price_page",
           "url": "https://www.providence.org/billing-support/pricing-transparency",
-          "sha256": "e9a691770982eba4172bb2ec156ed5985709fd61614892992e44e7bce330d4eb",
+          "sha256": "fbe370859753e1e94e69ecd1b21978d4c92bf458dc0d402c6358370498cc0e86",
           "fileLastUpdatedOn": null
         },
         {
@@ -6623,13 +6719,61 @@ export const DATA = {
           "setting": "both",
           "discountedCashCents": 142765,
           "grossChargeCents": 407900
+        },
+        {
+          "code": "72100",
+          "setting": "both",
+          "discountedCashCents": 31150,
+          "grossChargeCents": 89000
+        },
+        {
+          "code": "71046",
+          "setting": "both",
+          "discountedCashCents": 31045,
+          "grossChargeCents": 88700
+        },
+        {
+          "code": "76700",
+          "setting": "both",
+          "discountedCashCents": 94220,
+          "grossChargeCents": 269200
+        },
+        {
+          "code": "74177",
+          "setting": "both",
+          "discountedCashCents": 270340,
+          "grossChargeCents": 772400
+        },
+        {
+          "code": "73721",
+          "setting": "both",
+          "discountedCashCents": 187495,
+          "grossChargeCents": 535700
+        },
+        {
+          "code": "77067",
+          "setting": "both",
+          "discountedCashCents": 20300,
+          "grossChargeCents": 58000
+        },
+        {
+          "code": "80053",
+          "setting": "outpatient",
+          "discountedCashCents": 8890,
+          "grossChargeCents": 25400
+        },
+        {
+          "code": "93000",
+          "setting": "outpatient",
+          "discountedCashCents": null,
+          "grossChargeCents": null
         }
       ]
     },
     {
       "hospitalKey": "providence-saint-johns",
       "hospitalName": "Providence Saint John's Health Center",
-      "capturedAt": "2026-10-18T14:27:26Z",
+      "capturedAt": "2026-10-18T15:52:31Z",
       "location": {
         "address": "2121 Santa Monica Blvd, Santa Monica, CA 90404",
         "lat": 34.030599,
@@ -6645,7 +6789,7 @@ export const DATA = {
         {
           "kind": "price_page",
           "url": "https://www.providence.org/billing-support/pricing-transparency",
-          "sha256": "aed6ba02c3a90b25d88d2c6395f1ce032ce49801fb0e53997e782747e14d6208",
+          "sha256": "8db9bf661327bf446f250fbb9c7bc2736664b0a99543b552bc892fef502f7dea",
           "fileLastUpdatedOn": null
         },
         {
@@ -6680,13 +6824,61 @@ export const DATA = {
           "setting": "both",
           "discountedCashCents": 153230,
           "grossChargeCents": 437800
+        },
+        {
+          "code": "72100",
+          "setting": "both",
+          "discountedCashCents": 44135,
+          "grossChargeCents": 126100
+        },
+        {
+          "code": "71046",
+          "setting": "both",
+          "discountedCashCents": 39795,
+          "grossChargeCents": 113700
+        },
+        {
+          "code": "76700",
+          "setting": "both",
+          "discountedCashCents": 62720,
+          "grossChargeCents": 179200
+        },
+        {
+          "code": "74177",
+          "setting": "both",
+          "discountedCashCents": 194915,
+          "grossChargeCents": 556900
+        },
+        {
+          "code": "73721",
+          "setting": "both",
+          "discountedCashCents": 178990,
+          "grossChargeCents": 511400
+        },
+        {
+          "code": "77067",
+          "setting": "both",
+          "discountedCashCents": 28140,
+          "grossChargeCents": 80400
+        },
+        {
+          "code": "80053",
+          "setting": "outpatient",
+          "discountedCashCents": 2835,
+          "grossChargeCents": 8100
+        },
+        {
+          "code": "93000",
+          "setting": "outpatient",
+          "discountedCashCents": null,
+          "grossChargeCents": null
         }
       ]
     },
     {
       "hospitalKey": "providence-saint-joseph",
       "hospitalName": "Providence Saint Joseph Medical Center",
-      "capturedAt": "2026-10-18T14:27:27Z",
+      "capturedAt": "2026-10-18T15:53:01Z",
       "location": {
         "address": "501 S Buena Vista, Burbank, CA 91505",
         "lat": 34.157743,
@@ -6702,7 +6894,7 @@ export const DATA = {
         {
           "kind": "price_page",
           "url": "https://www.providence.org/billing-support/pricing-transparency",
-          "sha256": "857b56adad268156fcb1928dd9c3fc928ba89057bdf7d6a47e0c36fde489963a",
+          "sha256": "f7930ffdf149fced89c26a5763e8e05782eedcd630609fa4a853b4039356cf10",
           "fileLastUpdatedOn": null
         },
         {
@@ -6737,13 +6929,61 @@ export const DATA = {
           "setting": "outpatient",
           "discountedCashCents": 37205,
           "grossChargeCents": 106300
+        },
+        {
+          "code": "72100",
+          "setting": "both",
+          "discountedCashCents": 64470,
+          "grossChargeCents": 184200
+        },
+        {
+          "code": "71046",
+          "setting": "both",
+          "discountedCashCents": 46865,
+          "grossChargeCents": 133900
+        },
+        {
+          "code": "76700",
+          "setting": "both",
+          "discountedCashCents": 155470,
+          "grossChargeCents": 444200
+        },
+        {
+          "code": "74177",
+          "setting": "outpatient",
+          "discountedCashCents": 104580,
+          "grossChargeCents": 298800
+        },
+        {
+          "code": "73721",
+          "setting": "outpatient",
+          "discountedCashCents": 128520,
+          "grossChargeCents": 367200
+        },
+        {
+          "code": "77067",
+          "setting": "both",
+          "discountedCashCents": 20790,
+          "grossChargeCents": 59400
+        },
+        {
+          "code": "80053",
+          "setting": "outpatient",
+          "discountedCashCents": 2590,
+          "grossChargeCents": 7400
+        },
+        {
+          "code": "93000",
+          "setting": "outpatient",
+          "discountedCashCents": null,
+          "grossChargeCents": null
         }
       ]
     },
     {
       "hospitalKey": "providence-tarzana",
       "hospitalName": "Providence-Cedars Sinai Tarzana Medical Center",
-      "capturedAt": "2026-10-18T14:27:17Z",
+      "capturedAt": "2026-10-18T15:52:12Z",
       "location": {
         "address": "18321 Clark St, Tarzana, CA 91356",
         "lat": 34.170547,
@@ -6759,7 +6999,7 @@ export const DATA = {
         {
           "kind": "price_page",
           "url": "https://www.providence.org/billing-support/pricing-transparency",
-          "sha256": "8eeb6d229640f204299058e1854942220df8d89b363286f5bd8a488f7cee1496",
+          "sha256": "c589190e60e0e840ce666b6326cfcef94bfb1bbfb2a79d17572cb7fa443daa27",
           "fileLastUpdatedOn": null
         },
         {
@@ -6794,6 +7034,54 @@ export const DATA = {
           "setting": "outpatient",
           "discountedCashCents": 31780,
           "grossChargeCents": 90800
+        },
+        {
+          "code": "72100",
+          "setting": "both",
+          "discountedCashCents": 32830,
+          "grossChargeCents": 93800
+        },
+        {
+          "code": "71046",
+          "setting": "both",
+          "discountedCashCents": 41265,
+          "grossChargeCents": 117900
+        },
+        {
+          "code": "76700",
+          "setting": "both",
+          "discountedCashCents": 114940,
+          "grossChargeCents": 328400
+        },
+        {
+          "code": "74177",
+          "setting": "outpatient",
+          "discountedCashCents": 103425,
+          "grossChargeCents": 295500
+        },
+        {
+          "code": "73721",
+          "setting": "outpatient",
+          "discountedCashCents": 74200,
+          "grossChargeCents": 212000
+        },
+        {
+          "code": "77067",
+          "setting": "outpatient",
+          "discountedCashCents": 10815,
+          "grossChargeCents": 30900
+        },
+        {
+          "code": "80053",
+          "setting": "outpatient",
+          "discountedCashCents": 16800,
+          "grossChargeCents": 48000
+        },
+        {
+          "code": "93000",
+          "setting": "outpatient",
+          "discountedCashCents": null,
+          "grossChargeCents": null
         }
       ]
     },
@@ -6886,7 +7174,7 @@ export const DATA = {
     {
       "hospitalKey": "ucla-santa-monica",
       "hospitalName": "UCLA Santa Monica Medical Center",
-      "capturedAt": "2026-10-18T14:28:27Z",
+      "capturedAt": "2026-10-18T15:55:19Z",
       "location": {
         "address": "1250 16th Street, Santa Monica, CA 90404",
         "lat": 34.027092,
@@ -6902,7 +7190,7 @@ export const DATA = {
         {
           "kind": "price_page",
           "url": "https://www.uclahealth.org/patient-resources/billing-insurance/price-transparency/machine-readable-files",
-          "sha256": "eea9a75ee5b4f3cfe7f8184c4e3793a3b6bfe16fa0749c54e6fd3e3991f107f2",
+          "sha256": "2a3f852c19f11523062dfdf648a9b47add66d8d82a8856ef61dc90d038b8a593",
           "fileLastUpdatedOn": null
         },
         {
@@ -6937,6 +7225,54 @@ export const DATA = {
           "setting": "outpatient",
           "discountedCashCents": 161700,
           "grossChargeCents": 294000
+        },
+        {
+          "code": "72100",
+          "setting": "outpatient",
+          "discountedCashCents": 36850,
+          "grossChargeCents": 67000
+        },
+        {
+          "code": "71046",
+          "setting": "outpatient",
+          "discountedCashCents": 23100,
+          "grossChargeCents": 42000
+        },
+        {
+          "code": "76700",
+          "setting": "outpatient",
+          "discountedCashCents": 81950,
+          "grossChargeCents": 149000
+        },
+        {
+          "code": "74177",
+          "setting": "outpatient",
+          "discountedCashCents": 248050,
+          "grossChargeCents": 451000
+        },
+        {
+          "code": "73721",
+          "setting": "outpatient",
+          "discountedCashCents": 313500,
+          "grossChargeCents": 570000
+        },
+        {
+          "code": "77067",
+          "setting": "outpatient",
+          "discountedCashCents": null,
+          "grossChargeCents": null
+        },
+        {
+          "code": "80053",
+          "setting": "outpatient",
+          "discountedCashCents": 18700,
+          "grossChargeCents": 34000
+        },
+        {
+          "code": "93000",
+          "setting": "outpatient",
+          "discountedCashCents": null,
+          "grossChargeCents": null
         }
       ]
     }
