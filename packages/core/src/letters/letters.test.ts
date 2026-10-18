@@ -115,6 +115,65 @@ describe("fallbackModelOutput", () => {
     expect(result.ok).toBe(true);
   });
 
+  it("states the real charge and the gap for a published-price flag", () => {
+    const out = fallbackModelOutput("letter", [publishedFlag], [line3]);
+    const text = firstParagraph(out).text;
+    expect(text).toContain("is $6,900.00");
+    expect(text).toContain("$1,756.85 higher than your own published price");
+  });
+
+  it("asks rather than accuses for a duplicate", () => {
+    const out = fallbackModelOutput("letter", [duplicateFlag], [line1, line2]);
+    expect(firstParagraph(out).text).toContain("Did I have more than one?");
+  });
+
+  it("accepts a model letter that states the published price", () => {
+    const out = {
+      subject: "Questions about my bill",
+      opening: "I am writing about charges on my bill.",
+      paragraphs: [
+        {
+          flagId: publishedFlag.id,
+          text: "For code 72148, I was billed $6,900.00. The hospital's own published price is $5,143.15.",
+        },
+      ],
+      closingRequest: "Please reply in writing.",
+    };
+    expect(checkLetterClaims(out, [publishedFlag], [line3]).ok).toBe(true);
+    const wrong = {
+      ...out,
+      paragraphs: [
+        { flagId: publishedFlag.id, text: "The published price is $4,000.00." },
+      ],
+    };
+    expect(checkLetterClaims(wrong, [publishedFlag], [line3]).ok).toBe(false);
+  });
+
+  it("accepts amounts stated in the flag's own evidence", () => {
+    const eobFlag: Flag = {
+      ...duplicateFlag,
+      id: "flag-eob",
+      lever: "eob_mismatch",
+      amountCents: 197000,
+      evidence: {
+        kind: "arithmetic",
+        detail: "Bill asks $3,120.00; the EOB says you owe $1,150.00.",
+      },
+    };
+    const out = {
+      subject: "Questions about my bill",
+      opening: "I am writing about my balance.",
+      paragraphs: [
+        {
+          flagId: eobFlag.id,
+          text: "My bill asks for $3,120.00, but my EOB says I owe $1,150.00, a gap of $1,970.00.",
+        },
+      ],
+      closingRequest: "Please reply in writing.",
+    };
+    expect(checkLetterClaims(out, [eobFlag], [line1, line2]).ok).toBe(true);
+  });
+
   it("passes for an estimate flag and mentions 'estimate'", () => {
     const out = fallbackModelOutput("letter", [estimateFlag], []);
     const result = checkLetterClaims(out, [estimateFlag], []);
