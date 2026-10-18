@@ -45,31 +45,6 @@ export function Closing() {
             Try a sample bill
           </Button>
         </div>
-        <div className="mx-auto mt-8 grid max-w-3xl gap-3 text-left text-sm sm:grid-cols-3">
-          <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
-            <p className="font-semibold">Web</p>
-            <p className="mt-1 text-white/70">
-              Open BetterBill in any browser.
-            </p>
-          </div>
-          <a
-            href="https://github.com/matmanna/betterbill/releases/latest"
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-2xl border border-white/15 bg-white/10 p-4 transition-colors hover:bg-white/15"
-          >
-            <p className="font-semibold">Android</p>
-            <p className="mt-1 text-white/70">
-              Download the latest APK and install it on your phone.
-            </p>
-          </a>
-          <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
-            <p className="font-semibold">iPhone</p>
-            <p className="mt-1 text-white/70">
-              Use Expo Go to try the current mobile preview.
-            </p>
-          </div>
-        </div>
       </div>
     </section>
   );
