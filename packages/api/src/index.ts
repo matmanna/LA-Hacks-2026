@@ -1,10 +1,15 @@
 import { ORPCError, os } from "@orpc/server";
 
 import type { Context } from "./context";
+import { observe } from "./observe";
 
 export const o = os.$context<Context>();
 
-export const publicProcedure = o;
+const observed = o.middleware(({ path, next }, input) =>
+  observe({ path, next }, input),
+);
+
+export const publicProcedure = o.use(observed);
 
 const requireAuth = o.middleware(async ({ context, next }) => {
   if (!context.session?.user) {
