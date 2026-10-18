@@ -1,0 +1,139 @@
+{
+  "photo": "data/synthetic/photos/SB-02-flat.jpg",
+  "sha256": "dc5fd6c14c75fea7a63ae3eb9345a357e531ff00f7844761121271f4ed9ef806",
+  "model": "step-5-preview",
+  "latencyMs": 25611,
+  "readAt": "2026-10-18T02:48:16.676Z",
+  "bill": {
+    "id": "cache-bill",
+    "hospital": {
+      "name": "Sample Medical Center (synthetic)",
+      "city": "Los Angeles",
+      "state": "CA"
+    },
+    "statementDate": "2026-08-20",
+    "accountRefMasked": null,
+    "kind": "itemized",
+    "sourceKind": "photo",
+    "lines": [
+      {
+        "id": "cache-l01",
+        "serviceDate": "2026-08-03",
+        "description": "ED VISIT LEVEL 5",
+        "code": "99285",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 380000,
+        "source": {
+          "page": 1,
+          "bbox": [0.17, 0.365, 0.855, 0.395]
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l02",
+        "serviceDate": "2026-08-03",
+        "description": "COMPREHENSIVE METABOLIC PANEL",
+        "code": "80053",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 21200,
+        "source": {
+          "page": 1,
+          "bbox": [0.17, 0.395, 0.855, 0.425]
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l03",
+        "serviceDate": "2026-08-03",
+        "description": "COMPREHENSIVE METABOLIC PANEL",
+        "code": "80053",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 21200,
+        "source": {
+          "page": 1,
+          "bbox": [0.17, 0.425, 0.855, 0.455]
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l04",
+        "serviceDate": "2026-08-03",
+        "description": "CBC W/ AUTO DIFF",
+        "code": "85025",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 8400,
+        "source": {
+          "page": 1,
+          "bbox": [0.17, 0.455, 0.855, 0.485]
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l05",
+        "serviceDate": "2026-08-03",
+        "description": "VENIPUNCTURE",
+        "code": "36415",
+        "codeType": "CPT",
+        "units": 3,
+        "chargeCents": 11400,
+        "source": {
+          "page": 1,
+          "bbox": [0.17, 0.485, 0.855, 0.515]
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l06",
+        "serviceDate": "2026-08-03",
+        "description": "XR CHEST 2 VIEWS",
+        "code": "71046",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 52000,
+        "source": {
+          "page": 1,
+          "bbox": [0.17, 0.515, 0.855, 0.545]
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l07",
+        "serviceDate": "2026-08-03",
+        "description": "ECG TRACING ONLY",
+        "code": "93005",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 31000,
+        "source": {
+          "page": 1,
+          "bbox": [0.17, 0.545, 0.855, 0.575]
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 525200,
+      "adjustmentsCents": 360000,
+      "paidCents": 120000,
+      "dueCents": 45200
+    }
+  },
+  "reconciliation": {
+    "linesSumCents": 525200,
+    "statedChargesCents": 525200,
+    "diffCents": 0,
+    "ok": true
+  },
+  "warnings": []
+}

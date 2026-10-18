@@ -1,0 +1,109 @@
+{
+  "photo": "data/synthetic/photos/SB-04-crumpled.jpg",
+  "sha256": "3517c1e538fc2403c29c6af5e77196e1117573b860c8abb28efd323d0240cff6",
+  "model": "step-5-preview",
+  "latencyMs": 49148,
+  "readAt": "2026-10-18T02:49:14.516Z",
+  "bill": {
+    "id": "cache-bill",
+    "hospital": {
+      "name": "Sample Medical Center (synthetic)",
+      "city": "Los Angeles",
+      "state": "CA"
+    },
+    "statementDate": "2026-07-01",
+    "accountRefMasked": null,
+    "kind": "itemized",
+    "sourceKind": "photo",
+    "lines": [
+      {
+        "id": "cache-l01",
+        "serviceDate": "2026-05-10",
+        "description": "CT ABD/PELVIS W/ CONTRAST",
+        "code": "74177",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 485000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.95,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l02",
+        "serviceDate": "2026-05-10",
+        "description": "CT HEAD W/O CONTRAST",
+        "code": "70450",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 312000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.95,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l03",
+        "serviceDate": "2026-05-10",
+        "description": "XR CHEST 2 VIEWS",
+        "code": "71046",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 52000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.95,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l04",
+        "serviceDate": "2026-05-10",
+        "description": "VENIPUNCTURE",
+        "code": "36415",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 3800,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.95,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l05",
+        "serviceDate": "2026-05-10",
+        "description": "COMPREHENSIVE METABOLIC PANEL",
+        "code": "80053",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 21200,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.95,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 674000,
+      "adjustmentsCents": 450000,
+      "paidCents": 112000,
+      "dueCents": 312000
+    }
+  },
+  "reconciliation": {
+    "linesSumCents": 874000,
+    "statedChargesCents": 674000,
+    "diffCents": -200000,
+    "ok": false
+  },
+  "warnings": []
+}

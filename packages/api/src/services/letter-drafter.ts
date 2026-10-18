@@ -3,7 +3,6 @@
 // deterministic fallback, so a letter is always produced and always checked.
 import {
   type Action,
-  approvalRef,
   checkLetterClaims,
   type Flag,
   fallbackModelOutput,
@@ -13,21 +12,12 @@ import {
   LetterModelOutputSchema,
   type Line,
   renderLetter,
-  sha256Hex,
 } from "@betterbill/core";
 import type { Database } from "@betterbill/db";
-import { action as actionTable } from "@betterbill/db/schema/index";
 import { ORPCError } from "@orpc/server";
 import { z } from "zod";
 
-import {
-  addEvent,
-  getCaseRow,
-  latestAudit,
-  loadBill,
-  setStatus,
-} from "../repo/cases";
-import { checkTransition } from "./actions";
+import { checkTransition, loadAuditedCase, saveDraft } from "./actions";
 import { geminiJson } from "./gemini";
 
 export const LETTER_SYSTEM_PROMPT =
@@ -139,31 +129,21 @@ export async function draftLetter(
   usedFallback: boolean;
 }> {
   const { caseId, kind } = input;
-  const [row, loaded, audit] = await Promise.all([
-    getCaseRow(db, caseId),
-    loadBill(db, caseId),
-    latestAudit(db, caseId),
-  ]);
-  if (!row) throw new ORPCError("NOT_FOUND", { message: "Case not found." });
-  if (!loaded || !audit) {
-    throw new ORPCError("PRECONDITION_FAILED", {
-      message: "Check the bill before writing a letter.",
-    });
-  }
-  const flags = flagsForKind(kind, audit.flags);
+  const audited = await loadAuditedCase(db, caseId);
+  const flags = flagsForKind(kind, audited.flags);
   if (kind === "letter" && flags.length === 0) {
     throw new ORPCError("PRECONDITION_FAILED", {
       message: "Nothing on this bill needs a dispute letter.",
     });
   }
-
+  // Checked before calling Gemini so a wrong-state case costs nothing.
   const status = checkTransition(
-    row.status,
+    audited.status,
     "action.drafted",
     "This case is not ready for a letter yet.",
   );
 
-  const { bill } = loaded;
+  const { bill } = audited;
   const { out, claims, usedFallback } = await chooseLetterOutput({
     kind,
     hospital: bill.hospital.name,
@@ -179,33 +159,14 @@ export async function draftLetter(
     patientName: SIGN_OFF,
     today: new Date().toISOString().slice(0, 10),
   });
-  const draftHash = await sha256Hex(draft);
-  const action: Action = {
-    id: crypto.randomUUID(),
+  const { action, draftHash } = await saveDraft(db, {
     caseId,
     kind,
     draft,
     recipient:
       process.env.EMAIL_TEST_INBOX || `Billing Office, ${bill.hospital.name}`,
-    approvedAt: null,
-    sentAt: null,
-    outcome: null,
-  };
-
-  await db.transaction(async (tx) => {
-    await tx.insert(actionTable).values({
-      id: action.id,
-      caseId,
-      kind,
-      draft,
-      recipient: action.recipient,
-    });
-    await setStatus(tx, caseId, status);
-    await addEvent(tx, caseId, "action.drafted", "Draft ready for you", {
-      actor: "agent",
-      artifactRef: approvalRef(action.id, draftHash),
-    });
+    status,
+    summary: "Draft ready for you",
   });
-
   return { action, draftHash, claims, usedFallback };
 }
