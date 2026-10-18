@@ -1,12 +1,18 @@
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
 
-const MAX_PAGES = 3; // bill.parsePhoto accepts 1 to 3 pages
+export const MAX_PAGES = 3; // bill.parsePhoto accepts 1 to 3 pages
 const MAX_EDGE = 2000;
 
 export type Page = { imageDataUrl: string; page: number };
+type Source = { uri: string; width: number; height: number };
 
-async function toDataUrl(asset: ImagePicker.ImagePickerAsset) {
+// A captured or chosen photo as an upload page: at most 2000 px, JPEG 0.85.
+export async function toPage(source: Source, page: number): Promise<Page> {
+  return { imageDataUrl: await toDataUrl(source), page };
+}
+
+async function toDataUrl(asset: Source) {
   const landscape = asset.width > asset.height;
   const context = ImageManipulator.manipulate(asset.uri);
   if (Math.max(asset.width, asset.height) > MAX_EDGE) {
@@ -36,7 +42,8 @@ async function toPages(result: ImagePicker.ImagePickerResult) {
   );
 }
 
-export async function takePhoto(): Promise<Page[] | null> {
+// Fallback when the in-app camera can't start: the phone's own camera app.
+export async function takePhotoWithSystemCamera(): Promise<Page[] | null> {
   const permission = await ImagePicker.requestCameraPermissionsAsync();
   if (!permission.granted) {
     throw new Error(

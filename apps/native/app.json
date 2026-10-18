@@ -48,6 +48,14 @@
           "microphonePermission": false
         }
       ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "BetterBill uses the camera to photograph your hospital bill.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ],
       "expo-font",
       "expo-secure-store",
       "expo-status-bar",

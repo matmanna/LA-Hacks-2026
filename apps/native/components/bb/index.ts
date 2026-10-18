@@ -13,6 +13,18 @@ export { Money } from "./money";
 export { Progress } from "./progress";
 export { Receipt } from "./receipt";
 export { Row } from "./row";
+export {
+  CoachPill,
+  DarkPhotoSheet,
+  DoneButton,
+  PageThumb,
+  type Rect,
+  RoundButton,
+  Shutter,
+  TrustLine,
+  Viewfinder,
+  windowRect,
+} from "./scanner";
 export { Disclaimer, Screen } from "./screen";
 export { ShareButton } from "./share-button";
 export { StepBar } from "./step-bar";
