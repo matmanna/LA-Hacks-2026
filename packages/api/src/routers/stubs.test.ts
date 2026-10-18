@@ -3,7 +3,6 @@ import { createRouterClient } from "@orpc/server";
 import { describe, expect, it } from "vitest";
 
 import type { Context } from "../context";
-import { CallStarted, CallStatus } from "../outputs";
 import { appRouter } from "./index";
 
 const context: Context = { db: {} as never, session: null, adapter: false };
@@ -39,8 +38,8 @@ describe("procedure stubs", () => {
     );
   });
 
-  // case, bill.parseText, bill.confirmLines, audit, event, eval and the
-  // action routes are real and covered by the *.int.test.ts files.
+  // case, bill.parseText, bill.confirmLines, audit, event, eval, action and
+  // call routes are real and covered by the *.int.test.ts files.
   it("bill.parsePhoto stub returns its declared shape", async () => {
     ParseResult.parse(
       await client.bill.parsePhoto({
@@ -50,7 +49,7 @@ describe("procedure stubs", () => {
     );
   });
 
-  it("assistance and call stubs return their declared shapes", async () => {
+  it("assistance stub returns its declared shape", async () => {
     Assistance.parse(
       await client.assistance.check({
         caseId,
@@ -58,10 +57,6 @@ describe("procedure stubs", () => {
         annualIncomeCents: 3_000_000,
       }),
     );
-    const call = CallStarted.parse(
-      await client.call.start({ actionId: "action-test" }),
-    );
-    CallStatus.parse(await client.call.status({ callId: call.callId }));
   });
 
   it("rejects invalid input", async () => {

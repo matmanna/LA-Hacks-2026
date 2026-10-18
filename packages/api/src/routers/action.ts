@@ -3,6 +3,7 @@ import { publicProcedure } from "../index";
 import { ActionIdInput, ApproveInput, DraftLetterInput } from "../inputs";
 import { DraftLetterResult } from "../outputs";
 import { approveAction, cancelAction } from "../services/approval";
+import { draftCall } from "../services/call";
 import { draftLetter } from "../services/letter-drafter";
 import { sendAction } from "../services/send";
 
@@ -11,7 +12,11 @@ export const actionRouter = {
   draftLetter: publicProcedure
     .input(DraftLetterInput)
     .output(DraftLetterResult)
-    .handler(({ input, context }) => draftLetter(context.db, input)),
+    .handler(({ input, context }) =>
+      input.kind === "call"
+        ? draftCall(context.db, input)
+        : draftLetter(context.db, { caseId: input.caseId, kind: input.kind }),
+    ),
   // Becomes protectedProcedure in B-11.
   approve: publicProcedure
     .input(ApproveInput)
