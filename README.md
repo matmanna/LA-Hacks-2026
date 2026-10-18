@@ -4,7 +4,13 @@
 
 Built in 24 hours at LA Hacks 2026. Free to check. [Live app](https://betterbill.matmanna.dev) · [Demo video](https://vimeo.com/matmanna/betterbillgg) · [Try the sample bill](https://betterbill.matmanna.dev/check)
 
-[![Watch the BetterBill trailer on Vimeo (2:56)](docs/screenshots/trailer-thumbnail.jpg)](https://vimeo.com/matmanna/betterbillgg)
+<a href="https://vimeo.com/matmanna/betterbillgg">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/trailer-thumbnail.jpg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/trailer-thumbnail-light.jpg">
+    <img src="docs/screenshots/trailer-thumbnail-light.jpg" alt="Watch the BetterBill demo walkthrough on Vimeo (2:56)">
+  </picture>
+</a>
 
 ▶ **[Watch the trailer on Vimeo (2:56)](https://vimeo.com/matmanna/betterbillgg)** · [download the MP4](betterbill-demo.mp4)
 
