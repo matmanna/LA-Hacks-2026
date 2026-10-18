@@ -1,3 +1,4 @@
+import { Pause, Play } from "lucide-react";
 import { type RefObject, useEffect, useRef, useState } from "react";
 
 const VIMEO_SRC =
@@ -18,8 +19,12 @@ export function HeroVideo({
   onWidth: (width: number) => void;
 }) {
   const [width, setWidth] = useState(MIN_W);
-  const [started, setStarted] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  // Set when the browser refuses a scripted play, so the player's own button works.
+  const [passthrough, setPassthrough] = useState(false);
   const frame = useRef<HTMLIFrameElement>(null);
+  const playingRef = useRef(false);
+  playingRef.current = playing;
 
   function post(message: object) {
     frame.current?.contentWindow?.postMessage(
@@ -35,7 +40,8 @@ export function HeroVideo({
       if (e.origin !== VIMEO_ORIGIN || typeof e.data !== "string") return;
       try {
         const data = JSON.parse(e.data) as { event?: string };
-        if (data.event === "play") setStarted(true);
+        if (data.event === "play") setPlaying(true);
+        if (data.event === "pause" || data.event === "ended") setPlaying(false);
       } catch {
         // not a player message
       }
@@ -44,12 +50,16 @@ export function HeroVideo({
     return () => window.removeEventListener("message", onMessage);
   }, []);
 
-  // A transparent layer covers the player until it plays, so the control bar
-  // never shows on hover. A click on it starts the video.
-  function start() {
-    post({ method: "play" });
-    // If the browser blocks play, drop the layer so the player's own button works.
-    window.setTimeout(() => setStarted(true), 900);
+  // A layer over the player holds the only control: one round button that
+  // plays and pauses. Nothing else of the player's UI is reachable.
+  function toggle() {
+    post({ method: playing ? "pause" : "play" });
+    // No play event soon after a click: the browser blocked it. Step aside.
+    if (!playing) {
+      window.setTimeout(() => {
+        if (!playingRef.current) setPassthrough(true);
+      }, 1200);
+    }
   }
 
   useEffect(() => {
@@ -81,7 +91,10 @@ export function HeroVideo({
     >
       <iframe
         ref={frame}
-        onLoad={() => post({ method: "addEventListener", value: "play" })}
+        onLoad={() => {
+          for (const value of ["play", "pause", "ended"])
+            post({ method: "addEventListener", value });
+        }}
         src={VIMEO_SRC}
         title="BetterBill - LA Hacks AI 2026"
         loading="lazy"
@@ -89,13 +102,31 @@ export function HeroVideo({
         referrerPolicy="strict-origin-when-cross-origin"
         className="absolute inset-0 size-full border-0"
       />
-      {started ? null : (
+      {passthrough ? null : (
         <button
           type="button"
-          aria-label="Play the BetterBill video"
-          onClick={start}
-          className="absolute inset-0 z-10 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-        />
+          aria-label={
+            playing ? "Pause the BetterBill video" : "Play the BetterBill video"
+          }
+          onClick={toggle}
+          className="group absolute inset-0 z-10 flex cursor-pointer items-center justify-center focus-visible:outline-none"
+        >
+          <span
+            className={`flex size-12 items-center justify-center rounded-full bg-white/95 text-ink shadow-card transition-all duration-200 group-hover:scale-105 group-focus-visible:ring-2 group-focus-visible:ring-ring ${
+              playing ? "opacity-0 group-hover:opacity-100" : "opacity-100"
+            }`}
+          >
+            {playing ? (
+              <Pause className="size-5" fill="currentColor" strokeWidth={0} />
+            ) : (
+              <Play
+                className="ml-0.5 size-5"
+                fill="currentColor"
+                strokeWidth={0}
+              />
+            )}
+          </span>
+        </button>
       )}
     </div>
   );
