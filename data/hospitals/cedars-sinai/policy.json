@@ -1,0 +1,147 @@
+{
+  "hospitalKey": "cedars-sinai",
+  "policyUrl": "https://www.cedars-sinai.org/billing-insurance-records/help-paying-your-bill.html",
+  "policyTitle": "Financial Assistance Policy",
+  "capturedAt": "2026-10-17T23:10:40Z",
+  "capturedBy": "browser_use_policy.py run a32bcfd1-cb42-4d5e-b0c5-7c78be639398 + build_policy.py",
+  "evidence": [
+    {
+      "file": "evidence/full-fap-english.pdf",
+      "url": "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/faps/full-fap-english.pdf",
+      "sha256": "536a807588f63ece6cba09e267c6f756bdd022e499ceca84728b9ade711eefa6",
+      "bytes": 526632,
+      "retrievedAt": "2026-10-17T23:10:20Z",
+      "pages": 20,
+      "pdfModDate": "D:20260918222445-07'00'"
+    },
+    {
+      "file": "evidence/assistance_page.txt",
+      "url": "https://www.cedars-sinai.org/billing-insurance-records/help-paying-your-bill.html",
+      "sha256": "a8ab9a1c0e441436a2434f03edf4f7ad78db31b815185e6e673e2e843dfd6d1d",
+      "bytes": 10237,
+      "retrievedAt": "2026-10-17T23:10:40Z",
+      "note": "Rendered page text (innerText via Playwright); the page body is built by JavaScript."
+    },
+    {
+      "file": "evidence/browser_use_policy_run.json",
+      "runId": "a32bcfd1-cb42-4d5e-b0c5-7c78be639398"
+    }
+  ],
+  "otherLanguagePdfs": [
+    "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/faps/full-fap-english-print.pdf",
+    "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/faps/full-fap-arabic.pdf",
+    "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/faps/full-fap-armenian.pdf",
+    "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/faps/full-fap-chinese.pdf",
+    "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/faps/full-fap-czech.pdf",
+    "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/faps/full-fap-farsi.pdf",
+    "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/faps/full-fap-korean.pdf",
+    "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/faps/full-fap-russian.pdf",
+    "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/faps/full-fap-spanish.pdf",
+    "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/faps/full-fap-vietnamese.pdf"
+  ],
+  "quotes": [
+    {
+      "text": "For emergency physicians employed by independent groups practicing at other Organization hospitals, this Policy does not apply but they are required by law to provide discounts to uninsured patients or patients with high medical costs who are at or below 400 percent of the federal poverty level.",
+      "purpose": "other",
+      "foundIn": "evidence/full-fap-english.pdf"
+    },
+    {
+      "text": "Charity Care will be made available to patients whose family income is at or below 400% of FPL.",
+      "purpose": "free_care_threshold",
+      "foundIn": "evidence/full-fap-english.pdf"
+    },
+    {
+      "text": "Patients whose income ranges between 401% to 600% of FPL qualify for a Discount Payment.",
+      "purpose": "discount_threshold",
+      "foundIn": "evidence/full-fap-english.pdf"
+    },
+    {
+      "text": "Charity Care will be made available to patients receiving medically necessary services and whose income is at or below 400% of the federal poverty level (FPL).",
+      "purpose": "free_care_threshold",
+      "foundIn": "evidence/full-fap-english.pdf"
+    },
+    {
+      "text": "Patients whose income ranges between 401%–600% of the FPL also qualify for a Discount Payment, using a sliding scale based on family size, income level and insurance status.",
+      "purpose": "discount_threshold",
+      "foundIn": "evidence/full-fap-english.pdf"
+    },
+    {
+      "text": "If a patient does not qualify for entirely free services but is eligible for a discount under the Policy, the patient will not be charged more than the expected reimbursement under Medicare or Medi-Cal (whichever is greater).",
+      "purpose": "eligibility",
+      "foundIn": "evidence/full-fap-english.pdf"
+    },
+    {
+      "text": "The Organization uses the following FPL and insurance guidelines to determine a discount:",
+      "purpose": "eligibility",
+      "foundIn": "evidence/full-fap-english.pdf"
+    },
+    {
+      "text": "FPL %             400%        450%       500%        550%        600%\nUninsured         100%        95%         90%         85%        85%\nUnderinsured      100%        90%         80%         70%        60%",
+      "purpose": "discount_threshold",
+      "foundIn": "evidence/full-fap-english.pdf"
+    },
+    {
+      "text": "If you are a family of 3 with an annual salary equal or less than 500% of the FPL, then you would be eligible for either an:",
+      "purpose": "eligibility",
+      "foundIn": "evidence/full-fap-english.pdf"
+    },
+    {
+      "text": "• Uninsured discount at 90% - for patients with no insurance plan",
+      "purpose": "eligibility",
+      "foundIn": "evidence/full-fap-english.pdf"
+    },
+    {
+      "text": "• Underinsured discount at 80% - for patients who have health insurance but are unable to meet their share of costs due to high premiums or out-of-pocket costs.",
+      "purpose": "eligibility",
+      "foundIn": "evidence/full-fap-english.pdf"
+    },
+    {
+      "text": "Patients eligible for financial assistance under this policy who fall at or below 400% of the federal poverty limit receive charity care for medically necessary care.",
+      "purpose": "free_care_threshold",
+      "foundIn": "evidence/full-fap-english.pdf"
+    },
+    {
+      "text": "All other patients eligible for financial assistance under this Policy will not be charged more than expected reimbursement under Medicare or Medi-Cal (whichever is greater).",
+      "purpose": "eligibility",
+      "foundIn": "evidence/full-fap-english.pdf"
+    },
+    {
+      "text": "Patients who are self-pay, eligible for automatic uninsured discounts (regardless of means assessment), shall not be charged more than the AGB for medically necessary care.",
+      "purpose": "eligibility",
+      "foundIn": "evidence/full-fap-english.pdf"
+    },
+    {
+      "text": "Charity Care, without charge is available to patients receiving medically necessary services and whose income is at or below 400% of the Federal Poverty Level (“FPL”).",
+      "purpose": "free_care_threshold",
+      "foundIn": "evidence/assistance_page.txt"
+    },
+    {
+      "text": "Patients whose income ranges between 401%‑600% of the FPL also qualify for a Discount Payment.",
+      "purpose": "discount_threshold",
+      "foundIn": "evidence/assistance_page.txt"
+    },
+    {
+      "text": "Discounts available to patients will be on a sliding scale based on family size, income level and insurance status.",
+      "purpose": "eligibility",
+      "foundIn": "evidence/assistance_page.txt"
+    },
+    {
+      "text": "Emergency physicians at Organization hospitals other than Cedars-Sinai who provide emergency medical services are required by law to provide discounts to uninsured patients or patients with high medical costs who are at or below 400 percent of the FPL.",
+      "purpose": "other",
+      "foundIn": "evidence/assistance_page.txt"
+    },
+    {
+      "text": "If a patient does not qualify for entirely free services but is eligible for a discount under the Policy, the patient will not be charged more than amounts generally billed by the Organization for emergency or other medically necessary care.",
+      "purpose": "eligibility",
+      "foundIn": "evidence/assistance_page.txt"
+    }
+  ],
+  "thresholds": {
+    "freeCareMaxFplPct": 400,
+    "freeCareQuote": "Charity Care will be made available to patients whose family income is at or below 400% of FPL.",
+    "discountMinFplPct": 401,
+    "discountMaxFplPct": 600,
+    "discountQuote": "Patients whose income ranges between 401% to 600% of FPL qualify for a Discount Payment."
+  },
+  "notes": "Charity care is for medically necessary services. Discount size follows the policy's sliding-scale table by FPL % and insurance status (see the quoted table). A discounted patient is not charged more than expected reimbursement under Medicare or Medi-Cal, whichever is greater. Eligibility is decided by the hospital's application; BetterBill only estimates. Quotes not found verbatim were dropped: 0."
+}
