@@ -248,6 +248,7 @@ describe.skipIf(!url)("action routes (integration)", () => {
     const PHONE = "+13105550100";
 
     beforeEach(() => {
+      vi.stubEnv("CALL_MODE", "direct");
       vi.stubEnv("CALL_ALLOWLIST", PHONE);
       vi.stubEnv("BB_FAKE_PROVIDERS", "1");
     });

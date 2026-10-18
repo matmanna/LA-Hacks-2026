@@ -27,6 +27,7 @@ export function buildData() {
     withFileTypes: true,
   })
     .filter((d) => d.isDirectory())
+    .sort((a, b) => a.name.localeCompare(b.name))
     .map((d) => tryRead(`data/hospitals/${d.name}/capture.json`))
     .filter(Boolean)
     .map((c) => ({
@@ -98,6 +99,7 @@ export function buildData() {
     withFileTypes: true,
   })
     .filter((d) => d.isDirectory())
+    .sort((a, b) => a.name.localeCompare(b.name))
     .map((d) => {
       const p = tryRead(`data/hospitals/${d.name}/policy.json`);
       const c = tryRead(`data/hospitals/${d.name}/capture.json`);

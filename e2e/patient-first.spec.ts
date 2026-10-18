@@ -4,6 +4,7 @@ import { bill, line } from "../packages/core/src/__fixtures__/golden";
 import { balanceSummary } from "../packages/core/src/balance";
 import { buildCallVars } from "../packages/core/src/call";
 import { renderConferenceScript } from "../packages/core/src/conference";
+import { savingsFee } from "../packages/core/src/payments";
 import { computeSavings } from "../packages/core/src/savings";
 
 const caseId = "patient-first-ui-test";
@@ -30,6 +31,13 @@ const action = {
   sentAt: null,
   outcome: null,
 };
+const paymentQuote = {
+  caseId,
+  ...savingsFee(0),
+  potentialLowCents: 0,
+  potentialHighCents: 0,
+  paymentsEnabled: false,
+};
 const detail = {
   case: { id: caseId, status: "audited" },
   bill: testBill,
@@ -54,6 +62,8 @@ test("browser choice shows its own script and denied microphone never starts a c
   });
   await page.route("**/api/rpc/**", async (route) => {
     const path = new URL(route.request().url()).pathname;
+    if (path.endsWith("/payment/quote"))
+      return route.fulfill({ json: { json: paymentQuote } });
     if (path.endsWith("/case/get"))
       return route.fulfill({ json: { json: detail } });
     if (path.endsWith("/action/draftLetter")) {
@@ -125,7 +135,8 @@ test("patient-first review explains automatic connection and cancel never dials"
   await page.route("**/api/rpc/**", async (route) => {
     const path = new URL(route.request().url()).pathname;
     let data: unknown;
-    if (path.endsWith("/case/get")) data = detail;
+    if (path.endsWith("/payment/quote")) data = paymentQuote;
+    else if (path.endsWith("/case/get")) data = detail;
     else if (path.endsWith("/action/draftLetter"))
       data = {
         action: { ...action, approvedAt: null },
@@ -178,6 +189,14 @@ test("patient-first review explains automatic connection and cancel never dials"
   await expect(
     dialog.getByRole("button", { name: "Approve and call" }),
   ).toBeEnabled();
+  await expect(
+    page.getByText("Error: Failed to fetch", { exact: true }),
+  ).toHaveCount(0);
+  if (testInfo.project.name === "desktop")
+    await page.setViewportSize({ width: 1280, height: 1000 });
+  await dialog
+    .getByText("What we'll discuss", { exact: true })
+    .scrollIntoViewIfNeeded();
   await page.screenshot({
     path: `test-results/patient-first-approval-${testInfo.project.name}.png`,
   });

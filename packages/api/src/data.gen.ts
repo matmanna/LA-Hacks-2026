@@ -6333,17 +6333,6 @@ export const DATA = {
   ],
   "policies": [
     {
-      "hospitalName": "Ronald Reagan UCLA Medical Center",
-      "policyTitle": "Hospital Services: Patient Financial Assistance | UCLA Health",
-      "policyUrl": "https://www.uclahealth.org/patient-resources/billing-insurance/financial-assistance-program/hospital-services-help-paying-your-bill",
-      "capturedAt": "2026-10-18T09:42:53.796Z",
-      "freeCareMaxFplPct": 400,
-      "freeCareQuote": "Self-Pay Patients with Patient's Family incomes not exceeding 400% of the FPL and who reside in the Hospital's primary service area as defined in Appendix 1 may be eligible for a 100% Charity Care discount on services rendered and billed by the Hospital for emergency and Medically Necessary Care.",
-      "discountMaxFplPct": 450,
-      "discountQuote": "A Financially Qualified patient is defined as any patient with Patient's Family income that does not exceed 450% of the Federal Poverty Level and is:",
-      "references501r": "This Financial Assistance Policy is intended to comply with Section 501(r) of the Internal Revenue Code (IRC) as enacted by the Affordable Care Act, and the implementing regulations, effective for tax years beginning after December 29, 2015 as well California Health & Safety Code section 127400 et seq. (AB 774), Hospital Fair Pricing Policies, effective January 1, 2007, and Emergency Physician Fair Pricing Policies, effective January 1, 2011, and Office of Inspector General, Department of Health and Human Services (OIG) guidance regarding financial assistance to uninsured and under-insured patients."
-    },
-    {
       "hospitalName": "Cedars-Sinai Medical Center",
       "policyTitle": "Financial Assistance Policy",
       "policyUrl": "https://www.cedars-sinai.org/billing-insurance-records/help-paying-your-bill.html",
@@ -6353,6 +6342,17 @@ export const DATA = {
       "discountMaxFplPct": 600,
       "discountQuote": "Patients whose income ranges between 401% to 600% of FPL qualify for a Discount Payment.",
       "references501r": "U.S. Internal Revenue Code Section 501(r)(3)."
+    },
+    {
+      "hospitalName": "Ronald Reagan UCLA Medical Center",
+      "policyTitle": "Hospital Services: Patient Financial Assistance | UCLA Health",
+      "policyUrl": "https://www.uclahealth.org/patient-resources/billing-insurance/financial-assistance-program/hospital-services-help-paying-your-bill",
+      "capturedAt": "2026-10-18T09:42:53.796Z",
+      "freeCareMaxFplPct": 400,
+      "freeCareQuote": "Self-Pay Patients with Patient's Family incomes not exceeding 400% of the FPL and who reside in the Hospital's primary service area as defined in Appendix 1 may be eligible for a 100% Charity Care discount on services rendered and billed by the Hospital for emergency and Medically Necessary Care.",
+      "discountMaxFplPct": 450,
+      "discountQuote": "A Financially Qualified patient is defined as any patient with Patient's Family income that does not exceed 450% of the Federal Poverty Level and is:",
+      "references501r": "This Financial Assistance Policy is intended to comply with Section 501(r) of the Internal Revenue Code (IRC) as enacted by the Affordable Care Act, and the implementing regulations, effective for tax years beginning after December 29, 2015 as well California Health & Safety Code section 127400 et seq. (AB 774), Hospital Fair Pricing Policies, effective January 1, 2007, and Emergency Physician Fair Pricing Policies, effective January 1, 2011, and Office of Inspector General, Department of Health and Human Services (OIG) guidance regarding financial assistance to uninsured and under-insured patients."
     }
   ],
   "fpl": {
@@ -6393,6 +6393,49 @@ export const DATA = {
     }
   },
   "captures": [
+    {
+      "hospitalName": "Cedars-Sinai Medical Center",
+      "capturedAt": "2026-10-17T23:00:45Z",
+      "sources": [
+        {
+          "kind": "cms_hpt_txt",
+          "url": "https://www.cedars-sinai.org/cms-hpt.txt",
+          "sha256": "03159e751868fa2c399dfac9eb4ad8ff9b66bf0ffd00e4119fe411c0418269c4"
+        },
+        {
+          "kind": "price_page",
+          "url": "https://cedars-sinai.org/price-transparency.html",
+          "sha256": "9a1e98f9e3b568ce245e8da80df8770462852ca4bdc1e182fb05f7fb0b3a3467"
+        },
+        {
+          "kind": "mrf",
+          "url": "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/documents/951644600_CEDARS-SINAI-MEDICAL-CENTER_standardcharges.json",
+          "sha256": "8c188ab3b02967785256d5867cf760778581e5e849f0fd1141955c2a2dcd2dbf"
+        }
+      ],
+      "prices": [
+        {
+          "code": "72148",
+          "setting": "inpatient",
+          "discountedCashCents": 668608
+        },
+        {
+          "code": "72148",
+          "setting": "outpatient",
+          "discountedCashCents": 514315
+        },
+        {
+          "code": "85025",
+          "setting": "inpatient",
+          "discountedCashCents": 59129
+        },
+        {
+          "code": "85025",
+          "setting": "outpatient",
+          "discountedCashCents": 59129
+        }
+      ]
+    },
     {
       "hospitalName": "Ronald Reagan UCLA Medical Center",
       "capturedAt": "2026-10-18T00:55:12Z",
@@ -6453,49 +6496,6 @@ export const DATA = {
           "code": "81003",
           "setting": "outpatient",
           "discountedCashCents": 4950
-        }
-      ]
-    },
-    {
-      "hospitalName": "Cedars-Sinai Medical Center",
-      "capturedAt": "2026-10-17T23:00:45Z",
-      "sources": [
-        {
-          "kind": "cms_hpt_txt",
-          "url": "https://www.cedars-sinai.org/cms-hpt.txt",
-          "sha256": "03159e751868fa2c399dfac9eb4ad8ff9b66bf0ffd00e4119fe411c0418269c4"
-        },
-        {
-          "kind": "price_page",
-          "url": "https://cedars-sinai.org/price-transparency.html",
-          "sha256": "9a1e98f9e3b568ce245e8da80df8770462852ca4bdc1e182fb05f7fb0b3a3467"
-        },
-        {
-          "kind": "mrf",
-          "url": "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/documents/951644600_CEDARS-SINAI-MEDICAL-CENTER_standardcharges.json",
-          "sha256": "8c188ab3b02967785256d5867cf760778581e5e849f0fd1141955c2a2dcd2dbf"
-        }
-      ],
-      "prices": [
-        {
-          "code": "72148",
-          "setting": "inpatient",
-          "discountedCashCents": 668608
-        },
-        {
-          "code": "72148",
-          "setting": "outpatient",
-          "discountedCashCents": 514315
-        },
-        {
-          "code": "85025",
-          "setting": "inpatient",
-          "discountedCashCents": 59129
-        },
-        {
-          "code": "85025",
-          "setting": "outpatient",
-          "discountedCashCents": 59129
         }
       ]
     }
