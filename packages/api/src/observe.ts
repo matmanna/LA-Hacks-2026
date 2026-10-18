@@ -1,5 +1,5 @@
 import { ORPCError } from "@orpc/server";
-import { captureException, startSpan } from "@sentry/core";
+import { captureException, setConversationId, startSpan } from "@sentry/core";
 
 // Per-procedure Sentry span. Attributes are limited to ids, counts and
 // durations. Never add bill text, line descriptions, names or request bodies.
@@ -34,6 +34,8 @@ export async function observe<R extends { output: unknown }>(
   const procedure = path.join(".");
   const caseId = caseIdOf(input);
   const started = Date.now();
+  // Groups every AI call for one case in Sentry's Conversations view.
+  if (caseId) setConversationId(caseId);
   return startSpan(
     {
       name: `orpc.${procedure}`,
