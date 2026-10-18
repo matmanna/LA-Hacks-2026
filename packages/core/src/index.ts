@@ -6,6 +6,7 @@ export * from "./conference";
 export * from "./copy";
 export * from "./events";
 export * from "./hash";
+export * from "./home";
 export * from "./letters/index";
 export * from "./money";
 export * from "./parse/readerOutput";
