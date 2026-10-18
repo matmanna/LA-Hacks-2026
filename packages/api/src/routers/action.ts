@@ -1,5 +1,5 @@
 import { Action } from "@betterbill/core";
-import { publicProcedure } from "../index";
+import { accountProcedure, publicProcedure } from "../index";
 import { ActionIdInput, ApproveInput, DraftLetterInput } from "../inputs";
 import { DraftLetterResult } from "../outputs";
 import { approveAction, cancelAction } from "../services/approval";
@@ -8,7 +8,7 @@ import { draftLetter } from "../services/letter-drafter";
 import { sendAction } from "../services/send";
 
 export const actionRouter = {
-  // Becomes protectedProcedure in B-11.
+  // Open to everyone: a draft is a preview, nothing is sent.
   draftLetter: publicProcedure
     .input(DraftLetterInput)
     .output(DraftLetterResult)
@@ -17,8 +17,8 @@ export const actionRouter = {
         ? draftCall(context.db, input)
         : draftLetter(context.db, { caseId: input.caseId, kind: input.kind }),
     ),
-  // Becomes protectedProcedure in B-11.
-  approve: publicProcedure
+  // Needs a real account when BB_REQUIRE_ACCOUNT=true (B-11).
+  approve: accountProcedure
     .input(ApproveInput)
     .output(Action)
     .handler(({ input, context }) =>
@@ -26,8 +26,8 @@ export const actionRouter = {
         ? cancelAction(context.db, input)
         : approveAction(context.db, input),
     ),
-  // Becomes protectedProcedure in B-11.
-  send: publicProcedure
+  // Needs a real account when BB_REQUIRE_ACCOUNT=true (B-11).
+  send: accountProcedure
     .input(ActionIdInput)
     .output(Action)
     .handler(({ input, context }) => sendAction(context.db, input)),
