@@ -201,7 +201,9 @@ function describeLimits(s: ScreenLimits): string {
     return `Free care up to ${s.free.pct}% of the poverty line, discounts up to ${help.pct}%`;
   }
   if (help)
-    return `Free or discounted care up to ${help.pct}% of the poverty line`;
+    return s.helpKind === "discount"
+      ? `Discounted care up to ${help.pct}% of the poverty line`
+      : `Free or discounted care up to ${help.pct}% of the poverty line`;
   return "Has income limits for free or discounted care";
 }
 
@@ -255,6 +257,9 @@ function stateCheck(
 
   if (pct === null) return out("needs_info", describeLimits(s));
   const insurance = input.answers?.insurance;
+  if (isInsured(insurance) && s.insured === "uninsured") {
+    return out("not_applicable", "Applies only to patients without insurance");
+  }
   if (isInsured(insurance) && s.insured === "high_costs") {
     const high = input.answers?.highCosts;
     if (high === false) {
@@ -289,7 +294,7 @@ function stateCheck(
   if (within(pct, s.help)) {
     return out(
       "may_help",
-      s.free
+      s.free || s.helpKind === "discount"
         ? "A discount may apply at your income"
         : "Free or discounted care may apply at your income",
       "discount",

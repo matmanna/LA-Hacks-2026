@@ -508,3 +508,63 @@ describe("assistanceFlag (the letter's request)", () => {
     );
   });
 });
+
+describe("more states (IL, OR, MA shapes)", () => {
+  const more: RegulationRule[] = [
+    ...RULES,
+    rule({
+      id: "il-uninsured-discount",
+      jurisdiction: "IL",
+      screen: {
+        help: { pct: 600, inclusive: true },
+        helpKind: "discount",
+        insured: "uninsured",
+      },
+    }),
+    rule({
+      id: "or-fap",
+      jurisdiction: "OR",
+      screen: {
+        free: { pct: 200, inclusive: true },
+        help: { pct: 400, inclusive: true },
+        insured: "any",
+      },
+    }),
+  ];
+  const s = (state: string, pct: number, insurance: "none" | "private") =>
+    screenAssistance(
+      input({
+        state,
+        policy: null,
+        rules: more,
+        answers: {
+          householdSize: 3,
+          annualIncomeCents: at(pct, 3, state),
+          insurance,
+        },
+      }),
+    );
+
+  it("IL: a discount for the uninsured only", () => {
+    expect(
+      byId(s("IL", 500, "none"), "state:il-uninsured-discount"),
+    ).toMatchObject({
+      outcome: "may_help",
+      finding: "A discount may apply at your income",
+    });
+    expect(
+      byId(s("IL", 500, "private"), "state:il-uninsured-discount")?.finding,
+    ).toBe("Applies only to patients without insurance");
+    expect(
+      byId(
+        screenAssistance(input({ state: "IL", policy: null, rules: more })),
+        "state:il-uninsured-discount",
+      )?.finding,
+    ).toBe("Discounted care up to 600% of the poverty line");
+  });
+
+  it("OR: free at 150%, a discount at 350%", () => {
+    expect(s("OR", 150, "private").status).toBe("likely");
+    expect(s("OR", 350, "none").status).toBe("possible");
+  });
+});

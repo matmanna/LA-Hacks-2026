@@ -32,7 +32,9 @@ export type ScreenLimits = {
   help?: Limit; // free or discounted care
   helpLarge?: Limit;
   hardship?: Limit; // only with high medical debt (MD)
-  insured: "any" | "high_costs" | "underinsured";
+  // "discount": the law limits the bill rather than offering free care.
+  helpKind?: "free_or_discount" | "discount";
+  insured: "any" | "high_costs" | "underinsured" | "uninsured";
 };
 
 export type RegulationRule = {
