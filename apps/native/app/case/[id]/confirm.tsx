@@ -56,15 +56,14 @@ export default function Confirm() {
   const matches = bill ? sum === bill.totals.chargesCents : false;
 
   const confirm = useMutation({
-    mutationFn: async () => {
-      await client.bill.confirmLines({
+    mutationFn: () =>
+      client.bill.confirmLines({
         caseId: id,
         lines: lines ?? [],
         eob: detail.data?.eob ?? null,
-      });
-      await client.audit.run({ caseId: id });
-    },
-    onSuccess: () => router.replace({ pathname: "/case/[id]", params: { id } }),
+      }),
+    onSuccess: () =>
+      router.replace({ pathname: "/case/[id]/checking", params: { id } }),
   });
 
   function mark(lineId: string) {
