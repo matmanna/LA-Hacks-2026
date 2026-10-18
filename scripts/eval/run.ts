@@ -311,6 +311,8 @@ const botm = {
   caughtAll: 0,
   extra: 0,
 };
+const botmMisses: ReturnType<typeof ref>[] = [];
+const botmExtras: ReturnType<typeof ref>[] = [];
 if (args.has("--botm")) {
   for (const fx of listJson("data/benchmark/botm").map(readJson) as Fixture[]) {
     const findings = fx.reporterFindings ?? [];
@@ -321,6 +323,9 @@ if (args.has("--botm")) {
     botm.caughtAll += m.caught.length;
     botm.caughtIn += m.caught.filter((c) => c.expected.inScope).length;
     botm.extra += m.extra.length;
+    for (const e of m.missed.filter((f) => f.inScope))
+      botmMisses.push(ref(fx.id, e));
+    for (const x of m.extra) botmExtras.push(ref(fx.id, x));
   }
 }
 
@@ -443,8 +448,9 @@ const results = Results.parse({
       extraFlags: botm.extra,
     },
   },
-  misses: s.misses,
-  extras: s.extras,
+  // BotM entries (fixture BOTM-NN): in-scope reporter findings missed, and extra flags for manual review.
+  misses: [...s.misses, ...botmMisses],
+  extras: [...s.extras, ...botmExtras],
   notes: [
     ...(process.env.EVAL_NOTE ? [process.env.EVAL_NOTE] : []),
     "Synthetic errors were planted by the team; seededRecall shows the rules work as designed, not real-world accuracy. See botmRecall for published cases.",

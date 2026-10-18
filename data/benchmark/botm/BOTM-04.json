@@ -1,0 +1,92 @@
+{
+  "fixtureVersion": 1,
+  "id": "BOTM-04",
+  "title": "Full list price billed for a PET scan with a lower cash rate",
+  "synthetic": false,
+  "scenario": "botm",
+  "source": {
+    "publisher": "KFF Health News",
+    "series": "Bill of the Month",
+    "url": "https://kffhealthnews.org/health-care-costs/insurers-pay-high-prices-premiums-coinsurance-cost-control-inflation-patients/",
+    "published": "2026-03-03",
+    "accessedAt": "2026-10-17T23:19:00Z"
+  },
+  "bill": {
+    "id": "bill_botm04",
+    "hospital": {
+      "name": "Good Samaritan Hospital (Intermountain Health)",
+      "city": null,
+      "state": "CO"
+    },
+    "statementDate": null,
+    "accountRefMasked": null,
+    "kind": "itemized",
+    "sourceKind": "text",
+    "lines": [
+      {
+        "id": "botm04-l01",
+        "serviceDate": null,
+        "description": "PET SCAN, WHOLE BODY, WITH INJECTED DRUG",
+        "code": null,
+        "codeType": null,
+        "units": 1,
+        "chargeCents": 7700000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 7700000,
+      "adjustmentsCents": 0,
+      "paidCents": 0,
+      "dueCents": 7700000
+    }
+  },
+  "eob": null,
+  "lineSources": {
+    "botm04-l01": "reported"
+  },
+  "reporterFindings": [
+    {
+      "id": "RF1",
+      "summary": "The scan was denied after the hospital said it had preauthorization.",
+      "lever": null,
+      "inScope": false,
+      "lineIds": [],
+      "outcome": "Unresolved."
+    },
+    {
+      "id": "RF2",
+      "summary": "The patient was billed the full list price; the hospital's own cash rate was $14,259.",
+      "lever": "published_price",
+      "inScope": true,
+      "lineIds": ["botm04-l01"],
+      "outcome": "Unresolved; the hospital offered the cash rate as an option."
+    },
+    {
+      "id": "RF3",
+      "summary": "Most of the charge was for the injected drug, not the scan.",
+      "lever": null,
+      "inScope": false,
+      "lineIds": ["botm04-l01"],
+      "outcome": "No change reported."
+    }
+  ],
+  "expected": {
+    "clean": false,
+    "flags": [
+      {
+        "lever": "published_price",
+        "tier": "published",
+        "lineIds": ["botm04-l01"],
+        "amountCents": 6274100,
+        "requiresCapture": "intermountain-good-samaritan:pet-scan:outpatient"
+      }
+    ],
+    "notes": "Reported: $77,000 chargemaster bill and a $14,259 cash rate offered by the hospital. No codes or date are given. The published_price finding needs this hospital's price file, which is not captured, so the engine has no price to compare."
+  }
+}

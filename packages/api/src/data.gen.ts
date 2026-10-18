@@ -1363,8 +1363,8 @@ export const DATA = {
   },
   "evalResults": {
     "schemaVersion": 1,
-    "runAt": "2026-10-17T23:31:39Z",
-    "gitSha": "1a5220b",
+    "runAt": "2026-10-17T23:32:42Z",
+    "gitSha": "eca94ef+botm-fixtures",
     "coreVersion": "0.0.0",
     "datasets": {
       "synthetic": {
@@ -1379,9 +1379,9 @@ export const DATA = {
         "model": null
       },
       "botm": {
-        "cases": 0,
-        "reporterFindings": 0,
-        "inScopeFindings": 0
+        "cases": 5,
+        "reporterFindings": 13,
+        "inScopeFindings": 3
       }
     },
     "metrics": {
@@ -1437,8 +1437,8 @@ export const DATA = {
         "rate": 0.917
       },
       "auditTimeMs": {
-        "p50": 0.01,
-        "p95": 0.048,
+        "p50": 0.009,
+        "p95": 0.04,
         "runsPerFixture": 20
       },
       "photoToLinesSec": {
@@ -1461,24 +1461,69 @@ export const DATA = {
       },
       "botmRecall": {
         "inScope": {
-          "caught": 0,
-          "total": 0,
-          "rate": null
+          "caught": 1,
+          "total": 3,
+          "rate": 0.333
         },
         "all": {
-          "caught": 0,
-          "total": 0,
-          "rate": null
+          "caught": 1,
+          "total": 13,
+          "rate": 0.077
         },
-        "extraFlags": 0
+        "extraFlags": 3
       }
     },
-    "misses": [],
-    "extras": [],
+    "misses": [
+      {
+        "fixture": "BOTM-01",
+        "lever": "duplicate",
+        "lineIds": [
+          "botm01-l01",
+          "botm01-l02"
+        ],
+        "amountCents": null
+      },
+      {
+        "fixture": "BOTM-04",
+        "lever": "published_price",
+        "lineIds": [
+          "botm04-l01"
+        ],
+        "amountCents": null
+      }
+    ],
+    "extras": [
+      {
+        "fixture": "BOTM-01",
+        "lever": "missing_itemization",
+        "lineIds": [
+          "botm01-l01",
+          "botm01-l02"
+        ],
+        "amountCents": 0
+      },
+      {
+        "fixture": "BOTM-04",
+        "lever": "missing_itemization",
+        "lineIds": [
+          "botm04-l01"
+        ],
+        "amountCents": 0
+      },
+      {
+        "fixture": "BOTM-05",
+        "lever": "missing_itemization",
+        "lineIds": [
+          "botm05-l01",
+          "botm05-l02"
+        ],
+        "amountCents": 0
+      }
+    ],
     "notes": [
+      "Run on main 4725b9a + eval harness (eca94ef) + the BotM fixtures and run.ts change in this commit.",
       "Synthetic errors were planted by the team; seededRecall shows the rules work as designed, not real-world accuracy. See botmRecall for published cases.",
-      "Published prices: outpatient rows of each captured price file (data/hospitals/*/capture.json).",
-      "Bill of the Month not run (null = not measured)."
+      "Published prices: outpatient rows of each captured price file (data/hospitals/*/capture.json)."
     ]
   }
 } as const;
