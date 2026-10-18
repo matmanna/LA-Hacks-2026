@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
 
 // Cases created on this phone. The server's case.list needs an account,
 // so the app keeps its own list of case ids until sign in exists.
@@ -27,4 +28,17 @@ export async function forgetCase(id: string) {
     KEY,
     JSON.stringify(cases.filter((c) => c.id !== id)),
   );
+}
+
+// True when this phone started the case from a synthetic sample bill.
+export function useIsSample(id: string) {
+  const [sample, setSample] = useState(false);
+  useEffect(() => {
+    void loadCases().then((cases) =>
+      setSample(
+        cases.some((c) => c.id === id && c.label.startsWith("Sample bill")),
+      ),
+    );
+  }, [id]);
+  return sample;
 }
