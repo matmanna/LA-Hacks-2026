@@ -195,6 +195,7 @@ Plan: 07:00 record shots 3 to 10 on main build with a fresh case; 07:40 shots 11
 - [ ] 22:00 Devpost project created, all members joined, track list confirmed.
 - [ ] 01:30 Devpost draft text in repo (`docs/DEMO.md` Devpost section).
 - [ ] 07:30 Final `bun run eval:all` on main; numbers copied into Devpost and slides.
+- [ ] **08:50 Call fallback (A).** After a good live rehearsal call, run `DATABASE_URL=... bun packages/api/scripts/save-recorded-call.ts <actionId>`, commit `packages/api/src/recorded-call.ts`, and set `DEMO_CALL_FALLBACK=1` in Vercel. Until then `RECORDED_CALL` is `null` and a failed live call has nothing to show.
 - [ ] 09:00 Freeze; repo public (confirm with B); README has setup, sponsors used, honesty box.
 - [ ] 10:00 Video uploaded, link tested in a private window.
 - [ ] **10:30 Devpost submitted (C)** with video, repo, preview URL, screenshots, every track opted in.

@@ -46,6 +46,13 @@ export function buildCallVars(
   const selected = [...flags]
     .sort((a, b) => b.amountCents - a.amountCents)
     .slice(0, 3);
+// These flags are about the whole bill, so there is no one line to name.
+const WHOLE_BILL: Flag["lever"][] = ["eob_mismatch", "missing_itemization"];
+  // Billing finds a charge by its printed name, so say it before the flag.
+  const lineName = (f: Flag) =>
+    WHOLE_BILL.includes(f.lever)
+      ? null
+      : bill.lines.find((line) => line.id === f.lineIds[0])?.description;
   const last4 = (bill.accountRefMasked ?? "").replace(/\D/g, "").slice(-4);
   // Only the server's sample provenance may enable this; never infer it from a hospital name.
   const patientName = syntheticSample ? "Alex Morgan" : "";
@@ -78,7 +85,11 @@ export function buildCallVars(
     hospital_name: bill.hospital.name,
     account_last4: last4.length === 4 ? last4 : "not available",
     disputed_items: selected
-      .map((f) => `${f.title}, ${formatMoney(f.amountCents)}`)
+      .map((f) => {
+        const item = `${f.title}, ${formatMoney(f.amountCents)}`;
+        const name = lineName(f);
+        return name ? `${name}: ${item}` : item;
+      })
       .join("; "),
     ask: ASK,
     review_topics: selected.map((f) => f.title).join("; "),

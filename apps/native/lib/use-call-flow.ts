@@ -1,3 +1,4 @@
+import { CallOutcomeSchema } from "@betterbill/core";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
@@ -71,8 +72,9 @@ export function useCallFlow(caseId: string, scripted: boolean) {
   return {
     stage,
     detail: detail.data,
-    transcript: status.data?.transcript ?? null,
-    outcome: status.data?.outcome ?? null,
+    outcome: status.data?.outcome
+      ? CallOutcomeSchema.parse(JSON.parse(status.data.outcome))
+      : null,
     // Scripted only: the patient answers or declines the incoming call.
     join: () => setStep(SCRIPT.findIndex((s) => s.stage === "joined")),
     decline: () => setMissed(true),

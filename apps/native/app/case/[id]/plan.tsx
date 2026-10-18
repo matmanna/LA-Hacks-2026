@@ -5,7 +5,9 @@ import { type ReactNode, useState } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
 
 import { Button, Icon, Screen, T } from "@/components/bb";
+import { useIsSample } from "@/lib/cases";
 import { errorMessage } from "@/lib/errors";
+import { DEMO_CALL_SCRIPT } from "@/lib/use-call-flow";
 import { client, orpc } from "@/utils/orpc";
 
 type Kind = "letter" | "itemized_request" | "call";
@@ -20,6 +22,8 @@ export default function Plan() {
   const [open, setOpen] = useState<"call" | "email" | null>(null);
   const [signed, setSigned] = useState(false);
   const [paidPlanAgreement, setPaidPlanAgreement] = useState(false);
+  const sample = useIsSample(id);
+  const scripted = DEMO_CALL_SCRIPT && sample;
 
   const detail = useQuery(
     orpc.case.get.queryOptions({ input: { caseId: id } }),
@@ -162,9 +166,11 @@ export default function Plan() {
             n={1}
             title="Your advocate calls billing"
             body={
-              itemized
-                ? "To make sure they send your itemized bill. When a person answers, we bring you on."
-                : "It waits on hold for you. When a person answers, we bring you on. Your advocate leads; you're there if they need you."
+              !scripted
+                ? `It says it's automated, asks ${itemized ? "for your itemized bill" : "billing to review each item"}, and never agrees to pay.`
+                : itemized
+                  ? "To make sure they send your itemized bill. When a person answers, we bring you on."
+                  : "It waits on hold for you. When a person answers, we bring you on. Your advocate leads; you're there if they need you."
             }
             toggle={
               open === "call" ? "Hide the call script" : "See what we'll say"
@@ -183,15 +189,15 @@ export default function Plan() {
           }
           body={
             itemized
-              ? "You're CC'd, and they send the itemized bill to you."
-              : "Each error with proof. You're CC'd, and they send your itemized bill to you."
+              ? "We ask them to send the itemized bill to you."
+              : "Each error with proof, sent to the billing office."
           }
           toggle={open === "email" ? "Hide the email" : "See the email"}
           onToggle={() => setOpen((o) => (o === "email" ? null : "email"))}
         >
           {open === "email" && email.data ? (
             <Draft
-              head={`To: ${email.data.action.recipient} · CC: you`}
+              head={`To: ${email.data.action.recipient}`}
               text={email.data.action.draft}
             />
           ) : null}
@@ -199,11 +205,11 @@ export default function Plan() {
         <Step
           n={withCall ? 3 : 2}
           muted
-          title="We text you updates"
+          title="Follow along here"
           body={
             itemized
-              ? "When it reaches your inbox."
-              : "When the call ends, and when to follow up."
+              ? "Add the itemized bill when it reaches your inbox."
+              : "See what billing said when the call ends."
           }
         />
       </View>

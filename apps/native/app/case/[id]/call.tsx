@@ -15,16 +15,22 @@ const COPY: Record<string, { title: string; sub: string }> = {
   joined: { title: "On the call", sub: "" },
   done: {
     title: "Call done",
-    sub: "Sending the email with the details. You're CC'd.",
+    sub: "Sending the email with the details.",
   },
   waiting: {
     title: "Waiting on billing",
-    sub: "They'll send your itemized bill to your email. We'll text you.",
+    sub: "They'll send your itemized bill to your email.",
   },
   failed: {
     title: "The call didn't go through",
     sub: "Nothing was said and nothing changed on your bill. You can try again.",
   },
+};
+
+// A live call dials billing directly: no phone menu, no hold, no joining.
+const DIALING = {
+  title: "Calling billing",
+  sub: "Our assistant says it's automated and sticks to the script you approved.",
 };
 
 // L7 call tracking, with A2 Incoming call and A3 Missed. ?script=1 replays
@@ -55,10 +61,11 @@ export default function Call() {
     return <Missed id={id} onRetry={flow.retry} />;
   }
 
-  const copy = COPY[stage] ?? COPY.on_hold;
+  const copy =
+    !scripted && stage === "on_hold" ? DIALING : (COPY[stage] ?? COPY.on_hold);
   const eyebrow = {
-    on_hold: "on hold",
-    joined: "3 on the call",
+    on_hold: scripted ? "on hold" : "dialing",
+    joined: scripted ? "3 on the call" : "on the call",
     done: `account ending ${bill?.accountRefMasked ?? ""}`,
     waiting: `account ending ${bill?.accountRefMasked ?? ""}`,
     failed: "call ended",
@@ -67,7 +74,13 @@ export default function Call() {
   return (
     <Screen
       onNav={() => router.replace("/")}
-      aside={scripted ? "Sample call" : undefined}
+      aside={
+        scripted
+          ? "Sample call"
+          : flow.outcome?.source === "recorded_fallback"
+            ? "Recorded test call"
+            : undefined
+      }
       footer={
         stage === "joined" && scripted ? (
           <View className="flex-row gap-2.5">
@@ -127,7 +140,7 @@ export default function Call() {
 
       <Track stage={stage} />
 
-      {stage === "on_hold" ? (
+      {stage === "on_hold" && scripted ? (
         <View className="flex-row items-center gap-3.5 rounded-2xl bg-wash p-4">
           <Bars />
           <View className="gap-0.5">
@@ -141,7 +154,9 @@ export default function Call() {
         </View>
       ) : null}
 
-      {stage === "joined" ? (
+      {/* Live calls have no patient on the line, and the transcript only
+          arrives after the call ends. */}
+      {stage === "joined" && scripted ? (
         <View className="gap-3">
           <View className="flex-row gap-2">
             <Person icon="landmark" label="Billing rep" />
@@ -149,13 +164,10 @@ export default function Call() {
             <Person you label="On the line" />
           </View>
           <View className="gap-2">
-            {(scripted
-              ? [
-                  "Billing rep: I'll need to verify the patient before we continue.",
-                  "Your advocate: The patient is on the line with us and can confirm.",
-                ]
-              : (flow.transcript ?? "").split("\n").filter(Boolean).slice(-2)
-            ).map((line) => (
+            {[
+              "Billing rep: I'll need to verify the patient before we continue.",
+              "Your advocate: The patient is on the line with us and can confirm.",
+            ].map((line) => (
               <T key={line} className="text-sm leading-5">
                 {line}
               </T>
@@ -177,20 +189,23 @@ export default function Call() {
             <Row
               label="They said"
               value={
-                scripted ? `Will review all ${flags}` : (flow.outcome ?? "")
+                scripted
+                  ? `Will review all ${flags}`
+                  : (flow.outcome?.billingResponse ??
+                    flow.outcome?.summary ??
+                    "")
               }
             />
+          ) : null}
+          {flow.outcome?.referenceNumber ? (
+            <Row label="Reference" value={flow.outcome.referenceNumber} />
           ) : null}
           {scripted ? (
             <Row label="Itemized bill" value="Sent to your email" />
           ) : null}
           <Row
             label="Email to billing"
-            value={
-              email?.sentAt || stage === "waiting"
-                ? "Sent, you're CC'd"
-                : "Sending…"
-            }
+            value={email?.sentAt || stage === "waiting" ? "Sent" : "Sending…"}
             last
           />
         </View>
@@ -447,7 +462,7 @@ function Missed({ id, onRetry }: { id: string; onRetry: () => void }) {
         </T>
       </View>
       <View className="pt-[22px]">
-        <Row label="Email to billing" value="Sent, you're CC'd" />
+        <Row label="Email to billing" value="Sent" />
         <Row label="Call" value="Not done yet" />
         <Row label="We texted you" value="To pick a new time" last />
       </View>

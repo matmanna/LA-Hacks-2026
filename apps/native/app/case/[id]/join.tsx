@@ -57,49 +57,61 @@ export default function Join() {
         <View className="h-[5px] w-10 self-center rounded-full bg-hairline" />
         <View className="gap-1.5">
           <T weight="semibold" className="text-[22px] leading-7">
-            Can you join the call?
+            {scripted ? "Can you join the call?" : "Ready to call billing?"}
           </T>
           <T className="text-[15px] text-muted leading-[22px]">
-            Your advocate waits on hold for you. When a billing rep answers, we
-            call your phone so you can join. Hold times vary.
+            {scripted
+              ? "Your advocate waits on hold for you. When a billing rep answers, we call your phone so you can join. Hold times vary."
+              : "Our assistant calls the billing office now. It says it's automated, sticks to the script you approved, and never agrees to pay. You don't need to be on the call."}
           </T>
         </View>
 
-        <View accessibilityRole="radiogroup" className="gap-2.5">
-          <Choice
-            selected={when === "now"}
-            onPress={() => setWhen("now")}
-            title="Call now"
-            note="I'm free and can pick up"
-          />
-          <Choice
-            selected={when === "later"}
-            onPress={() => setWhen("later")}
-            title="Pick a time"
-            note="During billing office hours"
-          />
-        </View>
+        {/* Live calls can't bring the patient on yet, so only the sample
+            shows when to join and what to have ready. */}
+        {scripted ? (
+          <>
+            <View accessibilityRole="radiogroup" className="gap-2.5">
+              <Choice
+                selected={when === "now"}
+                onPress={() => setWhen("now")}
+                title="Call now"
+                note="I'm free and can pick up"
+              />
+              <Choice
+                selected={when === "later"}
+                onPress={() => setWhen("later")}
+                title="Pick a time"
+                note="During billing office hours"
+              />
+            </View>
 
-        <View className="gap-2">
-          <T weight="semibold" className="text-[13px] text-muted">
-            Have these ready. Billing may ask.
-          </T>
-          <View className="flex-row flex-wrap gap-y-1.5">
-            {READY.map((r) => (
-              <View
-                key={r.text}
-                className="w-1/2 flex-row items-start gap-1.5 pr-3"
-              >
-                {r.have ? (
-                  <Icon name="check" size={16} color="#0F9D76" stroke={2.5} />
-                ) : (
-                  <View className="mt-0.5 size-4 rounded-full border-2 border-[#5B6B7C]" />
-                )}
-                <T className="flex-1 text-sm leading-[19px]">{r.text}</T>
+            <View className="gap-2">
+              <T weight="semibold" className="text-[13px] text-muted">
+                Have these ready. Billing may ask.
+              </T>
+              <View className="flex-row flex-wrap gap-y-1.5">
+                {READY.map((r) => (
+                  <View
+                    key={r.text}
+                    className="w-1/2 flex-row items-start gap-1.5 pr-3"
+                  >
+                    {r.have ? (
+                      <Icon
+                        name="check"
+                        size={16}
+                        color="#0F9D76"
+                        stroke={2.5}
+                      />
+                    ) : (
+                      <View className="mt-0.5 size-4 rounded-full border-2 border-[#5B6B7C]" />
+                    )}
+                    <T className="flex-1 text-sm leading-[19px]">{r.text}</T>
+                  </View>
+                ))}
               </View>
-            ))}
-          </View>
-        </View>
+            </View>
+          </>
+        ) : null}
 
         {start.isError ? (
           <T className="text-coral-ink text-sm">{errorMessage(start.error)}</T>
@@ -114,7 +126,7 @@ export default function Join() {
           />
           <T className="text-center text-muted text-xs leading-4">
             {when === "now"
-              ? "The email is already on its way. You're CC'd."
+              ? "The email is already on its way."
               : "Scheduling is coming soon. Call now, or come back later."}
           </T>
         </View>

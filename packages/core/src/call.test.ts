@@ -153,6 +153,25 @@ describe("buildCallVars", () => {
     expect(vars.hospital_name).toBe("Example Hospital");
   });
 
+  it("names the bill line for line flags, not for whole-bill flags", () => {
+    const withLines = {
+      ...bill,
+      lines: [
+        { id: "l1", description: "CBC W/AUTO DIFF" },
+        { id: "l2", description: "XR CHEST 2 VIEWS" },
+      ],
+    } as Bill;
+    const dup = { ...flag("a", "Listed twice", 8400), lineIds: ["l1"] };
+    const eob = {
+      ...flag("b", "Bill asks more than your EOB says", 5000),
+      lever: "eob_mismatch" as const,
+      lineIds: ["l1", "l2"],
+    };
+    expect(buildCallVars(withLines, [dup, eob]).disputed_items).toBe(
+      "CBC W/AUTO DIFF: Listed twice, $84.00; Bill asks more than your EOB says, $50.00",
+    );
+  });
+
   it("says 'not available' without a 4-digit account suffix", () => {
     expect(
       buildCallVars({ ...bill, accountRefMasked: null }, []).account_last4,
