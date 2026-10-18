@@ -17,21 +17,12 @@ import { queryClient } from "@/utils/orpc";
 Uniwind.setTheme("light");
 void SplashScreen.preventAutoHideAsync();
 
-// Screens draw their own top bar from the Paper frames. Bills and Prices
-// live in the (tabs) group; Account opens from the avatar in their headers.
+// Screens draw their own top bar from the Paper frames. The five primary
+// destinations live in the (tabs) group.
 function StackLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" />
-      <Stack.Screen
-        name="account"
-        options={{
-          headerShown: true,
-          title: "Account",
-          headerBackTitle: "Back",
-          headerTitleStyle: { fontFamily: "Geist_600SemiBold" },
-        }}
-      />
       <Stack.Screen name="case/[id]/index" />
       <Stack.Screen
         name="case/[id]/join"

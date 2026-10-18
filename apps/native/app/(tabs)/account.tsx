@@ -1,7 +1,5 @@
-import * as Linking from "expo-linking";
-import * as WebBrowser from "expo-web-browser";
 import { useEffect, useState } from "react";
-import { Alert, Pressable, Switch, TextInput, View } from "react-native";
+import { Pressable, Switch, TextInput, View } from "react-native";
 
 import { Choice, Icon, Screen, T } from "@/components/bb";
 import { SignIn } from "@/components/sign-in";
@@ -10,8 +8,6 @@ import { insuranceOptions } from "@/lib/assist";
 import { authClient } from "@/lib/auth-client";
 import { useMyInfo } from "@/lib/my-info";
 import { queryClient } from "@/utils/orpc";
-
-import { ENV } from "../src/env";
 
 // P1 Account: "Your info" (saved only on this phone), updates, and sign in.
 export default function Account() {
@@ -37,7 +33,13 @@ export default function Account() {
   const size = info?.householdSize ?? 1;
 
   return (
-    <Screen nav={null} tone="wash" insetTop={false}>
+    <Screen nav={null} tone="wash">
+      <T
+        weight="semibold"
+        className="pt-4 text-[28px] leading-[34px] tracking-[-0.01em]"
+      >
+        Account
+      </T>
       <Label>Your info</Label>
       <View className="rounded-[20px] bg-white px-[18px]">
         <View className="min-h-14 flex-row items-center justify-between border-hairline border-b py-2">
@@ -167,44 +169,8 @@ function Round({
   );
 }
 
-// Signed in: sign out, and the Polar sandbox upgrade and portal.
+// Signed in: name, email, and sign out. Upgrade and portal live on Billing.
 function SignedIn({ name, email }: { name: string; email: string }) {
-  const open = async (url: string, returnUrl: string) => {
-    await WebBrowser.openAuthSessionAsync(url, returnUrl);
-  };
-  const checkout = async () => {
-    const returnUrl = Linking.createURL("/");
-    const polar = new URL("/polar/success", ENV.EXPO_PUBLIC_SERVER_URL);
-    polar.searchParams.set("returnUrl", returnUrl);
-    const { data, error } = await authClient.checkout({
-      slug: "pro",
-      redirect: false,
-      successUrl: polar.toString(),
-      returnUrl: polar.toString(),
-    });
-    if (error || !data?.url) {
-      Alert.alert(
-        "Checkout unavailable",
-        error?.message ?? "Unable to create a checkout session.",
-      );
-      return;
-    }
-    await open(data.url, returnUrl);
-  };
-  const portal = async () => {
-    const returnUrl = Linking.createURL("/");
-    const { data, error } = await authClient.customer.portal({
-      redirect: false,
-    });
-    if (error || !data?.url) {
-      Alert.alert(
-        "Portal unavailable",
-        error?.message ?? "Unable to open the customer portal.",
-      );
-      return;
-    }
-    await open(data.url, returnUrl);
-  };
   return (
     <View className="rounded-[20px] bg-white px-[18px] py-1">
       <View className="border-hairline border-b py-3.5">
@@ -213,8 +179,6 @@ function SignedIn({ name, email }: { name: string; email: string }) {
         </T>
         <T className="text-[13px] text-muted">{email}</T>
       </View>
-      <Row label="Upgrade to Pro" onPress={checkout} />
-      <Row label="Manage subscription" onPress={portal} />
       <Row
         label="Sign out"
         danger

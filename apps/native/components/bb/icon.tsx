@@ -24,6 +24,7 @@ const PATHS = {
     "M8 12h8",
   ],
   user: ["M4 21a8 8 0 0116 0"],
+  card: ["M3 10h18", "M6 15h4"],
   search: ["M20 20l-4-4"],
   mapPin: [
     "M20 10c0 5-5.5 10.2-7.4 11.8a1 1 0 01-1.2 0C9.5 20.2 4 15 4 10a8 8 0 0116 0",
@@ -95,6 +96,9 @@ export function Icon({
   };
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
+      {name === "card" ? (
+        <Rect x={3} y={5} width={18} height={14} rx={2.5} {...common} />
+      ) : null}
       {name === "user" ? <Circle cx={12} cy={8} r={4} {...common} /> : null}
       {name === "search" ? <Circle cx={11} cy={11} r={7} {...common} /> : null}
       {name === "mapPin" ? <Circle cx={12} cy={10} r={3} {...common} /> : null}
