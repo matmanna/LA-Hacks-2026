@@ -1,0 +1,92 @@
+{
+  "fixtureVersion": 1,
+  "id": "BOTM-05",
+  "title": "Four surgical screws billed at $15,076",
+  "synthetic": false,
+  "scenario": "botm",
+  "source": {
+    "publisher": "KFF Health News",
+    "series": "Bill of the Month",
+    "url": "https://kffhealthnews.org/health-industry/sticker-shock-jolts-oklahoma-patient-15076-for-four-tiny-screws/",
+    "published": "2018-05-14",
+    "accessedAt": "2026-10-17T23:19:00Z"
+  },
+  "bill": {
+    "id": "bill_botm05",
+    "hospital": {
+      "name": "OU Medical Center",
+      "city": null,
+      "state": "OK"
+    },
+    "statementDate": null,
+    "accountRefMasked": null,
+    "kind": "itemized",
+    "sourceKind": "text",
+    "lines": [
+      {
+        "id": "botm05-l01",
+        "serviceDate": null,
+        "description": "SURGICAL SCREWS",
+        "code": null,
+        "codeType": null,
+        "units": 4,
+        "chargeCents": 1507600,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      },
+      {
+        "id": "botm05-l02",
+        "serviceDate": null,
+        "description": "OTHER HOSPITAL CHARGES, 3-DAY STAY, NOT ITEMIZED IN ARTICLE",
+        "code": null,
+        "codeType": null,
+        "units": 1,
+        "chargeCents": 10045100,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 1,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 11552700,
+      "adjustmentsCents": 0,
+      "paidCents": 0,
+      "dueCents": 11552700
+    }
+  },
+  "eob": null,
+  "lineSources": {
+    "botm05-l01": "reported",
+    "botm05-l02": "reconstructed"
+  },
+  "reporterFindings": [
+    {
+      "id": "RF1",
+      "summary": "The screws were charged at a price far above what such hardware usually costs.",
+      "lever": null,
+      "inScope": false,
+      "lineIds": ["botm05-l01"],
+      "outcome": "Whole bill later adjusted to zero."
+    },
+    {
+      "id": "RF2",
+      "summary": "The insurer had not approved the hospital stay.",
+      "lever": null,
+      "inScope": false,
+      "lineIds": [],
+      "outcome": "Whole bill later adjusted to zero after a complaint."
+    }
+  ],
+  "expected": {
+    "clean": false,
+    "flags": [],
+    "notes": "Reported: four screws $15,076; total bill $115,527. Line l02 is reconstructed as the total minus the screws. No codes or day of service are given (surgery in 2017). No in-scope finding: BetterBill has no device-markup or prior-authorization lever."
+  }
+}
