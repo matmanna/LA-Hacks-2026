@@ -1,236 +1,226 @@
-import type { NearbyPrice } from "@betterbill/core";
-import { useQuery } from "@tanstack/react-query";
-import * as Location from "expo-location";
+import { SERVICES } from "@betterbill/core/prices/services";
+import { useQueries } from "@tanstack/react-query";
+import { router, useFocusEffect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import * as WebBrowser from "expo-web-browser";
-import { cn } from "heroui-native";
-import { type ReactNode, useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Platform,
-  Pressable,
-  ScrollView,
-  View,
-} from "react-native";
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useReducedMotion,
-  useSharedValue,
-  withDelay,
-  withTiming,
-} from "react-native-reanimated";
+import { type ReactNode, useCallback, useState } from "react";
+import { Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
-  Button,
+  AccountButton,
   Disclaimer,
   Icon,
+  type IconName,
   Money,
-  PriceMap,
   T,
-  TierBadge,
 } from "@/components/bb";
-import { errorMessage } from "@/lib/errors";
-import { capturedDay } from "@/lib/format";
+import { loadCases, type SavedCase } from "@/lib/cases";
+import { canChangeOrigin, changeOrigin, useOrigin } from "@/lib/origin";
+import { useSavedPrices } from "@/lib/saved-prices";
 import { orpc } from "@/utils/orpc";
 
-// Downtown Los Angeles, used when location is off or on the web.
-const FALLBACK = { lat: 34.0522, lng: -118.2437 };
+const CODES = new Set(SERVICES.map((s) => s.code));
 
-type Origin = { lat: number; lng: number; here: boolean };
+const openService = (code: string) =>
+  router.push({ pathname: "/price/map", params: { code } });
 
-// Asks for location once. Coordinates are rounded to about 100 m before
-// they leave the phone.
-function useOrigin(): Origin | null {
-  const [origin, setOrigin] = useState<Origin | null>(
-    Platform.OS === "web" ? { ...FALLBACK, here: false } : null,
-  );
-  useEffect(() => {
-    if (Platform.OS === "web") return;
-    let live = true;
-    (async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") throw new Error("Location is off");
-        const pos =
-          (await Location.getLastKnownPositionAsync()) ??
-          (await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.Balanced,
-          }));
-        const round = (n: number) => Math.round(n * 1000) / 1000;
-        if (live) {
-          setOrigin({
-            lat: round(pos.coords.latitude),
-            lng: round(pos.coords.longitude),
-            here: true,
-          });
-        }
-      } catch {
-        if (live) setOrigin({ ...FALLBACK, here: false });
-      }
-    })();
-    return () => {
-      live = false;
-    };
-  }, []);
-  return origin;
-}
-
-// "Before you go": what nearby hospitals publish as their cash price for a
-// service, ranked by the server. The phone only displays the rows.
+// Price A0, "Before you go": search, services found on the patient's own
+// bills, saved prices, and the common services we have price files for.
 export default function Prices() {
   const insets = useSafeAreaInsets();
   const origin = useOrigin();
-  const [code, setCode] = useState("72148");
-  const services = useQuery(orpc.price.services.queryOptions({ input: {} }));
-  const nearby = useQuery(
-    orpc.price.nearby.queryOptions({
-      input: {
-        code,
-        lat: origin?.lat ?? FALLBACK.lat,
-        lng: origin?.lng ?? FALLBACK.lng,
-      },
-      enabled: origin !== null,
-    }),
+  const [saved] = useSavedPrices();
+  const [cases, setCases] = useState<SavedCase[]>([]);
+  useFocusEffect(
+    useCallback(() => {
+      void loadCases().then(setCases);
+    }, []),
   );
-  const service = services.data?.find((s) => s.code === code);
-  const rows = nearby.data ?? [];
-  const priced = rows.filter((r) => r.discountedCashCents !== null);
-  // Rows come ranked, so the range is the first and last priced row.
-  const low = priced[0]?.discountedCashCents ?? null;
-  const high = priced[priced.length - 1]?.discountedCashCents ?? null;
+  const details = useQueries({
+    queries: cases.map((c) =>
+      orpc.case.get.queryOptions({ input: { caseId: c.id } }),
+    ),
+  });
+
+  // Lines on confirmed bills whose code is one we have prices for, once each.
+  const fromBills = details
+    .flatMap((q) => {
+      const d = q.data;
+      if (!d?.bill || d.case.status === "new") return [];
+      const hospital = d.bill.hospital.name;
+      return d.bill.lines
+        .filter((l) => l.code !== null && CODES.has(l.code))
+        .map((line) => ({ line, hospital }));
+    })
+    .filter(
+      (x, i, all) => all.findIndex((y) => y.line.code === x.line.code) === i,
+    )
+    .slice(0, 3);
 
   return (
-    <View className="flex-1 bg-wash">
+    <View className="flex-1 bg-white">
       <StatusBar style="dark" />
       <ScrollView
-        contentContainerClassName="gap-4 pb-8"
-        contentContainerStyle={{ paddingTop: insets.top + 8 }}
+        contentContainerClassName="px-5 pb-8"
+        contentContainerStyle={{ paddingTop: insets.top + 14 }}
       >
-        <View className="gap-1 px-5">
-          <T weight="serif" className="text-[30px] leading-[34px]">
-            Before you go
-          </T>
-          <T className="text-[15px] text-muted leading-[22px]">
-            What nearby hospitals publish for a service, before you book.
+        <View className="gap-1">
+          <View className="flex-row items-center justify-between">
+            <T
+              weight="semibold"
+              className="text-[28px] leading-[34px] tracking-[-0.01em]"
+            >
+              Before you go
+            </T>
+            <AccountButton />
+          </View>
+          <T className="text-[15px] text-muted leading-[21px]">
+            See what nearby hospitals publish for a scan, test or visit.
           </T>
         </View>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerClassName="gap-2 px-5"
-          accessibilityRole="radiogroup"
-          accessibilityLabel="Service"
+        <Pressable
+          accessibilityRole="search"
+          accessibilityLabel="Search a service, test or scan"
+          onPress={() => router.push("/price/search")}
+          className="mt-4 h-[52px] flex-row items-center gap-2.5 rounded-full bg-wash px-[18px]"
         >
-          {(services.data ?? []).map((s) => {
-            const on = s.code === code;
-            return (
+          <Icon name="search" color="#5B6B7C" stroke={2} />
+          <T className="text-base text-muted">Search a service, test or scan</T>
+        </Pressable>
+
+        <View className="mt-1.5 min-h-11 flex-row items-center gap-1.5">
+          <Icon name="mapPin" size={14} color="#5B6B7C" stroke={2} />
+          <T className="text-[13px] text-muted">
+            {origin === null
+              ? "Finding where you are…"
+              : `Near ${origin.label}`}
+          </T>
+          {origin !== null && canChangeOrigin ? (
+            <>
+              <T className="text-[13px] text-muted">·</T>
               <Pressable
-                key={s.code}
-                accessibilityRole="radio"
-                accessibilityState={{ checked: on }}
-                onPress={() => setCode(s.code)}
-                className={cn(
-                  "h-11 justify-center rounded-full px-4",
-                  on ? "bg-ink" : "border border-hairline bg-white",
-                )}
+                accessibilityRole="button"
+                accessibilityLabel={
+                  origin.here
+                    ? "Use downtown Los Angeles instead"
+                    : "Use my location"
+                }
+                hitSlop={12}
+                onPress={changeOrigin}
               >
-                <T
-                  weight={on ? "semibold" : "medium"}
-                  className={cn("text-sm", on ? "text-white" : "text-ink")}
-                >
-                  {s.name}
+                <T weight="semibold" className="text-[13px] text-accent">
+                  {origin.here ? "Change" : "Use my location"}
                 </T>
               </Pressable>
-            );
-          })}
-        </ScrollView>
-
-        <View className="gap-1.5 px-5">
-          {service ? (
-            <T className="text-[13px] text-muted leading-[18px]">
-              {`${service.what} Code ${service.code}.`}
-            </T>
+            </>
           ) : null}
-          <View className="flex-row items-center gap-1.5">
-            <Icon name="mapPin" size={16} color="#5B6B7C" />
-            <T className="flex-1 text-[13px] text-muted leading-[18px]">
-              {origin === null
-                ? "Finding where you are…"
-                : origin.here
-                  ? "Distances from where you are."
-                  : "Distances from downtown Los Angeles. Allow location for yours."}
-            </T>
+        </View>
+
+        {fromBills.length > 0 ? (
+          <Section title="From your bills">
+            {fromBills.map(({ line, hospital }, i) => (
+              <ListRow
+                key={line.id}
+                icon="doc"
+                title={
+                  SERVICES.find((s) => s.code === line.code)?.name ??
+                  line.description
+                }
+                last={i === fromBills.length - 1}
+                onPress={() => line.code && openService(line.code)}
+              >
+                <View className="flex-row flex-wrap items-center gap-1">
+                  <T className="text-muted text-xs">
+                    {`On your ${hospital} bill · billed`}
+                  </T>
+                  <Money
+                    cents={line.chargeCents}
+                    size={12}
+                    weight="regular"
+                    className="text-muted"
+                    label="Billed"
+                  />
+                </View>
+              </ListRow>
+            ))}
+          </Section>
+        ) : null}
+
+        {saved.length > 0 ? (
+          <Section title="Saved">
+            {saved.slice(0, 5).map((s, i) => (
+              <ListRow
+                key={`${s.hospitalKey}-${s.code}`}
+                icon="landmark"
+                title={s.serviceName}
+                last={i === Math.min(saved.length, 5) - 1}
+                onPress={() =>
+                  router.push({
+                    pathname: "/price/[hospitalKey]",
+                    params: { hospitalKey: s.hospitalKey, code: s.code },
+                  })
+                }
+              >
+                <View className="flex-row flex-wrap items-center gap-1">
+                  <T className="shrink text-muted text-xs" numberOfLines={1}>
+                    {`${s.hospitalName} ·`}
+                  </T>
+                  {s.cashCents === null ? (
+                    <T className="text-muted text-xs">No cash price</T>
+                  ) : (
+                    <Money
+                      cents={s.cashCents}
+                      size={12}
+                      weight="regular"
+                      className="text-muted"
+                      label="Hospital's published price"
+                    />
+                  )}
+                </View>
+              </ListRow>
+            ))}
+          </Section>
+        ) : null}
+
+        <View className="mt-[22px] gap-2.5">
+          <SectionTitle>Common</SectionTitle>
+          <View className="flex-row flex-wrap gap-2">
+            {SERVICES.map((s) => (
+              <Pressable
+                key={s.code}
+                accessibilityRole="button"
+                onPress={() => openService(s.code)}
+                className="h-11 justify-center rounded-full border border-hairline bg-white px-3.5"
+              >
+                <T weight="medium" className="text-sm">
+                  {s.short}
+                </T>
+              </Pressable>
+            ))}
           </View>
         </View>
 
-        {origin === null || nearby.isPending ? (
-          <ActivityIndicator className="pt-10" color="#1E4ED8" />
-        ) : nearby.isError ? (
-          <View className="mx-5 gap-3 rounded-[20px] bg-white p-4">
-            <T className="text-coral-ink text-sm leading-5">
-              {errorMessage(nearby.error)}
-            </T>
-            <Button
-              label="Try again"
-              variant="secondary"
-              onPress={() => void nearby.refetch()}
-            />
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.push("/scan")}
+          className="mt-[22px] flex-row items-center gap-3.5 rounded-2xl bg-secondary px-4 py-3.5"
+        >
+          <View className="size-10 items-center justify-center rounded-full bg-white">
+            <Icon name="scan" color="#1E3A8A" />
           </View>
-        ) : rows.length === 0 ? (
-          <View className="mx-5 gap-1 rounded-[20px] bg-white p-4">
+          <View className="flex-1 gap-0.5">
             <T weight="semibold" className="text-base">
-              No prices for this service yet
+              Have a doctor's order? Scan it
             </T>
-            <T className="text-muted text-sm leading-5">
-              None of the hospitals we captured list it in their price file.
+            <T className="text-[13px] text-secondary-ink leading-[18px]">
+              Opens the camera. Reading the test from an order is coming soon.
             </T>
           </View>
-        ) : (
-          <>
-            <View className="px-5">
-              <PriceMap rows={rows} origin={origin} here={origin.here} />
-            </View>
+          <Icon name="chevron" size={16} color="#1E3A8A" />
+        </Pressable>
 
-            {low !== null && high !== null ? (
-              <Rise index={0}>
-                <View className="gap-0.5 px-5">
-                  <View className="flex-row items-center gap-1.5">
-                    <Money cents={low} size={28} weight="semibold" />
-                    <T weight="semibold" className="text-[28px] leading-[34px]">
-                      –
-                    </T>
-                    <Money cents={high} size={28} weight="semibold" />
-                  </View>
-                  <T className="text-[13px] text-muted">
-                    {`Published cash prices at ${priced.length} ${priced.length === 1 ? "hospital" : "hospitals"}, lowest first`}
-                  </T>
-                </View>
-              </Rise>
-            ) : null}
-
-            <View className="mx-5 rounded-[20px] bg-white px-4">
-              {rows.map((r, i) => (
-                <Rise key={r.hospitalKey} index={i + 1}>
-                  <PriceRow
-                    row={r}
-                    rank={r.discountedCashCents === null ? null : i + 1}
-                    lowest={i === 0 && r.discountedCashCents !== null}
-                    last={i === rows.length - 1}
-                  />
-                </Rise>
-              ))}
-            </View>
-          </>
-        )}
-
-        <View className="gap-2 px-5 pt-2">
-          <T className="text-center text-muted text-xs leading-4">
-            Published cash prices for the hospital's own fee. Your cost depends
-            on your insurance and what's done during the visit. Estimate.
-          </T>
+        <View className="pt-6">
           <Disclaimer />
         </View>
       </ScrollView>
@@ -238,113 +228,59 @@ export default function Prices() {
   );
 }
 
-function PriceRow({
-  row,
-  rank,
-  lowest,
-  last,
-}: {
-  row: NearbyPrice;
-  rank: number | null;
-  lowest: boolean;
-  last: boolean;
-}) {
-  const link = row.pageUrl ?? row.sourceUrl;
+function SectionTitle({ children }: { children: string }) {
   return (
-    <View
-      className={cn(
-        "flex-row gap-3 py-3.5",
-        !last && "border-hairline border-b",
-      )}
+    <T
+      weight="semibold"
+      className="text-[13px] text-muted uppercase tracking-[0.02em]"
     >
-      <T
-        weight="semibold"
-        className={cn(
-          "w-5 pt-0.5 text-[13px]",
-          lowest ? "text-mint-ink" : "text-muted",
-        )}
-      >
-        {rank === null ? "–" : String(rank)}
-      </T>
-      <View className="flex-1 gap-1">
-        <View className="flex-row items-start justify-between gap-3">
-          <View className="flex-1 gap-0.5">
-            <T weight="semibold" className="text-[15px] leading-5">
-              {row.hospitalName}
-            </T>
-            <T className="text-muted text-xs" numberOfLines={1}>
-              {`${row.distanceMiles.toFixed(1)} mi · ${row.address}`}
-            </T>
-          </View>
-          {row.discountedCashCents === null ? null : (
-            <Money
-              cents={row.discountedCashCents}
-              size={16}
-              weight="semibold"
-              className={lowest ? "text-mint-ink" : "text-foreground"}
-              label={`${row.hospitalName}, published cash price`}
-            />
-          )}
-        </View>
-        {lowest ? (
-          <View className="self-start rounded-full bg-mint-soft px-2.5 py-1">
-            <T weight="medium" className="text-mint-ink text-xs">
-              Lowest published cash price
-            </T>
-          </View>
-        ) : null}
-        {row.discountedCashCents === null ? (
-          <T weight="medium" className="text-muted text-sm">
-            No cash price published
-          </T>
-        ) : (
-          <TierBadge tier="published" />
-        )}
-        {row.grossChargeCents === null ? null : (
-          <View className="flex-row items-center gap-1">
-            <T className="text-muted text-xs">List price</T>
-            <Money
-              cents={row.grossChargeCents}
-              size={12}
-              weight="regular"
-              className="text-muted"
-              label="List price"
-            />
-          </View>
-        )}
-        <Pressable
-          accessibilityRole="link"
-          accessibilityLabel={`Price file source for ${row.hospitalName}, captured ${capturedDay(row.capturedAt)}`}
-          onPress={() => void WebBrowser.openBrowserAsync(link)}
-          hitSlop={8}
-          className="min-h-11 flex-row items-center gap-1 self-start"
-        >
-          <Icon name="link" size={14} color="#1E4ED8" />
-          <T weight="medium" className="text-accent text-xs">
-            {`Source · captured ${capturedDay(row.capturedAt)}`}
-          </T>
-        </Pressable>
-      </View>
+      {children}
+    </T>
+  );
+}
+
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <View className="mt-[22px]">
+      <SectionTitle>{title}</SectionTitle>
+      {children}
     </View>
   );
 }
 
-// A short fade and rise as rows arrive; none when reduce motion is on.
-// Plain shared values, so it runs on phones and on the web alike.
-function Rise({ index, children }: { index: number; children: ReactNode }) {
-  const reduced = useReducedMotion();
-  const shown = useSharedValue(reduced ? 1 : 0);
-  useEffect(() => {
-    shown.value = reduced
-      ? 1
-      : withDelay(
-          Math.min(index, 8) * 45,
-          withTiming(1, { duration: 220, easing: Easing.out(Easing.quad) }),
-        );
-  }, [index, reduced, shown]);
-  const style = useAnimatedStyle(() => ({
-    opacity: shown.value,
-    transform: [{ translateY: (1 - shown.value) * 8 }],
-  }));
-  return <Animated.View style={style}>{children}</Animated.View>;
+function ListRow({
+  icon,
+  title,
+  last,
+  onPress,
+  children,
+}: {
+  icon: IconName;
+  title: string;
+  last: boolean;
+  onPress: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      className={
+        last
+          ? "flex-row items-center gap-3 py-3"
+          : "flex-row items-center gap-3 border-[#EEF0F3] border-b py-3"
+      }
+    >
+      <View className="size-9 items-center justify-center rounded-[10px] bg-wash">
+        <Icon name={icon} size={18} color="#334155" />
+      </View>
+      <View className="flex-1 gap-0.5">
+        <T weight="semibold" className="text-[15px]">
+          {title}
+        </T>
+        {children}
+      </View>
+      <Icon name="chevron" size={16} color="#8A97A6" stroke={2} />
+    </Pressable>
+  );
 }

@@ -58,3 +58,37 @@ const capturedFormat = (() => {
 export function capturedDay(iso: string) {
   return capturedFormat.format(new Date(iso));
 }
+
+const monthFormat = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+// A file's own date: "2026-04-01" -> "Apr 2026"
+export function monthYear(date: string | null) {
+  return date ? monthFormat.format(new Date(`${date}T00:00:00Z`)) : null;
+}
+
+const longFormat = (() => {
+  try {
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      timeZone: "America/Los_Angeles",
+    });
+  } catch {
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      timeZone: "UTC",
+    });
+  }
+})();
+
+// "2026-10-18T14:27:17Z" -> "Oct 18, 2026"
+export function capturedLong(iso: string) {
+  return longFormat.format(new Date(iso));
+}
