@@ -73,3 +73,10 @@ export const PaymentCheckoutInput = z.object({
   promoCode: PromoCode,
 });
 export const BulkCheckoutInput = z.object({ promoCode: PromoCode });
+
+// "Before you go" price comparison: one service code and where the patient is.
+export const NearbyPricesInput = z.object({
+  code: z.string().min(1).max(10),
+  lat: z.number().min(-90).max(90),
+  lng: z.number().min(-180).max(180),
+});

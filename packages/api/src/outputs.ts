@@ -110,3 +110,26 @@ export const LookupStatus = z.object({
     .nullable(),
 });
 export type LookupStatus = z.infer<typeof LookupStatus>;
+
+// "Before you go" price comparison (core prices/). Amounts are integer cents
+// from the hospital's own machine-readable price file.
+export const PriceService = z.object({
+  code: z.string(),
+  name: z.string(),
+  what: z.string(),
+});
+export const NearbyPrice = z.object({
+  hospitalKey: z.string(),
+  hospitalName: z.string(),
+  address: z.string(),
+  distanceMiles: z.number(),
+  discountedCashCents: z.number().int().nullable(),
+  grossChargeCents: z.number().int().nullable(),
+  setting: z.string(),
+  capturedAt: z.string(),
+  sourceUrl: z.string(),
+  sourceSha256: z.string().nullable(),
+  pageUrl: z.string().nullable(),
+  lat: z.number(),
+  lng: z.number(),
+});
