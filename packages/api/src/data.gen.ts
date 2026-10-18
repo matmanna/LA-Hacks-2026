@@ -5844,6 +5844,354 @@ export const DATA = {
       "warnings": []
     }
   ],
+  "regulations": [
+    {
+      "id": "ca-fpq",
+      "jurisdiction": "CA",
+      "title": "Who qualifies: self-pay or high medical costs, income at or under 400% FPL",
+      "lawName": "California Hospital Fair Pricing Act",
+      "effectKind": "eligibility",
+      "plain": "If you're uninsured (or your out-of-pocket costs are high) and your family income is at or under 400% of the poverty line, California hospitals must offer you discounted payment or charity care.",
+      "citation": "Cal. Health & Safety Code 127400(c), 127405(a)(1)(A)",
+      "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127400",
+      "quote": "A patient who has a family income that does not exceed 400 percent of the federal poverty level.",
+      "capturedAt": "2026-10-18",
+      "verified": true,
+      "screen": {
+        "help": {
+          "pct": 400,
+          "inclusive": true
+        },
+        "insured": "high_costs"
+      }
+    },
+    {
+      "id": "ca-cap",
+      "jurisdiction": "CA",
+      "title": "Charge cap: what Medicare or Medi-Cal would pay",
+      "lawName": "California Hospital Fair Pricing Act",
+      "effectKind": "charge_cap",
+      "plain": "If you qualify, the hospital can only expect what Medicare or Medi-Cal would pay for your care, whichever is more.",
+      "short": "If you get a discount, the most they can expect is what Medicare or Medi-Cal would pay",
+      "citation": "Cal. Health & Safety Code 127405(d)(1)",
+      "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127405",
+      "quote": "from Medicare or Medi-Cal, whichever is greater",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "ca-no-deadline",
+      "jurisdiction": "CA",
+      "title": "No deadline to apply, assets not counted",
+      "lawName": "California Hospital Fair Pricing Act",
+      "effectKind": "application_rules",
+      "plain": "There's no deadline to apply, the hospital can't count your savings, and pay stubs or a tax return are enough proof of income.",
+      "short": "No deadline to apply, and your savings don't count",
+      "citation": "Cal. Health & Safety Code 127405(b)(1), (e)(1), (e)(3)",
+      "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127405",
+      "quote": "A hospital shall not impose time limits for applying for charity care or discounted payments",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "ca-payment-plan",
+      "jurisdiction": "CA",
+      "title": "Interest-free payment plan, at most 10% of monthly income",
+      "lawName": "California Hospital Fair Pricing Act",
+      "effectKind": "payment_plan",
+      "plain": "If you qualify, you can pay over time with no interest. If you can't agree on a plan, payments are capped at 10% of your monthly family income after essential expenses.",
+      "short": "If you qualify, payment plans are interest-free",
+      "citation": "Cal. Health & Safety Code 127400(i), 127405(c), 127425(i)",
+      "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127425",
+      "quote": "shall be interest free",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "ca-collections",
+      "jurisdiction": "CA",
+      "title": "No credit reporting; no lawsuit before 180 days",
+      "lawName": "California Hospital Fair Pricing Act",
+      "effectKind": "collections_limit",
+      "plain": "California hospitals and their collectors can't report your hospital debt to credit bureaus, can't sue within 180 days of the first bill, and can't garnish wages or put liens on your home if you qualify for assistance.",
+      "short": "No credit reporting, and no lawsuit for 180 days",
+      "citation": "Cal. Health & Safety Code 127425(f), (h)",
+      "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127425",
+      "quote": "Report adverse information to a consumer credit reporting agency.",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "il-uninsured-discount",
+      "jurisdiction": "IL",
+      "title": "Uninsured discounts up to 600% FPL (UNVERIFIED)",
+      "lawName": "Illinois Hospital Uninsured Patient Discount Act",
+      "effectKind": "charity_care",
+      "plain": "Illinois hospitals must discount bills for uninsured residents up to 600% of the poverty line, and give free care up to 200%. Not yet checked against the official text.",
+      "citation": "210 ILCS 89/10",
+      "sourceUrl": "https://ilga.gov/legislation/ilcs/documents/021000890K10.htm",
+      "quote": null,
+      "capturedAt": "2026-10-18",
+      "verified": false
+    },
+    {
+      "id": "md-free",
+      "jurisdiction": "MD",
+      "title": "Free care at or under 200% FPL",
+      "lawName": "Maryland hospital financial assistance",
+      "effectKind": "charity_care",
+      "plain": "Maryland hospitals must give free medically necessary care at or under 200% of the poverty line.",
+      "citation": "Md. Code, Health-Gen. 19-214.1(b)(2)(i)",
+      "sourceUrl": "https://mgaleg.maryland.gov/2026RS/Statute_Web/ghg/19-214.1.pdf",
+      "quote": "Free medically necessary care to patients with family income at or below 200% of the federal poverty level",
+      "capturedAt": "2026-10-18",
+      "verified": true,
+      "screen": {
+        "free": {
+          "pct": 200,
+          "inclusive": true
+        },
+        "help": {
+          "pct": 300,
+          "inclusive": true
+        },
+        "hardship": {
+          "pct": 500,
+          "inclusive": true
+        },
+        "insured": "any"
+      }
+    },
+    {
+      "id": "md-reduced",
+      "jurisdiction": "MD",
+      "title": "Required discounts above 200% FPL",
+      "lawName": "Maryland hospital financial assistance",
+      "effectKind": "charity_care",
+      "plain": "Between 201% and 300% of the poverty line, out-of-pocket costs drop 75% or 60%. With medical debt over 25% of income, discounts continue up to 500%.",
+      "citation": "Md. Code, Health-Gen. 19-214.1(b)(4)-(5)",
+      "sourceUrl": "https://mgaleg.maryland.gov/2026RS/Statute_Web/ghg/19-214.1.pdf",
+      "quote": "by 75%",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "ny-free",
+      "jurisdiction": "NY",
+      "title": "Free care under 200% FPL",
+      "lawName": "New York hospital financial aid",
+      "effectKind": "charity_care",
+      "plain": "Under 200% of the poverty line, New York hospitals must waive all charges.",
+      "citation": "N.Y. Pub. Health Law 2807-k(9-a)(b)(i)",
+      "sourceUrl": "https://www.nysenate.gov/legislation/laws/PBH/2807-K",
+      "quote": "the hospital shall waive all charges",
+      "capturedAt": "2026-10-18",
+      "verified": true,
+      "screen": {
+        "free": {
+          "pct": 200,
+          "inclusive": false
+        },
+        "help": {
+          "pct": 400,
+          "inclusive": true
+        },
+        "insured": "underinsured"
+      }
+    },
+    {
+      "id": "ny-sliding",
+      "jurisdiction": "NY",
+      "title": "Sliding scale to 400% FPL, capped against Medicaid rates",
+      "lawName": "New York hospital financial aid",
+      "effectKind": "charge_cap",
+      "plain": "Between 200% and 400% of the poverty line, you pay on a sliding scale capped at 10% to 20% of what Medicaid would pay.",
+      "citation": "N.Y. Pub. Health Law 2807-k(9-a)(b)(ii)-(iii)",
+      "sourceUrl": "https://www.nysenate.gov/legislation/laws/PBH/2807-K",
+      "quote": "up to a maximum of ten percent of the amount that would have been paid",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "ny-plans-collections",
+      "jurisdiction": "NY",
+      "title": "Payment plans and lawsuit limits",
+      "lawName": "New York hospital financial aid",
+      "effectKind": "collections_limit",
+      "plain": "Payment plans are capped at 5% of your gross monthly income, with at most 2% interest. Hospitals can't sue patients under 400% of the poverty line, and must wait 180 days after the first bill before any lawsuit.",
+      "short": "Payment plans capped at 5% of income, and no lawsuits under 400% of the poverty line",
+      "citation": "N.Y. Pub. Health Law 2807-k(9-a)(d), (h), (l)",
+      "sourceUrl": "https://www.nysenate.gov/legislation/laws/PBH/2807-K",
+      "quote": "shall not exceed five percent of the gross monthly income of the patient",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "wa-charity",
+      "jurisdiction": "WA",
+      "title": "Free care to 300% FPL at large systems, 200% elsewhere; discounts to 400%",
+      "lawName": "Washington charity care",
+      "effectKind": "charity_care",
+      "plain": "Washington hospitals must give free care up to 300% of the poverty line (200% at smaller hospitals), and 75% or 50% off above that, whether or not you have insurance.",
+      "citation": "RCW 70.170.060(5)",
+      "sourceUrl": "https://app.leg.wa.gov/RCW/default.aspx?cite=70.170.060",
+      "quote": "not more than 300 percent of the federal poverty level, adjusted for family size",
+      "capturedAt": "2026-10-18",
+      "verified": true,
+      "screen": {
+        "free": {
+          "pct": 200,
+          "inclusive": true
+        },
+        "freeLarge": {
+          "pct": 300,
+          "inclusive": true
+        },
+        "help": {
+          "pct": 300,
+          "inclusive": true
+        },
+        "helpLarge": {
+          "pct": 400,
+          "inclusive": true
+        },
+        "insured": "any"
+      }
+    },
+    {
+      "id": "us-501r-fap",
+      "jurisdiction": "US",
+      "title": "Nonprofit hospitals must have a financial assistance policy",
+      "lawName": "Federal rules that apply in every state",
+      "effectKind": "assistance_policy",
+      "plain": "Nonprofit hospitals must have a written financial assistance policy and follow it.",
+      "citation": "26 U.S.C. 501(r)(4)",
+      "sourceUrl": "https://www.irs.gov/charities-non-profits/charitable-organizations/requirements-for-501c3-hospitals-under-the-affordable-care-act-section-501r",
+      "quote": "hospital organizations must meet the requirements imposed by Section 501(r) on a facility-by-facility basis",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "us-501r-agb",
+      "jurisdiction": "US",
+      "title": "Assistance-eligible patients pay no more than insured patients",
+      "lawName": "Federal rules that apply in every state",
+      "effectKind": "charge_cap",
+      "plain": "If you qualify for the hospital's assistance, you can't be charged more than it usually gets from insured patients.",
+      "short": "If you qualify, you can't be charged more than insured patients usually pay",
+      "citation": "26 U.S.C. 501(r)(5)",
+      "sourceUrl": "https://www.irs.gov/charities-non-profits/limitation-on-charges-section-501r5",
+      "quote": "to not more that the amount generally billed (AGB) to individuals who have insurance covering such care",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "us-501r-eca",
+      "jurisdiction": "US",
+      "title": "Waiting periods before harsh collections",
+      "lawName": "Federal rules that apply in every state",
+      "effectKind": "collections_limit",
+      "plain": "A nonprofit hospital must wait at least 120 days after the first bill before credit reporting, selling the debt or suing, and must accept assistance applications for 240 days.",
+      "short": "120 days before harsh collections, and 240 days to apply",
+      "citation": "26 U.S.C. 501(r)(6); 26 CFR 1.501(r)-6",
+      "sourceUrl": "https://www.irs.gov/charities-non-profits/billing-and-collections-section-501r6",
+      "quote": "refrains from initiating such ECAs for at least 120 days",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "us-nsa-emergency",
+      "jurisdiction": "US",
+      "title": "Out-of-network emergency care at in-network cost-sharing",
+      "lawName": "Federal rules that apply in every state",
+      "effectKind": "cost_sharing_cap",
+      "plain": "For emergency care, your plan can't charge you more than in-network cost-sharing, even at an out-of-network hospital, and you can't be billed for the difference.",
+      "short": "Emergency care is billed at your in-network cost, even out of network",
+      "citation": "42 U.S.C. 300gg-111(a)(1)(C)(ii) (No Surprises Act)",
+      "sourceUrl": "https://www.law.cornell.edu/uscode/text/42/300gg-111",
+      "quote": "the cost-sharing requirement is not greater than the requirement that would apply",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "us-nsa-gfe",
+      "jurisdiction": "US",
+      "title": "Self-pay estimate and the $400 dispute",
+      "lawName": "Federal rules that apply in every state",
+      "effectKind": "dispute_right",
+      "plain": "If you're uninsured or self-pay and your bill is at least $400 above the good faith estimate, you may be able to dispute it.",
+      "short": "Only if you got a price estimate before care",
+      "citation": "No Surprises Act, patient-provider dispute resolution",
+      "sourceUrl": "https://www.cms.gov/medical-bill-rights",
+      "quote": "You may be able to dispute your bill if it's at least $400 more than the estimate.",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    },
+    {
+      "id": "us-medicare-itemized",
+      "jurisdiction": "US",
+      "title": "Medicare patients: free itemized statement within 30 days",
+      "lawName": "Federal rules that apply in every state",
+      "effectKind": "itemized_right",
+      "plain": "If Medicare paid for your care, you can ask in writing for an itemized statement, and the provider has 30 days to send it.",
+      "short": "You can ask for a free itemized statement, sent within 30 days",
+      "citation": "42 U.S.C. 1395b-7(b)(2)",
+      "sourceUrl": "https://www.law.cornell.edu/uscode/text/42/1395b-7",
+      "quote": "Not later than 30 days after the date on which a request under paragraph (1) has been made",
+      "capturedAt": "2026-10-18",
+      "verified": true
+    }
+  ],
+  "policies": [
+    {
+      "hospitalName": "Cedars-Sinai Medical Center",
+      "policyTitle": "Financial Assistance Policy",
+      "policyUrl": "https://www.cedars-sinai.org/billing-insurance-records/help-paying-your-bill.html",
+      "capturedAt": "2026-10-17T23:10:40Z",
+      "freeCareMaxFplPct": 400,
+      "freeCareQuote": "Charity Care will be made available to patients whose family income is at or below 400% of FPL.",
+      "discountMaxFplPct": 600,
+      "discountQuote": "Patients whose income ranges between 401% to 600% of FPL qualify for a Discount Payment.",
+      "references501r": "U.S. Internal Revenue Code Section 501(r)(3)."
+    }
+  ],
+  "fpl": {
+    "year": 2026,
+    "source": "https://aspe.hhs.gov/topics/poverty-economic-mobility/poverty-guidelines",
+    "contiguous48AndDC": {
+      "1": 15960,
+      "2": 21640,
+      "3": 27320,
+      "4": 33000,
+      "5": 38680,
+      "6": 44360,
+      "7": 50040,
+      "8": 55720,
+      "additionalPerson": 5680
+    },
+    "alaska": {
+      "1": 19950,
+      "2": 27050,
+      "3": 34150,
+      "4": 41250,
+      "5": 48350,
+      "6": 55450,
+      "7": 62550,
+      "8": 69650,
+      "additionalPerson": 7100
+    },
+    "hawaii": {
+      "1": 18360,
+      "2": 24890,
+      "3": 31420,
+      "4": 37950,
+      "5": 44480,
+      "6": 51010,
+      "7": 57540,
+      "8": 64070,
+      "additionalPerson": 6530
+    }
+  },
   "captures": [
     {
       "hospitalName": "Ronald Reagan UCLA Medical Center",

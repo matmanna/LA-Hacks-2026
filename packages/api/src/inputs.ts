@@ -32,10 +32,15 @@ export const ConfirmLinesInput = z.object({
   eob: Eob.nullable().optional(),
 });
 
+// Every answer is optional: with none, the checks that need no answers run.
+// annualIncomeCents is the value of the income range the patient picked.
 export const AssistanceCheckInput = z.object({
   caseId: z.string(),
-  householdSize: z.number().int().min(1),
-  annualIncomeCents: z.number().int().min(0),
+  householdSize: z.number().int().min(1).max(20).optional(),
+  annualIncomeCents: z.number().int().min(0).optional(),
+  insurance: z.enum(["none", "medicare", "medicaid", "private"]).optional(),
+  emergency: z.boolean().optional(),
+  highCosts: z.boolean().optional(),
 });
 
 // kind "call" drafts the call script the user approves before call.start.

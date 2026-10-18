@@ -3,6 +3,7 @@
 // deterministic fallback, so a letter is always produced and always checked.
 import {
   type Action,
+  assistanceFlag,
   checkLetterClaims,
   type Flag,
   fallbackModelOutput,
@@ -18,6 +19,7 @@ import { ORPCError } from "@orpc/server";
 import { z } from "zod";
 
 import { checkTransition, loadAuditedCase, saveDraft } from "./actions";
+import { loadAssistance } from "./assistance";
 import { geminiJson } from "./gemini";
 
 export const LETTER_SYSTEM_PROMPT =
@@ -130,7 +132,14 @@ export async function draftLetter(
 }> {
   const { caseId, kind } = input;
   const audited = await loadAuditedCase(db, caseId);
-  const flags = flagsForKind(kind, audited.flags);
+  // A likely or possible assistance result adds the application request
+  // (with its sources) to the dispute letter and the call script.
+  const help =
+    kind === "itemized_request"
+      ? null
+      : assistanceFlag(await loadAssistance(db, caseId, audited.bill));
+  const base = flagsForKind(kind, audited.flags);
+  const flags = help ? [...base, help] : base;
   if (kind === "letter" && flags.length === 0) {
     throw new ORPCError("PRECONDITION_FAILED", {
       message: "Nothing on this bill needs a dispute letter.",

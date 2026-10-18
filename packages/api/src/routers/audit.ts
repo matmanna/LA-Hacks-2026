@@ -1,4 +1,5 @@
 import {
+  type Assistance,
   AuditResult,
   type Bill,
   balanceSummary,
@@ -19,6 +20,7 @@ import {
   saveFlags,
   setStatus,
 } from "../repo/cases";
+import { loadAssistance } from "../services/assistance";
 import { heroStep } from "../telemetry";
 
 // Savings and balance always come from core, never from the UI.
@@ -27,8 +29,9 @@ export function auditResult(
   bill: Bill,
   flags: Flag[],
   durationMs: number,
+  assistance?: Assistance,
 ): AuditResult {
-  const savings = computeSavings(flags, bill, PRICES);
+  const savings = computeSavings(flags, bill, PRICES, assistance);
   return {
     caseId,
     flags,
@@ -74,7 +77,13 @@ export const auditRouter = {
               { artifactRef: runId },
             );
           });
-          return auditResult(input.caseId, loaded.bill, flags, durationMs);
+          return auditResult(
+            input.caseId,
+            loaded.bill,
+            flags,
+            durationMs,
+            await loadAssistance(context.db, input.caseId, loaded.bill),
+          );
         },
         (r) => ({
           flagCount: r.flags.length,
@@ -94,6 +103,12 @@ export const auditRouter = {
       const run = await latestAudit(context.db, input.caseId);
       const loaded = run ? await loadBill(context.db, input.caseId) : null;
       if (!run || !loaded) return null;
-      return auditResult(input.caseId, loaded.bill, run.flags, 0);
+      return auditResult(
+        input.caseId,
+        loaded.bill,
+        run.flags,
+        0,
+        await loadAssistance(context.db, input.caseId, loaded.bill),
+      );
     }),
 };
