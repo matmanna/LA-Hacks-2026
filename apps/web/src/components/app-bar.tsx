@@ -24,11 +24,15 @@ export function AppBar({ title, back }: AppBarProps) {
               <ChevronLeft strokeWidth={1.75} aria-hidden="true" />
             </Button>
           ) : null}
+          <Wordmark />
           {title ? (
-            <span className="font-semibold text-base">{title}</span>
-          ) : (
-            <Wordmark />
-          )}
+            <>
+              <span className="text-muted-foreground" aria-hidden="true">
+                /
+              </span>
+              <span className="font-semibold text-base">{title}</span>
+            </>
+          ) : null}
         </div>
         <Link
           to="/cases"
