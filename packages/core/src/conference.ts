@@ -18,10 +18,6 @@ export function patientConnectionForScript(script: string): PatientConnection {
 // text, so the approved script and the spoken opening match.
 export const CONFERENCE_OPENING = `${DISCLOSURE} The patient is here with us and can answer you directly. This call may be recorded and transcribed. Is it okay to continue?`;
 
-// Said to the patient once, when billing needs to verify them. Then the
-// advocate goes quiet.
-export const PATIENT_CUE = "They need to verify you. Go ahead.";
-
 // The controller refuses a briefing over 45 seconds of audio. Billing hears
 // the services by name, so the briefing doesn't list them.
 export function buildConferenceIntroduction(vars: CallVars): string {
@@ -32,7 +28,7 @@ export function buildConferenceIntroduction(vars: CallVars): string {
       : []),
     `I'll ask ${vars.hospital_name} billing to hold your account, email your itemized bill, and explain how to get your medical records.`,
     "They'll need to verify you, so answer them yourself.",
-    "Then I keep talking to billing for you. If you speak, I'll wait for you to finish.",
+    "I'll handle the billing questions and wait while you answer verification questions or make decisions.",
     "This call may be recorded and transcribed. Hanging up ends the call for everyone. Connecting billing now.",
   ].join(" ");
 }
@@ -53,9 +49,15 @@ export function renderConferenceScript(
       : "The patient's phone remains connected while billing answers. A phone connection does not verify that a human answered.",
     `The advocate tells billing:\n${CONFERENCE_OPENING}`,
     `After permission: I'm calling about account ending in ${vars.account_last4} at ${vars.hospital_name}. ${vars.ask}`,
-    `The advocate speaks for the patient and leads the call. When billing needs to verify the patient, it says once: "${PATIENT_CUE}" It waits while the patient answers, then continues with billing. If the patient speaks, it waits for them to finish. It does not argue charges, answer identity questions, infer approval, or agree to payments or settlements. If either person hangs up, the entire call ends.`,
-    `Approved facts, only if the patient asks:\n${vars.case_context}`,
+    "The advocate helps with billing questions, waits through the hospital's verification and the patient's decisions, and continues naturally when billing resumes. It does not argue charges, answer identity questions for the patient, infer approval, or agree to payments or settlements. If the patient asks it to stay quiet, it waits for their invitation to help again. If either person hangs up, the entire call ends.",
+    `Approved case facts:\n${vars.case_context}`,
   ].join("\n\n");
+}
+
+// The number the approved script says it will call for the patient ("" for
+// a browser call).
+export function patientNumberForScript(script: string): string {
+  return /patient test participant at (\+\d+)\b/.exec(script)?.[1] ?? "";
 }
 
 export function isPatientFirstConferenceScript(script: string): boolean {

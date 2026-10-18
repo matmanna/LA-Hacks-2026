@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  ADVOCATE_PROMPT,
   assertConferenceBranch,
   buildDemoAdvocatePatch,
   demoTools,
@@ -45,6 +46,22 @@ const ids = {
 };
 
 describe("demo advocate configuration", () => {
+  it("uses ordinary conversation after verification without an addressed one-answer gate", () => {
+    expect(ADVOCATE_PROMPT).toContain("continue naturally");
+    expect(ADVOCATE_PROMPT).toContain("one question at a time");
+    expect(ADVOCATE_PROMPT).toContain("leave decisions to the patient");
+    for (const text of [
+      ADVOCATE_PROMPT,
+      ...demoTools("conference").map((tool) => tool.description),
+      buildDemoAdvocatePatch(current, ids).conversation_config.agent.prompt
+        .built_in_tools.skip_turn.description,
+    ]) {
+      expect(text).not.toMatch(
+        /one answer|fresh patient invitation|protected patient handoff|say only this/i,
+      );
+    }
+  });
+
   it("removes the forced stages and alternative tools without changing audio or model settings", () => {
     const patch = buildDemoAdvocatePatch(current, ids);
     expect(patch.workflow).toEqual({
@@ -75,6 +92,7 @@ describe("demo advocate configuration", () => {
         "interruption",
         "agent_response",
         "agent_response_complete",
+        "agent_tool_response",
       ],
     });
     expect(patch.conversation_config.turn).toEqual({
@@ -147,6 +165,7 @@ describe("demo advocate configuration", () => {
         "interruption",
         "agent_response",
         "agent_response_complete",
+        "agent_tool_response",
       ],
     });
   });

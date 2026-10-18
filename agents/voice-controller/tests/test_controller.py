@@ -454,13 +454,20 @@ class ControllerTests(unittest.IsolatedAsyncioTestCase):
     async def test_interruption_clears_queue_and_stale_pcm(self):
         c = self.controller()
         c.state.phase = "active"
-        c.audio_queue.put_nowait((b"\0\0", 1))
+        await c.handle_event(
+            {"type": "audio", "audio_event": {"audio_base_64": "AAA=", "event_id": 2}}
+        )
         await c.handle_event({"type": "interruption", "interruption_event": {"event_id": 3}})
         self.assertTrue(c.audio_queue.empty())
         await c.handle_event(
             {"type": "audio", "audio_event": {"audio_base_64": "AAA=", "event_id": 2}}
         )
         self.assertTrue(c.audio_queue.empty())
+
+        await c.handle_event(
+            {"type": "audio", "audio_event": {"audio_base_64": "AAA=", "event_id": 3}}
+        )
+        self.assertFalse(c.audio_queue.empty(), "Interruption ID must not block the next reply")
 
     async def test_departure_of_either_human_ends_call(self):
         for identity, reason in (("patient", "patient_left"), ("hospital", "billing_left")):

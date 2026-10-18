@@ -4,202 +4,87 @@ from betterbill_voice.floor import SpeechFloor
 
 
 class SpeechFloorTests(unittest.TestCase):
-    def test_initial_advocacy_remains_available_until_handoff(self):
+    def test_finalized_human_turns_allow_ongoing_advocacy_without_a_wake_phrase(self):
         floor = SpeechFloor()
-        self.assertTrue(floor.can_output)
-        self.assertTrue(floor.begin_response())
-        floor.complete_response()
-        self.assertTrue(floor.can_output)
-
-    def test_patient_partial_immediately_latches_quiet_without_grant(self):
-        floor = SpeechFloor()
-        decision = floor.observe("patient", "Advocate, help", final=False)
-        self.assertEqual((decision.action, decision.source), ("yield", "patient_partial"))
-        self.assertTrue(floor.protected)
-        self.assertTrue(floor.quiet)
-        self.assertFalse(floor.can_output)
-        self.assertFalse(floor.begin_response())
-
-    def test_empty_audio_updates_do_not_yield_or_grant(self):
-        floor = SpeechFloor()
-        for role in ("patient", "hospital"):
-            self.assertEqual(floor.observe(role, "  ", final=False).action, "ignore")
-            self.assertEqual(floor.observe(role, "", final=True).action, "ignore")
-        self.assertTrue(floor.can_output)
-
-    def test_patient_identity_reply_stays_quiet(self):
-        for text in ("Yes", "Alex Morgan", "My date of birth is April twelfth", "Thank you"):
-            with self.subTest(text=text):
-                floor = SpeechFloor()
-                self.assertEqual(floor.observe("patient", text, final=True).action, "yield")
-                self.assertFalse(floor.can_output)
-                self.assertFalse(floor.begin_response())
-
-    def test_only_finalized_direct_patient_requests_grant_one_response(self):
-        for text in (
-            "Advocate, help me",
-            "BetterBill, could you explain that charge?",
-            "Hey Advocate, please continue.",
-            "Better Bill, I have a question about this.",
-            "Advocate, what does that mean?",
+        for index, (role, text) in enumerate(
+            (
+                ("hospital", "Yes, you may continue."),
+                ("patient", "I am here and authorize you to discuss my bill."),
+                ("hospital", "Thanks, the account is open. What can I help with?"),
+                ("hospital", "I can send the itemized bill tomorrow."),
+                ("patient", "What does that mean?"),
+            )
         ):
-            with self.subTest(text=text):
-                floor = SpeechFloor()
-                floor.observe("patient", text, final=False)
-                self.assertFalse(floor.can_output)
-                decision = floor.observe("patient", text, final=True)
-                self.assertEqual((decision.action, decision.source), ("grant", "patient_request"))
-                self.assertFalse(floor.can_output)
+            with self.subTest(role=role, text=text):
+                decision = floor.observe(role, text, final=True, utterance_id=str(index))
+                self.assertEqual((decision.action, decision.source), ("grant", "human_turn"))
                 self.assertTrue(floor.begin_response())
+                self.assertFalse(floor.begin_response())
+                floor.complete_response()
                 self.assertTrue(floor.can_output)
-                self.assertFalse(floor.begin_response())
-                floor.complete_response()
-                self.assertFalse(floor.can_output)
-                self.assertFalse(floor.begin_response())
 
-    def test_mentions_negations_and_unrelated_addresses_never_grant(self):
-        for text in (
-            "Can we ask the advocate later?",
-            "My advocate can help explain that.",
-            "Advocate, the name is Alex Morgan.",
-            "Advocate, don't continue yet.",
-            "BetterBill, I do not need help.",
-            "Advocate, please help no one right now.",
-            "Advocate help is something I may need later.",
-            "BetterBill, thanks for helping.",
-            "BetterBill, can you verify my name?",
-            "Advocate, what a nice day.",
-        ):
-            with self.subTest(text=text):
-                floor = SpeechFloor()
-                self.assertEqual(floor.observe("patient", text, final=True).action, "yield")
-                self.assertFalse(floor.begin_response())
+    def test_partial_speech_never_clears_or_reopens_the_current_speech_gate(self):
+        for role in ("patient", "hospital"):
+            floor = SpeechFloor()
+            self.assertTrue(floor.begin_response())
+            for text in ("Actually", "Can you verify the patient", "Please stop recording"):
+                with self.subTest(role=role, text=text):
+                    self.assertEqual(floor.observe(role, text).action, "ignore")
+                    self.assertTrue(floor.can_output)
+                    self.assertFalse(floor.begin_response())
+            floor.yield_floor("pause_tool")
+            floor.observe(role, "Please continue", final=False)
+            self.assertFalse(floor.can_output)
 
-    def test_staff_verification_permits_one_cue_then_quiet(self):
-        for text in (
-            "Can you verify the patient's date of birth?",
-            "What is your full name?",
-            "I need to speak directly with the patient.",
-            "May I verify your identity?",
-            "Please have the patient answer this.",
-            "What is your DOB?",
-            "What's your birthday?",
-            "When were you born?",
-            "Can you confirm your address?",
-            "I need the patient's authorization to speak to you.",
-            "Can the patient authorize you to discuss this?",
-            "What is the patient's name?",
-        ):
-            with self.subTest(text=text):
-                floor = SpeechFloor()
-                decision = floor.observe("hospital", text, final=False)
-                self.assertEqual(
-                    (decision.action, decision.source), ("grant", "staff_verification")
-                )
-                # One cue to the patient, then quiet while they verify.
-                self.assertTrue(floor.begin_response())
-                floor.complete_response()
-                self.assertFalse(floor.can_output)
-                self.assertFalse(floor.begin_response())
-
-    def test_billing_speech_returns_the_floor_to_the_advocate(self):
-        floor = SpeechFloor()
-        for text in ("Which charge are you asking about?", "Advocate, help explain this."):
-            self.assertEqual(floor.observe("hospital", text, final=True).action, "interrupt")
-            self.assertTrue(floor.can_output)
-        # The patient talked; billing's next words hand the call back.
-        floor.observe("patient", "Hi, I'm the patient.", final=True)
-        self.assertFalse(floor.can_output)
-        floor.observe("hospital", "Thanks, you're verified.", final=True)
-        self.assertTrue(floor.begin_response())
-
-    def test_unknown_and_mixed_roles_cannot_authorize_output(self):
-        floor = SpeechFloor()
-        floor.yield_floor("handoff")
-        for role in ("mixed", "user", "agent", "", "staff"):
-            decision = floor.observe(role, "Advocate, help me", final=True)
-            self.assertEqual(decision.action, "ignore")
+    def test_temporary_pause_releases_on_the_next_finalized_human_turn(self):
+        for role in ("patient", "hospital"):
+            floor = SpeechFloor()
+            floor.yield_floor("pause_tool")
             self.assertFalse(floor.begin_response())
+            floor.observe(role, "We are ready to continue.", final=True)
+            self.assertTrue(floor.can_output)
+            self.assertTrue(floor.begin_response())
+            floor.complete_response()
+            self.assertTrue(floor.can_output)
 
-    def test_agent_handoff_announcement_yields_even_without_tool(self):
-        for text in (
-            "I'll step back and let you two talk directly.",
-            "I will stay quiet while you verify the patient's details.",
-            "I'll let the patient answer directly.",
-        ):
-            with self.subTest(text=text):
-                floor = SpeechFloor()
-                decision = floor.observe_agent(text)
-                self.assertEqual((decision.action, decision.source), ("yield", "agent_handoff"))
-                self.assertFalse(floor.can_output)
+    def test_generated_handoff_text_does_not_mute_its_own_audio(self):
+        floor = SpeechFloor()
+        floor.begin_response()
+        decision = floor.observe_agent("I'll step back and let the patient answer.")
+        self.assertEqual(decision.action, "ignore")
+        self.assertTrue(floor.can_output)
+
+    def test_duplicate_finals_are_ignored_but_a_new_utterance_may_repeat_words(self):
         floor = SpeechFloor()
         self.assertEqual(
-            floor.observe_agent("Please review the duplicate charge.").action, "ignore"
+            floor.observe("hospital", "Yes", final=True, utterance_id="h1").action, "grant"
         )
-        self.assertTrue(floor.can_output)
+        self.assertEqual(
+            floor.observe("hospital", "YES", final=True, utterance_id="h1").source,
+            "duplicate_commit",
+        )
+        self.assertEqual(
+            floor.observe("hospital", "Yes", final=True, utterance_id="h2").action, "grant"
+        )
+        self.assertEqual(floor.observe("patient", "Thanks", final=True).action, "grant")
+        self.assertEqual(
+            floor.observe("patient", "  THANKS  ", final=True).source, "duplicate_commit"
+        )
 
-    def test_duplicate_commit_cannot_reuse_consumed_permission(self):
+    def test_empty_or_untrusted_input_does_not_release_a_pause(self):
         floor = SpeechFloor()
-        text = "Advocate, help me"
-        floor.observe("patient", text, final=True, utterance_id="p1")
-        self.assertTrue(floor.begin_response())
-        floor.complete_response()
-        duplicate = floor.observe("patient", text, final=True, utterance_id="p1")
-        self.assertEqual(duplicate.action, "ignore")
-        self.assertFalse(floor.begin_response())
-        floor.observe("patient", text, final=True, utterance_id="p2")
-        self.assertTrue(floor.begin_response())
+        floor.yield_floor("pause_tool")
+        for role, text in (
+            ("patient", " "),
+            ("hospital", ""),
+            ("mixed", "Continue"),
+            ("agent", "Continue"),
+            ("staff", "Continue"),
+        ):
+            self.assertEqual(floor.observe(role, text, final=True).action, "ignore")
+            self.assertFalse(floor.can_output)
 
-    def test_duplicate_commit_without_provider_id_is_ignored(self):
-        floor = SpeechFloor()
-        text = "Advocate, help me"
-        floor.observe("patient", text, final=True)
-        self.assertTrue(floor.begin_response())
-        duplicate = floor.observe("patient", "  ADVOCATE, HELP ME  ", final=True)
-        self.assertEqual(duplicate.action, "ignore")
-        self.assertTrue(floor.can_output)
-        floor.complete_response()
-        self.assertFalse(floor.begin_response())
-
-    def test_any_new_patient_speech_revokes_pending_or_open_answer(self):
-        for start_response in (False, True):
-            with self.subTest(start_response=start_response):
-                floor = SpeechFloor()
-                floor.observe("patient", "Advocate, help me", final=True)
-                if start_response:
-                    self.assertTrue(floor.begin_response())
-                floor.observe("patient", "Actually", final=False)
-                self.assertFalse(floor.can_output)
-                self.assertFalse(floor.begin_response())
-
-    def test_staff_verification_cuts_an_open_answer_for_the_cue(self):
-        floor = SpeechFloor()
-        floor.observe("patient", "Advocate, explain that", final=True)
-        self.assertTrue(floor.begin_response())
-        floor.observe("hospital", "First, what is your date of birth?", final=True)
-        self.assertFalse(floor.can_output)
-        self.assertTrue(floor.begin_response())  # the cue
-        floor.complete_response()
-        self.assertFalse(floor.begin_response())
-
-    def test_staff_speech_interrupts_an_open_answer_then_returns_the_floor(self):
-        for final in (False, True):
-            with self.subTest(final=final):
-                floor = SpeechFloor()
-                floor.observe("patient", "Advocate, explain that", final=True)
-                self.assertTrue(floor.begin_response())
-                decision = floor.observe("hospital", "Let me check that charge", final=final)
-                self.assertEqual((decision.action, decision.source), ("interrupt", "staff_speech"))
-                self.assertTrue(floor.begin_response())
-
-    def test_ended_floor_cannot_be_reopened(self):
-        floor = SpeechFloor()
-        floor.end()
-        self.assertFalse(floor.can_output)
-        self.assertEqual(floor.observe("patient", "Advocate, help me", final=True).action, "ignore")
-        self.assertFalse(floor.begin_response())
-
-    def test_final_explicit_participation_refusal_withdraws_for_either_role(self):
+    def test_explicit_final_participation_refusal_permanently_withdraws(self):
         for role in ("patient", "hospital"):
             for text in (
                 "Please stop recording.",
@@ -208,32 +93,45 @@ class SpeechFloorTests(unittest.TestCase):
                 "I don't consent to recording.",
                 "I do not consent to AI.",
                 "Advocate, please leave the call.",
+                "BetterBill, leave.",
                 "No AI allowed.",
                 "No bots allowed.",
             ):
                 with self.subTest(role=role, text=text):
                     floor = SpeechFloor()
-                    floor.yield_floor("existing_handoff")
                     decision = floor.observe(role, text, final=True)
                     self.assertEqual(
                         (decision.action, decision.source), ("withdraw", "participation_declined")
                     )
                     self.assertFalse(floor.can_output)
                     self.assertFalse(floor.begin_response())
+                    self.assertEqual(
+                        floor.observe("patient", "Please continue", final=True).action, "ignore"
+                    )
 
-    def test_partial_refusals_and_ordinary_no_do_not_withdraw(self):
-        for role in ("patient", "hospital"):
-            for text, final in (
-                ("Please stop recording", False),
-                ("No", True),
-                ("Stop", True),
-                ("Don't stop recording", True),
-                ("We should not ask the advocate to leave", True),
-                ("I don't mind recording", True),
-            ):
-                with self.subTest(role=role, text=text, final=final):
-                    floor = SpeechFloor()
-                    self.assertNotEqual(floor.observe(role, text, final=final).action, "withdraw")
+    def test_negations_and_ordinary_no_are_not_participation_refusals(self):
+        floor = SpeechFloor()
+        for index, text in enumerate(
+            (
+                "No",
+                "Stop",
+                "Don't stop recording",
+                "We should not ask the advocate to leave",
+                "I don't mind recording",
+                "Advocate, I don't understand that bill",
+            )
+        ):
+            self.assertEqual(
+                floor.observe("patient", text, final=True, utterance_id=str(index)).action, "grant"
+            )
+        self.assertFalse(floor.ended)
+
+    def test_ended_floor_cannot_be_reopened(self):
+        floor = SpeechFloor()
+        floor.end()
+        self.assertFalse(floor.can_output)
+        self.assertFalse(floor.begin_response())
+        self.assertEqual(floor.observe("hospital", "Continue", final=True).action, "ignore")
 
 
 if __name__ == "__main__":

@@ -8,7 +8,6 @@ import {
   canReportConferenceStatus,
   isConferenceScript,
   isPatientFirstConferenceScript,
-  PATIENT_CUE,
   patientConnectionForScript,
   renderConferenceScript,
   validConferenceDestinations,
@@ -32,7 +31,7 @@ describe("conference approval", () => {
     expect(introduction).toContain("Alex Morgan");
     expect(introduction).toContain("Example");
     expect(introduction).toContain("hold your account");
-    expect(introduction).toContain("I keep talking to billing for you");
+    expect(introduction).toContain("I'll handle the billing questions");
     // The controller refuses over 45 s of audio. 114 words measured 46.7 s,
     // so stay well under with a long hospital name and long service names.
     const long = buildConferenceIntroduction({
@@ -65,13 +64,14 @@ describe("conference approval", () => {
     expect(script).not.toMatch(
       /press 1|keypad|hang up when|stays connected and silent/i,
     );
-    // Billing hears the request before verification; the patient gets one cue.
+    // Billing hears the request, then handles verification with the patient.
     expect(script).toContain(CONFERENCE_OPENING);
     expect(script).toContain(
       "account ending in 1234 at Example. Please review.",
     );
-    expect(script).toContain(PATIENT_CUE);
-    expect(script).toContain("leads the call");
+    expect(script).toContain("continues naturally");
+    expect(script).toContain("Approved case facts");
+    expect(script).not.toMatch(/says once:|only if the patient asks/);
     expect(script).toContain("does not argue charges");
     expect(buildConferenceIntroduction(vars)).toContain("itemized bill");
     expect(buildConferenceIntroduction(vars)).toContain("answer them yourself");

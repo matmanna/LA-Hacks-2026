@@ -122,28 +122,26 @@ microphone denial without calling any provider.
 Use the dedicated patient conference branch with PCM 16000 input/output and three
 parameterless client tools: `finish_call`, `pause_advocate`, and `resume_advocate`.
 The single advocate prompt follows the conversation without workflow stages. Enable
-`agent_response_complete` in `conversation.client_events`. Preflight
+`agent_response_complete` and `agent_tool_response` in `conversation.client_events`. Preflight
 rejects extra tools, unsupported built-in tools, old invitation instructions and remaining workflow
 stages before any phone call. The [configuration script](../../packages/api/scripts/configure-demo-advocate.md)
 backs up and updates only the conference branch, preserving the voice/model, audio
 settings and background voice filter. It refuses to run while a room is active.
 
 The native `skip_turn` tool allows a temporary wait when staff is looking up the
-account or thinking. It does not latch the patient-handoff gate: staff can continue
+account or thinking. It does not permanently silence the advocate: staff can continue
 normally when ready. The hosted branch uses patient turn-taking, a 20-second silence
 window, and no speculative response generation. Silence does not end the call.
 
-Patient speech, staff verification cues, or a handoff latch the advocate silent without
-waiting for a model tool. Once latched, only a finalized request for help addressing
-"Advocate" or "BetterBill" from the patient connection permits one answer. Staff,
-silence, identity answers and model tools cannot resume it. Human speech revokes that
-answer. Microphone track loss also latches silence. The completed response is buffered
-before playback, so later model turns cannot escape that one-answer permission; this
-adds response latency that still needs a live rehearsal. A missing response boundary
-withdraws the AI rather than disconnecting the humans.
+Audio plays as it arrives. Partial transcripts never cancel a reply; finalized human
+turns wait until the current reply finishes playing, then reach the model together in
+speaker order. The model yields through verification and patient decisions and resumes
+when billing continues. There is no keyword gate or one-answer limit. A continuous
+silent PCM stream advances the hosted playback clock while real speech travels through
+role-labeled text. A 45-second stall with no audio progress withdraws only the AI;
+it is not a total-call limit. Microphone track loss pauses the advocate.
 
-Normal discussion updates context without triggering replies. Two realtime Scribe
-streams use provider credits; hosted mixed-audio ASR is not used. Pausing speech alone
+Two realtime Scribe streams use provider credits; hosted mixed-audio ASR is not used. Pausing speech alone
 does not stop transcription or AI processing; explicit AI/recording refusal withdraws
 the AI. Never infer approval from silence, unclear speech, phone presence or departure,
 or make payment or settlement commitments. Identity verification belongs to the humans;
@@ -194,10 +192,10 @@ connection, both humans hearing each other/advocate, direct spoken approval, for
 and quiet voices, background chatter, overlap, voicemail, and either-person hangup.
 The background filter cannot guarantee intended-speaker detection.
 
-For the small role-play demo: ask about one flagged charge; request the patient for
-verification; let both humans talk and pause without inviting the advocate; then say
-"Advocate, can you help?" Check one answer followed by silence, including if staff
-addresses the advocate. Ask a follow-up using the approved bill facts, propose a next step
+For the small role-play demo: allow recording, request the patient for verification,
+then return to billing. The advocate should continue without a special phrase. Discuss
+an account hold, an itemized bill, and the records process. Ask an ordinary follow-up,
+propose terms requiring the patient's decision, and confirm a next step
 and reference number, and agree on a recap before ending. Check the stall/recovery and
 handoff logs afterward. Do not treat this rehearsal as a real hospital authorization.
 
