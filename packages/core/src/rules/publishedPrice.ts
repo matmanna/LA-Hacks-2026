@@ -1,4 +1,5 @@
 import { copy } from "../copy";
+import { formatMoney } from "../money";
 import type { Bill, Flag } from "../schemas";
 import type { PublishedPrice } from "./types";
 import { flagId, normalize } from "./util";
@@ -35,7 +36,7 @@ export function detectPublishedPrice(
       amountCents: l.chargeCents - cash,
       evidence: {
         kind: "price_file",
-        detail: `${l.code}: billed ${l.chargeCents} cents, published cash price ${cash} cents.`,
+        detail: `${l.code}: billed ${formatMoney(l.chargeCents)}; the hospital's published cash price is ${formatMoney(cash)}.`,
         sourceUrl: p.sourceUrl,
         capturedAt: p.capturedAt,
       },

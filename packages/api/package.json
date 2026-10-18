@@ -19,6 +19,7 @@
     "@orpc/openapi": "catalog:",
     "@orpc/server": "catalog:",
     "@orpc/zod": "catalog:",
+    "@sentry/core": "11.4.0",
     "drizzle-orm": "catalog:",
     "zod": "catalog:"
   },

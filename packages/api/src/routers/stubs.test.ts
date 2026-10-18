@@ -1,9 +1,8 @@
-import { Action, Assistance } from "@betterbill/core";
+import { Assistance } from "@betterbill/core";
 import { createRouterClient } from "@orpc/server";
 import { describe, expect, it } from "vitest";
 
 import type { Context } from "../context";
-import { CallStarted, CallStatus } from "../outputs";
 import { appRouter } from "./index";
 
 const context: Context = { db: {} as never, session: null, adapter: false };
@@ -22,6 +21,9 @@ describe("procedure stubs", () => {
         "case.create",
         "case.get",
         "case.list",
+        "case.share",
+        "case.revokeShare",
+        "case.packet",
         "bill.parseText",
         "bill.parsePhoto",
         "bill.confirmLines",
@@ -39,9 +41,9 @@ describe("procedure stubs", () => {
     );
   });
 
-  // case, bill, audit, action.approve, event and eval are real and covered by the
-  // *.int.test.ts and reader tests.
-  it("assistance, action, call stubs return their declared shapes", async () => {
+  // case, bill, audit, event, eval, action and call routes are real and
+  // covered by the *.int.test.ts and reader tests.
+  it("assistance stub returns its declared shape", async () => {
     Assistance.parse(
       await client.assistance.check({
         caseId,
@@ -49,10 +51,6 @@ describe("procedure stubs", () => {
         annualIncomeCents: 3_000_000,
       }),
     );
-    const actionId = "action-test";
-    Action.parse(await client.action.send({ actionId }));
-    const call = CallStarted.parse(await client.call.start({ actionId }));
-    CallStatus.parse(await client.call.status({ callId: call.callId }));
   });
 
   it("rejects invalid input", async () => {

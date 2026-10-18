@@ -1,0 +1,79 @@
+{
+  "photo": "data/synthetic/photos/SB-06-dimangle.jpg",
+  "sha256": "51e8d873aa6fd60fc45d59ddec60de30a58cab7197d0d8dddfbb9a4b5d613b37",
+  "model": "step-5-preview",
+  "latencyMs": 58307,
+  "readAt": "2026-10-18T02:56:00.129Z",
+  "bill": {
+    "id": "cache-bill",
+    "hospital": {
+      "name": "Cedars-Sinai Medical Center",
+      "city": null,
+      "state": null
+    },
+    "statementDate": "2020-09-18",
+    "accountRefMasked": null,
+    "kind": "itemized",
+    "sourceKind": "photo",
+    "lines": [
+      {
+        "id": "cache-l01",
+        "serviceDate": "2020-09-03",
+        "description": "MRI LUMBAR SPINE W/O CONTRAST",
+        "code": "72148",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 200000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.78,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l02",
+        "serviceDate": "2020-09-03",
+        "description": "MRI LUMBAR SPINE 2-3 VIEWS",
+        "code": "72192",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 84000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.85,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l03",
+        "serviceDate": "2020-09-03",
+        "description": "XR CHEST 2 VIEWS",
+        "code": "71046",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 22000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.92,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 306000,
+      "adjustmentsCents": 0,
+      "paidCents": 0,
+      "dueCents": 306000
+    }
+  },
+  "reconciliation": {
+    "linesSumCents": 306000,
+    "statedChargesCents": 306000,
+    "diffCents": 0,
+    "ok": true
+  },
+  "warnings": []
+}

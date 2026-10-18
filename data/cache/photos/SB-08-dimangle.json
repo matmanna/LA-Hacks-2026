@@ -1,0 +1,124 @@
+{
+  "photo": "data/synthetic/photos/SB-08-dimangle.jpg",
+  "sha256": "2087a4040c51ccb8fd50f4a459cd1f5bf588af181c4a01f3ee4247036c58a115",
+  "model": "step-5-preview",
+  "latencyMs": 17828,
+  "readAt": "2026-10-18T02:51:07.053Z",
+  "bill": {
+    "id": "cache-bill",
+    "hospital": {
+      "name": "Sample Medical Center (synthetic)",
+      "city": "Los Angeles",
+      "state": "CA"
+    },
+    "statementDate": "2026-03-20",
+    "accountRefMasked": null,
+    "kind": "itemized",
+    "sourceKind": "photo",
+    "lines": [
+      {
+        "id": "cache-l01",
+        "serviceDate": "2026-03-08",
+        "description": "ED VISIT LEVEL 3",
+        "code": "99283",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 185000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l02",
+        "serviceDate": "2026-03-08",
+        "description": "XR CHEST 2 VIEWS",
+        "code": "71046",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 52000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l03",
+        "serviceDate": "2026-03-08",
+        "description": "CBC W/ AUTO DIFF",
+        "code": "85025",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 8400,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l04",
+        "serviceDate": "2026-03-08",
+        "description": "COMPREHENSIVE METABOLIC PANEL",
+        "code": "80053",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 21200,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l05",
+        "serviceDate": "2026-03-08",
+        "description": "VENIPUNCTURE",
+        "code": "36415",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 3800,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l06",
+        "serviceDate": "2026-03-08",
+        "description": "ECG TRACING ONLY",
+        "code": "93005",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 31000,
+        "source": {
+          "page": 1,
+          "bbox": null
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 301400,
+      "adjustmentsCents": 0,
+      "paidCents": 0,
+      "dueCents": 301400
+    }
+  },
+  "reconciliation": {
+    "linesSumCents": 301400,
+    "statedChargesCents": 301400,
+    "diffCents": 0,
+    "ok": true
+  },
+  "warnings": []
+}

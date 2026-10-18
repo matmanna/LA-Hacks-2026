@@ -1,19 +1,16 @@
-import { publicProcedure } from "../index";
+import { accountProcedure, publicProcedure } from "../index";
 import { ActionIdInput, CallIdInput } from "../inputs";
 import { CallStarted, CallStatus } from "../outputs";
+import { callStatus, startCall } from "../services/call";
 
 export const callRouter = {
-  // STUB: owned by A. Places no call. Becomes protectedProcedure in B-11.
-  start: publicProcedure
+  // Needs a real account when BB_REQUIRE_ACCOUNT=true (B-11).
+  start: accountProcedure
     .input(ActionIdInput)
     .output(CallStarted)
-    .handler(({ input }) => ({
-      callId: `call-${input.actionId}`,
-      status: "stub",
-    })),
-  // STUB: owned by A
+    .handler(({ input, context }) => startCall(context.db, input)),
   status: publicProcedure
     .input(CallIdInput)
     .output(CallStatus)
-    .handler(() => ({ status: "stub", transcript: null, outcome: null })),
+    .handler(({ input, context }) => callStatus(context.db, input)),
 };

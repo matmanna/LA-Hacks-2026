@@ -1,0 +1,109 @@
+{
+  "photo": "data/synthetic/photos/SB-05-crumpled.jpg",
+  "sha256": "18a30e173327ab450ac13177cb609f48edb368b6390e87ffedae8ba56dc16657",
+  "model": "step-5-preview",
+  "latencyMs": 42775,
+  "readAt": "2026-10-18T02:50:04.998Z",
+  "bill": {
+    "id": "cache-bill",
+    "hospital": {
+      "name": "Sample Medical Center (synthetic)",
+      "city": "Los Angeles",
+      "state": "CA"
+    },
+    "statementDate": "2026-06-02",
+    "accountRefMasked": null,
+    "kind": "itemized",
+    "sourceKind": "photo",
+    "lines": [
+      {
+        "id": "cache-l01",
+        "serviceDate": "2026-05-19",
+        "description": "CBC W/ AUTO DIFF",
+        "code": "85025",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 8400,
+        "source": {
+          "page": 1,
+          "bbox": [0.185, 0.36, 0.82, 0.38]
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l02",
+        "serviceDate": "2026-05-19",
+        "description": "CBC W/ AUTO DIFF",
+        "code": "85025",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 8400,
+        "source": {
+          "page": 1,
+          "bbox": [0.185, 0.39, 0.82, 0.41]
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l03",
+        "serviceDate": "2026-05-19",
+        "description": "COMPREHENSIVE METABOLIC PANEL",
+        "code": "80053",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 21200,
+        "source": {
+          "page": 1,
+          "bbox": [0.185, 0.42, 0.82, 0.44]
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l04",
+        "serviceDate": "2026-05-19",
+        "description": "VENIPUNCTURE",
+        "code": "36415",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 3800,
+        "source": {
+          "page": 1,
+          "bbox": [0.185, 0.45, 0.82, 0.47]
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      },
+      {
+        "id": "cache-l05",
+        "serviceDate": "2026-05-19",
+        "description": "GLUCOSE BLOOD TEST",
+        "code": "82962",
+        "codeType": "CPT",
+        "units": 1,
+        "chargeCents": 2400,
+        "source": {
+          "page": 1,
+          "bbox": [0.185, 0.48, 0.82, 0.5]
+        },
+        "confidence": 0.99,
+        "userEdited": false
+      }
+    ],
+    "totals": {
+      "chargesCents": 44200,
+      "adjustmentsCents": 19600,
+      "paidCents": 5000,
+      "dueCents": 19600
+    }
+  },
+  "reconciliation": {
+    "linesSumCents": 44200,
+    "statedChargesCents": 44200,
+    "diffCents": 0,
+    "ok": true
+  },
+  "warnings": []
+}
