@@ -23,7 +23,7 @@ function StackLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Screen
-        name="case/[id]"
+        name="case/[id]/index"
         options={{ headerShown: true, title: "Your bill" }}
       />
       <Stack.Screen
