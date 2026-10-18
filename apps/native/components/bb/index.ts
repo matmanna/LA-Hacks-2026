@@ -1,3 +1,4 @@
+export { BillMock, type MockLine, SAMPLE_PRINT } from "./bill-mock";
 export { Button } from "./button";
 export { Icon, type IconName } from "./icon";
 export { Money } from "./money";
