@@ -1,0 +1,25 @@
+# BetterBill native (Expo, Better-T-Stack `native-uniwind`)
+
+Phone app for taking or choosing bill photos, uploading them, confirming the lines, and following the case status over time. Same oRPC API and Better Auth as `apps/web`. UI is placeholder until the mobile design files land.
+
+## Run in Expo Go
+
+1. Point the app at your computer on the LAN. Create `apps/native/.env` (gitignored):
+   ```
+   EXPO_PUBLIC_SERVER_URL=http://<your LAN IP>:3001
+   ```
+2. Start the web app listening on the network:
+   ```
+   bun run dev:web -- --host
+   ```
+   Photo reading needs `STEPFUN_API_KEY` in `apps/web/.env` and `BB_READER_MODE=live` (or `cache_first`). The sample bill works without a key.
+3. Start Expo (in Expo Go mode, since `expo-dev-client` is installed):
+   ```
+   bun run dev:native
+   ```
+4. Scan the QR code with Expo Go on the same Wi-Fi.
+
+## Screens
+- **Your bills** (drawer home): Take a photo, Choose from photos (up to 3 pages, downscaled to 2000 px JPEG), Try a sample bill (SB-01), and the list of bills started on this phone with live status (refreshes every 10 s). The list is stored on the device because `case.list` needs a signed-in user.
+- **Case** (`/case/[id]`): lines read from the bill, Looks right (`bill.confirmLines` then `audit.run`), fair balance, flags with tier, savings, and the activity timeline. Polls every 5 s.
+- **Account** (drawer): Better-T-Stack's sign in, sign up, API status, and Polar screens.
