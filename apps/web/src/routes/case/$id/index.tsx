@@ -307,15 +307,11 @@ function CasePage() {
             </p>
           </Card>
           <Card>
-<<<<<<< HEAD
-            <Button className="w-full" onClick={comingSoon}>
-=======
             <Button
               className="w-full"
               onClick={letter.start}
               disabled={letter.busy}
             >
->>>>>>> origin/main
               Send the letter
             </Button>
             <Button variant="secondary" className="w-full" onClick={comingSoon}>
