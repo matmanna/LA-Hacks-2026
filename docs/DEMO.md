@@ -117,13 +117,13 @@ Plan: 07:00 record shots 3 to 10 on main build with a fresh case; 07:40 shots 11
 
 1. **Inspiration:** Commonwealth numbers (N1 to N3 safe wording, cited).
 2. **What it does:** photo to confirmed lines, deterministic audit with evidence tiers, published-price comparison from a real hospital file, assistance check, approved letter, approved call, traces.
-3. **How we built it:** TanStack Start, oRPC, Drizzle/Postgres (Tiger Data), Better Auth, Polar sandbox, Vercel, StepFun step-5-preview (photo reading), Gemini (letter drafting), Browser Use (live capture), Photon + ElevenLabs (call), Sentry + evlog (traces), Paper (design), Fetch (only if gated in).
+3. **How we built it:** TanStack Start, oRPC, Drizzle/Postgres (Tiger Data), Better Auth, Polar sandbox, Vercel, StepFun step-5-preview (photo reading), Gemini (letter drafting), Browser Use (live capture), Photon + ElevenLabs (call), Sentry + evlog (traces), Paper (design).
 4. **Evidence and data:** synthetic bills (say we planted the errors), CMS MUE table (date, link), Cedars-Sinai price file (dates, hash), assistance policy (quote, link), 2026 HHS FPL.
 5. **Results (measured):** paste from `results.json` with N and date. Include misses.
 6. **Challenges:** price files are huge and messy (multiple items per code, one 72148 item described "PET Scan"); LA General publishes no discounted cash prices; MUE allows 4 CBCs a day so the duplicate flag had to ask, not accuse.
 7. **What's next:** real user interviews, more hospitals, compliance review, human escalation.
 8. **Honesty box:** synthetic bills; no real patients; call goes to a test phone; not legal or medical advice; Goodbill exists and handles unpaid hospital bills with experts.
-9. **Tracks (opt into every one that qualifies; confirm names on the LA Hacks Devpost page by 22:00):** Applied Intelligence, Browser Use, StepFun, Sentry, Photon, Fetch.ai (if in), Paper, MLH Gemini, MLH ElevenLabs, MLH Tiger Data, MLH GoDaddy (if domain), Commit Fellowship. Check each track's extra requirements (for example a sponsor form or specific wording) and list them in `docs/DEMO.md`.
+9. **Tracks (opt into every one that qualifies; confirm names on the LA Hacks Devpost page by 22:00):** Applied Intelligence, Browser Use, StepFun, Sentry, Photon, Paper, MLH Gemini, MLH ElevenLabs, MLH Tiger Data, MLH GoDaddy (if domain), Commit Fellowship. Check each track's extra requirements (for example a sponsor form or specific wording) and list them in `docs/DEMO.md`.
 
 ### 4a. Devpost draft text (fill from the 07:30 run; numbers below are from the integration run)
 
@@ -198,7 +198,6 @@ Plan: 07:00 record shots 3 to 10 on main build with a fresh case; 07:40 shots 11
 - [ ] 09:00 Freeze; repo public (confirm with B); README has setup, sponsors used, honesty box.
 - [ ] 10:00 Video uploaded, link tested in a private window.
 - [ ] **10:30 Devpost submitted (C)** with video, repo, preview URL, screenshots, every track opted in.
-- [ ] **11:30 Fetch Submission Agent done by A** (only if Fetch is in); C confirms in chat.
 - [ ] 11:45 Re-open Devpost, verify links, video plays, tracks selected; edit if allowed.
 - [ ] **12:00 Final deadline**; screenshot the submitted page.
 - [ ] 12:30 Judging: printed SB-01, judge call card, laptop and phone charged.

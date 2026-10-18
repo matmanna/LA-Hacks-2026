@@ -196,7 +196,6 @@ packages/core   Pure TypeScript: schemas, reader output parsing, rules, savings,
 packages/api    Thin oRPC routers; StepFun, Gemini, Photon, ElevenLabs, Browser Use, Polar clients; Sentry spans
 packages/db     Drizzle schema, migrations, seed
 packages/ui     shadcn components plus BetterBill components (Money, TierBadge, EvidenceSheet, ApprovalSheet, ...)
-agents/         Fetch.ai uAgents adapter (Python, no business logic)
 data/           Synthetic bills, Bill of the Month cases, hospital captures, regulations, eval results, wording rules
 ```
 
@@ -204,7 +203,7 @@ Rules for contributors: business logic in `packages/core`, thin routers, money i
 
 ## Run it locally
 
-Needs Bun 1.3.12+ and Docker. Python 3.11 and uv only for the Fetch adapter and capture scripts.
+Needs Bun 1.3.12+ and Docker. Python 3.11 and uv only for the capture scripts.
 
 ```bash
 bun install
