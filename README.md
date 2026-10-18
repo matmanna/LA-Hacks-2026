@@ -22,10 +22,10 @@ Built in 24 hours at LA Hacks 2026. Free to check. [Live app](https://betterbill
 
 | | | Source |
 |---|---|---|
-| **6 in 10** | adults with health care debt cut back on food, clothing and basic household items (63%)[^kff-debt] | [KFF Health Care Debt Survey](https://www.kff.org/health-costs/issue-brief/kff-health-care-debt-survey/), Jun 16, 2022 |
-| **$220 billion** | at least this much medical debt is owed by people in the U.S.[^peterson] | [Peterson-KFF Health System Tracker](https://www.kff.org/health-costs/issue-brief/the-burden-of-medical-debt-in-the-united-states/), Feb 12, 2024 |
-| **45%** | "Close to half (45%) of insured adults ages 19 to 64 got a medical bill in the past year they thought insurance should have covered."[^cf] | Commonwealth Fund Health Care Affordability Survey 2023 (n = 5,602), [published Aug 1, 2024](https://www.commonwealthfund.org/sites/default/files/2024-07/Gupta_unforeseen_bills_coverage_denials_PR_2024-08-01.pdf) |
-| **Up to 80%** | of medical bills contain errors, billing advocates estimate. The AMA put it at 7.1% of paid claims in 2013.[^cnbc] | CNBC, Mar 27, 2016 ([republished by NBC News](https://www.nbcnews.com/business/consumer/it-s-time-get-second-opinion-paying-medical-bill-n545626)) |
+| **6 in 10** | adults with health care debt cut back on food, clothing and basic household items (63%)<sup>[14](#works-cited)</sup> | [KFF Health Care Debt Survey](https://www.kff.org/health-costs/issue-brief/kff-health-care-debt-survey/), Jun 16, 2022 |
+| **$220 billion** | at least this much medical debt is owed by people in the U.S.<sup>[20](#works-cited)</sup> | [Peterson-KFF Health System Tracker](https://www.kff.org/health-costs/issue-brief/the-burden-of-medical-debt-in-the-united-states/), Feb 12, 2024 |
+| **45%** | "Close to half (45%) of insured adults ages 19 to 64 got a medical bill in the past year they thought insurance should have covered."<sup>[4](#works-cited)</sup> | Commonwealth Fund Health Care Affordability Survey 2023 (n = 5,602), [published Aug 1, 2024](https://www.commonwealthfund.org/sites/default/files/2024-07/Gupta_unforeseen_bills_coverage_denials_PR_2024-08-01.pdf) |
+| **Up to 80%** | of medical bills contain errors, billing advocates estimate. The AMA put it at 7.1% of paid claims in 2013.<sup>[5](#works-cited)</sup> | CNBC, Mar 27, 2016 ([republished by NBC News](https://www.nbcnews.com/business/consumer/it-s-time-get-second-opinion-paying-medical-bill-n545626)) |
 
 Checking a bill takes knowledge of codes, unit limits, price files, charity care law and the patience to call. BetterBill does that work and shows its work.
 
@@ -35,8 +35,8 @@ Checking a bill takes knowledge of codes, unit limits, price files, charity care
 |---|---|---|
 | **1. Snap** | Photo (up to 3 pages) or pasted text. The model only transcribes. It never does math. | StepFun `step-5-preview`, deterministic text parser, Gemini cleanup |
 | **2. Confirm** | "Did we read your bill right?" then "Did you get all of these?" You fix misreads and mark services you never got. | Web and native confirm flows |
-| **3. Proof** | A deterministic rules engine checks duplicates, units against CMS limits[^mue], bill vs EOB, the hospital's own published price, missing itemization and "not received". Every flag carries an evidence tier and a source. | `packages/core` (pure TypeScript, unit tested) |
-| **4. Help paying** | Screens 8 checks: the hospital's assistance policy, state charity care law (9 jurisdictions)[^states], collection limits, 501(r)[^fed], No Surprises Act[^fed], Medicare itemized rights[^fed], insurance applied, income vs 2026 poverty guidelines[^fpl]. If the policy is not on file, a Browser Use agent finds it live. | `packages/core/src/assistance`, Browser Use |
+| **3. Proof** | A deterministic rules engine checks duplicates, units against CMS limits<sup>[3](#works-cited)</sup>[^mue], bill vs EOB, the hospital's own published price, missing itemization and "not received". Every flag carries an evidence tier and a source. | `packages/core` (pure TypeScript, unit tested) |
+| **4. Help paying** | Screens 8 checks: the hospital's assistance policy, state charity care law (9 jurisdictions)<sup>[2, 12, 16, 18, 19, 24](#works-cited)</sup>[^states], collection limits, 501(r)<sup>[11, 13, 15, 17](#works-cited)</sup>[^fed], No Surprises Act<sup>[11, 13, 15, 17](#works-cited)</sup>[^fed], Medicare itemized rights<sup>[11, 13, 15, 17](#works-cited)</sup>[^fed], insurance applied, income vs 2026 poverty guidelines<sup>[1](#works-cited)</sup>[^fpl]. If the policy is not on file, a Browser Use agent finds it live. | `packages/core/src/assistance`, Browser Use |
 | **5. Act** | Gemini drafts the letter. The call has a goal and a script. You approve once, and the approval is saved with a hash of the exact text. Then email goes out and the advocate calls billing. | Gemini, Photon, ElevenLabs |
 | **6. Follow** | Case timeline, evidence packet you can share with family, a lawyer or a doctor, and "What we did for you". | Postgres on Tiger Data, Sentry |
 
@@ -54,8 +54,8 @@ Measured, not promised. Every number comes from a file in this repo, with the da
 | **0.012 ms** | audit time, p50 (20 runs per bill) | same |
 | **88.8%** | line recall on 35 phone photos of printed synthetic bills (flat, angled, crumpled, dim, dim and angled); 28 of 35 read perfectly | [`data/eval/extraction.json`](data/eval/extraction.json), Oct 17, 2026 |
 | **26.2 s** | photo to lines, p50 (p90 58.3 s), live `step-5-preview` | same |
-| **$1,916.85** | less than billed on the $12,000 sample bill SB-01: $1,756.85 MRI above Cedars-Sinai's published cash price[^cedars], $84.00 duplicate blood count, $76.00 extra blood draws | `audit.run` on [`SB-01`](data/synthetic/bills/SB-01.json); price from [`capture.json`](data/hospitals/cedars-sinai/capture.json) |
-| **1 of 3** | in-scope reporter findings caught on 5 recreated KFF Health News "Bill of the Month" cases[^botm] (1 of 13 overall; the rest are outside what a bill checker can see) | `results.json`, [`data/benchmark/botm`](data/benchmark/botm) |
+| **$1,916.85** | less than billed on the $12,000 sample bill SB-01: $1,756.85 MRI above Cedars-Sinai's published cash price<sup>[21, 22](#works-cited)</sup>[^cedars], $84.00 duplicate blood count, $76.00 extra blood draws | `audit.run` on [`SB-01`](data/synthetic/bills/SB-01.json); price from [`capture.json`](data/hospitals/cedars-sinai/capture.json) |
+| **1 of 3** | in-scope reporter findings caught on 5 recreated KFF Health News "Bill of the Month" cases<sup>[6 to 10](#works-cited)</sup>[^botm] (1 of 13 overall; the rest are outside what a bill checker can see) | `results.json`, [`data/benchmark/botm`](data/benchmark/botm) |
 | **12 of 12** | synthetic bills screened for assistance, 8 checks each, 28 of 28 "may help" findings cite their source | [`data/eval/assistance.json`](data/eval/assistance.json), Oct 18, 2026 |
 
 Honest limits: the team planted the seeded errors, so 22 of 22 shows the rules work as designed, not real-world accuracy. The Bill of the Month number shows what we miss. There is no ground truth for who qualifies for assistance; the hospital decides, so every assistance result is labelled an estimate.
@@ -147,7 +147,7 @@ Free or cheaper care (from #96 and #99):
 
 - **Reading:** photo (StepFun, 1 to 3 pages, per-line confidence, totals reconciled), pasted text (deterministic parser, Gemini cleanup fallback), saved readings for known photos, summary bills routed to "ask for your itemized bill" on the same case (#53, #14, #58, #82, #86, #87).
 - **Rules:** duplicate, units vs CMS MUE, bill vs EOB, hospital's published price, missing itemization, patient-reported "not received" (#12, #21, #85). Savings and balance math in integer cents; the UI never computes money.
-- **Assistance:** screener over captured hospital policies, federal rules and 8 states (CA, NY, WA, MD, IL, CO, OR, MA)[^states], 29 rules with citations and verbatim quotes; income is asked as a range and never stored (#89, #93, #95, #101).
+- **Assistance:** screener over captured hospital policies, federal rules and 8 states (CA, NY, WA, MD, IL, CO, OR, MA)<sup>[2, 12, 16, 18, 19, 24](#works-cited)</sup>[^states], 29 rules with citations and verbatim quotes; income is asked as a range and never stored (#89, #93, #95, #101).
 - **Live agent:** Browser Use finds a missing hospital policy in the background, shows each step, and sends a local reminder when it is ready (#98, #99).
 - **Actions:** Gemini letter with a claim checker, call script with a goal, one approval with consent, email via Photon, call via ElevenLabs on a Photon line, transcript and outcome card (#40, #47, #48, #49, #67, #84).
 - **Sharing:** evidence packet link with sources, SHA-256 hashes, status in plain words and the free care result; print or save as PDF; revocable; redacted (#62, #78, #97).
@@ -161,7 +161,7 @@ Free or cheaper care (from #96 and #99):
 |---|---|
 | The model only transcribes; a deterministic rules engine in pure `packages/core` computes every flag and dollar | Money must be reproducible and testable, never guessed by a model (#12, #53) |
 | An evidence tier and a source on every amount | Patients and billing offices can check each claim themselves |
-| Ask, don't accuse | CMS allows up to 4 blood counts a day[^mue], so a repeat line is a question for billing, not a verdict. `bun run copy:check` flags banned wording |
+| Ask, don't accuse | CMS allows up to 4 blood counts a day<sup>[3](#works-cited)</sup>[^mue], so a repeat line is a question for billing, not a verdict. `bun run copy:check` flags banned wording |
 | An explicit approval event, with a hash of the exact draft, before any email or call | Nothing goes out that the patient did not read; a call is refused if its script no longer matches the approved one (#47, #49, #79) |
 | Synthetic bills only; real public prices, policies and laws | No patient data at a hackathon, but real evidence for every comparison |
 | Saved photo readings with `cache_first` | Live reads took 10 to 66 s and timed out under load; a labelled saved reading keeps the demo honest and fast (#58, #82) |
@@ -229,9 +229,15 @@ bun run dev                       # web app on http://localhost:3001
 **Deploy:** Vercel (`bun run deploy`, env sync with `bun run env:preview` or `env:production`). CI on every PR runs Biome, types, unit and integration tests and the build, with `BB_READER_MODE=cache_only`. On `main`, CI applies migrations to the shared Tiger Data database.
 
 
+## Team
+
+[@matmanna](https://github.com/matmanna) · [@sdrucquer](https://github.com/sdrucquer) · [@AbhinavDasari-pennstate](https://github.com/AbhinavDasari-pennstate) · [@vs-githjk](https://github.com/vs-githjk)
+
+Built from [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack). Product names and logos belong to their owners; their use here means "built with", not partnership.
+
 ## Works cited
 
-Entries are numbered, and the footnotes above point to them by number. Law, price file and benchmark links were checked in October 2026 (access dates are in the files under `data/`).
+Entries are numbered. The small numbers in the text link here. Law, price file and benchmark links were checked in October 2026 (access dates are in the files under `data/`).
 
 1. ASPE, U.S. Department of Health and Human Services. "Poverty Guidelines." <https://aspe.hhs.gov/topics/poverty-economic-mobility/poverty-guidelines>
 2. California Legislature. Health and Safety Code sections [127400](https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127400), [127405](https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127405) and [127425](https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=127425).
@@ -258,18 +264,6 @@ Entries are numbered, and the footnotes above point to them by number. Law, pric
 23. UCLA Health. Ronald Reagan UCLA Medical Center [standard charges](https://www.uclahealth.org/sites/default/files/cms-hpt/956006143_ronald-reagan-ucla-medical-center_standardcharges.json) and [machine-readable files page](https://www.uclahealth.org/patient-resources/billing-insurance/price-transparency/machine-readable-files).
 24. New York State Senate. Public Health Law section 2807-k. <https://www.nysenate.gov/legislation/laws/PBH/2807-K>; Oregon Legislature. ORS chapter 442. <https://www.oregonlegislature.gov/bills_laws/ors/ors442.html>; Washington State Legislature. RCW 70.170.060. <https://app.leg.wa.gov/RCW/default.aspx?cite=70.170.060>
 
-## Notes
-
-[^kff-debt]: Works cited 14. Survey of adults with health care debt; 63% cut back on food, clothing and basic household items.
-[^peterson]: Works cited 20. Peterson-KFF estimate of medical debt owed in the U.S.
-[^cf]: Works cited 4. Quote is from the press release; survey n = 5,602.
-[^cnbc]: Works cited 5. The "up to 80%" figure is billing advocates' estimate as reported by CNBC; the AMA figure is 7.1% of paid claims in 2013.
-[^mue]: Works cited 3. CMS NCCI Medically Unlikely Edits, facility outpatient hospital table effective 2026-10-01 (subset in [`data/rules`](data/rules/SOURCES.md)).
-[^states]: Works cited 2, 12, 16, 18, 19, 24. State and federal rules with section numbers are in [`data/regulations`](data/regulations).
-[^fed]: Works cited 11, 13, 15, 17. 501(r) and No Surprises Act rules and Medicare itemized-statement rights, with quotes in [`data/regulations/federal.json`](data/regulations/federal.json).
-[^fpl]: Works cited 1. 2026 poverty guidelines, copied into [`data/hospitals/fpl-2026.json`](data/hospitals/fpl-2026.json).
-[^botm]: Works cited 6 to 10. Recreated cases are in [`data/benchmark/botm`](data/benchmark/botm).
-[^cedars]: Works cited 21 and 22. Price file captured with date and SHA-256 in [`capture.json`](data/hospitals/cedars-sinai/capture.json).
 [^track]: This README's [measured results](#what-we-measured); 89 merged PRs.
 [^stepfun]: [`reader/stepfun.ts`](packages/api/src/reader/stepfun.ts), #53, #58; 88.8% line recall, p50 26.2 s on 35 photos.
 [^sentry]: [`docs/SENTRY.md`](docs/SENTRY.md), [`docs/OBSERVABILITY.md`](docs/OBSERVABILITY.md), #59, #68, #69.
@@ -279,9 +273,3 @@ Entries are numbered, and the footnotes above point to them by number. Law, pric
 [^gemini]: [`services/gemini.ts`](packages/api/src/services/gemini.ts), [`letter-drafter.ts`](packages/api/src/services/letter-drafter.ts), #40, #84.
 [^tiger]: [`packages/db`](packages/db), CI job `migrate-shared` in [`ci.yml`](.github/workflows/ci.yml) (green on the latest `main` run).
 [^paper]: #72 to #88 (native), #56 (OG images from Paper), [`/design`](apps/web/src/routes/design.tsx) gallery.
-
-## Team
-
-[@matmanna](https://github.com/matmanna) · [@sdrucquer](https://github.com/sdrucquer) · [@AbhinavDasari-pennstate](https://github.com/AbhinavDasari-pennstate) · [@vs-githjk](https://github.com/vs-githjk)
-
-Built from [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack). Product names and logos belong to their owners; their use here means "built with", not partnership.
