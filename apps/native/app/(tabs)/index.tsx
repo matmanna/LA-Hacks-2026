@@ -11,7 +11,7 @@ import { serviceDay } from "@/lib/format";
 import { caseStatus } from "@/lib/status";
 import { orpc } from "@/utils/orpc";
 
-// W2 Home: the latest bill's savings and status, then every bill on this
+// W2 Home V2 (Bills tab): the latest bill's savings and status, then every bill on this
 // phone. Amounts come from each case's audit; nothing is added up here.
 export default function Home() {
   const insets = useSafeAreaInsets();
@@ -40,7 +40,7 @@ export default function Home() {
     <View className="flex-1 bg-wash">
       <StatusBar style="dark" />
       <ScrollView
-        contentContainerClassName="gap-4 px-5 pb-32"
+        contentContainerClassName="gap-4 px-5 pb-8"
         contentContainerStyle={{ paddingTop: insets.top + 8 }}
         refreshControl={
           <RefreshControl
@@ -56,14 +56,6 @@ export default function Home() {
           <T weight="serif" className="text-[30px] leading-[34px]">
             BetterBill
           </T>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Your profile and settings"
-            onPress={() => router.push("/account")}
-            className="size-10 items-center justify-center rounded-full bg-white"
-          >
-            <Icon name="user" />
-          </Pressable>
         </View>
 
         {latest?.audit ? (
@@ -217,22 +209,6 @@ export default function Home() {
           </>
         ) : null}
       </ScrollView>
-
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Scan a bill"
-        onPress={() => router.push("/scan")}
-        className="absolute right-5 size-[68px] items-center justify-center rounded-full bg-ink"
-        style={{
-          bottom: insets.bottom + 24,
-          shadowColor: "#0B1B2B",
-          shadowOpacity: 0.25,
-          shadowRadius: 14,
-          shadowOffset: { width: 0, height: 12 },
-        }}
-      >
-        <Icon name="scan" size={26} color="#FFFFFF" />
-      </Pressable>
     </View>
   );
 }
