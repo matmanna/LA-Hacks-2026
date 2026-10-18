@@ -74,9 +74,12 @@ export default function Home() {
         }
       >
         <View className="flex-row items-center justify-between">
-          <T weight="serif" className="text-[30px] leading-[34px]">
-            BetterBill
-          </T>
+          <View className="flex-row items-baseline gap-1">
+            <T weight="serif" className="text-[30px] leading-[34px]">
+              BetterBill
+            </T>
+            <Icon name="check" size={18} color="#0F9D76" stroke={2} />
+          </View>
           <AccountButton />
         </View>
 
