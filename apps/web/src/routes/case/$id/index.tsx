@@ -123,6 +123,22 @@ function CasePage() {
   const comingSoon = () => toast("Coming soon");
   const openFlag = flags.find((f) => f.id === openFlagId) ?? null;
   const openLine = bill.lines.find((l) => l.id === openFlag?.lineIds[0]);
+  // Price bars for a published-price flag: the flag amount is the gap, so the
+  // published price is the charge minus that gap. Only with a dated source.
+  const compare =
+    openFlag?.lever === "published_price" &&
+    openLine &&
+    openFlag.evidence.sourceUrl &&
+    openFlag.evidence.capturedAt &&
+    openLine.chargeCents > openFlag.amountCents
+      ? {
+          billedCents: openLine.chargeCents,
+          publishedCents: openLine.chargeCents - openFlag.amountCents,
+          sourceName: bill.hospital.name,
+          sourceUrl: openFlag.evidence.sourceUrl,
+          capturedAt: openFlag.evidence.capturedAt,
+        }
+      : undefined;
 
   const balanceCard = (
     <BalanceCard
@@ -373,6 +389,7 @@ function CasePage() {
         flag={openFlag}
         line={openLine}
         whatToSay={whatToSay(openFlag?.lever ?? "", openLine)}
+        compare={compare}
       />
       <SavingsBar
         confirmedCents={audit.savings.confirmedCents}
