@@ -32,3 +32,27 @@ One line per finding: time (PDT), trace link, what the trace showed, fix PR. Onl
 | Time | Trace | What it showed | Fix |
 |---|---|---|---|
 | | | | |
+
+## Which Sentry product is used where
+
+| Product | Where | Notes |
+|---|---|---|
+| Tracing | [`apps/web/src/instrument.client.ts`](../apps/web/src/instrument.client.ts), [`instrument.server.ts`](../apps/web/src/instrument.server.ts), [`packages/api/src/observe.ts`](../packages/api/src/observe.ts), [`packages/api/src/telemetry.ts`](../packages/api/src/telemetry.ts) | Browser to server traces, `orpc.*` spans, hero-path spans `bb.parse`, `bb.audit`, `bb.draft`, `bb.approve`, `bb.send` with `bb.<step>_ms` measurements and a `bb.flow` tag |
+| Logs | [`telemetry.ts`](../packages/api/src/telemetry.ts), [`lib/sentry.ts`](../apps/web/src/lib/sentry.ts) | `enableLogs`, structured hero-path logs, console warnings and errors forwarded |
+| Session Replay | [`instrument.client.ts`](../apps/web/src/instrument.client.ts) | Mask all text and inputs, block media and bill content. 100% on error |
+| Profiling | [`instrument.client.ts`](../apps/web/src/instrument.client.ts), [`routes/__root.tsx`](../apps/web/src/routes/__root.tsx) | Browser profiling (Chromium). Node profiling skipped, see [SENTRY.md](SENTRY.md) |
+| AI agent monitoring | [`packages/api/src/aiSpan.ts`](../packages/api/src/aiSpan.ts) | Section above |
+| Uptime | Sentry Uptime monitor on `/api/auth/ok` (created in the Sentry UI, not in code) | Checks the deployed app answers |
+| Errors | `captureException` in `observe.ts`, route error fallback in [`router.tsx`](../apps/web/src/router.tsx) | |
+
+Generate real events for the demo with `/sentry-test` (see [SENTRY.md](SENTRY.md)).
+
+## How we used it (team to fill in)
+
+Do not add anything here that Sentry did not show us. Link the trace, replay or log for each item.
+
+- TODO: a slow endpoint or step found in a trace (which span, how long, what we changed).
+- TODO: a broken flow caught in a replay (which screen, what the user hit, fix PR).
+- TODO: a bug found through logs (the query used, what it showed, fix PR).
+- TODO: what browser profiling showed on the results screen, if we looked.
+- TODO: an uptime alert, if one fired.
