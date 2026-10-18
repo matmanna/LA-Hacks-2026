@@ -1,7 +1,7 @@
 import { type RefObject, useEffect, useRef, useState } from "react";
 
 const VIMEO_SRC =
-  "https://player.vimeo.com/video/1236972348?badge=0&autopause=0&player_id=0&app_id=58479";
+  "https://player.vimeo.com/video/1236972348?badge=0&autopause=0&player_id=0&app_id=58479&title=0&byline=0&portrait=0&controls=0";
 
 const VIMEO_ORIGIN = "https://player.vimeo.com";
 const MIN_W = 160;
