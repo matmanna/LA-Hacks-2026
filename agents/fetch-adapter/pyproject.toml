@@ -1,0 +1,33 @@
+[project]
+name = "betterbill-agent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Abhinav Dasari", email = "amd8101@psu.edu" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.28.1",
+    "python-dotenv>=1.2.4",
+    "uagents>=0.26.1",
+    "uagents-core>=0.4.12",
+]
+
+[project.scripts]
+betterbill-agent = "betterbill_agent:main"
+
+[build-system]
+requires = ["uv_build>=0.11.26,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "respx>=0.23.1",
+    "ruff>=0.17.1",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
