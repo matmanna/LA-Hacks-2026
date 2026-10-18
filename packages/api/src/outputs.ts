@@ -130,3 +130,51 @@ export const Contact = z.object({
   hospitalName: z.string().nullable(),
 });
 export type Contact = z.infer<typeof Contact>;
+
+// "Before you go" price comparison (core prices/). Amounts are integer cents
+// from the hospital's own machine-readable price file.
+export const PriceService = z.object({
+  code: z.string(),
+  name: z.string(),
+  short: z.string(),
+  what: z.string(),
+  notCovered: z.string(),
+  terms: z.array(z.string()),
+});
+export const NearbyPrice = z.object({
+  hospitalKey: z.string(),
+  hospitalName: z.string(),
+  address: z.string(),
+  distanceMiles: z.number(),
+  discountedCashCents: z.number().int().nullable(),
+  grossChargeCents: z.number().int().nullable(),
+  setting: z.string(),
+  capturedAt: z.string(),
+  sourceUrl: z.string(),
+  sourceSha256: z.string().nullable(),
+  pageUrl: z.string().nullable(),
+  fileUpdatedOn: z.string().nullable(),
+  policy: z
+    .object({
+      policyUrl: z.string(),
+      capturedAt: z.string(),
+      freeCareMaxFplPct: z.number().nullable(),
+      discountMaxFplPct: z.number().nullable(),
+    })
+    .nullable(),
+  rank: z.number().int().nullable(),
+  shareOfHighest: z.number().nullable(),
+  lat: z.number(),
+  lng: z.number(),
+});
+export const NearbyPrices = z.object({
+  rows: z.array(NearbyPrice),
+  summary: z.object({
+    hospitals: z.number().int(),
+    priced: z.number().int(),
+    lowCents: z.number().int().nullable(),
+    middleCents: z.number().int().nullable(),
+    highCents: z.number().int().nullable(),
+    middleShareOfHighest: z.number().nullable(),
+  }),
+});

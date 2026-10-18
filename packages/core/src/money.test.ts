@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { formatMoney, moneyParts, parseMoneyToCents } from "./money";
+import {
+  formatMoney,
+  formatWholeDollars,
+  moneyParts,
+  parseMoneyToCents,
+} from "./money";
 
 describe("money", () => {
   it("formats", () => {
@@ -25,5 +30,16 @@ describe("money", () => {
     expect(parseMoneyToCents("abc")).toBeNull();
     expect(parseMoneyToCents("1.234")).toBeNull();
     expect(parseMoneyToCents("")).toBeNull();
+  });
+});
+
+describe("formatWholeDollars", () => {
+  it("rounds to the nearest dollar with grouping", () => {
+    expect(formatWholeDollars(78365)).toBe("$784");
+    expect(formatWholeDollars(74200)).toBe("$742");
+    expect(formatWholeDollars(763300)).toBe("$7,633");
+    expect(formatWholeDollars(514315)).toBe("$5,143");
+    expect(formatWholeDollars(-102250)).toBe("−$1,023");
+    expect(formatWholeDollars(0)).toBe("$0");
   });
 });

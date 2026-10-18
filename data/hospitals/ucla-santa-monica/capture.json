@@ -1,0 +1,638 @@
+{
+  "hospitalKey": "ucla-santa-monica",
+  "hospitalName": "UCLA Santa Monica Medical Center",
+  "capturedAt": "2026-10-18T15:55:19Z",
+  "capturedBy": "extract_mrf.py (mrf-url read from the hospital's cms-hpt.txt; no Browser Use)",
+  "sources": [
+    {
+      "kind": "cms_hpt_txt",
+      "url": "https://www.uclahealth.org/cms-hpt.txt",
+      "sha256": "77b64648a50b3722656bbb5ac5cfec2ba3babd23dfd2e846ee8fd1302a8a6c56",
+      "bytes": 1561,
+      "evidenceFile": "evidence/cms-hpt.txt",
+      "note": "sha256 and bytes are of the original response. The committed evidence copy redacts the contact-name and contact-email lines."
+    },
+    {
+      "kind": "price_page",
+      "url": "https://www.uclahealth.org/patient-resources/billing-insurance/price-transparency/machine-readable-files",
+      "sha256": "2a3f852c19f11523062dfdf648a9b47add66d8d82a8856ef61dc90d038b8a593",
+      "bytes": 101524,
+      "evidenceFile": "evidence/price_page.html"
+    },
+    {
+      "kind": "mrf",
+      "url": "https://www.uclahealth.org/sites/default/files/cms-hpt/954541687_santa-monica-ucla-medical-center-and-orthopaedic-hospital_standardcharges.json",
+      "sha256": "5abda4012a4104edee6666e05f128b95ccac5de5769b3743da45ad4302cc12ba",
+      "bytes": 450464364,
+      "httpContentLength": null,
+      "httpLastModified": "Wed, 01 Apr 2026 19:55:31 GMT",
+      "fileLastUpdatedOn": "2026-03-29",
+      "fileVersion": "3.0.0",
+      "fileHospitalAddress": ["1250 16th Street, Santa Monica, CA 90404"],
+      "fileLocationName": ["UCLA Santa Monica Medical Center"]
+    }
+  ],
+  "allMatches": [
+    {
+      "code": "85025",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "COMPLETE CBC W/AUTO DIFF WBC",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 675,
+      "maxNegotiatedCents": 2230
+    },
+    {
+      "code": "80053",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "COMPREHEN METABOLIC PANEL",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 928,
+      "maxNegotiatedCents": 3031
+    },
+    {
+      "code": "74177",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "CT ABD & PELVIS W/CONTRAST",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 28180,
+      "maxNegotiatedCents": 128780
+    },
+    {
+      "code": "70450",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "CT HEAD/BRAIN W/O DYE",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 10127,
+      "maxNegotiatedCents": 38591
+    },
+    {
+      "code": "93000",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "ELECTROCARDIOGRAM COMPLETE",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 2870,
+      "maxNegotiatedCents": 2870
+    },
+    {
+      "code": "72100",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB  L-SPINE 2-3 VIEWS",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-3207210000-72100-0320-SM46300-1000-670",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 67000,
+      "discountedCashCents": 36850,
+      "minNegotiatedCents": 16750,
+      "maxNegotiatedCents": 60300
+    },
+    {
+      "code": "76700",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB  US ABDOMEN COMPLETE",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-4027670000-76700-0402-SM40100-1000-1490",
+          "type": "CDM"
+        },
+        {
+          "code": "RRUCLASM-4027670000-76700-0402-SM46700-1000-1490",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 149000,
+      "discountedCashCents": 81950,
+      "minNegotiatedCents": 37250,
+      "maxNegotiatedCents": 134100
+    },
+    {
+      "code": "85025",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB CBC & PLATELET CT & DIFF",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-3058502500-85025-0305-SM45000-48-140",
+          "type": "CDM"
+        },
+        {
+          "code": "RRUCLASM-3058502500-85025-0305-SM45051-48-140",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 14000,
+      "discountedCashCents": 7700,
+      "minNegotiatedCents": 3500,
+      "maxNegotiatedCents": 14000
+    },
+    {
+      "code": "71046",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB CHEST 2 VIEWS",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-3247104600-71046-0324-SM46300-1000-420",
+          "type": "CDM"
+        },
+        {
+          "code": "RRUCLASM-3247104600-71046-0324-SM46800-1000-420",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 42000,
+      "discountedCashCents": 23100,
+      "minNegotiatedCents": 10500,
+      "maxNegotiatedCents": 37800
+    },
+    {
+      "code": "74177",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB CT ABDOMEN PELVIS W CONTRAST",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-3527417700-74177-0352-SM46300-1000-4510",
+          "type": "CDM"
+        },
+        {
+          "code": "RRUCLASM-3527417700-74177-0352-SM46800-1000-4510",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 451000,
+      "discountedCashCents": 248050,
+      "minNegotiatedCents": 40000,
+      "maxNegotiatedCents": 405900
+    },
+    {
+      "code": "70450",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB CT BRAIN WO CONTRAST",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-3517045000-70450-0351-SM46800-1000-2940",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 294000,
+      "discountedCashCents": 161700,
+      "minNegotiatedCents": 40000,
+      "maxNegotiatedCents": 264600
+    },
+    {
+      "code": "99284",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB ER DEPT VISIT ACUITY 4",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-4509928400-99284-0450-SM40100-1000-2420",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 242000,
+      "discountedCashCents": 133100,
+      "minNegotiatedCents": 6835,
+      "maxNegotiatedCents": 333900
+    },
+    {
+      "code": "80053",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB METABOLIC PANEL COMPREHENSV",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-3018005300-80053-0301-SM45000-48-340",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 34000,
+      "discountedCashCents": 18700,
+      "minNegotiatedCents": 8500,
+      "maxNegotiatedCents": 34000
+    },
+    {
+      "code": "72148",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB MRI L-SPINE WO CONTRAST",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-6127214800-72148-0612-SM46402-1000-5570",
+          "type": "CDM"
+        },
+        {
+          "code": "RRUCLASM-6127214800-72148-0612-SM46600-1000-5570",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 557000,
+      "discountedCashCents": 306350,
+      "minNegotiatedCents": 65000,
+      "maxNegotiatedCents": 501300
+    },
+    {
+      "code": "73721",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB MRI LOWER EXTREMITY JOINT WO CONTRAST",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-6107372100-73721-0610-SM46402-1000-5700",
+          "type": "CDM"
+        },
+        {
+          "code": "RRUCLASM-6107372100-73721-0610-SM46600-1000-5700",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 570000,
+      "discountedCashCents": 313500,
+      "minNegotiatedCents": 65000,
+      "maxNegotiatedCents": 513000
+    },
+    {
+      "code": "73721",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "MRI JNT OF LWR EXTRE W/O DYE",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 19692,
+      "maxNegotiatedCents": 88075
+    },
+    {
+      "code": "72148",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "MRI LUMBAR SPINE W/O DYE",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 18600,
+      "maxNegotiatedCents": 88075
+    },
+    {
+      "code": "77067",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "SCR MAMMO BI INCL CAD",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 11945,
+      "maxNegotiatedCents": 49462
+    },
+    {
+      "code": "76700",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "US EXAM ABDOM COMPLETE",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 8320,
+      "maxNegotiatedCents": 38591
+    },
+    {
+      "code": "71046",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "X-RAY EXAM CHEST 2 VIEWS",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 2748,
+      "maxNegotiatedCents": 32124
+    },
+    {
+      "code": "72100",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "X-RAY EXAM L-S SPINE 2/3 VWS",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 3029,
+      "maxNegotiatedCents": 38591
+    }
+  ],
+  "prices": [
+    {
+      "code": "72148",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB MRI L-SPINE WO CONTRAST",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-6127214800-72148-0612-SM46402-1000-5570",
+          "type": "CDM"
+        },
+        {
+          "code": "RRUCLASM-6127214800-72148-0612-SM46600-1000-5570",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 557000,
+      "discountedCashCents": 306350,
+      "minNegotiatedCents": 65000,
+      "maxNegotiatedCents": 501300,
+      "rowsInFile": 1
+    },
+    {
+      "code": "85025",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB CBC & PLATELET CT & DIFF",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-3058502500-85025-0305-SM45000-48-140",
+          "type": "CDM"
+        },
+        {
+          "code": "RRUCLASM-3058502500-85025-0305-SM45051-48-140",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 14000,
+      "discountedCashCents": 7700,
+      "minNegotiatedCents": 3500,
+      "maxNegotiatedCents": 14000,
+      "rowsInFile": 1
+    },
+    {
+      "code": "99284",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB ER DEPT VISIT ACUITY 4",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-4509928400-99284-0450-SM40100-1000-2420",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 242000,
+      "discountedCashCents": 133100,
+      "minNegotiatedCents": 6835,
+      "maxNegotiatedCents": 333900,
+      "rowsInFile": 1
+    },
+    {
+      "code": "70450",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB CT BRAIN WO CONTRAST",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-3517045000-70450-0351-SM46800-1000-2940",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 294000,
+      "discountedCashCents": 161700,
+      "minNegotiatedCents": 40000,
+      "maxNegotiatedCents": 264600,
+      "rowsInFile": 1
+    },
+    {
+      "code": "72100",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB  L-SPINE 2-3 VIEWS",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-3207210000-72100-0320-SM46300-1000-670",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 67000,
+      "discountedCashCents": 36850,
+      "minNegotiatedCents": 16750,
+      "maxNegotiatedCents": 60300,
+      "rowsInFile": 1
+    },
+    {
+      "code": "71046",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB CHEST 2 VIEWS",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-3247104600-71046-0324-SM46300-1000-420",
+          "type": "CDM"
+        },
+        {
+          "code": "RRUCLASM-3247104600-71046-0324-SM46800-1000-420",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 42000,
+      "discountedCashCents": 23100,
+      "minNegotiatedCents": 10500,
+      "maxNegotiatedCents": 37800,
+      "rowsInFile": 1
+    },
+    {
+      "code": "76700",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB  US ABDOMEN COMPLETE",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-4027670000-76700-0402-SM40100-1000-1490",
+          "type": "CDM"
+        },
+        {
+          "code": "RRUCLASM-4027670000-76700-0402-SM46700-1000-1490",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 149000,
+      "discountedCashCents": 81950,
+      "minNegotiatedCents": 37250,
+      "maxNegotiatedCents": 134100,
+      "rowsInFile": 1
+    },
+    {
+      "code": "74177",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB CT ABDOMEN PELVIS W CONTRAST",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-3527417700-74177-0352-SM46300-1000-4510",
+          "type": "CDM"
+        },
+        {
+          "code": "RRUCLASM-3527417700-74177-0352-SM46800-1000-4510",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 451000,
+      "discountedCashCents": 248050,
+      "minNegotiatedCents": 40000,
+      "maxNegotiatedCents": 405900,
+      "rowsInFile": 1
+    },
+    {
+      "code": "73721",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB MRI LOWER EXTREMITY JOINT WO CONTRAST",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-6107372100-73721-0610-SM46402-1000-5700",
+          "type": "CDM"
+        },
+        {
+          "code": "RRUCLASM-6107372100-73721-0610-SM46600-1000-5700",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 570000,
+      "discountedCashCents": 313500,
+      "minNegotiatedCents": 65000,
+      "maxNegotiatedCents": 513000,
+      "rowsInFile": 1
+    },
+    {
+      "code": "77067",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "SCR MAMMO BI INCL CAD",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 11945,
+      "maxNegotiatedCents": 49462,
+      "rowsInFile": 1
+    },
+    {
+      "code": "80053",
+      "codeType": "CPT",
+      "codeSource": "parsed_from_cdm",
+      "hospitalDescription": "HB METABOLIC PANEL COMPREHENSV",
+      "otherCodes": [
+        {
+          "code": "RRUCLASM-3018005300-80053-0301-SM45000-48-340",
+          "type": "CDM"
+        }
+      ],
+      "setting": "outpatient",
+      "grossChargeCents": 34000,
+      "discountedCashCents": 18700,
+      "minNegotiatedCents": 8500,
+      "maxNegotiatedCents": 34000,
+      "rowsInFile": 1
+    },
+    {
+      "code": "93000",
+      "codeType": "HCPCS",
+      "codeSource": "tagged",
+      "hospitalDescription": "ELECTROCARDIOGRAM COMPLETE",
+      "otherCodes": [],
+      "setting": "outpatient",
+      "grossChargeCents": null,
+      "discountedCashCents": null,
+      "minNegotiatedCents": 2870,
+      "maxNegotiatedCents": 2870,
+      "rowsInFile": 1
+    }
+  ],
+  "selection": {
+    "72148": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "85025": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "99284": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "70450": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "72100": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "71046": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "76700": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "74177": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "73721": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "77067": "1 outpatient row(s) for this code in the file, none with a cash price.",
+    "80053": "1 outpatient row(s) with a cash price for this code. 1 share this gross and cash amount, the most common pair (first in file on a tie). Every row, including rows that list payer rates only, is in allMatches.",
+    "93000": "1 outpatient row(s) for this code in the file, none with a cash price."
+  },
+  "codesSearched": [
+    "72148",
+    "85025",
+    "99284",
+    "70450",
+    "72100",
+    "71046",
+    "76700",
+    "74177",
+    "73721",
+    "77067",
+    "80053",
+    "93000"
+  ],
+  "fileHospitalName": "Santa Monica UCLA Medical Center and Orthopaedic Hospital",
+  "hospitalNameSource": "mrf location_name",
+  "location": {
+    "address": "1250 16th Street, Santa Monica, CA 90404",
+    "lat": 34.027092,
+    "lng": -118.486318,
+    "source": {
+      "kind": "mrf_header",
+      "url": "https://www.uclahealth.org/sites/default/files/cms-hpt/954541687_santa-monica-ucla-medical-center-and-orthopaedic-hospital_standardcharges.json"
+    },
+    "geocoder": "nominatim",
+    "geocoderQuery": "1250 16th Street, Santa Monica, CA 90404",
+    "geocoderMatch": "UCLA Medical Center - Santa Monica, 1250, 16th Street, Santa Monica, Los Angeles County, California, 90404, United States",
+    "geocodedAt": "2026-10-18T14:29:35Z"
+  }
+}

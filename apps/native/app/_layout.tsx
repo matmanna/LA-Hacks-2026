@@ -17,8 +17,8 @@ import { queryClient } from "@/utils/orpc";
 Uniwind.setTheme("light");
 void SplashScreen.preventAutoHideAsync();
 
-// Screens draw their own top bar from the Paper frames. Bills and Account
-// live in the (tabs) group.
+// Screens draw their own top bar from the Paper frames. The five primary
+// destinations live in the (tabs) group.
 function StackLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>

@@ -44,6 +44,8 @@ describe("procedure stubs", () => {
         "payment.quote",
         "payment.checkout",
         "payment.bulkCheckout",
+        "price.services",
+        "price.nearby",
       ].sort(),
     );
   });

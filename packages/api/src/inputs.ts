@@ -82,3 +82,10 @@ export const ContactSetInput = z.object({
   billingPhone: z.string().max(40).optional(),
   hospitalUrl: z.string().max(300).optional(),
 });
+
+// "Before you go" price comparison: one service code and where the patient is.
+export const NearbyPricesInput = z.object({
+  code: z.string().min(1).max(10),
+  lat: z.number().min(-90).max(90),
+  lng: z.number().min(-180).max(180),
+});

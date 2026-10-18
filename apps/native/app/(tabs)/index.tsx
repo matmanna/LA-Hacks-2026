@@ -5,7 +5,14 @@ import { useCallback, useState } from "react";
 import { Pressable, RefreshControl, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Button, Icon, Money, Progress, T } from "@/components/bb";
+import {
+  AccountButton,
+  Button,
+  Icon,
+  Money,
+  Progress,
+  T,
+} from "@/components/bb";
 import { loadCases, type SavedCase } from "@/lib/cases";
 import { serviceDay } from "@/lib/format";
 import { caseStatus } from "@/lib/status";
@@ -70,6 +77,7 @@ export default function Home() {
           <T weight="serif" className="text-[30px] leading-[34px]">
             BetterBill
           </T>
+          <AccountButton />
         </View>
 
         {latest?.audit ? (

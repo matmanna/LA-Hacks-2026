@@ -20,6 +20,15 @@ export function formatMoney(cents: number): string {
   return `${p.sign}$${p.dollars}.${p.cents}`;
 }
 
+// Rounded to the nearest dollar, for prices read at a glance (map tags,
+// ranges): 78365 -> "$784". Exact amounts keep their cents elsewhere.
+export function formatWholeDollars(cents: number): string {
+  // Half a dollar rounds away from zero for credits and charges alike.
+  const dollars = Math.sign(cents) * Math.round(Math.abs(cents) / 100);
+  const p = moneyParts(dollars * 100);
+  return `${p.sign}$${p.dollars}`;
+}
+
 // "1,234.50" -> 123450; "$84" -> 8400; "-$5.5" -> -550; "abc" -> null.
 // String math only, so no float rounding.
 export function parseMoneyToCents(text: string): number | null {
