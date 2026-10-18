@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Pressable, Switch, TextInput, View } from "react-native";
 
@@ -5,6 +6,7 @@ import { Choice, Icon, Screen, T } from "@/components/bb";
 import { PhoneSignIn } from "@/components/phone-sign-in";
 import { insuranceOptions } from "@/lib/assist";
 import { authClient } from "@/lib/auth-client";
+import { resetIntro } from "@/lib/intro";
 import { useMyInfo } from "@/lib/my-info";
 import { queryClient } from "@/utils/orpc";
 
@@ -41,6 +43,13 @@ export default function Account() {
       </T>
       <Label>Your info</Label>
       <View className="rounded-[20px] bg-white px-[18px]">
+        <Row
+          label="Show the intro again"
+          onPress={() => {
+            void resetIntro();
+            router.push("/welcome");
+          }}
+        />
         <View className="min-h-14 flex-row items-center justify-between border-hairline border-b py-2">
           <T className="text-base">People in household</T>
           <View className="flex-row items-center gap-3">

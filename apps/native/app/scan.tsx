@@ -34,9 +34,9 @@ import {
   takePhotoWithSystemCamera,
   toPage,
 } from "@/lib/photos";
+import { startSampleBill } from "@/lib/sample";
 import { client } from "@/utils/orpc";
 
-const SAMPLE_ID = "SB-01";
 const TOP_BAR = 64;
 const BOTTOM_RESERVE = 250; // coach pill, trust line, sample, controls
 
@@ -93,12 +93,7 @@ export default function Scan() {
     setError(null);
     setBusy("sample");
     try {
-      const { id } = await client.case.create({ sample: SAMPLE_ID });
-      await saveCase({
-        id,
-        createdAt: new Date().toISOString(),
-        label: `Sample bill ${SAMPLE_ID} (synthetic)`,
-      });
+      const id = await startSampleBill();
       router.replace({ pathname: "/case/[id]/reading", params: { id } });
     } catch (e) {
       setError(errorMessage(e));
