@@ -14,7 +14,12 @@ import Animated, {
 
 import { HospitalPin } from "./hospital-pin";
 import { Money } from "./money";
-import { PIN_STEP_MS, type PriceMapProps } from "./price-map-shared";
+import {
+  LEVEL_COLORS,
+  LEVEL_WORDS,
+  PIN_STEP_MS,
+  type PriceMapProps,
+} from "./price-map-shared";
 import { shortHospitalName } from "./short-name";
 import { T } from "./t";
 
@@ -33,6 +38,17 @@ export function PriceMap({
   const reduced = useReducedMotion();
   const [shown, setShown] = useState(0);
   const key = rows.map((r) => r.hospitalKey).join();
+  // One tap can arrive as a marker press, a marker select (iOS) and the
+  // map's marker events; open the hospital once.
+  const lastPick = useRef({ key: "", at: 0 });
+  const pick = (hospitalKey: string | undefined) => {
+    if (!hospitalKey || !onSelect) return;
+    const now = Date.now();
+    if (lastPick.current.key === hospitalKey && now - lastPick.current.at < 800)
+      return;
+    lastPick.current = { key: hospitalKey, at: now };
+    onSelect(hospitalKey);
+  };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: refit when the hospitals or the free area change
   useEffect(() => {
@@ -86,6 +102,8 @@ export function PriceMap({
       }}
       showsPointsOfInterests={false}
       toolbarEnabled={false}
+      onMarkerPress={(e) => pick(e.nativeEvent.id)}
+      onMarkerSelect={(e) => pick(e.nativeEvent.id)}
       accessibilityLabel="Map of nearby hospitals and their published cash prices"
     >
       <Marker
@@ -102,23 +120,41 @@ export function PriceMap({
               key={r.hospitalKey}
               coordinate={{ latitude: r.lat, longitude: r.lng }}
               anchor={{ x: 0.5, y: 0.29 }}
-              onPress={() => onSelect?.(r.hospitalKey)}
-              accessibilityLabel={`${r.hospitalName}, ${r.distanceMiles.toFixed(1)} miles`}
+              identifier={r.hospitalKey}
+              tappable
+              onPress={() => pick(r.hospitalKey)}
+              onSelect={() => pick(r.hospitalKey)}
+              accessibilityLabel={`${r.hospitalName}, ${r.distanceMiles.toFixed(1)} miles${r.level ? `, prices mostly ${LEVEL_WORDS[r.level]}` : ""}`}
             >
-              <HospitalPin name={shortHospitalName(r.hospitalName)} />
+              <HospitalPin
+                name={shortHospitalName(r.hospitalName)}
+                level={r.level ?? null}
+              />
             </Marker>
           );
         }
         const lowest = r.rank === 1;
-        const highest = !lowest && r.shareOfHighest === 1;
-        const bg = lowest ? "bg-mint" : highest ? "bg-coral-soft" : "bg-white";
+        const level = r.level ?? null;
+        const bg = lowest
+          ? "bg-mint"
+          : level
+            ? LEVEL_COLORS[level].bg
+            : "bg-white";
+        const ink = lowest
+          ? "text-white"
+          : level
+            ? LEVEL_COLORS[level].text
+            : "text-foreground";
         return (
           <Marker
             key={r.hospitalKey}
             coordinate={{ latitude: r.lat, longitude: r.lng }}
             anchor={{ x: 0.5, y: 1 }}
-            onPress={() => onSelect?.(r.hospitalKey)}
-            accessibilityLabel={r.hospitalName}
+            identifier={r.hospitalKey}
+            tappable
+            onPress={() => pick(r.hospitalKey)}
+            onSelect={() => pick(r.hospitalKey)}
+            accessibilityLabel={`${r.hospitalName}${r.level ? `, ${LEVEL_WORDS[r.level]}` : ""}`}
           >
             <View className="items-center">
               {lowest ? (
@@ -145,13 +181,7 @@ export function PriceMap({
                     size={14}
                     weight="semibold"
                     whole
-                    className={
-                      lowest
-                        ? "text-white"
-                        : highest
-                          ? "text-coral-ink"
-                          : "text-foreground"
-                    }
+                    className={ink}
                     label={r.hospitalName}
                   />
                 )}
