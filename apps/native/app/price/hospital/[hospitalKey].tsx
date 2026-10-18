@@ -333,51 +333,49 @@ function Rise({
 }
 
 // Medicare's own star ratings (CMS Care Compare), with where they come from.
-// Not reviews from a review site.
+// Not reviews from a review site. Kept compact: both ratings on one line.
 function MedicareRatings({ ratings }: { ratings: HospitalRatings }) {
   const source = ratings.sources[0];
   const updated = source?.modified
     ? capturedLong(`${source.modified}T12:00:00Z`)
     : null;
   const through = monthYear(ratings.surveyPeriodEnd);
+  const caption = [
+    ratings.surveysCompleted
+      ? `${ratings.surveysCompleted.toLocaleString("en-US")} patient surveys${through ? ` to ${through}` : ""}`
+      : null,
+    updated ? `Medicare data, ${updated}` : "Medicare data",
+    "not review-site reviews",
+  ]
+    .filter(Boolean)
+    .join(" · ");
   return (
-    <View className="mt-3 gap-2.5 rounded-[18px] border border-hairline px-4 py-3.5">
+    <View className="mt-3 gap-2 rounded-2xl border border-hairline px-3.5 py-3">
       <View className="flex-row items-center justify-between gap-2">
-        <T weight="semibold" className="text-[15px]">
+        <T weight="semibold" className="text-sm">
           Medicare ratings
-        </T>
-        <View className="h-6 justify-center rounded-full bg-slate-soft px-2">
-          <T className="text-slate-ink text-xs">Medicare Care Compare</T>
-        </View>
-      </View>
-      <StarRow label="Overall quality" stars={ratings.overallStars} />
-      <StarRow label="Patient survey" stars={ratings.patientSurveyStars} />
-      {ratings.surveysCompleted ? (
-        <T className="text-muted text-xs leading-4">
-          {`From ${ratings.surveysCompleted.toLocaleString("en-US")} patient surveys${through ? `, through ${through}` : ""}.`}
-        </T>
-      ) : null}
-      <View className="flex-row items-center justify-between gap-3 border-[#EEF0F3] border-t pt-2.5">
-        <T className="flex-1 text-muted text-xs leading-4">
-          {`Medicare's star ratings, not reviews from a review site.${updated ? ` Data updated ${updated}.` : ""}`}
         </T>
         {source?.landingPage ? (
           <Pressable
             accessibilityRole="link"
             accessibilityLabel="Open Medicare's data for this hospital"
-            hitSlop={10}
+            hitSlop={12}
             onPress={() =>
               source.landingPage &&
               void WebBrowser.openBrowserAsync(source.landingPage)
             }
-            className="min-h-11 justify-center"
           >
-            <T weight="semibold" className="text-[13px] text-accent">
+            <T weight="semibold" className="text-accent text-xs">
               Open
             </T>
           </Pressable>
         ) : null}
       </View>
+      <View className="flex-row gap-4">
+        <StarRow label="Overall" stars={ratings.overallStars} />
+        <StarRow label="Patients" stars={ratings.patientSurveyStars} />
+      </View>
+      <T className="text-[11px] text-muted leading-[15px]">{caption}</T>
     </View>
   );
 }
@@ -385,26 +383,28 @@ function MedicareRatings({ ratings }: { ratings: HospitalRatings }) {
 function StarRow({ label, stars }: { label: string; stars: number | null }) {
   return (
     <View
-      className="flex-row items-center justify-between gap-3"
+      className="flex-row items-center gap-1.5"
       accessible
       accessibilityLabel={
-        stars ? `${label}: ${stars} of 5 stars` : `${label}: not available`
+        stars
+          ? `${label === "Patients" ? "Patient survey" : "Overall quality"}: ${stars} of 5 stars`
+          : `${label}: not available`
       }
     >
-      <T className="text-sm">{label}</T>
+      <T className="text-muted text-xs">{label}</T>
       {stars ? (
-        <View className="flex-row items-center gap-2">
-          <View className="flex-row gap-0.5">
+        <>
+          <View className="flex-row">
             {[1, 2, 3, 4, 5].map((n) => (
               <Star key={n} filled={n <= stars} />
             ))}
           </View>
-          <T weight="semibold" className="text-sm">
-            {`${stars} of 5`}
+          <T weight="semibold" className="text-xs">
+            {`${stars}/5`}
           </T>
-        </View>
+        </>
       ) : (
-        <T className="text-muted text-sm">Not available</T>
+        <T className="text-muted text-xs">Not available</T>
       )}
     </View>
   );
@@ -412,7 +412,7 @@ function StarRow({ label, stars }: { label: string; stars: number | null }) {
 
 function Star({ filled }: { filled: boolean }) {
   return (
-    <Svg width={16} height={16} viewBox="0 0 24 24" aria-hidden>
+    <Svg width={12} height={12} viewBox="0 0 24 24" aria-hidden>
       <Path
         d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3 1.1-6.5-4.7-4.6 6.5-.9z"
         fill={filled ? "#0B1B2B" : "none"}
