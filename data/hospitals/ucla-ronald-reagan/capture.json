@@ -27,7 +27,9 @@
       "httpContentLength": null,
       "httpLastModified": "Thu, 02 Apr 2026 14:31:13 GMT",
       "fileLastUpdatedOn": "2026-03-29",
-      "fileVersion": "3.0.0"
+      "fileVersion": "3.0.0",
+      "fileHospitalAddress": ["757 Westwood Plaza, Los Angeles, CA 90095"],
+      "fileHospitalAddressReadAt": "2026-10-18T14:27:26Z"
     }
   ],
   "prices": [
@@ -1452,5 +1454,18 @@
       "maxNegotiatedCents": 704,
       "count": 1
     }
-  ]
+  ],
+  "location": {
+    "address": "757 Westwood Plaza, Los Angeles, CA 90095",
+    "lat": 34.066455,
+    "lng": -118.446519,
+    "source": {
+      "kind": "mrf_header",
+      "url": "https://www.uclahealth.org/sites/default/files/cms-hpt/956006143_ronald-reagan-ucla-medical-center_standardcharges.json"
+    },
+    "geocoder": "nominatim",
+    "geocoderQuery": "757 Westwood Plaza, Los Angeles, CA 90095",
+    "geocoderMatch": "Ronald Reagan UCLA Medical Center, 757, Westwood Plaza, Westwood, Los Angeles, Los Angeles County, California, 90095, United States",
+    "geocodedAt": "2026-10-18T14:27:28Z"
+  }
 }
