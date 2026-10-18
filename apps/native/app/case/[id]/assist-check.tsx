@@ -8,6 +8,7 @@ import { AccessibilityInfo, ActivityIndicator, View } from "react-native";
 import { Button, Icon, Screen, T } from "@/components/bb";
 import { heldAnswers, holdResult } from "@/lib/assist";
 import { errorMessage } from "@/lib/errors";
+import { remindWhenLookupReady } from "@/lib/notify";
 import { client, queryClient } from "@/utils/orpc";
 
 const STEP_MS = 800;
@@ -51,6 +52,26 @@ export default function AssistCheck() {
   }, []);
 
   const checks = run.data?.checks ?? [];
+
+  // The hospital's policy isn't on file: start the background lookup. It
+  // keeps going after this screen; the bill page shows its progress.
+  const lookup = useMutation({
+    mutationFn: () => client.hospital.lookup({ caseId: id }),
+    onSuccess: (s) => {
+      if (s.state === "running" && s.hospitalName) {
+        void remindWhenLookupReady(id, s.hospitalName);
+      }
+    },
+  });
+  const notOnFile = checks.some(
+    (c) => c.id === "policy" && c.finding.startsWith("Not on file"),
+  );
+  // biome-ignore lint/correctness/useExhaustiveDependencies: start once
+  useEffect(() => {
+    if (notOnFile && lookup.isIdle) lookup.mutate();
+  }, [notOnFile]);
+  const looking =
+    lookup.data?.state === "running" || lookup.data?.state === "none";
   useEffect(() => {
     if (checks.length === 0) return;
     let timer: ReturnType<typeof setInterval> | undefined;
@@ -124,14 +145,22 @@ export default function AssistCheck() {
         ) : (
           checks
             .slice(0, Math.min(shown + 1, checks.length))
-            .map((c, i) => (
-              <Row
-                key={c.id}
-                title={c.title}
-                sub={i < shown ? c.finding : CHECKING[c.kind]}
-                outcome={i < shown ? c.outcome : undefined}
-              />
-            ))
+            .map((c, i) =>
+              c.id === "policy" && notOnFile && looking && i < shown ? (
+                <Row
+                  key={c.id}
+                  title={c.title}
+                  sub="Not on file, so we're looking it up online. Usually about 2 minutes. We'll add it to your bill."
+                />
+              ) : (
+                <Row
+                  key={c.id}
+                  title={c.title}
+                  sub={i < shown ? c.finding : CHECKING[c.kind]}
+                  outcome={i < shown ? c.outcome : undefined}
+                />
+              ),
+            )
         )}
       </View>
     </Screen>

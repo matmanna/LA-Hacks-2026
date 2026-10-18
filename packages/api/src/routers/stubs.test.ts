@@ -29,6 +29,8 @@ describe("procedure stubs", () => {
         "audit.run",
         "audit.get",
         "assistance.check",
+        "hospital.lookup",
+        "hospital.lookupStatus",
         "action.draftLetter",
         "action.approve",
         "action.send",

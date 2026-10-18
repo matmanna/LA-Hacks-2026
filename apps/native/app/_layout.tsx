@@ -1,7 +1,7 @@
 import "@/global.css";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
+import { router, SplashScreen, Stack } from "expo-router";
 import { HeroUINativeProvider } from "heroui-native";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -10,6 +10,7 @@ import { Uniwind } from "uniwind";
 
 import { FONTS } from "@/components/bb";
 import { AppThemeProvider } from "@/contexts/app-theme-context";
+import { onReminderTap } from "@/lib/notify";
 import { queryClient } from "@/utils/orpc";
 
 // BetterBill is light only (section 8.1).
@@ -41,6 +42,15 @@ export default function Layout() {
   useEffect(() => {
     if (loaded || failed) void SplashScreen.hideAsync();
   }, [loaded, failed]);
+
+  // A "policy should be ready" reminder opens that bill.
+  useEffect(
+    () =>
+      onReminderTap((caseId) =>
+        router.push({ pathname: "/case/[id]", params: { id: caseId } }),
+      ),
+    [],
+  );
 
   if (!loaded && !failed) return null;
 

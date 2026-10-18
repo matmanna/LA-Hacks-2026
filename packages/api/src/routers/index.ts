@@ -9,6 +9,7 @@ import { callRouter } from "./call";
 import { caseRouter } from "./case";
 import { evalRouter } from "./eval";
 import { eventRouter } from "./event";
+import { hospitalRouter } from "./hospital";
 import { paymentRouter } from "./payment";
 
 export const appRouter = {
@@ -25,6 +26,7 @@ export const appRouter = {
   bill: billRouter,
   audit: auditRouter,
   assistance: assistanceRouter,
+  hospital: hospitalRouter,
   action: actionRouter,
   call: callRouter,
   event: eventRouter,

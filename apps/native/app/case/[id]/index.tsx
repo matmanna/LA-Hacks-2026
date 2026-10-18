@@ -7,6 +7,7 @@ import {
   Button,
   Disclaimer,
   Icon,
+  LookupCard,
   Money,
   Progress,
   Screen,
@@ -140,6 +141,17 @@ export default function BillDetail() {
       )}
 
       {shared ? <SharedRow id={id} /> : null}
+
+      {audit ? (
+        <LookupCard
+          id={id}
+          offer={
+            audit.savings.assistance.checks
+              ?.find((c) => c.id === "policy")
+              ?.finding.startsWith("Not on file") ?? false
+          }
+        />
+      ) : null}
 
       {audit && audit.flags.length > 0 ? (
         <View className="mt-4 rounded-[20px] bg-white px-[18px] py-1.5">
